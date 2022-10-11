@@ -1,0 +1,255 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the resource."
+            }
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "The location of the resource."
+            }
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "2021-12-01",
+            "type": "Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies",
+            "name": "[parameters('resourceName')]",
+            "location": "[parameters('location')]",
+            "tags": {
+                "Organization": "Sodexo",
+                "System": "SodexoCrecer",
+                "Environment": "SWODEV"
+            },
+            "properties": {
+                "customRules": [],
+                "policySettings": {
+                    "fileUploadLimitInMb": 100,
+                    "maxRequestBodySizeInKb": 128,
+                    "mode": "Detection",
+                    "requestBodyCheck": true,
+                    "state": "Enabled"
+                },
+                "managedRules": {
+                    "exclusions": [],
+                    "managedRuleSets": [
+                        {
+                            "ruleSetType": "OWASP",
+                            "ruleSetVersion": "3.2",
+                            "ruleGroupOverrides": []
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "sodexocrecer-agw01",
+            "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01",
+            "type": "Microsoft.Network/applicationGateways",
+            "location": "eastus2",
+            "tags": {
+                "Organization": "Sodexo",
+                "System": "SodexoCrecer",
+                "Environment": "SWODEV"
+            },
+            "zones": [
+                "1",
+                "2",
+                "3"
+            ],
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "6ac2d92d-7bd3-4b9d-b843-04aee4afeb94",
+                "sku": {
+                    "name": "WAF_v2",
+                    "tier": "WAF_v2"
+                },
+                "operationalState": "Running",
+                "gatewayIPConfigurations": [
+                    {
+                        "name": "appGatewayIpConfig",
+                        "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/gatewayIPConfigurations/appGatewayIpConfig",
+                        "etag": "W/\"0a1343c4-9f61-4b4f-85c5-10828426ef28\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "subnet": {
+                                "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/virtualNetworks/sodexocrecer-vnet01/subnets/gateway-subnet"
+                            }
+                        },
+                        "type": "Microsoft.Network/applicationGateways/gatewayIPConfigurations"
+                    }
+                ],
+                "sslCertificates": [],
+                "trustedRootCertificates": [],
+                "trustedClientCertificates": [],
+                "sslProfiles": [],
+                "frontendIPConfigurations": [
+                    {
+                        "name": "appGwPublicFrontendIp",
+                        "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/frontendIPConfigurations/appGwPublicFrontendIp",
+                        "etag": "W/\"0a1343c4-9f61-4b4f-85c5-10828426ef28\"",
+                        "type": "Microsoft.Network/applicationGateways/frontendIPConfigurations",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/publicIPAddresses/sodexocrecer-pip-gateway"
+                            }
+                        }
+                    },
+                    {
+                        "name": "appGwPrivateFrontendIp",
+                        "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/frontendIPConfigurations/appGwPrivateFrontendIp",
+                        "etag": "W/\"0a1343c4-9f61-4b4f-85c5-10828426ef28\"",
+                        "type": "Microsoft.Network/applicationGateways/frontendIPConfigurations",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.169.91.5",
+                            "privateIPAllocationMethod": "Static",
+                            "subnet": {
+                                "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/virtualNetworks/sodexocrecer-vnet01/subnets/gateway-subnet"
+                            },
+                            "httpListeners": [
+                                {
+                                    "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/httpListeners/sodexocrecer-agw-listener-80"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "frontendPorts": [
+                    {
+                        "name": "port_80",
+                        "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/frontendPorts/port_80",
+                        "etag": "W/\"0a1343c4-9f61-4b4f-85c5-10828426ef28\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "port": 80,
+                            "httpListeners": [
+                                {
+                                    "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/httpListeners/sodexocrecer-agw-listener-80"
+                                }
+                            ]
+                        },
+                        "type": "Microsoft.Network/applicationGateways/frontendPorts"
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "sodexocrecer-agw-backend01",
+                        "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/backendAddressPools/sodexocrecer-agw-backend01",
+                        "etag": "W/\"0a1343c4-9f61-4b4f-85c5-10828426ef28\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "backendAddresses": [],
+                            "requestRoutingRules": [
+                                {
+                                    "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/requestRoutingRules/sodexocrecer-agw-rule01"
+                                }
+                            ]
+                        },
+                        "type": "Microsoft.Network/applicationGateways/backendAddressPools"
+                    }
+                ],
+                "loadDistributionPolicies": [],
+                "backendHttpSettingsCollection": [
+                    {
+                        "name": "sodexocrecer-agw-ruleset01",
+                        "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/backendHttpSettingsCollection/sodexocrecer-agw-ruleset01",
+                        "etag": "W/\"0a1343c4-9f61-4b4f-85c5-10828426ef28\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "port": 80,
+                            "protocol": "Http",
+                            "cookieBasedAffinity": "Disabled",
+                            "connectionDraining": {
+                                "enabled": true,
+                                "drainTimeoutInSec": 60
+                            },
+                            "pickHostNameFromBackendAddress": false,
+                            "requestTimeout": 15,
+                            "requestRoutingRules": [
+                                {
+                                    "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/requestRoutingRules/sodexocrecer-agw-rule01"
+                                }
+                            ]
+                        },
+                        "type": "Microsoft.Network/applicationGateways/backendHttpSettingsCollection"
+                    }
+                ],
+                "httpListeners": [
+                    {
+                        "name": "sodexocrecer-agw-listener-80",
+                        "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/httpListeners/sodexocrecer-agw-listener-80",
+                        "etag": "W/\"0a1343c4-9f61-4b4f-85c5-10828426ef28\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "frontendIPConfiguration": {
+                                "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/frontendIPConfigurations/appGwPrivateFrontendIp"
+                            },
+                            "frontendPort": {
+                                "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/frontendPorts/port_80"
+                            },
+                            "protocol": "Http",
+                            "hostName": "apps.sdxcloud.com",
+                            "hostNames": [],
+                            "requireServerNameIndication": false,
+                            "requestRoutingRules": [
+                                {
+                                    "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/requestRoutingRules/sodexocrecer-agw-rule01"
+                                }
+                            ]
+                        },
+                        "type": "Microsoft.Network/applicationGateways/httpListeners"
+                    }
+                ],
+                "urlPathMaps": [],
+                "requestRoutingRules": [
+                    {
+                        "name": "sodexocrecer-agw-rule01",
+                        "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/requestRoutingRules/sodexocrecer-agw-rule01",
+                        "etag": "W/\"0a1343c4-9f61-4b4f-85c5-10828426ef28\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "ruleType": "Basic",
+                            "priority": 10,
+                            "httpListener": {
+                                "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/httpListeners/sodexocrecer-agw-listener-80"
+                            },
+                            "backendAddressPool": {
+                                "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/backendAddressPools/sodexocrecer-agw-backend01"
+                            },
+                            "backendHttpSettings": {
+                                "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGateways/sodexocrecer-agw01/backendHttpSettingsCollection/sodexocrecer-agw-ruleset01"
+                            }
+                        },
+                        "type": "Microsoft.Network/applicationGateways/requestRoutingRules"
+                    }
+                ],
+                "probes": [],
+                "rewriteRuleSets": [],
+                "redirectConfigurations": [],
+                "privateLinkConfigurations": [],
+                "privateEndpointConnections": [],
+                "enableHttp2": false,
+                "autoscaleConfiguration": {
+                    "minCapacity": 1,
+                    "maxCapacity": 2
+                },
+                "firewallPolicy": {
+                    "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies/sodexocrecer-wafpol02"
+                },
+                "forceFirewallPolicyAssociation": true
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies', parameters('resourceName'))]"
+            ],
+            "apiVersion": "2021-05-01"
+        }
+    ]
+}
