@@ -1,0 +1,56 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus2"
+        },
+        "applicationGatewayName": {
+            "value": "sodexocrecer-agw01"
+        },
+        "tier": {
+            "value": "WAF_v2"
+        },
+        "skuSize": {
+            "value": "WAF_v2"
+        },
+        "capacity": {
+            "value": 1
+        },
+        "subnetName": {
+            "value": "gateway-subnet"
+        },
+        "zones": {
+            "value": [
+                "1",
+                "2",
+                "3"
+            ]
+        },
+        "wafPolicyName": {
+            "value": "sodexocrecer-wafpol01"
+        },
+        "publicIpAddressName": {
+            "value": "sodexocrecer-pip-gateway"
+        },
+        "sku": {
+            "value": "Standard"
+        },
+        "allocationMethod": {
+            "value": "Static"
+        },
+        "publicIpZones": {
+            "value": [
+                "1",
+                "2",
+                "3"
+            ]
+        },
+        "privateIpAddress": {
+            "value": "10.169.91.5"
+        },
+        "autoScaleMaxCapacity": {
+            "value": 2
+        }
+    }
+}

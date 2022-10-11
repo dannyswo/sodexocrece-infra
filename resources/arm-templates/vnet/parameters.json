@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus2"
+        },
+        "extendedLocation": {
+            "value": {}
+        },
+        "virtualNetworkName": {
+            "value": "sodexocrecer-vnet01"
+        },
+        "resourceGroup": {
+            "value": "sodexocrecer-rg01"
+        },
+        "addressSpaces": {
+            "value": [
+                "10.169.91.0/27"
+            ]
+        },
+        "ipv6Enabled": {
+            "value": false
+        },
+        "subnetCount": {
+            "value": 2
+        },
+        "subnet0_name": {
+            "value": "gateway-subnet"
+        },
+        "subnet0_addressRange": {
+            "value": "10.169.91.0/28"
+        },
+        "subnet1_name": {
+            "value": "applications-subnet"
+        },
+        "subnet1_addressRange": {
+            "value": "10.169.91.16/28"
+        },
+        "ddosProtectionPlanEnabled": {
+            "value": false
+        },
+        "firewallEnabled": {
+            "value": false
+        },
+        "bastionEnabled": {
+            "value": false
+        }
+    }
+}

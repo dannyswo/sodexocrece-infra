@@ -1,0 +1,228 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string"
+        },
+        "applicationGatewayName": {
+            "type": "string"
+        },
+        "tier": {
+            "type": "string"
+        },
+        "skuSize": {
+            "type": "string"
+        },
+        "capacity": {
+            "type": "int",
+            "defaultValue": 2
+        },
+        "subnetName": {
+            "type": "string"
+        },
+        "zones": {
+            "type": "array"
+        },
+        "wafPolicyName": {
+            "type": "string"
+        },
+        "publicIpAddressName": {
+            "type": "string"
+        },
+        "sku": {
+            "type": "string"
+        },
+        "allocationMethod": {
+            "type": "string"
+        },
+        "publicIpZones": {
+            "type": "array"
+        },
+        "privateIpAddress": {
+            "type": "string"
+        },
+        "autoScaleMaxCapacity": {
+            "type": "int"
+        }
+    },
+    "variables": {
+        "vnetId": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/virtualNetworks/sodexocrecer-vnet01",
+        "publicIPRef": "[resourceId('Microsoft.Network/publicIPAddresses/', parameters('publicIpAddressName'))]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
+        "applicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName'))]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('applicationGatewayName')]",
+            "type": "Microsoft.Network/applicationGateways",
+            "apiVersion": "2021-08-01",
+            "location": "[parameters('location')]",
+            "zones": "[parameters('zones')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies/', parameters('wafPolicyName'))]",
+                "[concat('Microsoft.Network/publicIPAddresses/', parameters('publicIpAddressName'))]"
+            ],
+            "tags": {
+                "Organization": "Sodexo",
+                "System": "SodexoCrecer",
+                "Environment": "SWODEV"
+            },
+            "properties": {
+                "sku": {
+                    "name": "[parameters('skuSize')]",
+                    "tier": "[parameters('tier')]"
+                },
+                "gatewayIPConfigurations": [
+                    {
+                        "name": "appGatewayIpConfig",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ],
+                "frontendIPConfigurations": [
+                    {
+                        "name": "appGwPublicFrontendIp",
+                        "properties": {
+                            "PublicIPAddress": {
+                                "id": "[variables('publicIPRef')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "appGwPrivateFrontendIp",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAddress": "[parameters('privateIpAddress')]",
+                            "privateIPAllocationMethod": "Static"
+                        }
+                    }
+                ],
+                "frontendPorts": [
+                    {
+                        "name": "port_80",
+                        "properties": {
+                            "Port": 80
+                        }
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "sodexocrecer-agw-backend01",
+                        "properties": {
+                            "backendAddresses": []
+                        }
+                    }
+                ],
+                "backendHttpSettingsCollection": [
+                    {
+                        "name": "sodexocrecer-agw-ruleset01",
+                        "properties": {
+                            "Port": 80,
+                            "Protocol": "Http",
+                            "cookieBasedAffinity": "Disabled",
+                            "requestTimeout": 15,
+                            "connectionDraining": {
+                                "drainTimeoutInSec": 60,
+                                "enabled": true
+                            }
+                        }
+                    }
+                ],
+                "backendSettingsCollection": [],
+                "httpListeners": [
+                    {
+                        "name": "sodexocrecer-agw-listener-80",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(variables('applicationGatewayId'), '/frontendIPConfigurations/appGwPrivateFrontendIp')]"
+                            },
+                            "frontendPort": {
+                                "id": "[concat(variables('applicationGatewayId'), '/frontendPorts/port_80')]"
+                            },
+                            "protocol": "Http",
+                            "sslCertificate": null,
+                            "hostName": "apps.sdxcloud.com",
+                            "requireServerNameIndication": false
+                        }
+                    }
+                ],
+                "listeners": [],
+                "requestRoutingRules": [
+                    {
+                        "Name": "sodexocrecer-agw-rule01",
+                        "properties": {
+                            "RuleType": "Basic",
+                            "httpListener": {
+                                "id": "[concat(variables('applicationGatewayId'), '/httpListeners/sodexocrecer-agw-listener-80')]"
+                            },
+                            "priority": 10,
+                            "backendAddressPool": {
+                                "id": "[concat(variables('applicationGatewayId'), '/backendAddressPools/sodexocrecer-agw-backend01')]"
+                            },
+                            "backendHttpSettings": {
+                                "id": "[concat(variables('applicationGatewayId'), '/backendHttpSettingsCollection/sodexocrecer-agw-ruleset01')]"
+                            }
+                        }
+                    }
+                ],
+                "routingRules": [],
+                "enableHttp2": false,
+                "sslCertificates": [],
+                "probes": [],
+                "autoscaleConfiguration": {
+                    "minCapacity": "[parameters('capacity')]",
+                    "maxCapacity": "[parameters('autoScaleMaxCapacity')]"
+                },
+                "firewallPolicy": {
+                    "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies/sodexocrecer-wafpol01"
+                }
+            }
+        },
+        {
+            "apiVersion": "2021-08-01",
+            "type": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
+            "name": "sodexocrecer-wafpol01",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "properties": {
+                "policySettings": {
+                    "mode": "Detection",
+                    "state": "Enabled",
+                    "fileUploadLimitInMb": 100,
+                    "requestBodyCheck": true,
+                    "maxRequestBodySizeInKb": 128
+                },
+                "managedRules": {
+                    "exclusions": [],
+                    "managedRuleSets": [
+                        {
+                            "ruleSetType": "OWASP",
+                            "ruleSetVersion": "3.1",
+                            "ruleGroupOverrides": null
+                        }
+                    ]
+                },
+                "customRules": []
+            }
+        },
+        {
+            "apiVersion": "2020-08-01",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('publicIpAddressName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "[parameters('sku')]"
+            },
+            "zones": "[parameters('publicIpZones')]",
+            "properties": {
+                "publicIPAllocationMethod": "[parameters('allocationMethod')]"
+            }
+        }
+    ]
+}
