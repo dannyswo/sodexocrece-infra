@@ -1,0 +1,66 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceName": {
+            "value": "sodexocrecer-aks01"
+        },
+        "location": {
+            "value": "eastus2"
+        },
+        "dnsPrefix": {
+            "value": "sodexocrecer-aks01-dns"
+        },
+        "kubernetesVersion": {
+            "value": "1.23.12"
+        },
+        "networkPlugin": {
+            "value": "kubenet"
+        },
+        "enableRBAC": {
+            "value": true
+        },
+        "nodeResourceGroup": {
+            "value": "MC_sodexocrecer-rg01_sodexocrecer-aks01_eastus2"
+        },
+        "adminGroupObjectIDs": {
+            "value": []
+        },
+        "disableLocalAccounts": {
+            "value": false
+        },
+        "azureRbac": {
+            "value": false
+        },
+        "enablePrivateCluster": {
+            "value": true
+        },
+        "enableHttpApplicationRouting": {
+            "value": false
+        },
+        "enableAzurePolicy": {
+            "value": false
+        },
+        "enableSecretStoreCSIDriver": {
+            "value": false
+        },
+        "vmssNodePool": {
+            "value": true
+        },
+        "workspaceName": {
+            "value": "sodexocrecer-workspace-aks"
+        },
+        "omsWorkspaceId": {
+            "value": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/DefaultResourceGroup-EUS2/providers/Microsoft.OperationalInsights/workspaces/sodexocrecer-workspace-aks"
+        },
+        "workspaceRegion": {
+            "value": "eastus2"
+        },
+        "acrName": {
+            "value": "sodexocreceracr01"
+        },
+        "acrResourceGroup": {
+            "value": "sodexocrecer-rg01"
+        }
+    }
+}
