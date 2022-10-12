@@ -28,15 +28,17 @@ param autoScaleMaxCapacity int
 
 var businessLine = 'BRS'
 var businessRegion = 'LATAM'
-var cloudRegion = 'US'
 var projectName = 'CRECESDX'
-
+var privateAsset = '${businessLine}-${businessRegion}-${cloudRegion}-${projectName}-${environment}'
+var cloudProvider = 'AZ'
+var cloudRegion = 'US'
+var cloudService = 'AGW'
 var vnetId = '/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/virtualNetworks/sodexocrecer-vnet01'
 var publicIPRef = publicIpAddress.id
 var subnetRef = '${vnetId}/subnets/${subnetName}'
-
+var randomString = take(uniqueString(resourceGroup().id),3)
 resource applicationGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
-  name: '${businessLine}-${businessRegion}-${cloudRegion}-${projectName}-${environment}-AGW'
+  name: '${cloudProvider}${cloudRegion}${cloudService}1${randomString}682'
   location: location
   zones: zones
   tags: tags
@@ -85,7 +87,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2022-05-01' =
     ]
     backendAddressPools: [
       {
-        name: 'sodexocrecer-agw-backend01'
+        name: '${privateAsset}-backend01'
         properties: {
           backendAddresses: []
         }
@@ -93,7 +95,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2022-05-01' =
     ]
     backendHttpSettingsCollection: [
       {
-        name: 'sodexocrecer-agw-ruleset01'
+        name: '${privateAsset}-ruleset01'
         properties: {
           port: 80
           protocol: 'Http'
@@ -109,7 +111,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2022-05-01' =
     backendSettingsCollection: []
     httpListeners: [
       {
-        name: 'sodexocrecer-agw-listener-80'
+        name: '${privateAsset}-listener80'
         properties: {
           frontendIPConfiguration: {
             id: 'test/frontendIPConfigurations/appGwPrivateFrontendIp'
@@ -127,7 +129,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2022-05-01' =
     listeners: []
     requestRoutingRules: [
       {
-        name: 'sodexocrecer-agw-rule01'
+        name: '${privateAsset}-rule01'
         properties: {
           ruleType: 'Basic'
           httpListener: {
@@ -161,7 +163,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2022-05-01' =
 }
 
 resource sodexocrecer_wafpol01 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2022-05-01' = {
-  name: 'sodexocrecer-wafpol01'
+  name: '${privateAsset}-wafpol01'
   location: location
   tags: {
   }
