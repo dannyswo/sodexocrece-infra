@@ -22,8 +22,8 @@ param tags object = {
   Security : ''
   DeploymentDate : ''
 }
+param ddosProtectionPlanEnabled bool = false
 
-var ddosProtectionPlanEnabled = false
 var businessLine = 'BRS'
 var businessRegion = 'LATAM'
 var cloudRegion = 'US'
