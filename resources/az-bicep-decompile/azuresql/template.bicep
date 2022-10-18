@@ -163,7 +163,7 @@ resource serverName_database 'Microsoft.Sql/servers/databases@2021-08-01-preview
   }
 }
 
-resource serverName_AllowAllWindowsAzureIps 'Microsoft.Sql/servers/firewallrules@2014-04-01-preview' = if (allowAzureIps) {
+resource serverName_AllowAllWindowsAzureIps 'Microsoft.Sql/servers/firewallRules@2021-11-01' = if (allowAzureIps) {
   parent: server
   location: location
   name: 'AllowAllWindowsAzureIps'
@@ -173,7 +173,7 @@ resource serverName_AllowAllWindowsAzureIps 'Microsoft.Sql/servers/firewallrules
   }
 }
 
-resource serverName_Default 'Microsoft.Sql/servers/connectionPolicies@2014-04-01' = {
+resource serverName_Default 'Microsoft.Sql/servers/connectionPolicies@2021-11-01' = {
   parent: server
   location: location
   name: 'Default'
@@ -182,17 +182,17 @@ resource serverName_Default 'Microsoft.Sql/servers/connectionPolicies@2014-04-01
   }
 }
 
-resource serverName_clientIpRule 'Microsoft.Sql/servers/firewallrules@2014-04-01-preview' = if (allowClientIp) {
+resource serverName_clientIpRule 'Microsoft.Sql/servers/firewallRules@2021-11-01' = if (allowClientIp) {
   parent: server
   location: location
-  name: '${clientIpRuleName}'
+  name: clientIpRuleName
   properties: {
     endIpAddress: clientIpValue
     startIpAddress: clientIpValue
   }
 }
 
-resource Microsoft_Sql_servers_advancedThreatProtectionSettings_serverName_Default 'Microsoft.Sql/servers/advancedThreatProtectionSettings@2021-11-01-preview' = if (enableADS) {
+resource Microsoft_Sql_servers_advancedThreatProtectionSettings_serverName_Default 'Microsoft.Sql/servers/advancedThreatProtectionSettings@2021-11-01' = if (enableADS) {
   parent: server
   name: 'Default'
   properties: {
@@ -204,7 +204,7 @@ resource Microsoft_Sql_servers_advancedThreatProtectionSettings_serverName_Defau
   ]
 }
 
-resource Microsoft_Sql_servers_vulnerabilityAssessments_serverName_Default 'Microsoft.Sql/servers/vulnerabilityAssessments@2018-06-01-preview' = if (enableVA) {
+resource Microsoft_Sql_servers_vulnerabilityAssessments_serverName_Default 'Microsoft.Sql/servers/vulnerabilityAssessments@2021-11-01' = if (enableVA) {
   parent: server
   name: 'Default'
   properties: {
