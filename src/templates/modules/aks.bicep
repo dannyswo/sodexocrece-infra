@@ -18,7 +18,7 @@ param osDiskSizeGB int = 0
 param agentCount int = 3
 
 @description('The size of the Virtual Machine.')
-param agentVMSize string = 'standard_d2s_v3'
+param agentVMSize string = 'standard_d2s_v2'
 
 @description('User name for the Linux Virtual Machines.')
 param linuxAdminUsername string
@@ -26,11 +26,20 @@ param linuxAdminUsername string
 @description('Configure all linux machines with the SSH RSA public key string. Your key should include three parts, for example \'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm\'')
 param sshRSAPublicKey string
 param environment string = 'DEV'
-
+param availabilityZones array = [
+  '3'
+]
+param enableAutoScaling bool = true
+param mode string = 'System'
+param kubernetesVersion string = '1.23.12'
 var businessLine = 'BRS'
 var businessRegion = 'LATAM'
 var cloudRegion = 'USE2'
 var projectName = 'CRECESDX'
+var cloudProviderPool = 'AZ'
+var cloudRegionPool = 'US'
+var cloudServicePool = 'KU'
+var randomStringPool = take(uniqueString(resourceGroup().id),3)
 
 resource aks 'Microsoft.ContainerService/managedClusters@2022-05-02-preview' = {
   name: '${businessLine}-${businessRegion}-${cloudRegion}-${projectName}-${environment}-KU01'
@@ -39,15 +48,20 @@ resource aks 'Microsoft.ContainerService/managedClusters@2022-05-02-preview' = {
     type: 'SystemAssigned'
   }
   properties: {
-    dnsPrefix: dnsPrefix
+    kubernetesVersion: kubernetesVersion
+    dnsPrefix: 'azmxku1vnq206'
     agentPoolProfiles: [
       {
-        name: 'agentpool'
+        name: '${cloudProviderPool}${cloudRegionPool}${cloudServicePool}1${randomStringPool}206-nodepool-1'
+        //type: missing type
+        mode: mode
+        availabilityZones: availabilityZones
+        osType: 'Linux'
         osDiskSizeGB: osDiskSizeGB
         count: agentCount
-        vmSize: agentVMSize
-        osType: 'Linux'
-        mode: 'System'
+        vmSize: agentVMSize  
+        enableAutoScaling: enableAutoScaling
+        //autoscale instances
       }
     ]
     linuxProfile: {
