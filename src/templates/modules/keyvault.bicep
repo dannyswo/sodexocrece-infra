@@ -22,7 +22,7 @@ var cloudRegion = 'US'
 var cloudService = 'KVT'
 var randomString = take(uniqueString(resourceGroup().id),3)
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-  name: '${cloudProvider}${cloudRegion}${cloudService}1${randomString}682'
+  name: '${cloudProvider}${cloudRegion}${cloudService}1${randomString}327'
   location: location
   properties: {
     enabledForDeployment: enabledForDeployment
