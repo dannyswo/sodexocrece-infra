@@ -36,9 +36,9 @@ var businessLine = 'BRS'
 var businessRegion = 'LATAM'
 var cloudRegion = 'USE2'
 var projectName = 'CRECESDX'
-var cloudProviderPool = 'AZ'
-var cloudRegionPool = 'US'
-var cloudServicePool = 'KU'
+var cloudProviderPool = 'az'
+var cloudRegionPool = 'mx'
+var cloudServicePool = 'ku'
 var randomStringPool = take(uniqueString(resourceGroup().id),3)
 
 resource aks 'Microsoft.ContainerService/managedClusters@2022-05-02-preview' = {

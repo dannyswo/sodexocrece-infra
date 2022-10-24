@@ -24,21 +24,22 @@ param allocationMethod string
 param publicIpZones array
 param privateIpAddress string
 param autoScaleMaxCapacity int
-
+param randomString string
+param randomNumber int
 
 var businessLine = 'BRS'
 var businessRegion = 'LATAM'
 var projectName = 'CRECESDX'
 var privateAsset = '${businessLine}-${businessRegion}-${cloudRegion}-${projectName}-${environment}'
-var cloudProvider = 'AZ'
-var cloudRegion = 'US'
-var cloudService = 'AGW'
+var cloudProvider = 'az'
+var cloudRegion = 'mx'
+var cloudService = 'agw'
 var vnetId = '/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/virtualNetworks/sodexocrecer-vnet01'
 var publicIPRef = publicIpAddress.id
 var subnetRef = '${vnetId}/subnets/${subnetName}'
-var randomString = take(uniqueString(resourceGroup().id),3)
+
 resource applicationGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
-  name: '${cloudProvider}${cloudRegion}${cloudService}1${randomString}682'
+  name: '${cloudProvider}${cloudRegion}${cloudService}1${randomString}${randomNumber}'
   location: location
   zones: zones
   tags: tags

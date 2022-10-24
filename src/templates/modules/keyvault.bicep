@@ -17,9 +17,9 @@ param sku object = {
   name: ''
   family: ''
 }
-var cloudProvider = 'AZ'
-var cloudRegion = 'US'
-var cloudService = 'KVT'
+var cloudProvider = 'az'
+var cloudRegion = 'mx'
+var cloudService = 'kv'
 var randomString = take(uniqueString(resourceGroup().id),3)
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: '${cloudProvider}${cloudRegion}${cloudService}1${randomString}327'

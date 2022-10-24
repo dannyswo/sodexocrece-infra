@@ -1,6 +1,4 @@
 param location string = 'eastus2'
-
-
 param accessTier string = 'Hot'
 param minimumTlsVersion string = '1.2'
 param supportsHttpsTrafficOnly bool = true
@@ -9,9 +7,7 @@ param allowBlobPublicAccess bool = false
 param allowSharedKeyAccess bool = false
 param allowCrossTenantReplication bool = false
 param defaultOAuth bool = false
-
 param accountType string = 'Standard_LRS'
-
 param networkAclsBypass string
 param networkAclsDefaultAction string
 param dnsEndpointType string
@@ -19,26 +15,17 @@ param keySource string
 param encryptionEnabled bool
 param keyTypeForTableAndQueueEncryption string
 param infrastructureEncryptionEnabled bool
-param isContainerRestoreEnabled bool
-param isBlobSoftDeleteEnabled bool
 param blobSoftDeleteRetentionDays int
-param isContainerSoftDeleteEnabled bool
 param containerSoftDeleteRetentionDays int
-param changeFeed bool
-param isVersioningEnabled bool
-param isShareSoftDeleteEnabled bool
-param shareSoftDeleteRetentionDays int
 param kind string = 'StorageV2'
+param randomString string
+param randomNumber int
 
-param randomString string = 'ifv'
-param randomNumber int = 691
+var cloudProvider = 'az'
+var cloudRegion = 'mx'
+var cloudService = 'st'
 
-
-var cloudProvider = 'AZ'
-var cloudRegion = 'US'
-var cloudService = 'ST'
-
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   name: '${cloudProvider}${cloudRegion}${cloudService}1${randomString}${randomNumber}'
   location: location
   properties: {
@@ -84,39 +71,36 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   dependsOn: []
 }
 
-resource storageAccountName_default 'Microsoft.Storage/storageAccounts/blobServices@2021-09-01' = {
+resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01' = {
   parent: storageAccount
   name: 'default'
   properties: {
     restorePolicy: {
-      enabled: isContainerRestoreEnabled
+      enabled: true
     }
     deleteRetentionPolicy: {
-      enabled: isBlobSoftDeleteEnabled
+      enabled: true
       days: blobSoftDeleteRetentionDays
     }
     containerDeleteRetentionPolicy: {
-      enabled: isContainerSoftDeleteEnabled
+      enabled: true
       days: containerSoftDeleteRetentionDays
     }
-    changeFeed: {
-      enabled: changeFeed
-    }
-    isVersioningEnabled: isVersioningEnabled
+    isVersioningEnabled: false
   }
 }
 
-resource Microsoft_Storage_storageAccounts_fileservices_storageAccountName_default 'Microsoft.Storage/storageAccounts/fileservices@2021-09-01' = {
-  parent: storageAccount
-  name: 'default'
+resource symbolicname 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
+  name: 'MerchantFiles'
+  parent: blobServices
   properties: {
-    shareDeleteRetentionPolicy: {
-      enabled: isShareSoftDeleteEnabled
-      days: shareSoftDeleteRetentionDays
+    denyEncryptionScopeOverride: false
+    enableNfsV3AllSquash: false
+    enableNfsV3RootSquash: false
+    immutableStorageWithVersioning: {
+      enabled: false
     }
+    metadata: {}
+    publicAccess: 'None'
   }
-  dependsOn: [
-
-    storageAccountName_default
-  ]
 }
