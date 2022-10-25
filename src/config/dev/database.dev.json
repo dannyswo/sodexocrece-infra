@@ -15,9 +15,6 @@
         "collation": {
             "value": "SQL_Latin1_General_CP1_CI_AS"
         },
-        "databaseName": {
-            "value": ""
-        },
         "sku": {
             "value": {
                 "name": "Standard",
@@ -27,11 +24,14 @@
         "location": {
             "value": "eastus2"
         },
+        "randomString": {
+            "value": "iuv"
+        },
+        "randomNumber": {
+            "value": 201
+        },
         "maxSizeBytes": {
             "value": 20000
-        },
-        "serverName": {
-            "value": "azmxdb1mjx885"
         },
         "zoneRedundant": {
             "value": false

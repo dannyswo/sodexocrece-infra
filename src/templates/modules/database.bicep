@@ -30,11 +30,22 @@ param requestedBackupStorageRedundancy string = 'Local'
 @description('resource id of a user assigned identity to be used by default.')
 param minimalTlsVersion string = '1.2'
 param connectionType string = 'Default'
+param randomString string
+param randomNumber string
+param environment string = 'DEV'
+
+var businessLine = 'BRS'
+var businessRegion = 'LATAM'
+var cloudRegion = 'USE2'
+var projectName = 'CRECESDX'
+var cloudProviderServer = 'az'
+var cloudRegionServer = 'mx'
+var cloudServiceServer = 'ku'
 
 resource server 'Microsoft.Sql/servers@2021-11-01' = {
   location: location
   tags: serverTags
-  name: serverName
+  name: '${cloudProviderServer}${cloudRegionServer}${cloudServiceServer}1${randomString}${randomNumber}'
   properties: {
     version: '12.0'
     minimalTlsVersion: minimalTlsVersion
@@ -50,7 +61,7 @@ resource serverName_database 'Microsoft.Sql/servers/databases@2021-11-01' = {
   parent: server
   location: location
   tags: databaseTags
-  name: databaseName
+  name: '${businessLine}-${businessRegion}-${cloudRegion}-${projectName}-${environment}-DB01'
   properties: {
     collation: collation
     maxSizeBytes: maxSizeBytes
