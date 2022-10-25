@@ -7,6 +7,12 @@
         },
         "acrSku": {
             "value": "Basic"
+        },
+        "randomString": {
+            "value": "hle"
+        },
+        "randomNumber": {
+            "value": "620"
         }
     }
 }
