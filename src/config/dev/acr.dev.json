@@ -13,6 +13,9 @@
         },
         "randomNumber": {
             "value": "620"
+        },
+        "zoneRedundancy": {
+            "value": "Disabled"
         }
     }
 }

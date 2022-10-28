@@ -42,7 +42,7 @@ var cloudProviderServer = 'az'
 var cloudRegionServer = 'mx'
 var cloudServiceServer = 'ku'
 
-resource server 'Microsoft.Sql/servers@2021-11-01' = {
+resource sqlServer 'Microsoft.Sql/servers@2021-11-01' = {
   location: location
   tags: serverTags
   name: '${cloudProviderServer}${cloudRegionServer}${cloudServiceServer}1${randomString}${randomNumber}'
@@ -57,8 +57,8 @@ resource server 'Microsoft.Sql/servers@2021-11-01' = {
   }
 }
 
-resource serverName_database 'Microsoft.Sql/servers/databases@2021-11-01' = {
-  parent: server
+resource sqlDatabase 'Microsoft.Sql/servers/databases@2021-11-01' = {
+  parent: sqlServer
   location: location
   tags: databaseTags
   name: '${businessLine}-${businessRegion}-${cloudRegion}-${projectName}-${environment}-DB01'
@@ -75,10 +75,12 @@ resource serverName_database 'Microsoft.Sql/servers/databases@2021-11-01' = {
   sku: sku
 }
 
-resource serverName_Default 'Microsoft.Sql/servers/connectionPolicies@2021-11-01' = {
-  parent: server
+resource sqlConnectionPolicies 'Microsoft.Sql/servers/connectionPolicies@2021-11-01' = {
+  parent: sqlServer
   name: 'Default'
   properties: {
     connectionType: connectionType
   }
 }
+
+output databaseId string = sqlServer.id

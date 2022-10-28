@@ -5,9 +5,15 @@ param location string = resourceGroup().location
 param acrSku string = 'Premium'
 param randomString string
 param randomNumber string
+param zoneRedundancy string
+
 var cloudProvider = 'az'
 var cloudRegion = 'mx'
 var cloudService = 'acr'
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: 'managedIdentity'
+}
 
 resource acrResource 'Microsoft.ContainerRegistry/registries@2021-09-01' = {
   name: '${cloudProvider}${cloudRegion}${cloudService}1${randomString}${randomNumber}'
@@ -16,9 +22,15 @@ resource acrResource 'Microsoft.ContainerRegistry/registries@2021-09-01' = {
     name: acrSku
   }
   properties: {
+    encryption: {
+      keyVaultProperties: {
+        keyIdentifier: managedIdentity.id
+        identity: managedIdentity.name
+      }
+    }
     adminUserEnabled: false
     publicNetworkAccess: 'Disabled'
-    zoneRedundancy: 'Disabled'
+    zoneRedundancy: zoneRedundancy
   }
 }
 
