@@ -1,21 +1,21 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "location": {
-            "value": "eastus2"
-        },
-        "acrSku": {
-            "value": "Basic"
-        },
-        "randomString": {
-            "value": "hle"
-        },
-        "randomNumber": {
-            "value": "620"
-        },
-        "zoneRedundancy": {
-            "value": "Disabled"
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus2"
+    },
+    "environment": {
+      "value": "DEV"
+    },
+    "acrNameSuffix": {
+      "value": "hle620"
+    },
+    "acrSku": {
+      "value": "Premium"
+    },
+    "zoneRedundancy": {
+      "value": "Disabled"
     }
+  }
 }

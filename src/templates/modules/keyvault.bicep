@@ -1,51 +1,59 @@
+@description('Azure region to deploy the Key Vault.')
 param location string = resourceGroup().location
-param enabledForDeployment bool = true
-param enabledForDiskEncryption bool = true
-param enabledForTemplateDeployment bool = true
-param tenantId string
-param objectId string
-@description('Specifies the permissions to keys in the vault. Valid values are: all, encrypt, decrypt, wrapKey, unwrapKey, sign, verify, get, list, create, update, import, delete, backup, restore, recover, and purge.')
-param keysPermissions array = [
-  'all'
-]
-@description('Specifies the permissions to secrets in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge.')
-param secretsPermissions array = [
-  'list'
-]
 
-param sku object = {
-  name: ''
-  family: ''
-}
-var cloudProvider = 'az'
-var cloudRegion = 'mx'
-var cloudService = 'kv'
-var randomString = take(uniqueString(resourceGroup().id),3)
+@description('Code of the environment.')
+@allowed([
+  'DEV'
+  'UAT'
+  'PRD'
+])
+param environment string
+
+@description('Suffix used in the Key Vault name.')
+@minLength(6)
+@maxLength(6)
+param keyVaultNameSuffix string
+
+@description('ID of the AAD Tenant used to authenticate requests to the Key Vault.')
+param tenantId string = subscription().tenantId
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-  name: '${cloudProvider}${cloudRegion}${cloudService}1${randomString}327'
+  name: 'azmxkv1${keyVaultNameSuffix}'
   location: location
   properties: {
-    enabledForDeployment: enabledForDeployment
-    enabledForDiskEncryption: enabledForDiskEncryption
-    enabledForTemplateDeployment: enabledForTemplateDeployment
     tenantId: tenantId
-    accessPolicies: [
-      {
-        objectId: objectId
-        tenantId: tenantId
-        permissions: {
-          keys: keysPermissions
-          secrets: secretsPermissions
-        }
-      }
-    ]
-    sku: sku
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    enablePurgeProtection: true
+    enableSoftDelete: true
+    softDeleteRetentionInDays: 30
+    enableRbacAuthorization: false
+    accessPolicies: []
+    enabledForDeployment: false
+    enabledForDiskEncryption: false
+    enabledForTemplateDeployment: false
+    publicNetworkAccess: 'Disabled'
     networkAcls: {
-      defaultAction: 'Allow'
-      bypass: 'AzureServices'
+      bypass: 'None'
+      defaultAction: 'Deny'
+      ipRules: []
     }
   }
 }
 
+resource keyVaultLock 'Microsoft.Authorization/locks@2017-04-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${environment}-AL01'
+  scope: keyVault
+  properties: {
+    level: 'CanNotDelete'
+    notes: 'Key Vault should not be deleted.'
+  }
+}
+
+@description('ID of the Key Vault instance.')
 output keyVaultId string = keyVault.id
+
+@description('URI of the Key Vault instance.')
+output keyVaultUri string = keyVault.properties.vaultUri

@@ -5,11 +5,17 @@
     "location": {
       "value": "eastus2"
     },
-    "keyVaultNameSuffix": {
-      "value": "mat327"
-    },
     "environment": {
-      "value": "DEV"
+      "value": "PRD"
+    },
+    "acrNameSuffix": {
+      "value": "jel356"
+    },
+    "acrSku": {
+      "value": "Premium"
+    },
+    "zoneRedundancy": {
+      "value": "Enabled"
     }
   }
 }

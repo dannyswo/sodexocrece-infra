@@ -1,9 +1,41 @@
-# sodexocrecer-infra
-Infrastructure resource in Bicep for SodexoCrecer project
+Infrastructure Repository for Sodexo Crece Project
+--------------------------------------------------
 
-## Commands
+## Project structure
 
-Install Bicep:
+Template:
+
+* main
+
+Modules:
+
+* network
+* endpoint
+* keyvault
+* agw
+* logging
+* storage
+* database
+* acr
+* aks
+
+Environments:
+
+* SoftwareONE: SWO
+* Sodexo: DEV, UAT, PRD
+
+## Deployment commands
+
+```
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\keyvault.bicep -p .\src\config\swo\keyvault.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\acr.bicep -p .\src\config\swo\acr.swo.json
+
+az deployment group list --resource-group RG-demo-sodexo-crece --filter "provisioningState eq 'Failed'"
+```
+
+## Useful Azure CLI Commands
+
+Install and setup Bicep:
 
 ```
 az bicep install
@@ -19,38 +51,43 @@ az account list-locations -o table
 Create resources at Subscription level with Bicep:
 
 ```
-az deployment sub what-if -l [Region name] -f [Bicep file]
-az deployment sub create -l eastus2 -f .\src\templates\group.bicep
-az deployment sub create -l EastUS -f ./applications/backend/locations-processor-group.bicep -p ./config/environment.swodev.json
+az deployment sub what-if -l [Region name] -f [Bicep file] -p [Config file]
+az deployment sub create -l eastus2 -f .\src\templates\group.bicep -p .\src\config\[env]\group.[env].json
 az deployment sub create \
-  --location EastUS \
-  --template-file ./applications/backend/locations-processor-group.bicep \
-  --parameters Environment=SWO-Dev
+  -l eastus2 \
+  -f .\src\templates\group.bicep \
+  -p .\src\config\swo\group.swo.json \
+  --mode Complete
 ```
 
 Create resources at Resource Group level with Bicep:
 
 ```
-az deployment group what-if -g [Resource Group name] -f [Bicep file]
-az deployment group create -g sodexocrecer-rg02 -f .\src\templates\network.bicep -p .\src\config\dev\network.dev.json
-az deployment group create -g rg-gvdp-locationsprocessor-swodev-eastus -f ./applications/backend/locations-processor.bicep -p ./config/locations-processor.swodev.json --mode Complete
+az deployment group what-if -g [Resource Group name] -f [Bicep file] -p [Config file]
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\main.bicep -p .\src\config\[env]\main.[env].json
 az deployment group create \
-  -g rg-gvdp-locationsprocessor-swodev-eastus \
-  -f ./applications/backend/locations-processor.bicep
-  -p Environment SWO-Dev
-  --mode Complete
+  -g RG-demo-sodexo-crece \
+  -f .\src\templates\main.bicep \
+  -p .\src\config\swo\main.swo.json \
+  --mode Incremental
+
+az deployment group list --resource-group [Resource Group name] --filter "provisioningState eq 'Failed'"
 ```
 
-Delete Deployment at Resource Group level and individual resources:
+Delete Deployments, Resource Groups and individual resources:
 
 ```
 az deployment group delete -g [Resource Group name] -n [Deployment name]
-az deployment group delete -g rg-gvdp-locationsprocessor-swodev-eastus -n locations-processor
+az deployment group delete -g RG-demo-sodexo-crece -n main
+
+az group delete -n [Resource Group name]
 
 az resource delete \
-  -g rg-gvdp-locationsprocessor-swodev-eastus \
-  -n asw-gvdp-locationsprocessor-swodev-eastus-sucadavdcchwi \
-  --resource-type Microsoft.Web/sites
-
-az group delete -n rg-gvdp-locationsprocessor-swodev-eastus
+  -g [Resource Group name] \
+  -n [Resource name] \
+  --resource-type [Resource type]
+az resource delete \
+  -g RG-demo-sodexo-crece \
+  -n azmxcr1hle620 \
+  --resource-type Microsoft.ContainerRegistry/registries
 ```

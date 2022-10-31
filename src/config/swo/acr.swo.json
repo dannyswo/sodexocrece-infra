@@ -5,11 +5,20 @@
     "location": {
       "value": "eastus2"
     },
-    "keyVaultNameSuffix": {
-      "value": "mat327"
-    },
     "environment": {
       "value": "DEV"
+    },
+    "acrNameSuffix": {
+      "value": "hle620"
+    },
+    "acrSku": {
+      "value": "Premium"
+    },
+    "zoneRedundancy": {
+      "value": "Disabled"
+    },
+    "keyVaultUri": {
+      "value": "https://azmxkv1mat327.vault.azure.net/"
     }
   }
 }

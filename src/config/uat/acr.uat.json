@@ -6,10 +6,19 @@
       "value": "eastus2"
     },
     "keyVaultNameSuffix": {
-      "value": "mat327"
+      "value": "qso355"
     },
     "environment": {
-      "value": "DEV"
+      "value": "UAT"
+    },
+    "acrNameSuffix": {
+      "value": "qso355"
+    },
+    "acrSku": {
+      "value": "Premium"
+    },
+    "zoneRedundancy": {
+      "value": "Disabled"
     }
   }
 }
