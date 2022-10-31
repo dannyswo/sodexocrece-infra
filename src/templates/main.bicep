@@ -1,3 +1,4 @@
+param publicAddressEnable bool
 param kvResourceGroup string
 param kvName string
 param enableDbPrivateEndpoint bool = false
@@ -169,13 +170,36 @@ module blobPrivateEndpointModule 'modules/privateendpoint.bicep' = if(secretCrea
 
 var subnetNameAGW = enableNetwork ? vnetSharedAppModule.outputs.subnetIds[agwSubnetIndex].id : existingAGWSubnetName
 
-module appGateWayModule 'modules/agw.bicep' = {
+module appGateWayModule 'modules/agw.bicep' = if (enableNetwork){
   name: 'appGateWayModule'
   params: {
+    publicAddress: publicAddressEnable
     subnetName: subnetNameAGW
     location: location
     skuSize: 'Standard_V2'
     tier: 'Standard_V2'
+    environment: 'DEV'
+    privateIpAddress: ''
+    allocationMethod: 'Static'
+    publicIpZones: []
+    publicIpAddressName: 'agwPublicAddress'
+    randomNumber: 212
+    randomString: 'jhy'
+    capacity: 10000
+    autoScaleMaxCapacity: 100000
+  }
+}
+
+module agwPrivateEndpointModule 'modules/privateendpoint.bicep' = if(secretCreated && enableDbPrivateEndpoint && enableNetwork){
+  name: 'agwPrivateEndpoint'
+  params: {
+    privateEndpointName: 'agwPrivateEndpoint'
+    serviceId: appGateWayModule.outputs.agwId
+    location: location
+    subnetId: vnetSharedAppModule.outputs.subnetIds[agwSubnetIndex].id
+    groupIds: [
+      'AGWPE'
+    ]
   }
 }
 

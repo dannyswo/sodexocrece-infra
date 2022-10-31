@@ -13,6 +13,7 @@ param privateIpAddress string
 param autoScaleMaxCapacity int
 param randomString string
 param randomNumber int
+param publicAddress bool
 
 var businessLine = 'BRS'
 var businessRegion = 'LATAM'
@@ -176,7 +177,7 @@ resource sodexocrecer_wafpol01 'Microsoft.Network/ApplicationGatewayWebApplicati
   }
 }
 
-resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = {
+resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = if (publicAddress){
   name: publicIpAddressName
   location: location
   sku: {
@@ -187,3 +188,5 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = {
     publicIPAllocationMethod: allocationMethod
   }
 }
+
+output agwId string = applicationGateway.id
