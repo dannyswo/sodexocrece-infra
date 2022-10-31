@@ -18,7 +18,9 @@ param tags object
 //   Security : ''
 //   DeploymentDate : ''
 // }
-param subnets array 
+param subnetsVnetSA array 
+param subnetsVnetFE array 
+param subnetsVnetPE array 
 // = [
 //   {
 //     name: 'SN01'
@@ -30,24 +32,50 @@ param subnets array
 //   }
 // ]
 
-param vnetPrefix string
+param vnetPrefixSA string //  ex. = '10.169.91.0/27'
+param vnetPrefixFE string
+param vnetPrefixPE string
+
 param kvSKU object
 param objectId string
 param tenantId string
 param existingAGWSubnetName string
+param secretCreated bool
 
 var agwSubnetIndex = 0
 var aksSubnetIndex = 1
-var PESubnetIndex = 2
+var PESubnetIndex = 1
 
-module networkModule 'modules/network.bicep' = if (enableNetwork){
-  name: 'networkModule'
+module vnetAppFEModule 'modules/network.bicep' = if (enableNetwork){
+  name: 'vnetAppFE'
   params: {
     environment: environment
     location: location
-    tags: tags
-    subnets: subnets
-    vnetPrefix: vnetPrefix
+    subnets: subnetsVnetFE
+    vnetPrefix: vnetPrefixFE
+    vnetNumber: '01'
+  }
+}
+
+module vnetPrivateEndpointsModule 'modules/network.bicep' = if (enableNetwork){
+  name: 'vnetPrivateEndpoints'
+  params: {
+    environment: environment
+    location: location
+    subnets: subnetsVnetPE
+    vnetPrefix: vnetPrefixPE
+    vnetNumber: '02'
+  }
+}
+
+module vnetSharedAppModule 'modules/network.bicep' = if (enableNetwork){
+  name: 'vnetSharedApp'
+  params: {
+    environment: environment
+    location: location
+    subnets: subnetsVnetSA
+    vnetPrefix: vnetPrefixSA
+    vnetNumber: '03'
   }
 }
 
@@ -62,15 +90,56 @@ module keyVaultModule 'modules/keyvault.bicep' = {
     objectId: objectId
     tenantId: tenantId
     keysPermissions: [
-      'all'
+      'get'
+      'verify'
     ]
     secretsPermissions: [
-      'all'
+      'get'
     ]
   }
 }
 
-var subnetNameAGW = enableNetwork ? networkModule.outputs.subnetIds[agwSubnetIndex].id : existingAGWSubnetName
+module kvPrivateEndpoint 'modules/privateendpoint.bicep' = if(enableKVPrivateEndpoint && enableNetwork){
+  name: 'kvPrivateEndpoint'
+  params: {
+    privateEndpointName: 'kvPrivateEndpoint'
+    serviceId: keyVaultModule.outputs.keyVaultId
+    location: location
+    subnetId: vnetPrivateEndpointsModule.outputs.subnetIds[PESubnetIndex].id
+    groupIds: [
+      'KVPE'
+    ]
+  }
+}
+
+module databaseModule './modules/database.bicep' = if (secretCreated){
+  name: 'databaseModule'
+  params: {
+    administratorLogin: keyVaultModule.getSecret('adminLogin')
+    administratorLoginPassword:keyVaultModule.getSecret('adminLoginPW')
+    administrators: [
+      //missing object
+    ]
+    randomString: 'urp'
+    randomNumber: '154'
+    location: location
+  }
+}
+
+module dbPrivateEndpointModule 'modules/privateendpoint.bicep' = if(secretCreated && enableDbPrivateEndpoint && enableNetwork){
+  name: 'dbPrivateEndpoint'
+  params: {
+    privateEndpointName: 'dbPrivateEndpoint'
+    serviceId: databaseModule.outputs.databaseId
+    location: location
+    subnetId: vnetPrivateEndpointsModule.outputs.subnetIds[PESubnetIndex].id
+    groupIds: [
+      'DBPE'
+    ]
+  }
+}
+
+var subnetNameAGW = enableNetwork ? vnetSharedAppModule.outputs.subnetIds[agwSubnetIndex].id : existingAGWSubnetName
 
 module appGateWayModule 'modules/agw.bicep' = {
   name: 'appGateWayModule'
@@ -83,39 +152,12 @@ module appGateWayModule 'modules/agw.bicep' = {
 module acrModule 'modules/acr.bicep' = {
   name: 'acrModule'
   params: {
-    
+
   }
 }
 
-module kvPrivateEndpoint 'modules/privateendpoint.bicep' = if(enableKVPrivateEndpoint && enableNetwork){
-  name: 'kvPrivateEndpoint'
-  params: {
-    privateEndpointName: 'kvPrivateEndpoint'
-    serviceId: keyVaultModule.outputs.keyVaultId
-    location: location
-    subnetId: networkModule.outputs.subnetIds[PESubnetIndex].id
-    groupIds: [
-      'KVPE'
-    ]
-  }
-}
 
-module databaseModule './modules/database.bicep' = {
-  name: 'databaseModule'
-  params: {
-    administratorLogin: keyVault.getSecret('adminLogin')
-  }
-}
 
-module dbPrivateEndpoint 'modules/privateendpoint.bicep' = if(enableDbPrivateEndpoint && enableNetwork){
-  name: 'dbPrivateEndpoint'
-  params: {
-    privateEndpointName: 'dbPrivateEndpoint'
-    serviceId: databaseModule.outputs.databaseId
-    location: location
-    subnetId: networkModule.outputs.subnetIds[PESubnetIndex].id
-    groupIds: [
-      'DBPE'
-    ]
-  }
-}
+
+
+

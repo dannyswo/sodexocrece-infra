@@ -1,5 +1,7 @@
-param location string = 'eastus2'
-param vnetPrefix string = '10.169.91.0/27'
+param location string
+param vnetPrefix string
+//  = '10.169.91.0/27'
+param vnetNumber string
 param subnets array 
 // = [
 //   {
@@ -16,7 +18,6 @@ param subnets array
 //   }
 // ]
 param environment string = 'DEV'
-param tags object
 
 var businessLine = 'BRS'
 var businessRegion = 'LATAM'
@@ -24,9 +25,8 @@ var cloudRegion = 'US'
 var projectName = 'CRECESDX'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-05-01' = {
-  name: '${businessLine}-${businessRegion}-${cloudRegion}-${projectName}-${environment}-VNET01'
+  name: '${businessLine}-${businessRegion}-${cloudRegion}-${projectName}-${environment}-VNET${vnetNumber}'
   location: location
-  tags: tags
   properties: {
     addressSpace: {
       addressPrefixes: [
@@ -34,6 +34,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-05-01' = {
       ]
     }
     enableDdosProtection: false
+    enableVmProtection: false
+    encryption: {
+      enabled: false
+      enforcement: ''
+    }
   }
 }
 

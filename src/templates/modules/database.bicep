@@ -5,30 +5,19 @@ param administratorLoginPassword string = ''
 param administrators object = {
 }
 param collation string
-param databaseName string
 param sku object = {
   name: 'Standard'
   tier: 'Standard'
 }
-param location string = 'eastus2'
+param location string
 param maxSizeBytes int
-param serverName string
 param zoneRedundant bool = false
 param licenseType string = 'LicenseIncluded'
 param numberOfReplicas int = 0
 param minCapacity int = 20000
 param autoPauseDelay int = -1
-param databaseTags object = {
-}
-param serverTags object = {
-}
-
-@description('To enable vulnerability assessments, the user deploying this template must have an administrator or owner permissions.')
-param publicNetworkAccess string = 'Disabled'
-param requestedBackupStorageRedundancy string = 'Local'
 
 @description('resource id of a user assigned identity to be used by default.')
-param minimalTlsVersion string = '1.2'
 param connectionType string = 'Default'
 param randomString string
 param randomNumber string
@@ -44,12 +33,11 @@ var cloudServiceServer = 'ku'
 
 resource sqlServer 'Microsoft.Sql/servers@2021-11-01' = {
   location: location
-  tags: serverTags
   name: '${cloudProviderServer}${cloudRegionServer}${cloudServiceServer}1${randomString}${randomNumber}'
   properties: {
     version: '12.0'
-    minimalTlsVersion: minimalTlsVersion
-    publicNetworkAccess: publicNetworkAccess
+    minimalTlsVersion: '1.2'
+    publicNetworkAccess: 'Disabled'
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
     administrators: administrators
@@ -60,7 +48,6 @@ resource sqlServer 'Microsoft.Sql/servers@2021-11-01' = {
 resource sqlDatabase 'Microsoft.Sql/servers/databases@2021-11-01' = {
   parent: sqlServer
   location: location
-  tags: databaseTags
   name: '${businessLine}-${businessRegion}-${cloudRegion}-${projectName}-${environment}-DB01'
   properties: {
     collation: collation
@@ -70,7 +57,7 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2021-11-01' = {
     highAvailabilityReplicaCount: numberOfReplicas
     minCapacity: minCapacity
     autoPauseDelay: autoPauseDelay
-    requestedBackupStorageRedundancy: requestedBackupStorageRedundancy
+    requestedBackupStorageRedundancy: 'Local'
   }
   sku: sku
 }

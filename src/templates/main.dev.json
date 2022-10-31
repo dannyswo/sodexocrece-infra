@@ -1,0 +1,43 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus2"
+        },
+        "vnetPrefix": {
+            "value": "10.169.91.0/27"
+        },
+        "ddosProtectionPlanEnabled": {
+            "value": false
+        },
+        "subnets": {
+            "value": [
+                {
+                    "name": "SN01",
+                    "addressPrefix": "10.169.91.0/28"
+                },
+                {
+                    "name": "SN02",
+                    "addressPrefix": "10.169.91.16/28"
+                }
+            ]
+        },
+        "environment": {
+            "value": "DEV"
+        },
+        "tags": {
+            "value": {
+                "ApplicationName": "",
+                "ApplicationOwner": "",
+                "ApplicationSponsor": "",
+                "TechnicalContact": "",
+                "Billing": "",
+                "Maintenance": "",
+                "EnvironmentType": "",
+                "Security": "",
+                "DeploymentDate": ""
+            }
+        }
+    }
+}
