@@ -139,6 +139,34 @@ module dbPrivateEndpointModule 'modules/privateendpoint.bicep' = if(secretCreate
   }
 }
 
+module storageAccountModule 'modules/blobstorage.bicep' = {
+  name: 'storageAccount'
+  params: {
+    accessTier: 'Hot'
+    storageSKU: 'Standard_LRS'
+    blobSoftDeleteRetentionDays: 1
+    containerSoftDeleteRetentionDays: 1
+    randomString: 'ifv'
+    randomNumber: 691
+    // encryptionEnabled: true // missing param
+    // infrastructureEncryptionEnabled: false // missing param
+    location: location
+  }
+}
+
+module blobPrivateEndpointModule 'modules/privateendpoint.bicep' = if(secretCreated && enableDbPrivateEndpoint && enableNetwork){
+  name: 'blobPrivateEndpoint'
+  params: {
+    privateEndpointName: 'blobPrivateEndpoint'
+    serviceId: storageAccountModule.outputs.storageAccountId
+    location: location
+    subnetId: vnetPrivateEndpointsModule.outputs.subnetIds[PESubnetIndex].id
+    groupIds: [
+      'DBPE'
+    ]
+  }
+}
+
 var subnetNameAGW = enableNetwork ? vnetSharedAppModule.outputs.subnetIds[agwSubnetIndex].id : existingAGWSubnetName
 
 module appGateWayModule 'modules/agw.bicep' = {
@@ -146,6 +174,8 @@ module appGateWayModule 'modules/agw.bicep' = {
   params: {
     subnetName: subnetNameAGW
     location: location
+    skuSize: 'Standard_V2'
+    tier: 'Standard_V2'
   }
 }
 

@@ -1,25 +1,12 @@
-param location string = 'eastus2'
-param tags object = {
-  ApplicationName : ''
-  ApplicationOwner : ''
-  ApplicationSponsor : ''
-  TechnicalContact : ''
-  Billing : ''
-  Maintenance : ''
-  EnvironmentType : ''
-  Security : ''
-  DeploymentDate : ''
-}
+param location string
 param environment string = 'DEV'
 param tier string
 
 param skuSize string
 param capacity int = 2
 param subnetName string
-param zones array
-param wafPolicyName string
+param zones array = []
 param publicIpAddressName string
-param sku string
 param allocationMethod string
 param publicIpZones array
 param privateIpAddress string
@@ -41,8 +28,7 @@ var subnetRef = '${vnetId}/subnets/${subnetName}'
 resource applicationGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
   name: '${cloudProvider}${cloudRegion}${cloudService}1${randomString}${randomNumber}'
   location: location
-  zones: zones
-  tags: tags
+  // zones: zones
   properties: {
     sku: {
       name: skuSize
@@ -194,7 +180,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = {
   name: publicIpAddressName
   location: location
   sku: {
-    name: sku
+    name: 'Standard'
   }
   zones: publicIpZones
   properties: {
