@@ -1,80 +1,140 @@
-@description('The name of the Managed Cluster resource.')
-param clusterName string = 'aks101cluster'
-
-@description('The location of the Managed Cluster resource.')
+@description('Azure region to deploy the AKS Managed Cluster.')
 param location string = resourceGroup().location
 
-@description('Optional DNS prefix to use with hosted Kubernetes API server FQDN.')
-param dnsPrefix string
+@description('Code of the environment.')
+@allowed([
+  'DEV'
+  'UAT'
+  'PRD'
+])
+param environment string
 
-@description('Disk size (in GB) to provision for each of the agent pool nodes. This value ranges from 0 to 1023. Specifying 0 will apply the default disk size for that agentVMSize.')
-@minValue(0)
-@maxValue(1023)
-param osDiskSizeGB int = 0
+@description('Tier of the AKS Managed Cluster. Use Paid for HA with multiple AZs.')
+@allowed([
+  'Free'
+  'Paid'
+])
+param aksSkuTier string
 
-@description('The number of nodes for the cluster.')
-@minValue(1)
-@maxValue(50)
-param agentCount int = 3
+@description('Suffix used in the DNS name of the AKS Managed Cluster.')
+@minLength(6)
+@maxLength(6)
+param aksDnsSuffix string
 
-@description('The size of the Virtual Machine.')
-param agentVMSize string = 'standard_d2s_v2'
-
-@description('User name for the Linux Virtual Machines.')
-param linuxAdminUsername string
-
-@description('Configure all linux machines with the SSH RSA public key string. Your key should include three parts, for example \'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm\'')
-param sshRSAPublicKey string
-param environment string = 'DEV'
-param availabilityZones array = [
-  '3'
-]
-param enableAutoScaling bool = true
-param mode string = 'System'
+@description('Version of the Kubernetes software used by AKS.')
 param kubernetesVersion string = '1.23.12'
-var businessLine = 'BRS'
-var businessRegion = 'LATAM'
-var cloudRegion = 'USE2'
-var projectName = 'CRECESDX'
-var cloudProviderPool = 'az'
-var cloudRegionPool = 'mx'
-var cloudServicePool = 'ku'
-var randomStringPool = take(uniqueString(resourceGroup().id),3)
 
-resource aks 'Microsoft.ContainerService/managedClusters@2022-05-02-preview' = {
-  name: '${businessLine}-${businessRegion}-${cloudRegion}-${projectName}-${environment}-KU01'
+@description('ID of the Subnet where the Cluster will be deployed.')
+param subnetId string
+
+@description('Settings for auto scaling of the AKS system node pool.')
+param autoscalingSettings object = {
+  autoScalingEnabled: true
+  minCount: 1
+  maxCount: 3
+}
+
+@description('VM size of every node in the AKS system node pool.')
+param nodePoolVmSize string = 'standard_d2s_v3'
+
+@description('ID of the Application Gateway managed by AGIC add-on.')
+param applicationGatewayId string
+
+@description('ID of the Log Analytics Workspace managed by OMSAgent add-on.')
+param logAnalyticsWorkspaceId string
+
+resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-preview' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${environment}-KU01'
   location: location
+  sku: {
+    name: 'Basic'
+    tier: aksSkuTier
+  }
   identity: {
     type: 'SystemAssigned'
   }
   properties: {
+    dnsPrefix: 'azmxku1${aksDnsSuffix}'
     kubernetesVersion: kubernetesVersion
-    dnsPrefix: 'azmxku1vnq206'
     agentPoolProfiles: [
       {
-        name: '${cloudProviderPool}${cloudRegionPool}${cloudServicePool}1${randomStringPool}206-nodepool-1'
-        //type: missing type
-        mode: mode
-        availabilityZones: availabilityZones
+        name: 'nodepool1'
+        mode: 'System'
+        type: 'VirtualMachineScaleSets'
+        vnetSubnetID: subnetId
+        availabilityZones: [ '1', '2', '3' ]
+        scaleSetPriority: 'Regular'
+        enableAutoScaling: autoscalingSettings.autoScalingEnabled
+        minCount: autoscalingSettings.minCount
+        maxCount: autoscalingSettings.maxCount
+        count: 1
+        scaleDownMode: 'Delete'
+        vmSize: nodePoolVmSize
         osType: 'Linux'
-        osDiskSizeGB: osDiskSizeGB
-        count: agentCount
-        vmSize: agentVMSize  
-        enableAutoScaling: enableAutoScaling
-        //autoscale instances
+        osSKU: 'Ubuntu'
+        osDiskSizeGB: 0
+        osDiskType: 'Managed'
+        enableEncryptionAtHost: true
+        upgradeSettings: {
+          maxSurge: '1'
+        }
+        tags: resourceGroup().tags
       }
     ]
-    linuxProfile: {
-      adminUsername: linuxAdminUsername
-      ssh: {
-        publicKeys: [
-          {
-            keyData: sshRSAPublicKey
-          }
-        ]
+    apiServerAccessProfile: {
+      enablePrivateCluster: true
+      enablePrivateClusterPublicFQDN: false
+      privateDNSZone: 'system'
+    }
+    networkProfile: {
+      networkPlugin: 'kubenet'
+      loadBalancerSku: 'standard'
+      loadBalancerProfile: {
+        enableMultipleStandardLoadBalancers: false
+      }
+      outboundType: 'loadBalancer'
+    }
+    // autoUpgradeProfile: { }
+    // podIdentityProfile: { }
+    // ingressProfile: { }
+    // workloadAutoScalerProfile: { }
+    // securityProfile: { }
+    // autoUpgradeProfile: { }
+    // azureMonitorProfile: { }
+    nodeResourceGroup: 'BRS-MEX-USE2-CRECESDX-${environment}-RG02'
+    enableRBAC: true
+    aadProfile: {
+      enableAzureRBAC: true
+      managed: true
+    }
+    /*
+    addonProfiles: {
+      ingressApplicationGateway: {
+        enabled: true
+        config: {
+          applicationGatewayId: applicationGatewayId
+        }
+      }
+      omsagent: {
+        enabled: true
+        config: {
+          logAnalyticsWorkspaceResourceID: logAnalyticsWorkspaceId
+        }
       }
     }
+    */
+    publicNetworkAccess: 'Disabled'
+  }
+  tags: resourceGroup().tags
+}
+
+resource aksLock 'Microsoft.Authorization/locks@2017-04-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${environment}-AL02'
+  scope: aksCluster
+  properties: {
+    level: 'CanNotDelete'
+    notes: 'AKS Managed Cluster should not be deleted.'
   }
 }
 
-output controlPlaneFQDN string = aks.properties.fqdn
+output managementPlaneFQDN string = aksCluster.properties.fqdn
