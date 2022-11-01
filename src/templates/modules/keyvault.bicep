@@ -1,8 +1,9 @@
 @description('Azure region to deploy the Key Vault.')
 param location string = resourceGroup().location
 
-@description('Code of the environment.')
+@description('Environment code.')
 @allowed([
+  'SWO'
   'DEV'
   'UAT'
   'PRD'
@@ -41,6 +42,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
       ipRules: []
     }
   }
+  tags: resourceGroup().tags
 }
 
 resource keyVaultLock 'Microsoft.Authorization/locks@2017-04-01' = {

@@ -1,8 +1,9 @@
 @description('Azure region to deploy the AKS Managed Cluster.')
 param location string = resourceGroup().location
 
-@description('Code of the environment.')
+@description('Environment code.')
 @allowed([
+  'SWO'
   'DEV'
   'UAT'
   'PRD'
@@ -27,15 +28,17 @@ param kubernetesVersion string = '1.23.12'
 @description('ID of the Subnet where the Cluster will be deployed.')
 param subnetId string
 
-@description('Settings for auto scaling of the AKS system node pool.')
-param autoscalingSettings object = {
-  autoScalingEnabled: true
-  minCount: 1
-  maxCount: 3
-}
+@description('Enable auto scaling for AKS system node pool.')
+param enableAutoScaling bool = true
+
+@description('Minimum number of nodes in the AKS system node pool.')
+param minCount int = 1
+
+@description('Maximum number of nodes in the AKS system node pool.')
+param maxCount int = 1
 
 @description('VM size of every node in the AKS system node pool.')
-param nodePoolVmSize string = 'standard_d2s_v3'
+param vmSize string = 'standard_d2s_v3'
 
 @description('ID of the Application Gateway managed by AGIC add-on.')
 param applicationGatewayId string
@@ -64,12 +67,12 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
         vnetSubnetID: subnetId
         availabilityZones: [ '1', '2', '3' ]
         scaleSetPriority: 'Regular'
-        enableAutoScaling: autoscalingSettings.autoScalingEnabled
-        minCount: autoscalingSettings.minCount
-        maxCount: autoscalingSettings.maxCount
+        enableAutoScaling: enableAutoScaling
+        minCount: minCount
+        maxCount: maxCount
         count: 1
         scaleDownMode: 'Delete'
-        vmSize: nodePoolVmSize
+        vmSize: vmSize
         osType: 'Linux'
         osSKU: 'Ubuntu'
         osDiskSizeGB: 0

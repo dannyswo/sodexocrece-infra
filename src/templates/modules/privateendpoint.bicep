@@ -3,6 +3,7 @@ param location string = resourceGroup().location
 
 @description('Environment code.')
 @allowed([
+  'SWO'
   'DEV'
   'UAT'
   'PRD'
@@ -11,11 +12,14 @@ param environment string
 
 @description('Standard name of the Private Endpoint.')
 @minLength(3)
-@maxLength(1)
+@maxLength(3)
 param privateEndpointName string
 
 @description('ID of the Subnet where Private Endpoint will be deployed.')
 param subnetId string
+
+@description('Private IP address of the Private Endpoint.')
+param privateEndpointIPAddress string
 
 @description('ID of the service connected to the Private Endpoint.')
 param serviceId string
@@ -28,9 +32,6 @@ param serviceId string
   'server'
 ])
 param groupId string
-
-@description('Private IP address of the Private Endpoint.')
-param privateEndpointIPAddress string
 
 var requiredMemberMap = {
   vault: 'default'
