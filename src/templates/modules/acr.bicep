@@ -36,6 +36,9 @@ param untaggedRetentionDays int
 @description('Retention days of soft deleted images in the Container Registry.')
 param softDeleteRetentionDays int
 
+@description('Standards tags applied to all resources.')
+param standardTags object = resourceGroup().tags
+
 resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = {
   name: 'azmxcr1${acrNameSuffix}'
   location: location
@@ -71,7 +74,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = 
       ipRules: []
     }
   }
-  tags: resourceGroup().tags
+  tags: standardTags
 }
 
 @description('ID of the Container Registry.')

@@ -33,14 +33,17 @@ param serviceId string
 ])
 param groupId string
 
-var requiredMemberMap = {
+@description('Standard tags applied to all resources.')
+param standardTags object = resourceGroup().tags
+
+var memberNamesDictionary = {
   vault: 'default'
   registry: 'registry'
   storageAccount: 'default'
   server: 'default'
 }
 
-var memberName = requiredMemberMap[groupId]
+var memberName = memberNamesDictionary[groupId]
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${environment}-${privateEndpointName}'
@@ -70,4 +73,5 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
       }
     ]
   }
+  tags: standardTags
 }

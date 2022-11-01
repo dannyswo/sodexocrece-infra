@@ -46,6 +46,9 @@ param applicationGatewayId string
 @description('ID of the Log Analytics Workspace managed by OMSAgent add-on.')
 param logAnalyticsWorkspaceId string
 
+@description('Standards tags applied to all resources.')
+param standardTags object = resourceGroup().tags
+
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${environment}-KU01'
   location: location
@@ -81,7 +84,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
         upgradeSettings: {
           maxSurge: '1'
         }
-        tags: resourceGroup().tags
+        tags: standardTags
       }
     ]
     apiServerAccessProfile: {
@@ -128,7 +131,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
     */
     publicNetworkAccess: 'Disabled'
   }
-  tags: resourceGroup().tags
+  tags: standardTags
 }
 
 resource aksLock 'Microsoft.Authorization/locks@2017-04-01' = {

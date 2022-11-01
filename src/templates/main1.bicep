@@ -35,7 +35,7 @@ param enablePrivateEndpoints bool = true
   DeploymentDate: ''
   dd_organization: ''
 })
-param standardTags object
+param standardTags object = resourceGroup().tags
 
 param keyVaultNameSuffix string
 
@@ -70,6 +70,7 @@ module networkModule 'modules/network1.bicep' = if (enableNetwork) {
     endpointsVNetAddressPrefix: '10.169.88.0/23'
     endpointsSubnetName: 'SN03'
     endpointsSubnetAddressPrefix: '10.169.88.64/26'
+    standardTags: standardTags
   }
 }
 
@@ -81,6 +82,7 @@ module keyVaultModule 'modules/keyvault.bicep' = {
     location: location
     environment: environment
     keyVaultNameSuffix: keyVaultNameSuffix
+    standardTags: standardTags
   }
 }
 
@@ -94,6 +96,7 @@ module keyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enabl
     privateEndpointIPAddress: '10.169.88.69'
     serviceId: keyVaultModule.outputs.keyVaultId
     groupId: 'vault'
+    standardTags: standardTags
   }
 }
 
@@ -107,6 +110,7 @@ module acrModule 'modules/acr.bicep' = {
     zoneRedundancy: acrZoneRedundancy
     untaggedRetentionDays: acrUntaggedRetentionDays
     softDeleteRetentionDays: acrSoftDeleteRetentionDays
+    standardTags: standardTags
   }
 }
 
@@ -120,6 +124,7 @@ module acrModulePrivateEndpoint 'modules/privateendpoint.bicep' = if (enablePriv
     privateEndpointIPAddress: '10.169.88.72'
     serviceId: acrModule.outputs.registryId
     groupId: 'registry'
+    standardTags: standardTags
   }
 }
 
@@ -140,5 +145,6 @@ module aksModule 'modules/aks.bicep' = {
     vmSize: aksNodePoolVmSize
     applicationGatewayId: ''
     logAnalyticsWorkspaceId: ''
+    standardTags: standardTags
   }
 }

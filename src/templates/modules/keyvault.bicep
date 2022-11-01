@@ -18,6 +18,9 @@ param keyVaultNameSuffix string
 @description('ID of the AAD Tenant used to authenticate requests to the Key Vault.')
 param tenantId string = subscription().tenantId
 
+@description('Standard tags applied to all resources.')
+param standardTags object = resourceGroup().tags
+
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: 'azmxkv1${keyVaultNameSuffix}'
   location: location
@@ -42,7 +45,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
       ipRules: []
     }
   }
-  tags: resourceGroup().tags
+  tags: standardTags
 }
 
 resource keyVaultLock 'Microsoft.Authorization/locks@2017-04-01' = {

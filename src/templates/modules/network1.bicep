@@ -76,6 +76,9 @@ param endpointsSubnetName string
 })
 param endpointsSubnetAddressPrefix string
 
+@description('Standards tags applied to all resources.')
+param standardTags object = resourceGroup().tags
+
 resource gatewayVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${environment}-${gatewayVNetName}'
   location: location
@@ -96,6 +99,7 @@ resource gatewayVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
     enableDdosProtection: false
     enableVmProtection: false
   }
+  tags: standardTags
 }
 
 resource appsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
@@ -118,6 +122,7 @@ resource appsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
     enableDdosProtection: false
     enableVmProtection: false
   }
+  tags: standardTags
 }
 
 resource endpointsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
@@ -140,6 +145,7 @@ resource endpointsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
     enableDdosProtection: false
     enableVmProtection: false
   }
+  tags: standardTags
 }
 
 resource gatewayAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {

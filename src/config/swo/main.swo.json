@@ -8,6 +8,18 @@
     "environment": {
       "value": "SWO"
     },
+    "enableNetwork": {
+      "value": true
+    },
+    "endpointsSubnetId": {
+      "value": ""
+    },
+    "appsSubnetId": {
+      "value": ""
+    },
+    "enablePrivateEndpoints": {
+      "value": true
+    },
     "keyVaultNameSuffix": {
       "value": "mat327"
     },
