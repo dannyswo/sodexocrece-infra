@@ -10,6 +10,33 @@
     },
     "aksSkuTier": {
       "value": "Free"
+    },
+    "aksDnsSuffix": {
+      "value": "vnq206"
+    },
+    "kubernetesVersion": {
+      "value": "1.23.12"
+    },
+    "subnetId": {
+      "value": "[PENDING subnetId]"
+    },
+    "enableAutoScaling": {
+      "value": true
+    },
+    "minCount": {
+      "value": 1
+    },
+    "maxCount": {
+      "value": 3
+    },
+    "vmSize": {
+      "value": "standard_d2s_v3"
+    },
+    "applicationGatewayId": {
+      "value": "[PENDING applicationGatewayId]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "value": "[PENDING logAnalyticsWorkspaceId]"
     }
   }
 }

@@ -6,7 +6,7 @@
       "value": "eastus2"
     },
     "environment": {
-      "value": "DEV"
+      "value": "SWO"
     },
     "acrNameSuffix": {
       "value": "hle620"

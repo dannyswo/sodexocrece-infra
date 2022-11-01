@@ -29,7 +29,7 @@ param kubernetesVersion string = '1.23.12'
 param subnetId string
 
 @description('Enable auto scaling for AKS system node pool.')
-param enableAutoScaling bool = true
+param enableAutoScaling bool = false
 
 @description('Minimum number of nodes in the AKS system node pool.')
 param minCount int = 1

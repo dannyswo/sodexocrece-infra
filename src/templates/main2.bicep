@@ -1,141 +1,217 @@
-@description('Azure region to deploy the Private Endpoint.')
-param location string = resourceGroup().location
-
-@description('Environment code.')
-@allowed([
-  'SWO'
-  'DEV'
-  'UAT'
-  'PRD'
-])
-param environment string
-
-@description('Create network resources defined in the network module.')
+param publicAddressEnable bool
+param kvResourceGroup string
+param kvName string
+param enableDbPrivateEndpoint bool = false
+param enableKVPrivateEndpoint bool = false
+param enableBSPrivateEndpoint bool = false
 param enableNetwork bool = false
+param location string = resourceGroup().location
+param environment string 
+param tags object 
+// = {
+//   ApplicationName : ''
+//   ApplicationOwner : ''
+//   ApplicationSponsor : ''
+//   TechnicalContact : ''
+//   Billing : ''
+//   Maintenance : ''
+//   EnvironmentType : ''
+//   Security : ''
+//   DeploymentDate : ''
+// }
+param subnetsVnetSA array 
+param subnetsVnetFE array 
+param subnetsVnetPE array 
+// = [
+//   {
+//     name: 'SN01'
+//     addressPrefix: '10.169.91.0/28'
+//   }
+//   {
+//     name: 'SN02'
+//     addressPrefix: '10.169.91.16/28'
+//   }
+// ]
 
-@description('ID of the Endpoints Subnet. Must be defined when enableNetwork is false.')
-param endpointsSubnetId string
+param vnetPrefixSA string //  ex. = '10.169.91.0/27'
+param vnetPrefixFE string
+param vnetPrefixPE string
 
-@description('ID of the Applications Subnet. Must be defined when enableNetwork is false.')
-param appsSubnetId string
+param kvSKU object
+param objectId string
+param tenantId string
+param existingAGWSubnetName string
+param secretCreated bool
 
-@description('Create Private Endpoints for the required modules like keyvault, storage, database and acr.')
-param enablePrivateEndpoints bool = true
+var agwSubnetIndex = 0
+var aksSubnetIndex = 1
+var PESubnetIndex = 1
 
-@description('Standard tags applied to all resources.')
-@metadata({
-  ApplicationName: ''
-  ApplicationOwner: ''
-  ApplicationSponsor: ''
-  TechnicalContact: ''
-  Billing: ''
-  Maintenance: ''
-  EnvironmentType: ''
-  Security: ''
-  DeploymentDate: ''
-  dd_organization: ''
-})
-param standardTags object
-
-param keyVaultNameSuffix string
-
-param acrNameSuffix string
-param acrSku string
-
-param aksSkuTier string
-param aksDnsSuffix string
-param aksKubernetesVersion string
-param aksEnableAutoScaling bool
-param aksNodePoolMinCount int
-param aksNodePoolMaxCount int
-param aksNodePoolVmSize string
-
-module networkModule 'modules/network1.bicep' = if (enableNetwork) {
-  name: 'networkModule'
+module vnetAppFEModule 'modules/network.bicep' = if (enableNetwork){
+  name: 'vnetAppFE'
   params: {
-    location: location
     environment: environment
-    gatewayVNetName: 'VN01'
-    gatewaySubnetAddressPrefix: '10.169.90.0/24'
-    gatewaySubnetName: 'SN01'
-    gatewayVNetAddressPrefix: '10.169.90.128/25'
-    appsVNetName: 'VN02'
-    appsVNetAddressPrefix: '10.169.72.0/21'
-    appsSubnetName: 'SN02'
-    appsSubnetAddressPrefix: '10.169.72.64/27'
-    endpointsVNetName: 'VN03'
-    endpointsVNetAddressPrefix: '10.169.88.0/23'
-    endpointsSubnetName: 'SN03'
-    endpointsSubnetAddressPrefix: '10.169.88.64/26'
+    location: location
+    subnets: subnetsVnetFE
+    vnetPrefix: vnetPrefixFE
+    vnetNumber: '01'
   }
 }
 
-var selectedEndpointsSubnetId = (enableNetwork) ? networkModule.outputs.subnets[2].id : endpointsSubnetId
+module vnetPrivateEndpointsModule 'modules/network.bicep' = if (enableNetwork){
+  name: 'vnetPrivateEndpoints'
+  params: {
+    environment: environment
+    location: location
+    subnets: subnetsVnetPE
+    vnetPrefix: vnetPrefixPE
+    vnetNumber: '02'
+  }
+}
+
+module vnetSharedAppModule 'modules/network.bicep' = if (enableNetwork){
+  name: 'vnetSharedApp'
+  params: {
+    environment: environment
+    location: location
+    subnets: subnetsVnetSA
+    vnetPrefix: vnetPrefixSA
+    vnetNumber: '03'
+  }
+}
 
 module keyVaultModule 'modules/keyvault.bicep' = {
-  name: 'keyVaultModule'
+  name: 'kvModule'
   params: {
     location: location
-    environment: environment
-    keyVaultNameSuffix: keyVaultNameSuffix
+    sku: kvSKU
+    enabledForDeployment: false
+    enabledForDiskEncryption: false
+    enabledForTemplateDeployment: false
+    objectId: objectId
+    tenantId: tenantId
+    keysPermissions: [
+      'get'
+      'verify'
+    ]
+    secretsPermissions: [
+      'get'
+    ]
   }
 }
 
-module keyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
-  name: 'keyVaultPrivateEndpointModule'
+module kvPrivateEndpoint 'modules/privateendpoint.bicep' = if(enableKVPrivateEndpoint && enableNetwork){
+  name: 'kvPrivateEndpoint'
   params: {
-    location: location
-    environment: environment
-    privateEndpointName: 'PE02'
-    subnetId: selectedEndpointsSubnetId
-    privateEndpointIPAddress: '10.169.88.69'
+    privateEndpointName: 'kvPrivateEndpoint'
     serviceId: keyVaultModule.outputs.keyVaultId
-    groupId: 'vault'
+    location: location
+    subnetId: vnetPrivateEndpointsModule.outputs.subnetIds[PESubnetIndex].id
+    groupIds: [
+      'KVPE'
+    ]
+  }
+}
+
+module databaseModule './modules/database.bicep' = if (secretCreated){
+  name: 'databaseModule'
+  params: {
+    administratorLogin: keyVaultModule.getSecret('adminLogin')
+    administratorLoginPassword:keyVaultModule.getSecret('adminLoginPW')
+    administrators: [
+      //missing object
+    ]
+    randomString: 'urp'
+    randomNumber: '154'
+    location: location
+  }
+}
+
+module dbPrivateEndpointModule 'modules/privateendpoint.bicep' = if(secretCreated && enableDbPrivateEndpoint && enableNetwork){
+  name: 'dbPrivateEndpoint'
+  params: {
+    privateEndpointName: 'dbPrivateEndpoint'
+    serviceId: databaseModule.outputs.databaseId
+    location: location
+    subnetId: vnetPrivateEndpointsModule.outputs.subnetIds[PESubnetIndex].id
+    groupIds: [
+      'DBPE'
+    ]
+  }
+}
+
+module storageAccountModule 'modules/blobstorage.bicep' = {
+  name: 'storageAccount'
+  params: {
+    accessTier: 'Hot'
+    storageSKU: 'Standard_LRS'
+    blobSoftDeleteRetentionDays: 1
+    containerSoftDeleteRetentionDays: 1
+    randomString: 'ifv'
+    randomNumber: 691
+    // encryptionEnabled: true // missing param
+    // infrastructureEncryptionEnabled: false // missing param
+    location: location
+  }
+}
+
+module blobPrivateEndpointModule 'modules/privateendpoint.bicep' = if(secretCreated && enableDbPrivateEndpoint && enableNetwork){
+  name: 'blobPrivateEndpoint'
+  params: {
+    privateEndpointName: 'blobPrivateEndpoint'
+    serviceId: storageAccountModule.outputs.storageAccountId
+    location: location
+    subnetId: vnetPrivateEndpointsModule.outputs.subnetIds[PESubnetIndex].id
+    groupIds: [
+      'DBPE'
+    ]
+  }
+}
+
+var subnetNameAGW = enableNetwork ? vnetSharedAppModule.outputs.subnetIds[agwSubnetIndex].id : existingAGWSubnetName
+
+module appGateWayModule 'modules/agw.bicep' = if (enableNetwork){
+  name: 'appGateWayModule'
+  params: {
+    publicAddress: publicAddressEnable
+    subnetName: subnetNameAGW
+    location: location
+    skuSize: 'Standard_V2'
+    tier: 'Standard_V2'
+    environment: 'DEV'
+    privateIpAddress: ''
+    allocationMethod: 'Static'
+    publicIpZones: []
+    publicIpAddressName: 'agwPublicAddress'
+    randomNumber: 212
+    randomString: 'jhy'
+    capacity: 10000
+    autoScaleMaxCapacity: 100000
+  }
+}
+
+module agwPrivateEndpointModule 'modules/privateendpoint.bicep' = if(secretCreated && enableDbPrivateEndpoint && enableNetwork){
+  name: 'agwPrivateEndpoint'
+  params: {
+    privateEndpointName: 'agwPrivateEndpoint'
+    serviceId: appGateWayModule.outputs.agwId
+    location: location
+    subnetId: vnetSharedAppModule.outputs.subnetIds[agwSubnetIndex].id
+    groupIds: [
+      'AGWPE'
+    ]
   }
 }
 
 module acrModule 'modules/acr.bicep' = {
   name: 'acrModule'
   params: {
-    location: location
-    environment: environment
-    acrNameSuffix: acrNameSuffix
-    acrSku: acrSku
-    zoneRedundancy: 'Enabled'
-    untaggedRetentionDays: 7
-    softDeleteRetentionDays: 7
+
   }
 }
 
-module acrModulePrivateEndpoint 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
-  name: 'acrModulePrivateEndpoint'
-  params: {
-    location: location
-    environment: environment
-    privateEndpointName: 'PE03'
-    subnetId: selectedEndpointsSubnetId
-    privateEndpointIPAddress: '10.169.88.72'
-    serviceId: acrModule.outputs.registryId
-    groupId: 'registry'
-  }
-}
 
-var selectedAppsSubnetId = (enableNetwork) ? networkModule.outputs.subnets[1].id : appsSubnetId
 
-module aksModule 'modules/aks.bicep' = {
-  name: 'aksModule'
-  params: {
-    location: location
-    environment: environment
-    aksSkuTier: aksSkuTier
-    aksDnsSuffix: aksDnsSuffix
-    kubernetesVersion: aksKubernetesVersion
-    subnetId: selectedAppsSubnetId
-    enableAutoScaling: aksEnableAutoScaling
-    minCount: aksNodePoolMinCount
-    maxCount: aksNodePoolMaxCount
-    vmSize: aksNodePoolVmSize
-    applicationGatewayId: ''
-    logAnalyticsWorkspaceId: ''
-  }
-}
+
+
+

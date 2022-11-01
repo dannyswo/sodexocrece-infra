@@ -6,10 +6,37 @@
       "value": "eastus2"
     },
     "environment": {
-      "value": "PRD"
+      "value": "DEV"
     },
     "aksSkuTier": {
       "value": "Paid"
+    },
+    "aksDnsSuffix": {
+      "value": "clp885"
+    },
+    "kubernetesVersion": {
+      "value": "1.23.12"
+    },
+    "subnetId": {
+      "value": "[PENDING subnetId]"
+    },
+    "enableAutoScaling": {
+      "value": true
+    },
+    "minCount": {
+      "value": 2
+    },
+    "maxCount": {
+      "value": 4
+    },
+    "vmSize": {
+      "value": "standard_d2s_v3"
+    },
+    "applicationGatewayId": {
+      "value": "[PENDING applicationGatewayId]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "value": "[PENDING logAnalyticsWorkspaceId]"
     }
   }
 }

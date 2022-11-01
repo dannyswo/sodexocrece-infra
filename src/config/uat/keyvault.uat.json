@@ -5,11 +5,11 @@
     "location": {
       "value": "eastus2"
     },
-    "keyVaultNameSuffix": {
-      "value": "xpi676"
-    },
     "environment": {
       "value": "UAT"
+    },
+    "keyVaultNameSuffix": {
+      "value": "xpi676"
     }
   }
 }

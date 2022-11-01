@@ -5,11 +5,11 @@
     "location": {
       "value": "eastus2"
     },
+    "environment": {
+      "value": "SWO"
+    },
     "keyVaultNameSuffix": {
       "value": "mat327"
-    },
-    "environment": {
-      "value": "DEV"
     }
   }
 }

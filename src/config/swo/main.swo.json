@@ -8,35 +8,44 @@
     "environment": {
       "value": "SWO"
     },
+    "keyVaultNameSuffix": {
+      "value": "mat327"
+    },
+    "acrNameSuffix": {
+      "value": "hle620"
+    },
+    "acrSku": {
+      "value": "Premium"
+    },
+    "acrZoneRedundancy": {
+      "value": "Disabled"
+    },
+    "acrUntaggedRetentionDays": {
+      "value": 7
+    },
+    "acrSoftDeleteRetentionDays": {
+      "value": 7
+    },
     "aksSkuTier": {
       "value": "Free"
     },
     "aksDnsSuffix": {
       "value": "vnq206"
     },
-    "kubernetesVersion": {
+    "aksKubernetesVersion": {
       "value": "1.23.12"
     },
-    "subnetId": {
-      "value": "[PENDING subnetId]"
-    },
-    "enableAutoScaling": {
+    "aksEnableAutoScaling": {
       "value": true
     },
-    "minCount": {
+    "aksMinCount": {
       "value": 1
     },
-    "maxCount": {
-      "value": 1
+    "aksMaxCount": {
+      "value": 3
     },
-    "vmSize": {
+    "aksVmSize": {
       "value": "standard_d2s_v3"
-    },
-    "applicationGatewayId": {
-      "value": "[PENDING applicationGatewayId]"
-    },
-    "logAnalyticsWorkspaceId": {
-      "value": "[PENDING logAnalyticsWorkspaceId]"
     }
   }
 }
