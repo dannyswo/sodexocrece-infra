@@ -17,8 +17,11 @@
     "zoneRedundancy": {
       "value": "Disabled"
     },
-    "keyVaultUri": {
-      "value": "https://azmxkv1mat327.vault.azure.net/"
+    "untaggedRetentionDays": {
+      "value": 7
+    },
+    "softDeleteRetentionDays": {
+      "value": 7
     }
   }
 }

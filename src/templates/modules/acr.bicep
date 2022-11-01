@@ -1,38 +1,75 @@
-@description('Provide a location for the registry.')
+@description('Azure region to deploy the Container Registry.')
 param location string = resourceGroup().location
 
-@description('Provide a tier of your Azure Container Registry.')
-param acrSku string = 'Premium'
-param randomString string
-param randomNumber string
+@description('Code of the environment.')
+@allowed([
+  'DEV'
+  'UAT'
+  'PRD'
+])
+param environment string
+
+@description('Suffix used in the Container Registry name.')
+@minLength(6)
+@maxLength(6)
+param acrNameSuffix string
+
+@description('Selected tier for the Container Registry.')
+@allowed([
+  'Basic'
+  'Standard'
+  'Premium'
+])
+param acrSku string
+
+@description('If zone redundancy Enabled or Disabled for the Container Registry.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
 param zoneRedundancy string
 
-var cloudProvider = 'az'
-var cloudRegion = 'mx'
-var cloudService = 'acr'
+param untaggedRetentionDays int
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: 'managedIdentity'
-}
+param softDeleteRetentionDays int
 
-resource acrResource 'Microsoft.ContainerRegistry/registries@2021-09-01' = {
-  name: '${cloudProvider}${cloudRegion}${cloudService}1${randomString}${randomNumber}'
+resource acrResource 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = {
+  name: 'azmxcr1${acrNameSuffix}'
   location: location
   sku: {
     name: acrSku
   }
   properties: {
-    encryption: {
-      keyVaultProperties: {
-        keyIdentifier: managedIdentity.id
-        identity: managedIdentity.name
+    zoneRedundancy: zoneRedundancy
+    policies: {
+      trustPolicy: {
+        status: 'enabled'
+        type: 'Notary'
+      }
+      retentionPolicy: {
+        status: 'enabled'
+        days: untaggedRetentionDays
+      }
+      softDeletePolicy: {
+        status: 'enabled'
+        retentionDays: softDeleteRetentionDays
+      }
+      exportPolicy: {
+        status: 'disabled'
       }
     }
     adminUserEnabled: false
+    anonymousPullEnabled: false
+    dataEndpointEnabled: false
     publicNetworkAccess: 'Disabled'
-    zoneRedundancy: zoneRedundancy
+    networkRuleBypassOptions: 'None'
+    networkRuleSet: {
+      defaultAction: 'Deny'
+      ipRules: []
+    }
   }
+  tags: resourceGroup().tags
 }
 
-// @description('Output the login server property for later use')
-// output loginServer string = acrResource.properties.loginServer
+@description('URL used to log in into the Container Registry.')
+output login string = acrResource.properties.loginServer

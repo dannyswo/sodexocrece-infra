@@ -16,6 +16,12 @@
     },
     "zoneRedundancy": {
       "value": "Enabled"
+    },
+    "untaggedRetentionDays": {
+      "value": 180
+    },
+    "softDeleteRetentionDays": {
+      "value": 90
     }
   }
 }
