@@ -21,4 +21,9 @@ Optional:
 
 * identityProfile: Object configuration, map of Managed Identities used by the cluster. Use system-assigned Managed Identities.
 * privateLinkResources: Array of Private Link resources used by the cluster. Use AKS-managed Private Endpoint with private cluster option in apiServerAccessProfile.
-* podIdentityProfile: Azure 
+* podIdentityProfile: Azure ...
+
+## Maintainance and monitoring tasks
+
+* Monitor CrashLoopBackOff (OOMKilled).
+* Restart Linux nodes every day.

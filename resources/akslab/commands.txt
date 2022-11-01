@@ -1,1 +1,1 @@
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates2\aks.bicep -p location=eastus2
+az deployment group create -g RG-demo-sodexo-crece -f .\resources\akslab\aks.bicep -p location=eastus2
