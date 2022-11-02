@@ -11,8 +11,8 @@ param location string = resourceGroup().location
 param environment string
 
 @description('Standard name of the Gateway VNet.')
-@minLength(3)
-@maxLength(3)
+@minLength(4)
+@maxLength(4)
 param gatewayVNetName string
 
 @description('IP range or CIDR of the Gateway VNet.')
@@ -22,8 +22,8 @@ param gatewayVNetName string
 param gatewayVNetAddressPrefix string
 
 @description('Standard name of the Gateway Subnet.')
-@minLength(3)
-@maxLength(3)
+@minLength(4)
+@maxLength(4)
 param gatewaySubnetName string
 
 @description('IP range or CIDR of the Gateway Subnet.')
@@ -33,8 +33,8 @@ param gatewaySubnetName string
 param gatewaySubnetAddressPrefix string
 
 @description('Standard name of the Applications VNet.')
-@minLength(3)
-@maxLength(3)
+@minLength(4)
+@maxLength(4)
 param appsVNetName string
 
 @description('IP range or CIDR of the Applications VNet.')
@@ -44,8 +44,8 @@ param appsVNetName string
 param appsVNetAddressPrefix string
 
 @description('Standard name of the Applications Subnet.')
-@minLength(3)
-@maxLength(3)
+@minLength(4)
+@maxLength(4)
 param appsSubnetName string
 
 @description('IP range or CIDR of the Applications Subnet.')
@@ -55,8 +55,8 @@ param appsSubnetName string
 param appsSubnetAddressPrefix string
 
 @description('Standard name of the Endpoints VNet.')
-@minLength(3)
-@maxLength(3)
+@minLength(4)
+@maxLength(4)
 param endpointsVNetName string
 
 @description('IP range or CIDR of the Endpoints VNet.')
@@ -66,8 +66,8 @@ param endpointsVNetName string
 param endpointsVNetAddressPrefix string
 
 @description('Standard name of the Endpoints Subnet.')
-@minLength(3)
-@maxLength(3)
+@minLength(4)
+@maxLength(4)
 param endpointsSubnetName string
 
 @description('IP range or CIDR of the Endpoints Subnet.')

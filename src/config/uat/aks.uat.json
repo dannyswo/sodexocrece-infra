@@ -32,11 +32,14 @@
     "vmSize": {
       "value": "standard_d2s_v3"
     },
+    "enableEncryptionAtHost": {
+      "value": true
+    },
     "applicationGatewayId": {
-      "value": "[PENDING applicationGatewayId]"
+      "value": "{NULL applicationGatewayId}"
     },
     "logAnalyticsWorkspaceId": {
-      "value": "[PENDING logAnalyticsWorkspaceId]"
+      "value": "{NULL logAnalyticsWorkspaceId}"
     }
   }
 }

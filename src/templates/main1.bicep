@@ -13,14 +13,23 @@ param environment string
 @description('Create network resources defined in the network module.')
 param enableNetwork bool = false
 
-@description('ID of the Endpoints Subnet. Must be defined when enableNetwork is false.')
-param endpointsSubnetId string
+@description('Name of the Applications VNet. Must be defined when enableNetwork is false.')
+param appsVnetName string
 
-@description('ID of the Applications Subnet. Must be defined when enableNetwork is false.')
-param appsSubnetId string
+@description('Name of the Applications Subnet. Must be defined when enableNetwork is false.')
+param appsSubnetName string
+
+@description('Name of the Endpoints Subnet. Must be defined when enableNetwork is false.')
+param endpointsSubnetName string
 
 @description('Create Private Endpoints for the required modules like keyvault, storage, database and acr.')
 param enablePrivateEndpoints bool = true
+
+@description('Private IP of the Key Vault\'s Private Endpoint.')
+param keyVaultPEPrivateIpAddress string
+
+@description('Private IPs of the Container Registry\'s Private Endpoint.')
+param acrPEPrivateIpAddresses array
 
 @description('Standard tags applied to all resources.')
 @metadata({
@@ -52,6 +61,7 @@ param aksEnableAutoScaling bool
 param aksNodePoolMinCount int
 param aksNodePoolMaxCount int
 param aksNodePoolVmSize string
+param aksEnableEncryptionAtHost bool
 
 module networkModule 'modules/network1.bicep' = if (enableNetwork) {
   name: 'networkModule'
@@ -59,9 +69,9 @@ module networkModule 'modules/network1.bicep' = if (enableNetwork) {
     location: location
     environment: environment
     gatewayVNetName: 'VN01'
-    gatewaySubnetAddressPrefix: '10.169.90.0/24'
+    gatewayVNetAddressPrefix: '10.169.90.0/24'
     gatewaySubnetName: 'SN01'
-    gatewayVNetAddressPrefix: '10.169.90.128/25'
+    gatewaySubnetAddressPrefix: '10.169.90.128/25'
     appsVNetName: 'VN02'
     appsVNetAddressPrefix: '10.169.72.0/21'
     appsSubnetName: 'SN02'
@@ -74,8 +84,6 @@ module networkModule 'modules/network1.bicep' = if (enableNetwork) {
   }
 }
 
-var selectedEndpointsSubnetId = (enableNetwork) ? networkModule.outputs.subnets[2].id : endpointsSubnetId
-
 module keyVaultModule 'modules/keyvault.bicep' = {
   name: 'keyVaultModule'
   params: {
@@ -86,16 +94,20 @@ module keyVaultModule 'modules/keyvault.bicep' = {
   }
 }
 
+var selectedEndpointsSubnetId = (enableNetwork) ? networkModule.outputs.subnets[2].id : resourceId('Microsoft.Network/virtualNetworks/subnets', endpointsSubnetName)
+var selectedAppsVnetId = (enableNetwork) ? networkModule.outputs.vnets[1].id : resourceId('Microsoft.Network/virtualNetworks', appsVnetName)
+
 module keyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
   name: 'keyVaultPrivateEndpointModule'
   params: {
     location: location
-    environment: environment
+    env: environment
     privateEndpointName: 'PE02'
     subnetId: selectedEndpointsSubnetId
-    privateEndpointIPAddress: '10.169.88.69'
+    privateIpAddresses: [ keyVaultPEPrivateIpAddress ]
     serviceId: keyVaultModule.outputs.keyVaultId
     groupId: 'vault'
+    linkedVnetId: selectedAppsVnetId
     standardTags: standardTags
   }
 }
@@ -118,17 +130,18 @@ module acrModulePrivateEndpoint 'modules/privateendpoint.bicep' = if (enablePriv
   name: 'acrModulePrivateEndpoint'
   params: {
     location: location
-    environment: environment
+    env: environment
     privateEndpointName: 'PE03'
     subnetId: selectedEndpointsSubnetId
-    privateEndpointIPAddress: '10.169.88.72'
+    privateIpAddresses: acrPEPrivateIpAddresses
     serviceId: acrModule.outputs.registryId
     groupId: 'registry'
+    linkedVnetId: selectedAppsVnetId
     standardTags: standardTags
   }
 }
 
-var selectedAppsSubnetId = (enableNetwork) ? networkModule.outputs.subnets[1].id : appsSubnetId
+var selectedAppsSubnetId = (enableNetwork) ? networkModule.outputs.subnets[1].id : resourceId('Microsoft.Network/virtualNetworks/subnets', appsSubnetName)
 
 module aksModule 'modules/aks.bicep' = {
   name: 'aksModule'
@@ -143,6 +156,7 @@ module aksModule 'modules/aks.bicep' = {
     minCount: aksNodePoolMinCount
     maxCount: aksNodePoolMaxCount
     vmSize: aksNodePoolVmSize
+    enableEncryptionAtHost: aksEnableEncryptionAtHost
     applicationGatewayId: ''
     logAnalyticsWorkspaceId: ''
     standardTags: standardTags

@@ -11,14 +11,26 @@
     "enableNetwork": {
       "value": true
     },
-    "endpointsSubnetId": {
-      "value": ""
+    "appsVnetName": {
+      "value": "{NULL appsVnetName}"
     },
-    "appsSubnetId": {
-      "value": ""
+    "appsSubnetName": {
+      "value": "{NULL appsSubnetName}"
+    },
+    "endpointsSubnetName": {
+      "value": "{NULL endpointsSubnetName}"
     },
     "enablePrivateEndpoints": {
       "value": true
+    },
+    "keyVaultPEPrivateIpAddress": {
+      "value": "10.169.88.69"
+    },
+    "acrPEPrivateIpAddresses": {
+      "value": [
+        "10.169.88.72",
+        "10.169.88.74"
+      ]
     },
     "keyVaultNameSuffix": {
       "value": "mat327"
@@ -50,14 +62,17 @@
     "aksEnableAutoScaling": {
       "value": true
     },
-    "aksMinCount": {
+    "aksNodePoolMinCount": {
       "value": 1
     },
-    "aksMaxCount": {
+    "aksNodePoolMaxCount": {
       "value": 3
     },
-    "aksVmSize": {
+    "aksNodePoolVmSize": {
       "value": "standard_d2s_v3"
+    },
+    "aksEnableEncryptionAtHost": {
+      "value": false
     }
   }
 }

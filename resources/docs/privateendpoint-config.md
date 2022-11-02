@@ -91,3 +91,9 @@ az network private-link-resource list `
   }
 ]
 ```
+
+## Check environment URIs with Azure CLI
+
+```
+az cloud list > .\resources\docs\az-cloud-list.json
+```

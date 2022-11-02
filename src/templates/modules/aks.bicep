@@ -23,22 +23,25 @@ param aksSkuTier string
 param aksDnsSuffix string
 
 @description('Version of the Kubernetes software used by AKS.')
-param kubernetesVersion string = '1.23.12'
+param kubernetesVersion string
 
 @description('ID of the Subnet where the Cluster will be deployed.')
 param subnetId string
 
 @description('Enable auto scaling for AKS system node pool.')
-param enableAutoScaling bool = false
+param enableAutoScaling bool
 
 @description('Minimum number of nodes in the AKS system node pool.')
-param minCount int = 1
+param minCount int
 
 @description('Maximum number of nodes in the AKS system node pool.')
-param maxCount int = 1
+param maxCount int
 
 @description('VM size of every node in the AKS system node pool.')
-param vmSize string = 'standard_d2s_v3'
+param vmSize string
+
+@description('Enable encryption at AKS nodes.')
+param enableEncryptionAtHost bool
 
 @description('ID of the Application Gateway managed by AGIC add-on.')
 param applicationGatewayId string
@@ -80,7 +83,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
         osSKU: 'Ubuntu'
         osDiskSizeGB: 0
         osDiskType: 'Managed'
-        enableEncryptionAtHost: true
+        enableEncryptionAtHost: enableEncryptionAtHost
         upgradeSettings: {
           maxSurge: '1'
         }
@@ -143,4 +146,5 @@ resource aksLock 'Microsoft.Authorization/locks@2017-04-01' = {
   }
 }
 
-output managementPlaneFQDN string = aksCluster.properties.fqdn
+output managementPlanePrivateFQDN string = aksCluster.properties.privateFQDN
+output managementPlanePublicFQDN string = aksCluster.properties.azurePortalFQDN
