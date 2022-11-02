@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus2"
+    },
+    "environment": {
+      "value": "SWO"
+    },
+    "appGatewayNameSuffix": {
+      "value": "gtc219"
+    },
+    "appGatewaySkuTier": {
+      "value": "WAF_v2"
+    },
+    "appGatewaySkuName": {
+      "value": "WAF_v2"
+    },
+    "appGatewaySkuCapacity": {
+      "value": 1
+    },
+    "enablePublicIp": {
+      "value": true
+    },
+    "gatewaySubnetId": {
+      "value": "{NULL gatewaySubnetId}"
+    },
+    "autoScaleMinCapacity": {
+      "value": 1
+    },
+    "autoScaleMaxCapacity": {
+      "value": 3
+    }
+  }
+}

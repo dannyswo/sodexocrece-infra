@@ -161,12 +161,38 @@ resource gatewayAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetwo
   }
 }
 
+resource appsGatewayVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${environment}-VP03'
+  parent: appsVNet
+  properties: {
+    remoteVirtualNetwork: {
+      id: gatewayVNet.id
+    }
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    useRemoteGateways: false
+  }
+}
+
 resource appsEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${environment}-VP02'
   parent: appsVNet
   properties: {
     remoteVirtualNetwork: {
       id: endpointsVNet.id
+    }
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    useRemoteGateways: false
+  }
+}
+
+resource endpointsAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${environment}-VP04'
+  parent: endpointsVNet
+  properties: {
+    remoteVirtualNetwork: {
+      id: appsVNet.id
     }
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true

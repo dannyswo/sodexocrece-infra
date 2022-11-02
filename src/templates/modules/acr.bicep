@@ -31,9 +31,13 @@ param acrSku string
 param zoneRedundancy string
 
 @description('Retention days of untagged images in the Container Registry.')
+@minValue(7)
+@maxValue(180)
 param untaggedRetentionDays int
 
 @description('Retention days of soft deleted images in the Container Registry.')
+@minValue(7)
+@maxValue(90)
 param softDeleteRetentionDays int
 
 @description('Standards tags applied to all resources.')

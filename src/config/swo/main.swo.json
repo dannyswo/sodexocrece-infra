@@ -11,6 +11,9 @@
     "enableNetwork": {
       "value": true
     },
+    "gatewaySubnetName": {
+      "value": "{NULL gatewaySubnetName}"
+    },
     "appsVnetName": {
       "value": "{NULL appsVnetName}"
     },
@@ -25,6 +28,27 @@
     },
     "keyVaultPEPrivateIpAddress": {
       "value": "10.169.88.69"
+    },
+    "appGatewayNameSuffix": {
+      "value": "gtc219"
+    },
+    "appGatewaySkuTier": {
+      "value": "WAF_v2"
+    },
+    "appGatewaySkuName": {
+      "value": "WAF_v2"
+    },
+    "appGatewaySkuCapacity": {
+      "value": 1
+    },
+    "appGatewayEnablePublicIp": {
+      "value": true
+    },
+    "appGatewayAutoScaleMinCapacity": {
+      "value": 1
+    },
+    "appGatewayAutoScaleMaxCapacity": {
+      "value": 3
     },
     "acrPEPrivateIpAddresses": {
       "value": [

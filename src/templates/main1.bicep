@@ -13,6 +13,9 @@ param environment string
 @description('Create network resources defined in the network module.')
 param enableNetwork bool = false
 
+@description('Name of the Gateway Subnet. Must be defined when enableNetwork is false.')
+param gatewaySubnetName string
+
 @description('Name of the Applications VNet. Must be defined when enableNetwork is false.')
 param appsVnetName string
 
@@ -47,6 +50,14 @@ param acrPEPrivateIpAddresses array
 param standardTags object = resourceGroup().tags
 
 param keyVaultNameSuffix string
+
+param appGatewayNameSuffix string
+param appGatewaySkuTier string
+param appGatewaySkuName string
+param appGatewaySkuCapacity int
+param appGatewayEnablePublicIp bool
+param appGatewayAutoScaleMinCapacity int
+param appGatewayAutoScaleMaxCapacity int
 
 param acrNameSuffix string
 param acrSku string
@@ -112,6 +123,25 @@ module keyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enabl
   }
 }
 
+var selectedGatewaySubnetId = (enableNetwork) ? networkModule.outputs.subnets[0].id : resourceId('Microsoft.Network/virtualNetworks/subnets', gatewaySubnetName)
+
+module appGatewayModule 'modules/agw.bicep' = {
+  name: 'appGatewayModule'
+  params: {
+    location: location
+    environment: environment
+    appGatewayNameSuffix: appGatewayNameSuffix
+    appGatewaySkuTier: appGatewaySkuTier
+    appGatewaySkuName: appGatewaySkuName
+    appGatewaySkuCapacity: appGatewaySkuCapacity
+    enablePublicIp: appGatewayEnablePublicIp
+    gatewaySubnetId: selectedGatewaySubnetId
+    autoScaleMinCapacity: appGatewayAutoScaleMinCapacity
+    autoScaleMaxCapacity: appGatewayAutoScaleMaxCapacity
+    standardTags: standardTags
+  }
+}
+
 module acrModule 'modules/acr.bicep' = {
   name: 'acrModule'
   params: {
@@ -143,6 +173,7 @@ module acrModulePrivateEndpoint 'modules/privateendpoint.bicep' = if (enablePriv
 
 var selectedAppsSubnetId = (enableNetwork) ? networkModule.outputs.subnets[1].id : resourceId('Microsoft.Network/virtualNetworks/subnets', appsSubnetName)
 
+/*
 module aksModule 'modules/aks.bicep' = {
   name: 'aksModule'
   params: {
@@ -162,3 +193,4 @@ module aksModule 'modules/aks.bicep' = {
     standardTags: standardTags
   }
 }
+*/

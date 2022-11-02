@@ -65,6 +65,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
   properties: {
     dnsPrefix: 'azmxku1${aksDnsSuffix}'
     kubernetesVersion: kubernetesVersion
+    nodeResourceGroup: 'BRS-MEX-USE2-CRECESDX-${environment}-RG02'
     agentPoolProfiles: [
       {
         name: 'nodepool1'
@@ -97,11 +98,19 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
     }
     networkProfile: {
       networkPlugin: 'kubenet'
+      networkPluginMode: 'Overlay'
+      networkPolicy: 'calico'
       loadBalancerSku: 'standard'
       loadBalancerProfile: {
         enableMultipleStandardLoadBalancers: false
+        managedOutboundIPs: {
+          count: 1
+        }
       }
       outboundType: 'loadBalancer'
+      ipFamilies: [
+        'IPv4'
+      ]
     }
     // autoUpgradeProfile: { }
     // podIdentityProfile: { }
@@ -110,7 +119,6 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
     // securityProfile: { }
     // autoUpgradeProfile: { }
     // azureMonitorProfile: { }
-    nodeResourceGroup: 'BRS-MEX-USE2-CRECESDX-${environment}-RG02'
     enableRBAC: true
     aadProfile: {
       enableAzureRBAC: true

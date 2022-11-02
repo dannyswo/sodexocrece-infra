@@ -1,166 +1,173 @@
-param location string
-param environment string = 'DEV'
-param tier string
+@description('Azure region to deploy the AKS Managed Cluster.')
+param location string = resourceGroup().location
 
-param skuSize string
-param capacity int = 2
-param subnetName string
-param zones array = []
-param publicIpAddressName string
-param allocationMethod string
-param publicIpZones array
-param privateIpAddress string
+@description('Environment code.')
+@allowed([
+  'SWO'
+  'DEV'
+  'UAT'
+  'PRD'
+])
+param environment string
+
+@description('Suffix used in the name of the Application Gateway.')
+@minLength(6)
+@maxLength(6)
+param appGatewayNameSuffix string
+
+@description('SKU tier of the Application Gateway.')
+@allowed([
+  'Standard_v2'
+  'WAF_v2'
+])
+param appGatewaySkuTier string
+
+@description('SKU name of the Application Gateway.')
+@allowed([
+  'Standard_v2'
+  'WAF_v2'
+])
+param appGatewaySkuName string
+
+@description('SKU capacity of the Application Gateway.')
+param appGatewaySkuCapacity int
+
+@description('Create frontend public IP for the Application Gateway.')
+param enablePublicIp bool
+
+@description('ID of the Gateway Subnet where Application Gateway is deployed.')
+param gatewaySubnetId string
+
+@description('Minimum capacity for auto scaling of Application Gateway.')
+param autoScaleMinCapacity int
+
+@description('Maximum capacity for auto scaling of Application Gateway.')
 param autoScaleMaxCapacity int
-param randomString string
-param randomNumber int
-param publicAddress bool
 
-var businessLine = 'BRS'
-var businessRegion = 'LATAM'
-var projectName = 'CRECESDX'
-var privateAsset = '${businessLine}-${businessRegion}-${cloudRegion}-${projectName}-${environment}'
-var cloudProvider = 'az'
-var cloudRegion = 'mx'
-var cloudService = 'agw'
-var vnetId = '/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/virtualNetworks/sodexocrecer-vnet01'
-var publicIPRef = publicIpAddress.id
-var subnetRef = '${vnetId}/subnets/${subnetName}'
+@description('Standards tags applied to all resources.')
+param standardTags object = resourceGroup().tags
+
+var appGatewayName = 'azmxwa1${appGatewayNameSuffix}'
+
+var zones = [ '1', '2', '3' ]
 
 resource applicationGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
-  name: '${cloudProvider}${cloudRegion}${cloudService}1${randomString}${randomNumber}'
+  name: appGatewayName
   location: location
-  // zones: zones
+  /*
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${appGatewayManagedIdentity.id}'
+    }
+  }
+  */
+  zones: zones
   properties: {
     sku: {
-      name: skuSize
-      tier: tier
+      tier: appGatewaySkuTier
+      name: appGatewaySkuName
+      capacity: appGatewaySkuCapacity
     }
+    autoscaleConfiguration: {
+      minCapacity: autoScaleMinCapacity
+      maxCapacity: autoScaleMaxCapacity
+    }
+    enableHttp2: false
     gatewayIPConfigurations: [
       {
-        name: 'appGatewayIpConfig'
+        name: '${appGatewayName}-GatewayIPConfig'
         properties: {
           subnet: {
-            id: subnetRef
+            id: gatewaySubnetId
           }
         }
       }
     ]
     frontendIPConfigurations: [
       {
-        name: 'appGwPublicFrontendIp'
+        name: '${appGatewayName}-FrontIP-443'
         properties: {
-          publicIPAddress: {
-            id: publicIPRef
-          }
-        }
-      }
-      {
-        name: 'appGwPrivateFrontendIp'
-        properties: {
-          subnet: {
-            id: subnetRef
-          }
-          privateIPAddress: privateIpAddress
           privateIPAllocationMethod: 'Static'
+          publicIPAddress: {
+            id: publicIpAddress.id
+          }
         }
       }
     ]
     frontendPorts: [
       {
-        name: 'port_80'
+        name: '${appGatewayName}-Port-80'
         properties: {
           port: 80
         }
       }
-    ]
-    backendAddressPools: [
       {
-        name: '${privateAsset}-backend01'
+        name: '${appGatewayName}-Port-443'
         properties: {
-          backendAddresses: []
+          port: 443
         }
       }
     ]
-    backendHttpSettingsCollection: [
-      {
-        name: '${privateAsset}-ruleset01'
-        properties: {
-          port: 80
-          protocol: 'Http'
-          cookieBasedAffinity: 'Disabled'
-          requestTimeout: 15
-          connectionDraining: {
-            drainTimeoutInSec: 60
-            enabled: true
-          }
-        }
-      }
-    ]
-    backendSettingsCollection: []
     httpListeners: [
       {
-        name: '${privateAsset}-listener80'
+        name: '${appGatewayName}-Listener-80'
         properties: {
           frontendIPConfiguration: {
-            id: 'test/frontendIPConfigurations/appGwPrivateFrontendIp'
-          }
-          frontendPort: {
-            id: 'test/frontendPorts/port_80'
+            id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', appGatewayName, '${appGatewayName}-FrontIP-443')
           }
           protocol: 'Http'
-          sslCertificate: null
-          hostName: 'apps.sdxcloud.com'
-          requireServerNameIndication: false
+          frontendPort: {
+            id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', appGatewayName, '${appGatewayName}-Port-80')
+          }
         }
       }
-    ]
-    listeners: []
-    requestRoutingRules: [
       {
-        name: '${privateAsset}-rule01'
+        name: '${appGatewayName}-Listener-443'
         properties: {
-          ruleType: 'Basic'
-          httpListener: {
-            id: 'test/httpListeners/sodexocrecer-agw-listener-80'
+          frontendIPConfiguration: {
+            id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', appGatewayName, '${appGatewayName}-FrontIP-443')
           }
-          priority: 10
-          backendAddressPool: {
-            id: 'test/backendAddressPools/sodexocrecer-agw-backend01'
-          }
-          backendHttpSettings: {
-            id: 'test/backendHttpSettingsCollection/sodexocrecer-agw-ruleset01'
+          protocol: 'Http'
+          frontendPort: {
+            id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', appGatewayName, '${appGatewayName}-Port-443')
           }
         }
       }
     ]
-    routingRules: []
-    enableHttp2: false
-    sslCertificates: []
-    probes: []
-    autoscaleConfiguration: {
-      minCapacity: capacity
-      maxCapacity: autoScaleMaxCapacity
-    }
+    sslCertificates: [
+    ]
     firewallPolicy: {
-      id: '/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/sodexocrecer-rg01/providers/Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies/sodexocrecer-wafpol01'
+      id: wafPolicies.id
     }
   }
-  dependsOn: [
-    sodexocrecer_wafpol01
-  ]
+  tags: standardTags
 }
 
-resource sodexocrecer_wafpol01 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2022-05-01' = {
-  name: '${privateAsset}-wafpol01'
+resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = if (enablePublicIp) {
+  name: 'BRS-MEX-USE2-CRECESDX-${environment}-PI01'
   location: location
-  tags: {
+  sku: {
+    name: 'Standard'
+    tier: 'Global'
   }
+  zones: zones
+  properties: {
+    publicIPAllocationMethod: 'Dynamic'
+    deleteOption: 'Delete'
+  }
+  tags: standardTags
+}
+
+resource wafPolicies 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${environment}-WP01'
+  location: location
   properties: {
     policySettings: {
-      mode: 'Detection'
       state: 'Enabled'
-      fileUploadLimitInMb: 100
+      mode: 'Detection'
       requestBodyCheck: true
+      fileUploadLimitInMb: 100
       maxRequestBodySizeInKb: 128
     }
     managedRules: {
@@ -175,18 +182,7 @@ resource sodexocrecer_wafpol01 'Microsoft.Network/ApplicationGatewayWebApplicati
     }
     customRules: []
   }
+  tags: standardTags
 }
 
-resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = if (publicAddress){
-  name: publicIpAddressName
-  location: location
-  sku: {
-    name: 'Standard'
-  }
-  zones: publicIpZones
-  properties: {
-    publicIPAllocationMethod: allocationMethod
-  }
-}
-
-output agwId string = applicationGateway.id
+output applicationGatewayId string = applicationGateway.id
