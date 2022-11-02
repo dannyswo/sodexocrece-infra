@@ -11,12 +11,12 @@ Modules:
 
 * network
 * privateendpoint
-* keyVault
+* keyvault
 * agw
+* storageaccount
 * loganalytics
 * networkwatcher
-* storage
-* database
+* sqldatabase
 * acr
 * aks
 

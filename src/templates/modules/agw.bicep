@@ -35,6 +35,9 @@ param appGatewaySkuCapacity int
 @description('Create frontend public IP for the Application Gateway.')
 param enablePublicIp bool
 
+@description('Private IP address of the Application Gateway. Must be defined if SKU tier is WAF_v2.')
+param appGatewayPrivateIpAddress string
+
 @description('ID of the Gateway Subnet where Application Gateway is deployed.')
 param gatewaySubnetId string
 
@@ -89,6 +92,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2022-05-01' =
         name: '${appGatewayName}-FrontIP-443'
         properties: {
           privateIPAllocationMethod: 'Static'
+          privateIPAddress: appGatewayPrivateIpAddress
           publicIPAddress: {
             id: publicIpAddress.id
           }

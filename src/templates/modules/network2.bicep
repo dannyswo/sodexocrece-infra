@@ -21,7 +21,7 @@ param vnetName string
 })
 param vnetAddressPrefix string
 
-@description('Array of name and IP range of the Subnets.')
+@description('Names and IP ranges of the Subnets.')
 @metadata({
   name: 'Standard name of the Subnet.'
   addressPrefix: 'IP range or CIDR of the Subnet.'
@@ -32,7 +32,7 @@ param vnetAddressPrefix string
     }
   ]
 })
-param subnets array
+param subnetsAddressPrefixes array
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${environment}-${vnetName}'
@@ -49,7 +49,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 }
 
 @batchSize(1)
-resource vnetSubnets 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = [for subnet in subnets: {
+resource vnetSubnets 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = [for subnet in subnetsAddressPrefixes: {
   name: 'BRS-MEX-USE2-CRECESDX-${environment}-${subnet.name}'
   parent: virtualNetwork
   properties: {
@@ -57,7 +57,7 @@ resource vnetSubnets 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = [f
   }
 }]
 
-var subnetsData = [for (item, index) in subnets: {
+var subnetsData = [for (item, index) in subnetsAddressPrefixes: {
   subnetId: vnetSubnets[index].id
   subnetName: vnetSubnets[index].name
 }]
@@ -76,4 +76,4 @@ output vnetId string = virtualNetwork.id
     }
   ]
 })
-output createdSubnets array = subnetsData
+output subnets array = subnetsData

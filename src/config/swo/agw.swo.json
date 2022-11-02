@@ -23,6 +23,9 @@
     "enablePublicIp": {
       "value": true
     },
+    "appGatewayPrivateIpAddress": {
+      "value": "10.169.90.135"
+    },
     "gatewaySubnetId": {
       "value": "{NULL gatewaySubnetId}"
     },

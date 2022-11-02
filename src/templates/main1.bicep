@@ -56,6 +56,7 @@ param appGatewaySkuTier string
 param appGatewaySkuName string
 param appGatewaySkuCapacity int
 param appGatewayEnablePublicIp bool
+param appGatewayPrivateIpAddress string
 param appGatewayAutoScaleMinCapacity int
 param appGatewayAutoScaleMaxCapacity int
 
@@ -135,6 +136,7 @@ module appGatewayModule 'modules/agw.bicep' = {
     appGatewaySkuName: appGatewaySkuName
     appGatewaySkuCapacity: appGatewaySkuCapacity
     enablePublicIp: appGatewayEnablePublicIp
+    appGatewayPrivateIpAddress: appGatewayPrivateIpAddress
     gatewaySubnetId: selectedGatewaySubnetId
     autoScaleMinCapacity: appGatewayAutoScaleMinCapacity
     autoScaleMaxCapacity: appGatewayAutoScaleMaxCapacity
