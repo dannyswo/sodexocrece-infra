@@ -1,0 +1,38 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus2"
+        },
+        "privateEndpointName": {
+            "value": "test-pe01"
+        },
+        "privateLinkResource": {
+            "value": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.ContainerRegistry/registries/azmxcr1hle620"
+        },
+        "targetSubResource": {
+            "value": [
+                "registry"
+            ]
+        },
+        "requestMessage": {
+            "value": ""
+        },
+        "subnet": {
+            "value": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Network/virtualNetworks/BRS-MEX-USE2-CRECESDX-SWO-VN03/subnets/BRS-MEX-USE2-CRECESDX-SWO-SN03"
+        },
+        "virtualNetworkId": {
+            "value": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Network/virtualNetworks/BRS-MEX-USE2-CRECESDX-SWO-VN03"
+        },
+        "subnetDeploymentName": {
+            "value": "UpdateSubnetDeployment-20221101190455"
+        },
+        "virtualNetworkResourceGroup": {
+            "value": "RG-demo-sodexo-crece"
+        },
+        "privateDnsDeploymentName": {
+            "value": "PrivateDns-20221101190455"
+        }
+    }
+}
