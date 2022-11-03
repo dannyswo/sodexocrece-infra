@@ -3,22 +3,22 @@ Infrastructure Repository for Sodexo Crece Project
 
 ## Project structure
 
-Template:
+Templates:
 
-* main
+* main1
 
 Modules:
 
-* network
-* privateendpoint
-* keyvault
-* agw
-* loganalytics
-* datastorage
-* networkwatcher
-* sqldatabase
-* acr
-* aks
+1. network
+2. privateendpoint
+3. keyvault
+4. agw
+5. loganalytics
+6. networkwatcher
+7. datastorage
+8. sqldatabase
+9. acr
+10. aks
 
 Environments:
 

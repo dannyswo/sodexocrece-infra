@@ -17,8 +17,11 @@
     "kubernetesVersion": {
       "value": "1.23.12"
     },
-    "subnetId": {
-      "value": "[PENDING subnetId]"
+    "nodeResourceGroupName": {
+      "value": "{NULL nodeResourceGroupName}"
+    },
+    "subnetName": {
+      "value": "{NULL subnetName}"
     },
     "enableAutoScaling": {
       "value": true
@@ -36,10 +39,10 @@
       "value": true
     },
     "applicationGatewayId": {
-      "value": "{NULL applicationGatewayId}"
+      "value": "{NULL applicationGatewayName}"
     },
-    "logAnalyticsWorkspaceId": {
-      "value": "{NULL logAnalyticsWorkspaceId}"
+    "logAnalyticsWorkspaceName": {
+      "value": "{NULL logAnalyticsWorkspaceName}"
     }
   }
 }

@@ -67,3 +67,9 @@ resource linkedStorageAccounts 'Microsoft.OperationalInsights/workspaces/linkedS
   }
 }
 */
+
+@description('ID of the Log Analytics Workspace.')
+output workspaceId string = logAnalyticsWorkspace.id
+
+@description('Name of the Log Analytics Workspace.')
+output workspaceName string = logAnalyticsWorkspace.name

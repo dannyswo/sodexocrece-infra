@@ -13,20 +13,20 @@ param env string
 @description('Suffix used in the Sotrage Account name.')
 @minLength(6)
 @maxLength(6)
-param storageAccountNameSuffix string
+param dataStorageNameSuffix string
 
 @description('SKU name of the Storage Account.')
 @allowed([
   'Standard_LRS'
   'Standard_ZRS'
 ])
-param storageAccountSkuName string
+param dataStorageSkuName string
 
 @description('URI of the Key Vault where encryption key of the Storage Account is stored.')
 param keyVaultUri string
 
-@description('ID of the target Log Analytics Workspace where Storage Account access logs will be stored.')
-param targetWorkspaceId string
+@description('Name of the target Log Analytics Workspace where Storage Account access logs will be stored.')
+param targetWorkspaceName string
 
 @description('Retention days of access logs of the Storage Account.')
 @minValue(7)
@@ -36,7 +36,7 @@ param logsRetentionDays int
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
-var storageAccountName = 'azmxst1${storageAccountNameSuffix}'
+var storageAccountName = 'azmxst1${dataStorageNameSuffix}'
 
 var encryptionKeyName = 'MerchantFilesKey'
 
@@ -48,7 +48,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   }
   kind: 'StorageV2'
   sku: {
-    name: storageAccountSkuName
+    name: dataStorageSkuName
   }
   properties: {
     accessTier: 'Hot'
@@ -126,7 +126,7 @@ resource merchantFilesContainer 'Microsoft.Storage/storageAccounts/blobServices/
 }
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AD10'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-AD03'
   location: location
   tags: standardTags
 }
@@ -135,15 +135,17 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-
 var roleDefinitionId = '12338af0-0e69-4776-bea7-57ae8d297424'
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AD11'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-AD04'
   scope: resourceGroup()
   properties: {
-    description: 'Access encryption key \'${encryptionKeyName}\' in a Key Vault from Storage Account \'${storageAccountName}\''
+    description: 'Access encryption key in the Key Vault from Storage Account \'${storageAccountName}\''
     principalId: managedIdentity.properties.principalId
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)
     principalType: 'ServicePrincipal'
   }
 }
+
+var targetWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', targetWorkspaceName)
 
 resource storageAccountDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-MM10'
@@ -179,8 +181,17 @@ resource storageAccountDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-0
   }
 }
 
+resource storageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-AL03'
+  scope: storageAccount
+  properties: {
+    level: 'CanNotDelete'
+    notes: 'Storage Account for application data should not be deleted.'
+  }
+}
+
 @description('ID of the Storage Account.')
 output storageAccountId string = storageAccount.id
 
-@description('ID of the Managed Identity of the Storage Account.')
+@description('ID of the Managed Identity of Storage Account.')
 output storageAccountManagedIdentityId string = managedIdentity.id

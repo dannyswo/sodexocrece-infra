@@ -25,8 +25,11 @@ param aksDnsSuffix string
 @description('Version of the Kubernetes software used by AKS.')
 param kubernetesVersion string
 
-@description('ID of the Subnet where the Cluster will be deployed.')
-param subnetId string
+@description('Name of the Resource Group of the AKS managed resources (VMSS, LB, etc).')
+param nodeResourceGroupName string
+
+@description('Name of the Subnet where the Cluster will be deployed.')
+param subnetName string
 
 @description('Enable auto scaling for AKS system node pool.')
 param enableAutoScaling bool
@@ -43,16 +46,19 @@ param vmSize string
 @description('Enable encryption at AKS nodes.')
 param enableEncryptionAtHost bool
 
-@description('ID of the Application Gateway managed by AGIC add-on.')
-param applicationGatewayId string
+@description('Name of the Application Gateway managed by AGIC add-on.')
+param applicationGatewayName string
 
-@description('ID of the Log Analytics Workspace managed by OMSAgent add-on.')
-param logAnalyticsWorkspaceId string
+@description('Name of the Log Analytics Workspace managed by OMSAgent add-on.')
+param logAnalyticsWorkspaceName string
 
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
-var nodeResourceGroup = 'RG-demo-sodexo-crece-02' // 'BRS-MEX-USE2-CRECESDX-${env}-RG02'
+var selectedNodeResourceGroupName = (env == 'SWO') ? nodeResourceGroupName : 'BRS-MEX-USE2-CRECESDX-${env}-RG02'
+var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', subnetName)
+var applicationGatewayId = resourceId('Microsoft.Network/applicationGateways', applicationGatewayName)
+var logAnalyticsWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', logAnalyticsWorkspaceName)
 
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-KU01'
@@ -67,7 +73,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
   properties: {
     dnsPrefix: 'azmxku1${aksDnsSuffix}'
     kubernetesVersion: kubernetesVersion
-    nodeResourceGroup: nodeResourceGroup
+    nodeResourceGroup: selectedNodeResourceGroupName
     agentPoolProfiles: [
       {
         name: 'nodepool1'
@@ -148,7 +154,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
 }
 
 resource aksLock 'Microsoft.Authorization/locks@2017-04-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AL02'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-AL05'
   scope: aksCluster
   properties: {
     level: 'CanNotDelete'

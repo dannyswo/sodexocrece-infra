@@ -15,11 +15,11 @@ param env string
 @maxLength(4)
 param privateEndpointName string
 
-@description('ID of the Subnet where Private Endpoint will be deployed.')
-param subnetId string
+@description('Name of the Subnet where Private Endpoint will be deployed.')
+param subnetName string
 
 @description('Private IP addresses of the Private Endpoint.')
-param privateIpAddresses array
+param privateIPAddresses array
 
 @description('ID of the service connected to the Private Endpoint.')
 param serviceId string
@@ -33,11 +33,13 @@ param serviceId string
 ])
 param groupId string
 
-@description('ID of the VNet linked to the DNS Private Zone.')
-param linkedVnetId string
+@description('Names of the VNets linked to the DNS Private Zone.')
+param linkedVnetNames array
 
 @description('Standard tags applied to all resources.')
 param standardTags object = resourceGroup().tags
+
+var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', subnetName)
 
 var memberNamesDictionary = {
   vault: [ 'default' ]
@@ -61,7 +63,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
       properties: {
         groupId: groupId
         memberName: memberNames[index]
-        privateIPAddress: privateIpAddresses[index]
+        privateIPAddress: privateIPAddresses[index]
       }
     }]
     privateLinkServiceConnections: [
@@ -94,25 +96,25 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   tags: standardTags
 }
 
-resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: '${privateEndpointName}-networkLink1'
+resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (item, index) in linkedVnetNames: {
+  name: '${privateEndpointName}-networkLink${index}'
   parent: privateDnsZone
   location: 'global'
   properties: {
     registrationEnabled: false
     virtualNetwork: {
-      id: linkedVnetId
+      id: resourceId('Microsoft.Network/virtualNetworks', item)
     }
   }
-}
+}]
 
 resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-05-01' = {
-  name: '${privateEndpointName}-dnsZoneGroup1'
+  name: '${privateEndpointName}-dnsZoneGroup'
   parent: privateEndpoint
   properties: {
     privateDnsZoneConfigs: [
       {
-        name: '${privateEndpointName}-dnsZoneConfig1'
+        name: '${privateEndpointName}-dnsZoneConfig'
         properties: {
           privateDnsZoneId: privateDnsZone.id
         }

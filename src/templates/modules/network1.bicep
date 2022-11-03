@@ -16,9 +16,6 @@ param env string
 param gatewayVNetName string
 
 @description('IP range or CIDR of the Gateway VNet.')
-@metadata({
-  example: '10.169.72.0/21'
-})
 param gatewayVNetAddressPrefix string
 
 @description('Standard name of the Gateway Subnet.')
@@ -27,9 +24,6 @@ param gatewayVNetAddressPrefix string
 param gatewaySubnetName string
 
 @description('IP range or CIDR of the Gateway Subnet.')
-@metadata({
-  example: '10.169.72.64/27'
-})
 param gatewaySubnetAddressPrefix string
 
 @description('Standard name of the Applications VNet.')
@@ -38,9 +32,6 @@ param gatewaySubnetAddressPrefix string
 param appsVNetName string
 
 @description('IP range or CIDR of the Applications VNet.')
-@metadata({
-  example: '10.169.72.0/21'
-})
 param appsVNetAddressPrefix string
 
 @description('Standard name of the Applications Subnet.')
@@ -49,9 +40,6 @@ param appsVNetAddressPrefix string
 param appsSubnetName string
 
 @description('IP range or CIDR of the Applications Subnet.')
-@metadata({
-  example: '10.169.72.64/27'
-})
 param appsSubnetAddressPrefix string
 
 @description('Standard name of the Endpoints VNet.')
@@ -60,9 +48,6 @@ param appsSubnetAddressPrefix string
 param endpointsVNetName string
 
 @description('IP range or CIDR of the Endpoints VNet.')
-@metadata({
-  example: '10.169.72.0/21'
-})
 param endpointsVNetAddressPrefix string
 
 @description('Standard name of the Endpoints Subnet.')
@@ -71,9 +56,6 @@ param endpointsVNetAddressPrefix string
 param endpointsSubnetName string
 
 @description('IP range or CIDR of the Endpoints Subnet.')
-@metadata({
-  example: '10.169.72.64/27'
-})
 param endpointsSubnetAddressPrefix string
 
 @description('Standards tags applied to all resources.')
@@ -121,6 +103,47 @@ resource appsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
     ]
     enableDdosProtection: false
     enableVmProtection: false
+  }
+  tags: standardTags
+}
+
+resource appsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS01'
+  location: location
+  dependsOn: [
+    appsVNet
+  ]
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowHttp'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourcePortRange: '80'
+          sourceAddressPrefix: '*'
+          destinationPortRange: '80'
+          destinationAddressPrefix: '*'
+          priority: 10
+          description: 'Allow HTTP from anywhere.'
+        }
+      }
+      {
+        name: 'AllowHttps'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourcePortRange: '443'
+          sourceAddressPrefix: '*'
+          destinationPortRange: '443'
+          destinationAddressPrefix: '*'
+          priority: 10
+          description: 'Allow HTTPS from anywhere.'
+        }
+      }
+    ]
   }
   tags: standardTags
 }
@@ -251,3 +274,9 @@ output subnets array = [
     name: endpointsVNet.properties.subnets[0].name
   }
 ]
+
+@description('ID of the Applications VNet NSG.')
+output appsNSGId string = appsNSG.id
+
+@description('Name of the Applications VNet NSG.')
+output appsNSGName string = appsNSG.name

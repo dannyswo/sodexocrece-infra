@@ -13,6 +13,9 @@ param env string
 @description('Create network resources defined in the network module.')
 param enableNetwork bool = false
 
+@description('Name of the Gateway VNet. Must be defined when enableNetwork is false.')
+param gatewayVnetName string
+
 @description('Name of the Gateway Subnet. Must be defined when enableNetwork is false.')
 param gatewaySubnetName string
 
@@ -22,17 +25,29 @@ param appsVnetName string
 @description('Name of the Applications Subnet. Must be defined when enableNetwork is false.')
 param appsSubnetName string
 
+@description('Name of the Endpoints VNet. Must be defined when enableNetwork is false.')
+param endpointsVnetName string
+
 @description('Name of the Endpoints Subnet. Must be defined when enableNetwork is false.')
 param endpointsSubnetName string
+
+@description('Name of the Jump Servers VNet. Must be defined when enableNetwork is false.')
+param jumpServersVnetName string
+
+@description('Name of the DevOps Agents VNet. Must be defined when enableNetwork is false.')
+param devopsAgentsVnetName string
 
 @description('Create Private Endpoints for the required modules like keyvault, storage, database and acr.')
 param enablePrivateEndpoints bool = true
 
 @description('Private IP of the Key Vault\'s Private Endpoint.')
-param keyVaultPEPrivateIpAddress string
+param keyVaultPEPrivateIPAddress string
+
+@description('Private IP of the Storage Account\'s Private Endpoint.')
+param dataStoragePEPrivateIPAddress string
 
 @description('Private IPs of the Container Registry\'s Private Endpoint.')
-param acrPEPrivateIpAddresses array
+param acrPEPrivateIPAddresses array
 
 @description('Standard tags applied to all resources.')
 @metadata({
@@ -55,10 +70,21 @@ param appGatewayNameSuffix string
 param appGatewaySkuTier string
 param appGatewaySkuName string
 param appGatewaySkuCapacity int
-param appGatewayEnablePublicIp bool
-param appGatewayPrivateIpAddress string
+param appGatewayEnablePublicIP bool
+param appGatewayPrivateIPAddress string
 param appGatewayAutoScaleMinCapacity int
 param appGatewayAutoScaleMaxCapacity int
+param appGatewayEnablePublicCertificate bool
+param appGatewayPublicCertificateId string
+
+param workspaceSkuName string
+param workspaceLogRetentionDays int
+
+param flowLogsRetentionDays int
+
+param dataStorageNameSuffix string
+param dataStorageSkuName string
+param dataStorageLogsRetentionDays int
 
 param acrNameSuffix string
 param acrSku string
@@ -69,6 +95,7 @@ param acrSoftDeleteRetentionDays int
 param aksSkuTier string
 param aksDnsSuffix string
 param aksKubernetesVersion string
+param aksNodeResourceGroupName string
 param aksEnableAutoScaling bool
 param aksNodePoolMinCount int
 param aksNodePoolMaxCount int
@@ -106,8 +133,18 @@ module keyVaultModule 'modules/keyvault.bicep' = {
   }
 }
 
-var selectedEndpointsSubnetId = (enableNetwork) ? networkModule.outputs.subnets[2].id : resourceId('Microsoft.Network/virtualNetworks/subnets', endpointsSubnetName)
-var selectedAppsVnetId = (enableNetwork) ? networkModule.outputs.vnets[1].id : resourceId('Microsoft.Network/virtualNetworks', appsVnetName)
+var selectedEndpointsSubnetName = (enableNetwork) ? networkModule.outputs.subnets[2].name : endpointsSubnetName
+var selectedLinkedVnetNames = (enableNetwork) ? [
+  networkModule.outputs.vnets[0].name
+  networkModule.outputs.vnets[1].name
+  networkModule.outputs.vnets[2].name
+] : [
+  gatewayVnetName
+  appsVnetName
+  endpointsVnetName
+  jumpServersVnetName
+  devopsAgentsVnetName
+]
 
 module keyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
   name: 'keyVaultPrivateEndpointModule'
@@ -115,16 +152,16 @@ module keyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enabl
     location: location
     env: env
     privateEndpointName: 'PE02'
-    subnetId: selectedEndpointsSubnetId
-    privateIpAddresses: [ keyVaultPEPrivateIpAddress ]
+    subnetName: selectedEndpointsSubnetName
+    privateIPAddresses: [ keyVaultPEPrivateIPAddress ]
     serviceId: keyVaultModule.outputs.keyVaultId
     groupId: 'vault'
-    linkedVnetId: selectedAppsVnetId
+    linkedVnetNames: selectedLinkedVnetNames
     standardTags: standardTags
   }
 }
 
-var selectedGatewaySubnetId = (enableNetwork) ? networkModule.outputs.subnets[0].id : resourceId('Microsoft.Network/virtualNetworks/subnets', gatewaySubnetName)
+var selectedGatewaySubnetName = (enableNetwork) ? networkModule.outputs.subnets[0].name : gatewaySubnetName
 
 module appGatewayModule 'modules/agw.bicep' = {
   name: 'appGatewayModule'
@@ -135,11 +172,65 @@ module appGatewayModule 'modules/agw.bicep' = {
     appGatewaySkuTier: appGatewaySkuTier
     appGatewaySkuName: appGatewaySkuName
     appGatewaySkuCapacity: appGatewaySkuCapacity
-    enablePublicIp: appGatewayEnablePublicIp
-    appGatewayPrivateIpAddress: appGatewayPrivateIpAddress
-    gatewaySubnetId: selectedGatewaySubnetId
+    enablePublicIP: appGatewayEnablePublicIP
+    appGatewayPrivateIPAddress: appGatewayPrivateIPAddress
+    gatewaySubnetName: selectedGatewaySubnetName
     autoScaleMinCapacity: appGatewayAutoScaleMinCapacity
     autoScaleMaxCapacity: appGatewayAutoScaleMaxCapacity
+    enablePublicCertificate: appGatewayEnablePublicCertificate
+    publicCertificateId: appGatewayPublicCertificateId
+    standardTags: standardTags
+  }
+}
+
+module logAnalyticsModule 'modules/loganalytics.bicep' = {
+  name: 'logAnalyticsModule'
+  params: {
+    location: location
+    env: env
+    workspaceSkuName: workspaceSkuName
+    logRetentionDays: workspaceLogRetentionDays
+    standardTags: standardTags
+  }
+}
+
+module networkWatcherModule 'modules/networkwatcher.bicep' = {
+  name: 'networkWatcherModule'
+  params: {
+    location: location
+    env: env
+    targetNsgName: networkModule.outputs.appsNSGName
+    targetWorkspaceName: logAnalyticsModule.outputs.workspaceName
+    flowLogsRetentionDays: flowLogsRetentionDays
+    standardTags: standardTags
+  }
+}
+
+module dataStorageModule 'modules/datastorage.bicep' = {
+  name: 'dataStorageModule'
+  params: {
+    location: location
+    env: env
+    dataStorageNameSuffix: dataStorageNameSuffix
+    dataStorageSkuName: dataStorageSkuName
+    keyVaultUri: keyVaultModule.outputs.keyVaultUri
+    targetWorkspaceName: logAnalyticsModule.outputs.workspaceName
+    logsRetentionDays: dataStorageLogsRetentionDays
+    standardTags: standardTags
+  }
+}
+
+module dataStoragePrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'dataStoragePrivateEndpointModule'
+  params: {
+    location: location
+    env: env
+    privateEndpointName: 'PE04'
+    subnetName: selectedEndpointsSubnetName
+    privateIPAddresses: [ dataStoragePEPrivateIPAddress ]
+    serviceId: keyVaultModule.outputs.keyVaultId
+    groupId: 'storageAccount'
+    linkedVnetNames: selectedLinkedVnetNames
     standardTags: standardTags
   }
 }
@@ -158,22 +249,22 @@ module acrModule 'modules/acr.bicep' = {
   }
 }
 
-module acrModulePrivateEndpoint 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
+module acrPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
   name: 'acrModulePrivateEndpoint'
   params: {
     location: location
     env: env
     privateEndpointName: 'PE03'
-    subnetId: selectedEndpointsSubnetId
-    privateIpAddresses: acrPEPrivateIpAddresses
+    subnetName: selectedEndpointsSubnetName
+    privateIPAddresses: acrPEPrivateIPAddresses
     serviceId: acrModule.outputs.registryId
     groupId: 'registry'
-    linkedVnetId: selectedAppsVnetId
+    linkedVnetNames: selectedLinkedVnetNames
     standardTags: standardTags
   }
 }
 
-var selectedAppsSubnetId = (enableNetwork) ? networkModule.outputs.subnets[1].id : resourceId('Microsoft.Network/virtualNetworks/subnets', appsSubnetName)
+var selectedAppsSubnetName = (enableNetwork) ? networkModule.outputs.subnets[1].name : appsSubnetName
 
 module aksModule 'modules/aks.bicep' = {
   name: 'aksModule'
@@ -183,14 +274,15 @@ module aksModule 'modules/aks.bicep' = {
     aksSkuTier: aksSkuTier
     aksDnsSuffix: aksDnsSuffix
     kubernetesVersion: aksKubernetesVersion
-    subnetId: selectedAppsSubnetId
+    nodeResourceGroupName: aksNodeResourceGroupName
+    subnetName: selectedAppsSubnetName
     enableAutoScaling: aksEnableAutoScaling
     minCount: aksNodePoolMinCount
     maxCount: aksNodePoolMaxCount
     vmSize: aksNodePoolVmSize
     enableEncryptionAtHost: aksEnableEncryptionAtHost
-    applicationGatewayId: ''
-    logAnalyticsWorkspaceId: ''
+    applicationGatewayName: appGatewayModule.outputs.applicationGatewayName
+    logAnalyticsWorkspaceName: ''
     standardTags: standardTags
   }
 }

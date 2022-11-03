@@ -17,8 +17,11 @@
     "kubernetesVersion": {
       "value": "1.23.12"
     },
-    "subnetId": {
-      "value": "[PENDING subnetId]"
+    "nodeResourceGroupName": {
+      "value": "RG-demo-sodexo-crece-02"
+    },
+    "subnetName": {
+      "value": "{NULL subnetName}"
     },
     "enableAutoScaling": {
       "value": true
@@ -35,11 +38,11 @@
     "enableEncryptionAtHost": {
       "value": false
     },
-    "applicationGatewayId": {
-      "value": "{NULL applicationGatewayId}"
+    "applicationGatewayName": {
+      "value": "{NULL applicationGatewayName}"
     },
-    "logAnalyticsWorkspaceId": {
-      "value": "{NULL logAnalyticsWorkspaceId}"
+    "logAnalyticsWorkspaceName": {
+      "value": "{NULL logAnalyticsWorkspaceName}"
     }
   }
 }

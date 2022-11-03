@@ -16,9 +16,6 @@ param env string
 param vnetName string
 
 @description('IP range or CIDR of the VNet.')
-@metadata({
-  example: '10.169.72.0/21'
-})
 param vnetAddressPrefix string
 
 @description('Names and IP ranges of the Subnets.')

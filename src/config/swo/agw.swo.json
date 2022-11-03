@@ -20,20 +20,26 @@
     "appGatewaySkuCapacity": {
       "value": 1
     },
-    "enablePublicIp": {
+    "enablePublicIP": {
       "value": true
     },
-    "appGatewayPrivateIpAddress": {
+    "appGatewayPrivateIPAddress": {
       "value": "10.169.90.135"
     },
-    "gatewaySubnetId": {
-      "value": "{NULL gatewaySubnetId}"
+    "gatewaySubnetName": {
+      "value": "{NULL gatewaySubnetName}"
     },
     "autoScaleMinCapacity": {
       "value": 1
     },
     "autoScaleMaxCapacity": {
       "value": 3
+    },
+    "enablePublicCertificate": {
+      "value": false
+    },
+    "publicCertificateId": {
+      "value": "{NULL publicCertificateId}"
     }
   }
 }
