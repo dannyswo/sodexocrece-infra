@@ -8,7 +8,7 @@ param location string = resourceGroup().location
   'UAT'
   'PRD'
 ])
-param environment string
+param env string
 
 @description('Suffix used in the Container Registry name.')
 @minLength(6)

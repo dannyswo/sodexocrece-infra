@@ -13,8 +13,8 @@ Modules:
 * privateendpoint
 * keyvault
 * agw
-* storageaccount
 * loganalytics
+* datastorage
 * networkwatcher
 * sqldatabase
 * acr

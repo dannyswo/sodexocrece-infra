@@ -8,7 +8,7 @@ param location string = resourceGroup().location
   'UAT'
   'PRD'
 ])
-param environment string
+param env string
 
 @description('Tier of the AKS Managed Cluster. Use Paid for HA with multiple AZs.')
 @allowed([
@@ -52,8 +52,10 @@ param logAnalyticsWorkspaceId string
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
+var nodeResourceGroup = 'RG-demo-sodexo-crece-02' // 'BRS-MEX-USE2-CRECESDX-${env}-RG02'
+
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-preview' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-KU01'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-KU01'
   location: location
   sku: {
     name: 'Basic'
@@ -65,7 +67,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
   properties: {
     dnsPrefix: 'azmxku1${aksDnsSuffix}'
     kubernetesVersion: kubernetesVersion
-    nodeResourceGroup: 'BRS-MEX-USE2-CRECESDX-${environment}-RG02'
+    nodeResourceGroup: nodeResourceGroup
     agentPoolProfiles: [
       {
         name: 'nodepool1'
@@ -146,7 +148,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
 }
 
 resource aksLock 'Microsoft.Authorization/locks@2017-04-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-AL02'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-AL02'
   scope: aksCluster
   properties: {
     level: 'CanNotDelete'

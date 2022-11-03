@@ -8,19 +8,19 @@
     "env": {
       "value": "DEV"
     },
-    "acrNameSuffix": {
-      "value": "hle620"
+    "storageAccountNameSuffix": {
+      "value": "ifv691"
     },
-    "acrSku": {
-      "value": "Premium"
+    "storageAccountSkuName": {
+      "value": "Standard_LRS"
     },
-    "zoneRedundancy": {
-      "value": "Disabled"
+    "keyVaultUri": {
+      "value": "{NULL keyVaultUri}"
     },
-    "untaggedRetentionDays": {
-      "value": 7
+    "targetWorkspaceId": {
+      "value": "{NULL targetWorkspaceId}"
     },
-    "softDeleteRetentionDays": {
+    "logsRetentionDays": {
       "value": 7
     }
   }

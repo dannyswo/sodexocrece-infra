@@ -8,7 +8,7 @@ param location string = resourceGroup().location
   'UAT'
   'PRD'
 ])
-param environment string
+param env string
 
 @description('Create network resources defined in the network module.')
 param enableNetwork bool = false
@@ -79,7 +79,7 @@ module networkModule 'modules/network1.bicep' = if (enableNetwork) {
   name: 'networkModule'
   params: {
     location: location
-    environment: environment
+    env: env
     gatewayVNetName: 'VN01'
     gatewayVNetAddressPrefix: '10.169.90.0/24'
     gatewaySubnetName: 'SN01'
@@ -100,7 +100,7 @@ module keyVaultModule 'modules/keyvault.bicep' = {
   name: 'keyVaultModule'
   params: {
     location: location
-    environment: environment
+    env: env
     keyVaultNameSuffix: keyVaultNameSuffix
     standardTags: standardTags
   }
@@ -113,7 +113,7 @@ module keyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enabl
   name: 'keyVaultPrivateEndpointModule'
   params: {
     location: location
-    env: environment
+    env: env
     privateEndpointName: 'PE02'
     subnetId: selectedEndpointsSubnetId
     privateIpAddresses: [ keyVaultPEPrivateIpAddress ]
@@ -130,7 +130,7 @@ module appGatewayModule 'modules/agw.bicep' = {
   name: 'appGatewayModule'
   params: {
     location: location
-    environment: environment
+    env: env
     appGatewayNameSuffix: appGatewayNameSuffix
     appGatewaySkuTier: appGatewaySkuTier
     appGatewaySkuName: appGatewaySkuName
@@ -148,7 +148,7 @@ module acrModule 'modules/acr.bicep' = {
   name: 'acrModule'
   params: {
     location: location
-    environment: environment
+    env: env
     acrNameSuffix: acrNameSuffix
     acrSku: acrSku
     zoneRedundancy: acrZoneRedundancy
@@ -162,7 +162,7 @@ module acrModulePrivateEndpoint 'modules/privateendpoint.bicep' = if (enablePriv
   name: 'acrModulePrivateEndpoint'
   params: {
     location: location
-    env: environment
+    env: env
     privateEndpointName: 'PE03'
     subnetId: selectedEndpointsSubnetId
     privateIpAddresses: acrPEPrivateIpAddresses
@@ -175,12 +175,11 @@ module acrModulePrivateEndpoint 'modules/privateendpoint.bicep' = if (enablePriv
 
 var selectedAppsSubnetId = (enableNetwork) ? networkModule.outputs.subnets[1].id : resourceId('Microsoft.Network/virtualNetworks/subnets', appsSubnetName)
 
-/*
 module aksModule 'modules/aks.bicep' = {
   name: 'aksModule'
   params: {
     location: location
-    environment: environment
+    env: env
     aksSkuTier: aksSkuTier
     aksDnsSuffix: aksDnsSuffix
     kubernetesVersion: aksKubernetesVersion
@@ -195,4 +194,3 @@ module aksModule 'modules/aks.bicep' = {
     standardTags: standardTags
   }
 }
-*/

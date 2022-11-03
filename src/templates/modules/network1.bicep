@@ -8,7 +8,7 @@ param location string = resourceGroup().location
   'UAT'
   'PRD'
 ])
-param environment string
+param env string
 
 @description('Standard name of the Gateway VNet.')
 @minLength(4)
@@ -80,7 +80,7 @@ param endpointsSubnetAddressPrefix string
 param standardTags object = resourceGroup().tags
 
 resource gatewayVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-${gatewayVNetName}'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewayVNetName}'
   location: location
   properties: {
     addressSpace: {
@@ -90,7 +90,7 @@ resource gatewayVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
     }
     subnets: [
       {
-        name: 'BRS-MEX-USE2-CRECESDX-${environment}-${gatewaySubnetName}'
+        name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewaySubnetName}'
         properties: {
           addressPrefix: gatewaySubnetAddressPrefix
         }
@@ -103,7 +103,7 @@ resource gatewayVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 }
 
 resource appsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-${appsVNetName}'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${appsVNetName}'
   location: location
   properties: {
     addressSpace: {
@@ -113,7 +113,7 @@ resource appsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
     }
     subnets: [
       {
-        name: 'BRS-MEX-USE2-CRECESDX-${environment}-${appsSubnetName}'
+        name: 'BRS-MEX-USE2-CRECESDX-${env}-${appsSubnetName}'
         properties: {
           addressPrefix: appsSubnetAddressPrefix
         }
@@ -126,7 +126,7 @@ resource appsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 }
 
 resource endpointsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-${endpointsVNetName}'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${endpointsVNetName}'
   location: location
   properties: {
     addressSpace: {
@@ -136,7 +136,7 @@ resource endpointsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
     }
     subnets: [
       {
-        name: 'BRS-MEX-USE2-CRECESDX-${environment}-${endpointsSubnetName}'
+        name: 'BRS-MEX-USE2-CRECESDX-${env}-${endpointsSubnetName}'
         properties: {
           addressPrefix: endpointsSubnetAddressPrefix
         }
@@ -149,7 +149,7 @@ resource endpointsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 }
 
 resource gatewayAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-VP01'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP01'
   parent: gatewayVNet
   properties: {
     remoteVirtualNetwork: {
@@ -162,7 +162,7 @@ resource gatewayAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetwo
 }
 
 resource appsGatewayVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-VP03'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP03'
   parent: appsVNet
   properties: {
     remoteVirtualNetwork: {
@@ -175,7 +175,7 @@ resource appsGatewayVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetwo
 }
 
 resource appsEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-VP02'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP02'
   parent: appsVNet
   properties: {
     remoteVirtualNetwork: {
@@ -188,7 +188,7 @@ resource appsEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNet
 }
 
 resource endpointsAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-VP04'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP04'
   parent: endpointsVNet
   properties: {
     remoteVirtualNetwork: {

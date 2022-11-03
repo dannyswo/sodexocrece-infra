@@ -8,16 +8,13 @@ param location string = resourceGroup().location
   'UAT'
   'PRD'
 ])
-param environment string
+param env string
 
-@description('ID of the target Network Security Group (NSG) where flow logs will be captured.')
-param targetNSGId string
+@description('Name of the target Network Security Group (NSG) where flow logs will be captured.')
+param targetNsgName string
 
-@description('ID of the target Storage Account where flow logs will be stored.')
-param targetStorageAccountId string
-
-@description('ID of the target Log Analytics Workspace where flow logs will be analyzed.')
-param targetWorkspaceId string
+@description('Name of the target Log Analytics Workspace where flow logs will be analyzed.')
+param targetWorkspaceName string
 
 @description('Retention days of flow logs captured by the Network Watcher.')
 @minValue(7)
@@ -27,22 +24,27 @@ param flowLogsRetentionDays int
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
+var networkWatcherNameSuffix = 'NW01'
+
 resource networkWatcher 'Microsoft.Network/networkWatchers@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-NW01'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${networkWatcherNameSuffix}'
   location: location
   properties: {
   }
   tags: standardTags
 }
 
+var targetNSGId = resourceId('Microsoft.Network/networkSecurityGroups', targetNsgName)
+var targetWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', targetWorkspaceName)
+
 resource flowLogs 'Microsoft.Network/networkWatchers/flowLogs@2022-05-01' = {
-  name: 'NW01-flowLogs'
+  name: '${networkWatcherNameSuffix}-flowLogs'
   parent: networkWatcher
   location: location
   properties: {
     enabled: true
     targetResourceId: targetNSGId
-    storageId: targetStorageAccountId
+    storageId: flowLogsStorageAccount.id
     flowAnalyticsConfiguration: {
       networkWatcherFlowAnalyticsConfiguration: {
         enabled: true
@@ -58,6 +60,40 @@ resource flowLogs 'Microsoft.Network/networkWatchers/flowLogs@2022-05-01' = {
       enabled: true
       days: flowLogsRetentionDays
     }
+  }
+  tags: standardTags
+}
+
+resource flowLogsStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-ST02'
+  location: location
+  kind: 'StorageV2'
+  sku: {
+    name: 'Standard_LRS'
+  }
+  properties: {
+    accessTier: 'Hot'
+    immutableStorageWithVersioning: {
+      enabled: false
+    }
+    isHnsEnabled: true
+    isNfsV3Enabled: false
+    isSftpEnabled: false
+    largeFileSharesState: 'Disabled'
+    supportsHttpsTrafficOnly: true
+    allowSharedKeyAccess: false
+    isLocalUserEnabled: false
+    allowBlobPublicAccess: false
+    allowCrossTenantReplication: false
+    allowedCopyScope: 'AAD'
+    publicNetworkAccess: 'Disabled'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+      ipRules: []
+      virtualNetworkRules: []
+    }
+    minimumTlsVersion: '1.2'
   }
   tags: standardTags
 }

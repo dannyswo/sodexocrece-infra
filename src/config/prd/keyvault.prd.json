@@ -5,11 +5,11 @@
     "location": {
       "value": "eastus2"
     },
+    "env": {
+      "value": "PRD"
+    },
     "keyVaultNameSuffix": {
       "value": "qnw485"
-    },
-    "environment": {
-      "value": "PRD"
     }
   }
 }

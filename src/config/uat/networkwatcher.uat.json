@@ -6,21 +6,15 @@
       "value": "eastus2"
     },
     "env": {
-      "value": "DEV"
+      "value": "UAT"
     },
-    "acrNameSuffix": {
-      "value": "hle620"
+    "targetNsgName": {
+      "value": "{NULL targetNsgName}"
     },
-    "acrSku": {
-      "value": "Premium"
+    "targetWorkspaceName": {
+      "value": "{NULL targetWorkspaceName}"
     },
-    "zoneRedundancy": {
-      "value": "Disabled"
-    },
-    "untaggedRetentionDays": {
-      "value": 7
-    },
-    "softDeleteRetentionDays": {
+    "flowLogsRetentionDays": {
       "value": 7
     }
   }

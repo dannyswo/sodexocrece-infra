@@ -6,13 +6,13 @@
       "value": "eastus2"
     },
     "env": {
-      "value": "DEV"
+      "value": "PRD"
     },
     "workspaceSkuName": {
       "value": "Standard"
     },
     "logRetentionDays": {
-      "value": 7
+      "value": 30
     }
   }
 }

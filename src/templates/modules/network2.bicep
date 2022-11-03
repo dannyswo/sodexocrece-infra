@@ -8,7 +8,7 @@ param location string = resourceGroup().location
   'UAT'
   'PRD'
 ])
-param environment string
+param env string
 
 @description('Standard name of the VNet.')
 @minLength(3)
@@ -35,7 +35,7 @@ param vnetAddressPrefix string
 param subnetsAddressPrefixes array
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-${vnetName}'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${vnetName}'
   location: location
   properties: {
     addressSpace: {
@@ -50,7 +50,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 
 @batchSize(1)
 resource vnetSubnets 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = [for subnet in subnetsAddressPrefixes: {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-${subnet.name}'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${subnet.name}'
   parent: virtualNetwork
   properties: {
     addressPrefix: subnet.addressPrefix

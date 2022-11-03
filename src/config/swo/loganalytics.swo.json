@@ -5,8 +5,8 @@
     "location": {
       "value": "eastus2"
     },
-    "env": {
-      "value": "DEV"
+    "environment": {
+      "value": "SWO"
     },
     "workspaceSkuName": {
       "value": "Standard"

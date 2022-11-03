@@ -8,20 +8,14 @@
     "env": {
       "value": "PRD"
     },
-    "acrNameSuffix": {
-      "value": "jel356"
+    "targetNsgName": {
+      "value": "{NULL targetNsgName}"
     },
-    "acrSku": {
-      "value": "Premium"
+    "targetWorkspaceName": {
+      "value": "{NULL targetWorkspaceName}"
     },
-    "zoneRedundancy": {
-      "value": "Enabled"
-    },
-    "untaggedRetentionDays": {
-      "value": 180
-    },
-    "softDeleteRetentionDays": {
-      "value": 90
+    "flowLogsRetentionDays": {
+      "value": 30
     }
   }
 }

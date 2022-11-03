@@ -6,7 +6,7 @@ param enableKVPrivateEndpoint bool = false
 param enableBSPrivateEndpoint bool = false
 param enableNetwork bool = false
 param location string = resourceGroup().location
-param environment string 
+param env string 
 param tags object 
 // = {
 //   ApplicationName : ''
@@ -50,7 +50,7 @@ var PESubnetIndex = 1
 module vnetAppFEModule 'modules/network.bicep' = if (enableNetwork){
   name: 'vnetAppFE'
   params: {
-    environment: environment
+    environment: env
     location: location
     subnets: subnetsVnetFE
     vnetPrefix: vnetPrefixFE
@@ -61,7 +61,7 @@ module vnetAppFEModule 'modules/network.bicep' = if (enableNetwork){
 module vnetPrivateEndpointsModule 'modules/network.bicep' = if (enableNetwork){
   name: 'vnetPrivateEndpoints'
   params: {
-    environment: environment
+    environment: env
     location: location
     subnets: subnetsVnetPE
     vnetPrefix: vnetPrefixPE
@@ -72,7 +72,7 @@ module vnetPrivateEndpointsModule 'modules/network.bicep' = if (enableNetwork){
 module vnetSharedAppModule 'modules/network.bicep' = if (enableNetwork){
   name: 'vnetSharedApp'
   params: {
-    environment: environment
+    environment: env
     location: location
     subnets: subnetsVnetSA
     vnetPrefix: vnetPrefixSA

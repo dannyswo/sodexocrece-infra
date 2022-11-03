@@ -5,8 +5,8 @@
     "location": {
       "value": "eastus2"
     },
-    "environment": {
-      "value": "DEV"
+    "env": {
+      "value": "PRD"
     },
     "aksSkuTier": {
       "value": "Paid"

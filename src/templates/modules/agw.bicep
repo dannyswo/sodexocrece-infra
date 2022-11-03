@@ -8,7 +8,7 @@ param location string = resourceGroup().location
   'UAT'
   'PRD'
 ])
-param environment string
+param env string
 
 @description('Suffix used in the name of the Application Gateway.')
 @minLength(6)
@@ -149,7 +149,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2022-05-01' =
 }
 
 resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = if (enablePublicIp) {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-PI01'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-PI01'
   location: location
   sku: {
     name: 'Standard'
@@ -164,7 +164,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = if (
 }
 
 resource wafPolicies 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-WP01'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-WP01'
   location: location
   properties: {
     policySettings: {

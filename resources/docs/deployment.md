@@ -9,5 +9,5 @@ az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\ac
 
 az deployment group list --resource-group RG-demo-sodexo-crece --filter "provisioningState eq 'Failed'"
 
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\main1.bicep -p .\src\config\swo\main.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\main1.bicep -p .\src\config\swo\main1.swo.json
 ```

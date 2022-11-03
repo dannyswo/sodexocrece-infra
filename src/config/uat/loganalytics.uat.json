@@ -6,7 +6,7 @@
       "value": "eastus2"
     },
     "env": {
-      "value": "DEV"
+      "value": "UAT"
     },
     "workspaceSkuName": {
       "value": "Standard"

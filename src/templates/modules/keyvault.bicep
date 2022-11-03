@@ -8,7 +8,7 @@ param location string = resourceGroup().location
   'UAT'
   'PRD'
 ])
-param environment string
+param env string
 
 @description('Suffix used in the Key Vault name.')
 @minLength(6)
@@ -49,7 +49,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
 }
 
 resource keyVaultLock 'Microsoft.Authorization/locks@2017-04-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-AL01'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-AL01'
   scope: keyVault
   properties: {
     level: 'CanNotDelete'

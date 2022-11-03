@@ -8,7 +8,7 @@ param location string = resourceGroup().location
   'UAT'
   'PRD'
 ])
-param environment string
+param env string
 
 @description('SKU name of the Log Analytics Workspace.')
 @allowed([
@@ -23,14 +23,14 @@ param workspaceSkuName string
 @maxValue(180)
 param logRetentionDays int
 
-@description('ID of the linked Storage Account to store the logs.')
-param linkedStorageAccountId string
+//@description('ID of the linked Storage Account to store the logs.')
+//param linkedStorageAccountId string
 
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${environment}-MM01'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-MM01'
   location: location
   identity: {
     type: 'SystemAssigned'
@@ -40,7 +40,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
       name: workspaceSkuName
     }
     features: {
-      immediatePurgeDataOn30Days: true
+      immediatePurgeDataOn30Days: false
       disableLocalAuth: true
       enableDataExport: false
       enableLogAccessUsingOnlyResourcePermissions: false
@@ -56,6 +56,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
   tags: standardTags
 }
 
+/*
 resource linkedStorageAccounts 'Microsoft.OperationalInsights/workspaces/linkedStorageAccounts@2020-08-01' = {
   name: 'CustomLogs'
   parent: logAnalyticsWorkspace
@@ -65,3 +66,4 @@ resource linkedStorageAccounts 'Microsoft.OperationalInsights/workspaces/linkedS
     ]
   }
 }
+*/
