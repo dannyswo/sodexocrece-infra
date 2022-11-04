@@ -11,23 +11,59 @@
     "enableNetwork": {
       "value": true
     },
-    "gatewaySubnetName": {
-      "value": "{NULL gatewaySubnetName}"
+    "gatewayVNetName": {
+      "value": "BRS-GLB-USE2-APPLICSHR-DEV-VN02"
     },
-    "appsVnetName": {
-      "value": "{NULL appsVnetName}"
+    "gatewaySubnetName": {
+      "value": "BRS-GLB-USE2-APGW-DEV-SN01"
+    },
+    "appsVNetName": {
+      "value": "BRS-GLB-USE2-APPLICFRONT-DEV-VN01"
     },
     "appsSubnetName": {
-      "value": "{NULL appsSubnetName}"
+      "value": "BRS-MEX-USE2-PVTPNT-DEV-SN01"
+    },
+    "endpointsVNetName": {
+      "value": "BRS-GLB-USE2-PVTPNTBRS-DEV-VN02"
     },
     "endpointsSubnetName": {
-      "value": "{NULL endpointsSubnetName}"
+      "value": "BRS-MEX-USE2-PVTPNT-DEV-SN01"
+    },
+    "jumpServersVNetName": {
+      "value": "{NULL jumpServersVNetName}"
+    },
+    "devopsAgentsVNetName": {
+      "value": "{NULL devopsAgentsVNetName}"
     },
     "enablePrivateEndpoints": {
       "value": true
     },
-    "keyVaultPEPrivateIpAddress": {
+    "keyVaultPEPrivateIPAddress": {
       "value": "10.169.88.69"
+    },
+    "acrPEPrivateIPAddresses": {
+      "value": [
+        "10.169.88.72",
+        "10.169.88.74"
+      ]
+    },
+    "keyVaultNameSuffix": {
+      "value": "mat327"
+    },
+    "monitoringDataStorageNameSuffix": {
+      "value": "msv817"
+    },
+    "monitoringDataStorageSkuName": {
+      "value": "Standard_LRS"
+    },
+    "workspaceSkuName": {
+      "value": "PerGB2018"
+    },
+    "workspaceLogRetentionDays": {
+      "value": 30
+    },
+    "workspaceCapacityReservation": {
+      "value": 0
     },
     "appGatewayNameSuffix": {
       "value": "gtc219"
@@ -41,10 +77,10 @@
     "appGatewaySkuCapacity": {
       "value": 1
     },
-    "appGatewayEnablePublicIp": {
+    "appGatewayEnablePublicIP": {
       "value": true
     },
-    "appGatewayPrivateIpAddress": {
+    "appGatewayPrivateIPAddress": {
       "value": "10.169.90.135"
     },
     "appGatewayAutoScaleMinCapacity": {
@@ -52,15 +88,6 @@
     },
     "appGatewayAutoScaleMaxCapacity": {
       "value": 3
-    },
-    "acrPEPrivateIpAddresses": {
-      "value": [
-        "10.169.88.72",
-        "10.169.88.74"
-      ]
-    },
-    "keyVaultNameSuffix": {
-      "value": "mat327"
     },
     "acrNameSuffix": {
       "value": "hle620"

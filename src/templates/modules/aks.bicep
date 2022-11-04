@@ -28,7 +28,10 @@ param kubernetesVersion string
 @description('Name of the Resource Group of the AKS managed resources (VMSS, LB, etc).')
 param nodeResourceGroupName string
 
-@description('Name of the Subnet where the Cluster will be deployed.')
+@description('Name of the Apps VNet where the AKS Cluster will be deployed.')
+param vnetName string
+
+@description('Name of the Apps Subnet where the AKS Cluster will be deployed.')
 param subnetName string
 
 @description('Enable auto scaling for AKS system node pool.')
@@ -57,7 +60,7 @@ param standardTags object = resourceGroup().tags
 
 var selectedNodeResourceGroupName = (env == 'SWO') ? nodeResourceGroupName : 'BRS-MEX-USE2-CRECESDX-${env}-RG02'
 
-var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', subnetName)
+var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
 
 var enableAGICAddon = false
 var applicationGatewayId = resourceId('Microsoft.Network/applicationGateways', applicationGatewayName)

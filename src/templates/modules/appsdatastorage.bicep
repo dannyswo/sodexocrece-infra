@@ -41,7 +41,7 @@ param standardTags object = resourceGroup().tags
 
 var storageAccountName = 'azmxst1${storageAccountNameSuffix}'
 
-var encryptionKeyName = 'MerchantFilesKey'
+var encryptionKeyName = 'merchantfileskey'
 
 var virtualNetworkRules = [for allowedSubnetName in allowedSubnetNames: {
   id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnetName)
@@ -64,9 +64,6 @@ resource appsDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' =
     isNfsV3Enabled: false
     isSftpEnabled: false
     largeFileSharesState: 'Disabled'
-    immutableStorageWithVersioning: {
-      enabled: false
-    }
     encryption: {
       identity: {
         userAssignedIdentity: managedIdentity.id
@@ -97,7 +94,7 @@ resource appsDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' =
       virtualNetworkRules: virtualNetworkRules
       ipRules: []
     }
-    minimumTlsVersion: '1.2'
+    minimumTlsVersion: 'TLS1_2'
   }
   tags: standardTags
 }
@@ -120,14 +117,9 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01
 }
 
 resource merchantFilesContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
-  name: 'MerchantFiles'
+  name: 'merchantfiles'
   parent: blobServices
   properties: {
-    immutableStorageWithVersioning: {
-      enabled: false
-    }
-    enableNfsV3AllSquash: false
-    enableNfsV3RootSquash: false
     publicAccess: 'None'
     metadata: {}
   }

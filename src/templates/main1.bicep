@@ -73,6 +73,7 @@ param monitoringDataStorageNameSuffix string
 param monitoringDataStorageSkuName string
 
 param workspaceSkuName string
+param workspaceCapacityReservation int
 param workspaceLogRetentionDays int
 
 param flowLogsRetentionDays int
@@ -145,17 +146,22 @@ module networkModule 'modules/network1.bicep' = if (enableNetwork) {
   }
 }
 
-module keyVaultModule 'modules/keyvault.bicep' = {
-  name: 'keyVaultModule'
-  params: {
-    location: location
-    env: env
-    keyVaultNameSuffix: keyVaultNameSuffix
-    standardTags: standardTags
-  }
+var selectedNetworkNames = (enableNetwork) ? {
+  gatewayVNetName: networkModule.outputs.vnets[0].name
+  gatewaySubnetName: networkModule.outputs.subnets[0].name
+  appsVNetName: networkModule.outputs.vnets[1].name
+  appsSubnetName: networkModule.outputs.subnets[1].name
+  endpointsVNetName: networkModule.outputs.vnets[2].name
+  endpointsSubnetName: networkModule.outputs.subnets[2].name
+} : {
+  gatewayVNetName: gatewayVNetName
+  gatewaySubnetName: gatewaySubnetName
+  appsVNetName: appsVNetName
+  appsSubnetName: appsSubnetName
+  endpointsVNetName: endpointsVNetName
+  endpointsSubnetName: endpointsSubnetName
 }
 
-var selectedEndpointsSubnetName = (enableNetwork) ? networkModule.outputs.subnets[2].name : endpointsSubnetName
 var selectedLinkedVNetNames = (enableNetwork) ? [
   networkModule.outputs.vnets[0].name
   networkModule.outputs.vnets[1].name
@@ -168,13 +174,24 @@ var selectedLinkedVNetNames = (enableNetwork) ? [
   devopsAgentsVNetName
 ]
 
+module keyVaultModule 'modules/keyvault.bicep' = {
+  name: 'keyVaultModule'
+  params: {
+    location: location
+    env: env
+    keyVaultNameSuffix: keyVaultNameSuffix
+    standardTags: standardTags
+  }
+}
+
 module keyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
   name: 'keyVaultPrivateEndpointModule'
   params: {
     location: location
     env: env
     privateEndpointName: 'PE02'
-    subnetName: selectedEndpointsSubnetName
+    vnetName: selectedNetworkNames.endpointsVNetName
+    subnetName: selectedNetworkNames.endpointsSubnetName
     privateIPAddresses: [ keyVaultPEPrivateIPAddress ]
     serviceId: keyVaultModule.outputs.keyVaultId
     groupId: 'vault'
@@ -200,6 +217,7 @@ module logAnalyticsModule 'modules/loganalytics.bicep' = {
     location: location
     env: env
     workspaceSkuName: workspaceSkuName
+    workspaceCapacityReservation: workspaceCapacityReservation
     logRetentionDays: workspaceLogRetentionDays
     linkedStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
     standardTags: standardTags
@@ -219,8 +237,6 @@ module networkWatcherModule 'modules/networkwatcher.bicep' = {
   }
 }
 
-var selectedGatewaySubnetName = (enableNetwork) ? networkModule.outputs.subnets[0].name : gatewaySubnetName
-
 module appGatewayModule 'modules/agw.bicep' = {
   name: 'appGatewayModule'
   params: {
@@ -232,7 +248,8 @@ module appGatewayModule 'modules/agw.bicep' = {
     appGatewaySkuCapacity: appGatewaySkuCapacity
     enablePublicIP: appGatewayEnablePublicIP
     appGatewayPrivateIPAddress: appGatewayPrivateIPAddress
-    gatewaySubnetName: selectedGatewaySubnetName
+    gatewayVNetName: selectedNetworkNames.gatewayVNetName
+    gatewaySubnetName: selectedNetworkNames.gatewaySubnetName
     autoScaleMinCapacity: appGatewayAutoScaleMinCapacity
     autoScaleMaxCapacity: appGatewayAutoScaleMaxCapacity
     enablePublicCertificate: appGatewayEnablePublicCertificate
@@ -261,7 +278,8 @@ module appsDataStoragePrivateEndpointModule 'modules/privateendpoint.bicep' = if
     location: location
     env: env
     privateEndpointName: 'PE04'
-    subnetName: selectedEndpointsSubnetName
+    vnetName: selectedNetworkNames.endpointsVNetName
+    subnetName: selectedNetworkNames.endpointsSubnetName
     privateIPAddresses: [ appsDataStoragePEPrivateIPAddress ]
     serviceId: appsDataStorageModule.outputs.storageAccountId
     groupId: 'storageAccount'
@@ -300,7 +318,8 @@ module sqlDatabasePrivateEndpointModule 'modules/privateendpoint.bicep' = if (en
     location: location
     env: env
     privateEndpointName: 'PE01'
-    subnetName: selectedEndpointsSubnetName
+    vnetName: selectedNetworkNames.endpointsVNetName
+    subnetName: selectedNetworkNames.endpointsSubnetName
     privateIPAddresses: [ sqlDatabasePEPrivateIPAddress ]
     serviceId: sqlDatabaseModule.outputs.sqlServerId
     groupId: 'sqlServer'
@@ -329,7 +348,8 @@ module acrPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePriv
     location: location
     env: env
     privateEndpointName: 'PE03'
-    subnetName: selectedEndpointsSubnetName
+    vnetName: selectedNetworkNames.endpointsVNetName
+    subnetName: selectedNetworkNames.endpointsSubnetName
     privateIPAddresses: acrPEPrivateIPAddresses
     serviceId: acrModule.outputs.registryId
     groupId: 'registry'
@@ -337,8 +357,6 @@ module acrPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePriv
     standardTags: standardTags
   }
 }
-
-var selectedAppsSubnetName = (enableNetwork) ? networkModule.outputs.subnets[1].name : appsSubnetName
 
 module aksModule 'modules/aks.bicep' = {
   name: 'aksModule'
@@ -349,7 +367,8 @@ module aksModule 'modules/aks.bicep' = {
     aksDnsSuffix: aksDnsSuffix
     kubernetesVersion: aksKubernetesVersion
     nodeResourceGroupName: aksNodeResourceGroupName
-    subnetName: selectedAppsSubnetName
+    vnetName: selectedNetworkNames.appsVNetName
+    subnetName: selectedNetworkNames.appsSubnetName
     enableAutoScaling: aksEnableAutoScaling
     minCount: aksNodePoolMinCount
     maxCount: aksNodePoolMaxCount

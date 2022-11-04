@@ -9,10 +9,13 @@
       "value": "PRD"
     },
     "workspaceSkuName": {
-      "value": "Standard"
+      "value": "PerGB2018"
     },
-    "logRetentionDays": {
+    "workspaceLogRetentionDays": {
       "value": 30
+    },
+    "workspaceCapacityReservation": {
+      "value": 0
     }
   }
 }

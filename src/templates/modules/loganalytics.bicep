@@ -12,15 +12,24 @@ param env string
 
 @description('SKU name of the Log Analytics Workspace.')
 @allowed([
-  'Free'
-  'Standard'
-  'Premium'
+  'PerGB2018'
+  'CapacityReservation'
 ])
 param workspaceSkuName string
 
+@description('Capacity reservation in GBs for the Log Analytics Workspace.')
+@allowed([
+  0
+  100
+  200
+  500
+  1000
+])
+param workspaceCapacityReservation int
+
 @description('Retention days of logs managed by Log Analytics Workspace.')
-@minValue(7)
-@maxValue(180)
+@minValue(30)
+@maxValue(730)
 param logRetentionDays int
 
 @description('Name of the linked Storage Account for the Log Analytics Workspace.')
@@ -29,6 +38,13 @@ param linkedStorageAccountName string
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
+var workspaceSku = (workspaceSkuName == 'CapacityReservation') ? {
+  name: workspaceSkuName
+  capacityReservationLevel: workspaceCapacityReservation
+} : {
+  name: workspaceSkuName
+}
+
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-MM01'
   location: location
@@ -36,9 +52,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
     type: 'SystemAssigned'
   }
   properties: {
-    sku: {
-      name: workspaceSkuName
-    }
+    sku: workspaceSku
     features: {
       immediatePurgeDataOn30Days: false
       disableLocalAuth: true

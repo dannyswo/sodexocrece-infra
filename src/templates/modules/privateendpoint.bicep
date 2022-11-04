@@ -15,6 +15,9 @@ param env string
 @maxLength(4)
 param privateEndpointName string
 
+@description('Name of the VNet where Private Endpoint will be deployed.')
+param vnetName string
+
 @description('Name of the Subnet where Private Endpoint will be deployed.')
 param subnetName string
 
@@ -39,7 +42,7 @@ param linkedVNetNames array
 @description('Standard tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
-var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', subnetName)
+var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
 
 var memberNamesDictionary = {
   vault: [ 'default' ]

@@ -46,9 +46,6 @@ resource monitoringDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05
     isNfsV3Enabled: false
     isSftpEnabled: false
     largeFileSharesState: 'Disabled'
-    immutableStorageWithVersioning: {
-      enabled: false
-    }
     supportsHttpsTrafficOnly: true
     allowSharedKeyAccess: false
     isLocalUserEnabled: false
@@ -62,18 +59,9 @@ resource monitoringDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05
       virtualNetworkRules: virtualNetworkRules
       ipRules: []
     }
-    minimumTlsVersion: '1.2'
+    minimumTlsVersion: 'TLS1_2'
   }
   tags: standardTags
-}
-
-resource monitoringDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AL06'
-  scope: monitoringDataStorageAccount
-  properties: {
-    level: 'CanNotDelete'
-    notes: 'Storage Account for monitoring data should not be deleted.'
-  }
 }
 
 resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01' = {
@@ -94,16 +82,20 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01
 }
 
 resource sqlServerAssessmentsContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
-  name: 'SQLServerAssessments'
+  name: 'sqlserverassessments'
   parent: blobServices
   properties: {
-    immutableStorageWithVersioning: {
-      enabled: false
-    }
-    enableNfsV3AllSquash: false
-    enableNfsV3RootSquash: false
     publicAccess: 'None'
     metadata: {}
+  }
+}
+
+resource monitoringDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-AL06'
+  scope: monitoringDataStorageAccount
+  properties: {
+    level: 'CanNotDelete'
+    notes: 'Storage Account for monitoring data should not be deleted.'
   }
 }
 

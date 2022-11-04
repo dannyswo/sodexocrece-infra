@@ -6,16 +6,13 @@
       "value": "eastus2"
     },
     "env": {
-      "value": "SWO"
+      "value": "UAT"
     },
-    "workspaceSkuName": {
-      "value": "PerGB2018"
+    "monitoringDataStorageNameSuffix": {
+      "value": "sdl307"
     },
-    "workspaceLogRetentionDays": {
-      "value": 30
-    },
-    "workspaceCapacityReservation": {
-      "value": 0
+    "monitoringDataStorageSkuName": {
+      "value": "Standard_LRS"
     }
   }
 }

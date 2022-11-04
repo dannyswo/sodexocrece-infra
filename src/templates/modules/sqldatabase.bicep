@@ -256,7 +256,7 @@ resource advancedThreatProtectionSettings 'Microsoft.Sql/servers/advancedThreatP
 }
 
 var assessmentsStorageAccountUri = reference(resourceId('Microsoft.Storage/storageAccounts', assessmentsStorageAccountName)).primaryEndpoints.blob
-var assessmentsContainerName = 'SQLServerAssessments'
+var assessmentsContainerName = 'sqlserverassessments'
 
 resource vulnerabilityAssessments 'Microsoft.Sql/servers/vulnerabilityAssessments@2022-05-01-preview' = if (enableVulnerabilityAssessments) {
   name: 'default'

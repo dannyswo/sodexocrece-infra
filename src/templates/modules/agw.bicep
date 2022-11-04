@@ -35,11 +35,14 @@ param appGatewaySkuCapacity int
 @description('Create frontend public IP for the Application Gateway.')
 param enablePublicIP bool
 
-@description('Private IP address of the Application Gateway. Must be defined if SKU tier is WAF_v2.')
-param appGatewayPrivateIPAddress string
+@description('Name of the Gateway VNet where Application Gateway is deployed.')
+param gatewayVNetName string
 
 @description('Name of the Gateway Subnet where Application Gateway is deployed.')
 param gatewaySubnetName string
+
+@description('Private IP address of the Application Gateway. Must be defined if SKU tier is WAF_v2.')
+param appGatewayPrivateIPAddress string
 
 @description('Minimum capacity for auto scaling of Application Gateway.')
 param autoScaleMinCapacity int
@@ -60,7 +63,7 @@ var appGatewayName = 'azmxwa1${appGatewayNameSuffix}'
 
 var zones = [ '1', '2', '3' ]
 
-var gatewaySubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', gatewaySubnetName)
+var gatewaySubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', gatewayVNetName, gatewaySubnetName)
 
 var enablePort80 = true
 

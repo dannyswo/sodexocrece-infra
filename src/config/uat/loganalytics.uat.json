@@ -9,10 +9,13 @@
       "value": "UAT"
     },
     "workspaceSkuName": {
-      "value": "Standard"
+      "value": "PerGB2018"
     },
-    "logRetentionDays": {
-      "value": 7
+    "workspaceLogRetentionDays": {
+      "value": 30
+    },
+    "workspaceCapacityReservation": {
+      "value": 0
     }
   }
 }
