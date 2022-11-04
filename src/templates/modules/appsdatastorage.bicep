@@ -25,9 +25,6 @@ param storageAccountSkuName string
 @description('URI of the Key Vault where encryption key of the Storage Account is stored.')
 param keyVaultUri string
 
-@description('List of Subnet names allowed to access the Storage Account in the firewall.')
-param allowedSubnetNames array = []
-
 @description('Name of the Log Analytics Workspace used for diagnostics of the Storage Account.')
 param diagnosticsWorkspaceName string
 
@@ -35,6 +32,9 @@ param diagnosticsWorkspaceName string
 @minValue(7)
 @maxValue(180)
 param logsRetentionDays int
+
+@description('List of Subnet names allowed to access the Storage Account in the firewall.')
+param allowedSubnetNames array = []
 
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags

@@ -56,8 +56,13 @@ param logAnalyticsWorkspaceName string
 param standardTags object = resourceGroup().tags
 
 var selectedNodeResourceGroupName = (env == 'SWO') ? nodeResourceGroupName : 'BRS-MEX-USE2-CRECESDX-${env}-RG02'
+
 var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', subnetName)
+
+var enableAGICAddon = false
 var applicationGatewayId = resourceId('Microsoft.Network/applicationGateways', applicationGatewayName)
+
+var enableOMSAgentAddon = false
 var logAnalyticsWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', logAnalyticsWorkspaceName)
 
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-preview' = {
@@ -132,22 +137,20 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
       enableAzureRBAC: true
       managed: true
     }
-    /*
     addonProfiles: {
       ingressApplicationGateway: {
-        enabled: true
+        enabled: enableAGICAddon
         config: {
           applicationGatewayId: applicationGatewayId
         }
       }
       omsagent: {
-        enabled: true
+        enabled: enableOMSAgentAddon
         config: {
           logAnalyticsWorkspaceResourceID: logAnalyticsWorkspaceId
         }
       }
     }
-    */
     publicNetworkAccess: 'Disabled'
   }
   tags: standardTags
@@ -162,5 +165,8 @@ resource aksLock 'Microsoft.Authorization/locks@2017-04-01' = {
   }
 }
 
+@description('URI for private access to the AKS Management Plane.')
 output managementPlanePrivateFQDN string = aksCluster.properties.privateFQDN
+
+@description('URI for public access to the AKS Management Plane.')
 output managementPlanePublicFQDN string = aksCluster.properties.azurePortalFQDN

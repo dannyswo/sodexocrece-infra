@@ -1,4 +1,4 @@
-@description('Azure region to deploy the Private Endpoint.')
+@description('Azure region.')
 param location string = resourceGroup().location
 
 @description('Environment code.')
@@ -14,37 +14,40 @@ param env string
 param enableNetwork bool = false
 
 @description('Name of the Gateway VNet. Must be defined when enableNetwork is false.')
-param gatewayVnetName string
+param gatewayVNetName string
 
 @description('Name of the Gateway Subnet. Must be defined when enableNetwork is false.')
 param gatewaySubnetName string
 
 @description('Name of the Applications VNet. Must be defined when enableNetwork is false.')
-param appsVnetName string
+param appsVNetName string
 
 @description('Name of the Applications Subnet. Must be defined when enableNetwork is false.')
 param appsSubnetName string
 
 @description('Name of the Endpoints VNet. Must be defined when enableNetwork is false.')
-param endpointsVnetName string
+param endpointsVNetName string
 
 @description('Name of the Endpoints Subnet. Must be defined when enableNetwork is false.')
 param endpointsSubnetName string
 
 @description('Name of the Jump Servers VNet. Must be defined when enableNetwork is false.')
-param jumpServersVnetName string
+param jumpServersVNetName string
 
 @description('Name of the DevOps Agents VNet. Must be defined when enableNetwork is false.')
-param devopsAgentsVnetName string
+param devopsAgentsVNetName string
 
-@description('Create Private Endpoints for the required modules like keyvault, storage, database and acr.')
+@description('Create Private Endpoints for the required modules like keyvault, appdatastorage, database and acr.')
 param enablePrivateEndpoints bool = true
 
 @description('Private IP of the Key Vault\'s Private Endpoint.')
 param keyVaultPEPrivateIPAddress string
 
-@description('Private IP of the Storage Account\'s Private Endpoint.')
-param dataStoragePEPrivateIPAddress string
+@description('Private IP of the Application Data Storage Account\'s Private Endpoint.')
+param appsDataStoragePEPrivateIPAddress string
+
+@description('Private IP of the Azure SQL Database\'s Private Endpoint.')
+param sqlDatabasePEPrivateIPAddress string
 
 @description('Private IPs of the Container Registry\'s Private Endpoint.')
 param acrPEPrivateIPAddresses array
@@ -66,6 +69,14 @@ param standardTags object = resourceGroup().tags
 
 param keyVaultNameSuffix string
 
+param monitoringDataStorageNameSuffix string = 'stm305'
+param monitoringDataStorageSkuName string = 'Standard_LRS'
+
+param workspaceSkuName string
+param workspaceLogRetentionDays int
+
+param flowLogsRetentionDays int
+
 param appGatewayNameSuffix string
 param appGatewaySkuTier string
 param appGatewaySkuName string
@@ -77,14 +88,25 @@ param appGatewayAutoScaleMaxCapacity int
 param appGatewayEnablePublicCertificate bool
 param appGatewayPublicCertificateId string
 
-param workspaceSkuName string
-param workspaceLogRetentionDays int
+param appsDataStorageNameSuffix string
+param appsDataStorageSkuName string
+param appsDataStorageLogsRetentionDays int
 
-param flowLogsRetentionDays int
-
-param dataStorageNameSuffix string
-param dataStorageSkuName string
-param dataStorageLogsRetentionDays int
+param sqlServerNameSuffix string
+@secure()
+param sqlServerAdminLoginName string
+@secure()
+param sqlServerAdminLoginPassword string
+param sqlDatabaseSkuType string
+param sqlDatabaseSkuSize int
+param sqlDatabaseMinCapacity int
+param sqlDatabaseMaxSizeGB int
+param sqlDatabaseZoneRedundant bool
+param sqlDatabaseBackupRedundancy string
+param sqlServerEnableAuditing bool
+param sqlServerAuditLogsRetentionDays int
+param sqlServerEnableThreatProtection bool
+param sqlServerEnableVulnerabilityAssessments bool
 
 param acrNameSuffix string
 param acrSku string
@@ -134,16 +156,16 @@ module keyVaultModule 'modules/keyvault.bicep' = {
 }
 
 var selectedEndpointsSubnetName = (enableNetwork) ? networkModule.outputs.subnets[2].name : endpointsSubnetName
-var selectedLinkedVnetNames = (enableNetwork) ? [
+var selectedLinkedVNetNames = (enableNetwork) ? [
   networkModule.outputs.vnets[0].name
   networkModule.outputs.vnets[1].name
   networkModule.outputs.vnets[2].name
 ] : [
-  gatewayVnetName
-  appsVnetName
-  endpointsVnetName
-  jumpServersVnetName
-  devopsAgentsVnetName
+  gatewayVNetName
+  appsVNetName
+  endpointsVNetName
+  jumpServersVNetName
+  devopsAgentsVNetName
 ]
 
 module keyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
@@ -156,7 +178,43 @@ module keyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enabl
     privateIPAddresses: [ keyVaultPEPrivateIPAddress ]
     serviceId: keyVaultModule.outputs.keyVaultId
     groupId: 'vault'
-    linkedVnetNames: selectedLinkedVnetNames
+    linkedVNetNames: selectedLinkedVNetNames
+    standardTags: standardTags
+  }
+}
+
+module monitoringDataStorageModule 'modules/monitoringdatastorage.bicep' = {
+  name: 'monitoringDataStorageModule'
+  params: {
+    location: location
+    env: env
+    storageAccountNameSuffix: monitoringDataStorageNameSuffix
+    storageAccountSkuName: monitoringDataStorageSkuName
+    standardTags: standardTags
+  }
+}
+
+module logAnalyticsModule 'modules/loganalytics.bicep' = {
+  name: 'logAnalyticsModule'
+  params: {
+    location: location
+    env: env
+    workspaceSkuName: workspaceSkuName
+    logRetentionDays: workspaceLogRetentionDays
+    linkedStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
+    standardTags: standardTags
+  }
+}
+
+module networkWatcherModule 'modules/networkwatcher.bicep' = {
+  name: 'networkWatcherModule'
+  params: {
+    location: location
+    env: env
+    targetNsgName: networkModule.outputs.appsNSGName
+    flowLogsStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
+    flowAnalyticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
+    flowLogsRetentionDays: flowLogsRetentionDays
     standardTags: standardTags
   }
 }
@@ -183,54 +241,70 @@ module appGatewayModule 'modules/agw.bicep' = {
   }
 }
 
-module logAnalyticsModule 'modules/loganalytics.bicep' = {
-  name: 'logAnalyticsModule'
+module appsDataStorageModule 'modules/appsdatastorage.bicep' = {
+  name: 'appsDataStorageModule'
   params: {
     location: location
     env: env
-    workspaceSkuName: workspaceSkuName
-    logRetentionDays: workspaceLogRetentionDays
-    standardTags: standardTags
-  }
-}
-
-module networkWatcherModule 'modules/networkwatcher.bicep' = {
-  name: 'networkWatcherModule'
-  params: {
-    location: location
-    env: env
-    targetNsgName: networkModule.outputs.appsNSGName
-    targetWorkspaceName: logAnalyticsModule.outputs.workspaceName
-    flowLogsRetentionDays: flowLogsRetentionDays
-    standardTags: standardTags
-  }
-}
-
-module dataStorageModule 'modules/datastorage.bicep' = {
-  name: 'dataStorageModule'
-  params: {
-    location: location
-    env: env
-    dataStorageNameSuffix: dataStorageNameSuffix
-    dataStorageSkuName: dataStorageSkuName
+    storageAccountNameSuffix: appsDataStorageNameSuffix
     keyVaultUri: keyVaultModule.outputs.keyVaultUri
-    targetWorkspaceName: logAnalyticsModule.outputs.workspaceName
-    logsRetentionDays: dataStorageLogsRetentionDays
+    storageAccountSkuName: appsDataStorageSkuName
+    diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
+    logsRetentionDays: appsDataStorageLogsRetentionDays
     standardTags: standardTags
   }
 }
 
-module dataStoragePrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
-  name: 'dataStoragePrivateEndpointModule'
+module appsDataStoragePrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'appsDataStoragePrivateEndpointModule'
   params: {
     location: location
     env: env
     privateEndpointName: 'PE04'
     subnetName: selectedEndpointsSubnetName
-    privateIPAddresses: [ dataStoragePEPrivateIPAddress ]
-    serviceId: keyVaultModule.outputs.keyVaultId
+    privateIPAddresses: [ appsDataStoragePEPrivateIPAddress ]
+    serviceId: appsDataStorageModule.outputs.storageAccountId
     groupId: 'storageAccount'
-    linkedVnetNames: selectedLinkedVnetNames
+    linkedVNetNames: selectedLinkedVNetNames
+    standardTags: standardTags
+  }
+}
+
+module sqlDatabaseModule 'modules/sqldatabase.bicep' = {
+  name: 'sqlDatabaseModule'
+  params: {
+    location: location
+    env: env
+    sqlServerNameSuffix: sqlServerNameSuffix
+    adminLoginName: sqlServerAdminLoginName
+    adminLoginPassword: sqlServerAdminLoginPassword
+    skuType: sqlDatabaseSkuType
+    skuSize: sqlDatabaseSkuSize
+    minCapacity: sqlDatabaseMinCapacity
+    maxSizeGB: sqlDatabaseMaxSizeGB
+    zoneRedundant: sqlDatabaseZoneRedundant
+    backupRedundancy: sqlDatabaseBackupRedundancy
+    enableAuditing: sqlServerEnableAuditing
+    auditStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
+    auditLogsRetentionDays: sqlServerAuditLogsRetentionDays
+    enableThreatProtection: sqlServerEnableThreatProtection
+    enableVulnerabilityAssessments: sqlServerEnableVulnerabilityAssessments
+    assessmentsStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
+    standardTags: standardTags
+  }
+}
+
+module sqlDatabasePrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'sqlDatabasePrivateEndpointModule'
+  params: {
+    location: location
+    env: env
+    privateEndpointName: 'PE01'
+    subnetName: selectedEndpointsSubnetName
+    privateIPAddresses: [ sqlDatabasePEPrivateIPAddress ]
+    serviceId: sqlDatabaseModule.outputs.sqlServerId
+    groupId: 'sqlServer'
+    linkedVNetNames: selectedLinkedVNetNames
     standardTags: standardTags
   }
 }
@@ -259,7 +333,7 @@ module acrPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePriv
     privateIPAddresses: acrPEPrivateIPAddresses
     serviceId: acrModule.outputs.registryId
     groupId: 'registry'
-    linkedVnetNames: selectedLinkedVnetNames
+    linkedVNetNames: selectedLinkedVNetNames
     standardTags: standardTags
   }
 }
@@ -282,7 +356,7 @@ module aksModule 'modules/aks.bicep' = {
     vmSize: aksNodePoolVmSize
     enableEncryptionAtHost: aksEnableEncryptionAtHost
     applicationGatewayName: appGatewayModule.outputs.applicationGatewayName
-    logAnalyticsWorkspaceName: ''
+    logAnalyticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
     standardTags: standardTags
   }
 }

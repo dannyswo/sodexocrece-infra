@@ -75,3 +75,40 @@ resource monitoringDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04
     notes: 'Storage Account for monitoring data should not be deleted.'
   }
 }
+
+resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01' = {
+  name: 'default'
+  parent: monitoringDataStorageAccount
+  properties: {
+    isVersioningEnabled: false
+    restorePolicy: {
+      enabled: false
+    }
+    deleteRetentionPolicy: {
+      enabled: false
+    }
+    containerDeleteRetentionPolicy: {
+      enabled: false
+    }
+  }
+}
+
+resource sqlServerAssessmentsContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
+  name: 'SQLServerAssessments'
+  parent: blobServices
+  properties: {
+    immutableStorageWithVersioning: {
+      enabled: false
+    }
+    enableNfsV3AllSquash: false
+    enableNfsV3RootSquash: false
+    publicAccess: 'None'
+    metadata: {}
+  }
+}
+
+@description('ID of the Storage Account.')
+output storageAccountId string = monitoringDataStorageAccount.id
+
+@description('Name of the Storage Account.')
+output storageAccountName string = monitoringDataStorageAccount.name

@@ -23,7 +23,27 @@ param adminLoginName string
 @secure()
 param adminLoginPassword string
 
-@description('If zone redundancy is enabled for the Azure SQL Database.')
+@description('SKU type for the Azure SQL Database.')
+@allowed([
+  'Standard'
+  'GeneralPurpose'
+])
+param skuType string
+
+@description('SKU size for the Azure SQL Database.')
+@minValue(0)
+@maxValue(4)
+param skuSize int
+
+@description('Minimum capacity of the Azure SQL Database.')
+@minValue(1)
+@maxValue(20)
+param minCapacity int
+
+@description('Maximum size in GB of the Azure SQL Database.')
+param maxSizeGB int
+
+@description('Enable zone redundancy for the Azure SQL Database.')
 param zoneRedundant bool
 
 @description('Storage redundancy used by the backups of the Azure SQL Database.')
@@ -34,19 +54,11 @@ param zoneRedundant bool
 ])
 param backupRedundancy string
 
-@description('Minimum capacity of the Azure SQL Database.')
-@minValue(1)
-@maxValue(20)
-param minCapacity int
-
-@description('List of IPs ranges (start and end IP addresss) allowed to access the Azure SQL Server in the firewall.')
-param allowedIPRanges array = []
-
-@description('Enable auditing on Azure SQL Server.')
+@description('Enable Auditing on Azure SQL Server.')
 param enableAuditing bool
 
-@description('URI or endpoint of the Storage Account used to store audit logs of the Azure SQL Server.')
-param auditLogsStorageUri string
+@description('Name of the Storage Account used to store audit logs of the Azure SQL Server.')
+param auditStorageAccountName string
 
 @description('Subscription ID of the audit logs Storage Account.')
 param auditLogsStorageSubscriptionId string = subscription().subscriptionId
@@ -56,11 +68,20 @@ param auditLogsStorageSubscriptionId string = subscription().subscriptionId
 @maxValue(180)
 param auditLogsRetentionDays int
 
-@description('Enable vulnerability assessment on Azure SQL Server.')
+@description('Enable Advanced Threat Protection on Azure SQL Server.')
+param enableThreatProtection bool
+
+@description('Enable Vulnerability Assessments on Azure SQL Server.')
 param enableVulnerabilityAssessments bool
+
+@description('Name of the Storage Account where Vulnerability Assessments results will be stored.')
+param assessmentsStorageAccountName string
 
 @description('List of emails of the SQL Server owners. Must be defined when enableVulnerabilityAssessments is true.')
 param sqlServerOwnerEmails array = []
+
+@description('List of IPs ranges (start and end IP addresss) allowed to access the Azure SQL Server in the firewall.')
+param allowedIPRanges array = []
 
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
@@ -85,31 +106,96 @@ resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
   tags: standardTags
 }
 
+var standardSkus = [
+  {
+    name: 'S0'
+    tier: 'Standard'
+    capacity: 10
+    size: 'DTU'
+  }
+  {
+    name: 'S1'
+    tier: 'Standard'
+    capacity: 20
+    size: 'DTU'
+  }
+  {
+    name: 'S2'
+    tier: 'Standard'
+    capacity: 50
+    size: 'DTU'
+  }
+  {
+    name: 'S3'
+    tier: 'Standard'
+    capacity: 100
+    size: 'DTU'
+  }
+  {
+    name: 'S4'
+    tier: 'Standard'
+    capacity: 200
+    size: 'DTU'
+  }
+]
+
+var generalPurposeSkus = [
+  {
+    name: 'GP_S_Gen5_1'
+    tier: 'GeneralPurpose'
+    family: 'Gen5'
+    capacity: 1
+    size: 'VCores'
+  }
+  {
+    name: 'GP_S_Gen5_2'
+    tier: 'GeneralPurpose'
+    family: 'Gen5'
+    capacity: 2
+    size: 'VCores'
+  }
+  {
+    name: 'GP_S_Gen5_4'
+    tier: 'GeneralPurpose'
+    family: 'Gen5'
+    capacity: 4
+    size: 'VCores'
+  }
+  {
+    name: 'GP_S_Gen5_8'
+    tier: 'GeneralPurpose'
+    family: 'Gen5'
+    capacity: 8
+    size: 'VCores'
+  }
+  {
+    name: 'GP_S_Gen5_16'
+    tier: 'GeneralPurpose'
+    family: 'Gen5'
+    capacity: 16
+    size: 'VCores'
+  }
+]
+
+var selectedSku = (skuType == 'GeneralPurpose') ? generalPurposeSkus[skuSize] : standardSkus[skuSize]
+
+var maxSizeBytes = maxSizeGB * 1000000000
+
 resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-DB01'
   parent: sqlServer
   location: location
-  sku: {
-    name: ''
-    tier: ''
-    family: ''
-    capacity: ''
-    size: ''
-  }
+  sku: selectedSku
   properties: {
-    zoneRedundant: zoneRedundant
+    createMode: 'Default'
     minCapacity: minCapacity
+    maxSizeBytes: maxSizeBytes
+    zoneRedundant: zoneRedundant
     highAvailabilityReplicaCount: 0
     requestedBackupStorageRedundancy: backupRedundancy
-    createMode: 'Default'
-
-    // longTermRetentionBackupResourceId:
-    // maintenanceConfigurationId:
-
-    licenseType: licenseType
-    collation: collation
-    maxSizeBytes: maxSizeBytes
-    autoPauseDelay: autoPauseDelay
+    autoPauseDelay: -1
+    licenseType: 'LicenseIncluded'
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
   }
   tags: standardTags
 }
@@ -118,7 +204,7 @@ resource connectionPolicies 'Microsoft.Sql/servers/connectionPolicies@2022-05-01
   name: 'default'
   parent: sqlServer
   properties: {
-    connectionType: 'Redirect'
+    connectionType: 'Default'
   }
 }
 
@@ -131,6 +217,8 @@ resource firewallRules 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' 
   }
 }]
 
+var auditStorageAccountUri = reference(resourceId('Microsoft.Storage/storageAccounts', auditStorageAccountName)).primaryEndpoints.blob
+
 resource auditingSettings 'Microsoft.Sql/servers/auditingSettings@2022-05-01-preview' = if (enableAuditing) {
   name: 'default'
   parent: sqlServer
@@ -139,10 +227,10 @@ resource auditingSettings 'Microsoft.Sql/servers/auditingSettings@2022-05-01-pre
   ]
   properties: {
     state: 'Enabled'
-    storageEndpoint: auditLogsStorageUri
+    storageEndpoint: auditStorageAccountUri
+    storageAccountSubscriptionId: auditLogsStorageSubscriptionId
     isAzureMonitorTargetEnabled: true
     isDevopsAuditEnabled: true
-    storageAccountSubscriptionId: auditLogsStorageSubscriptionId
     auditActionsAndGroups: [
       'BATCH_COMPLETED_GROUP'
       'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
@@ -159,13 +247,16 @@ resource auditingSettings 'Microsoft.Sql/servers/auditingSettings@2022-05-01-pre
   }
 }
 
-resource advancedThreatProtectionSettings 'Microsoft.Sql/servers/advancedThreatProtectionSettings@2022-05-01-preview' = if (enableAuditing) {
+resource advancedThreatProtectionSettings 'Microsoft.Sql/servers/advancedThreatProtectionSettings@2022-05-01-preview' = if (enableThreatProtection) {
   name: 'default'
   parent: sqlServer
   properties: {
     state: 'Enabled'
   }
 }
+
+var assessmentsStorageAccountUri = reference(resourceId('Microsoft.Storage/storageAccounts', assessmentsStorageAccountName)).primaryEndpoints.blob
+var assessmentsContainerName = 'SQLServerAssessments'
 
 resource vulnerabilityAssessments 'Microsoft.Sql/servers/vulnerabilityAssessments@2022-05-01-preview' = if (enableVulnerabilityAssessments) {
   name: 'default'
@@ -176,8 +267,8 @@ resource vulnerabilityAssessments 'Microsoft.Sql/servers/vulnerabilityAssessment
       emails: sqlServerOwnerEmails
       emailSubscriptionAdmins: false
     }
-    storageContainerSasKey: ''
-    storageContainerPath: ''
+    // storageContainerSasKey: '' [TODO: Verify is SAS Key is needed, Monitoring Data Storage Account is behind a firewall]
+    storageContainerPath: '${assessmentsStorageAccountUri}${assessmentsContainerName}'
   }
 }
 

@@ -17,7 +17,7 @@ param targetNsgName string
 param flowLogsStorageAccountName string
 
 @description('Name of the Log Analytics Workspace used in Flow Analytics configuration.')
-param targetWorkspaceName string
+param flowAnalyticsWorkspaceName string
 
 @description('Retention days of flow logs captured by the Network Watcher.')
 @minValue(7)
@@ -41,7 +41,7 @@ var targetNSGId = resourceId('Microsoft.Network/networkSecurityGroups', targetNs
 
 var flowLogsStorageAccountId = resourceId('Microsoft.Storage/storageAccounts', flowLogsStorageAccountName)
 
-var flowAnalyticsWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', targetWorkspaceName)
+var flowAnalyticsWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', flowAnalyticsWorkspaceName)
 
 resource flowLogs 'Microsoft.Network/networkWatchers/flowLogs@2022-05-01' = {
   name: '${networkWatcherNameSuffix}-flowLogs'

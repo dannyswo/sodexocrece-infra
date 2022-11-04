@@ -9,5 +9,6 @@ Managed Identities Configuration
 ## Check built-in Azure RBAC Role Definitions
 
 ```
+az role definition list -o table --query '[].{roleName:roleName, description:description}'
 az role definition list > .\resources\docs\role-definitions.json
 ```

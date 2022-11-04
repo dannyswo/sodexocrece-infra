@@ -9,16 +9,17 @@ Templates:
 
 Modules:
 
-1. network
+1. network1
 2. privateendpoint
 3. keyvault
-4. agw
+4. monitoringdatastorage
 5. loganalytics
 6. networkwatcher
-7. datastorage
-8. sqldatabase
-9. acr
-10. aks
+7. agw
+8. appsdatastorage
+10. sqldatabase
+11. acr
+12. aks
 
 Environments:
 

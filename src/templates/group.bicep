@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-@description('Azure region to deploy the Resource Group.')
+@description('Azure region.')
 param location string = 'eastus2'
 
 @description('Environment code.')
