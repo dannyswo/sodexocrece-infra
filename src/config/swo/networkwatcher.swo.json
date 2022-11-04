@@ -8,11 +8,14 @@
     "env": {
       "value": "SWO"
     },
-    "targetNsgName": {
-      "value": "{NULL targetNsgName}"
+    "targetNSGName": {
+      "value": "BRS-MEX-USE2-CRECESDX-DEV-NS01"
     },
-    "targetWorkspaceName": {
-      "value": "{NULL targetWorkspaceName}"
+    "flowLogsStorageAccountName": {
+      "value": "azmxst1msv817"
+    },
+    "flowAnalyticsWorkspaceName": {
+      "value": "BRS-MEX-USE2-CRECESDX-DEV-MM01"
     },
     "flowLogsRetentionDays": {
       "value": 7

@@ -8,11 +8,14 @@
     "env": {
       "value": "UAT"
     },
-    "targetNsgName": {
-      "value": "{NULL targetNsgName}"
+    "targetNSGName": {
+      "value": "BRS-MEX-USE2-CRECESDX-UAT-NS01"
     },
-    "targetWorkspaceName": {
-      "value": "{NULL targetWorkspaceName}"
+    "flowLogsStorageAccountName": {
+      "value": "azmxst1sdl307"
+    },
+    "flowAnalyticsWorkspaceName": {
+      "value": "BRS-MEX-USE2-CRECESDX-UAT-MM01"
     },
     "flowLogsRetentionDays": {
       "value": 7

@@ -6,31 +6,31 @@
       "value": "eastus2"
     },
     "env": {
-      "value": "SWO"
+      "value": "PRD"
     },
     "privateEndpointName": {
       "value": "P02"
     },
     "vnetName": {
-      "value": "BRS-GLB-USE2-PVTPNTBRS-DEV-VN02"
+      "value": "BRS-GLB-USE2-PVTPNTBRS-PRD-VN02"
     },
     "subnetName": {
-      "value": "BRS-MEX-USE2-PVTPNT-DEV-SN01"
+      "value": "BRS-MEX-USE2-PVTPNT-PRD-SN01"
     },
     "privateIPAddresses": {
-      "value": "10.169.88.69"
+      "value": "10.169.116.70"
     },
     "serviceId": {
-      "value": "azmxks1mat327"
+      "value": "azmxks1qnw485"
     },
     "groupId": {
       "value": "vault"
     },
     "linkedVNetNames": {
       "value": [
-        "BRS-GLB-USE2-APPLICSHR-DEV-VN02",
-        "BRS-GLB-USE2-APPLICFRONT-DEV-VN01",
-        "BRS-GLB-USE2-PVTPNTBRS-DEV-VN02"
+        "BRS-GLB-USE2-APPLICSHR-PRD-VN01",
+        "BRS-GLB-USE2-APPLICFRONT-PRD-VN01",
+        "BRS-GLB-USE2-PVTPNTBRS-PRD-VN02"
       ]
     }
   }

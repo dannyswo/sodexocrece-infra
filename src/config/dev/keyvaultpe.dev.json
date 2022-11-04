@@ -6,7 +6,7 @@
       "value": "eastus2"
     },
     "env": {
-      "value": "SWO"
+      "value": "DEV"
     },
     "privateEndpointName": {
       "value": "P02"

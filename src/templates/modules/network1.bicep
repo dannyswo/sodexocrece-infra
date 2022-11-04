@@ -357,8 +357,8 @@ output subnets array = [
   }
 ]
 
-@description('ID of the Applications VNet NSG.')
+@description('ID of the NSG attached to the Applications VNet.')
 output appsNSGId string = appsNSG.id
 
-@description('Name of the Applications VNet NSG.')
+@description('Name of the NSG attached to the Applications VNet.')
 output appsNSGName string = appsNSG.name

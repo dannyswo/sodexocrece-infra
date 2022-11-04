@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus2"
+    },
+    "env": {
+      "value": "SWO"
+    },
+    "gatewayVNetName": {
+      "value": "VN01"
+    },
+    "gatewayVNetAddressPrefix": {
+      "value": "10.169.90.0/24"
+    },
+    "gatewaySubnetName": {
+      "value": "SN01"
+    },
+    "gatewaySubnetAddressPrefix": {
+      "value": "10.169.90.128/25"
+    },
+    "appsVNetName": {
+      "value": "VN02"
+    },
+    "appsVNetAddressPrefix": {
+      "value": "10.169.72.0/21"
+    },
+    "appsSubnetName": {
+      "value": "SN02"
+    },
+    "appsSubnetAddressPrefix": {
+      "value": "10.169.72.64/27"
+    },
+    "endpointsVNetName": {
+      "value": "VN03"
+    },
+    "endpointsVNetAddressPrefix": {
+      "value": "10.169.88.0/23"
+    },
+    "endpointsSubnetName": {
+      "value": "SN03"
+    },
+    "endpointsSubnetAddressPrefix": {
+      "value": "10.169.88.64/26"
+    }
+  }
+}

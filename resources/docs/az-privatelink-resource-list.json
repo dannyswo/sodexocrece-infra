@@ -1,0 +1,130 @@
+{
+  "Microsoft.KeyVault/vaults": [
+    {
+      "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1mat327/privateLinkResources/vault",
+      "name": "vault",
+      "properties": {
+        "groupId": "vault",
+        "requiredMembers": [
+          "default"
+        ],
+        "requiredZoneNames": [
+          "privatelink.vaultcore.azure.net"
+        ]
+      },
+      "resourceGroup": "RG-demo-sodexo-crece",
+      "type": "Microsoft.KeyVault/vaults/privateLinkResources"
+    }
+  ],
+  "Microsoft.ContainerRegistry/registries": [
+    {
+      "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.ContainerRegistry/registries/azmxcr1hle620/privateLinkResources/registry",
+      "name": "registry",
+      "properties": {
+        "groupId": "registry",
+        "requiredMembers": [
+          "registry_data_eastus2",
+          "registry"
+        ],
+        "requiredZoneNames": [
+          "privatelink.azurecr.io"
+        ]
+      },
+      "resourceGroup": "RG-demo-sodexo-crece",
+      "type": "Microsoft.ContainerRegistry/registries/privateLinkResources"
+    }
+  ],
+  "Microsoft.Storage/storageAccounts": [
+    {
+      "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Storage/storageAccounts/azmxst1msv817/privateLinkResources/blob",
+      "name": "blob",
+      "properties": {
+        "groupId": "blob",
+        "requiredMembers": [
+          "blob"
+        ],
+        "requiredZoneNames": [
+          "privatelink.blob.core.windows.net"
+        ]
+      },
+      "resourceGroup": "RG-demo-sodexo-crece",
+      "type": "Microsoft.Storage/storageAccounts/privateLinkResources"
+    },
+    {
+      "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Storage/storageAccounts/azmxst1msv817/privateLinkResources/table",
+      "name": "table",
+      "properties": {
+        "groupId": "table",
+        "requiredMembers": [
+          "table"
+        ],
+        "requiredZoneNames": [
+          "privatelink.table.core.windows.net"
+        ]
+      },
+      "resourceGroup": "RG-demo-sodexo-crece",
+      "type": "Microsoft.Storage/storageAccounts/privateLinkResources"
+    },
+    {
+      "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Storage/storageAccounts/azmxst1msv817/privateLinkResources/queue",
+      "name": "queue",
+      "properties": {
+        "groupId": "queue",
+        "requiredMembers": [
+          "queue"
+        ],
+        "requiredZoneNames": [
+          "privatelink.queue.core.windows.net"
+        ]
+      },
+      "resourceGroup": "RG-demo-sodexo-crece",
+      "type": "Microsoft.Storage/storageAccounts/privateLinkResources"
+    },
+    {
+      "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Storage/storageAccounts/azmxst1msv817/privateLinkResources/file",
+      "name": "file",
+      "properties": {
+        "groupId": "file",
+        "requiredMembers": [
+          "file"
+        ],
+        "requiredZoneNames": [
+          "privatelink.file.core.windows.net"
+        ]
+      },
+      "resourceGroup": "RG-demo-sodexo-crece",
+      "type": "Microsoft.Storage/storageAccounts/privateLinkResources"
+    },
+    {
+      "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Storage/storageAccounts/azmxst1msv817/privateLinkResources/web",
+      "name": "web",
+      "properties": {
+        "groupId": "web",
+        "requiredMembers": [
+          "web"
+        ],
+        "requiredZoneNames": [
+          "privatelink.web.core.windows.net"
+        ]
+      },
+      "resourceGroup": "RG-demo-sodexo-crece",
+      "type": "Microsoft.Storage/storageAccounts/privateLinkResources"
+    },
+    {
+      "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Storage/storageAccounts/azmxst1msv817/privateLinkResources/dfs",
+      "name": "dfs",
+      "properties": {
+        "groupId": "dfs",
+        "requiredMembers": [
+          "dfs"
+        ],
+        "requiredZoneNames": [
+          "privatelink.dfs.core.windows.net"
+        ]
+      },
+      "resourceGroup": "RG-demo-sodexo-crece",
+      "type": "Microsoft.Storage/storageAccounts/privateLinkResources"
+    }
+  ],
+  "Microsoft.Sql/servers": []
+}

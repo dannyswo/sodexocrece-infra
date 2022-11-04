@@ -37,6 +37,9 @@ param jumpServersVNetName string
 @description('Name of the DevOps Agents VNet. Must be defined when enableNetwork is false.')
 param devopsAgentsVNetName string
 
+@description('Name of the NSG attached to Applications Subnet. Must be defined when enableNetwork is false.')
+param appsNSGName string
+
 @description('Create Private Endpoints for the required modules like keyvault, appdatastorage, database and acr.')
 param enablePrivateEndpoints bool = true
 
@@ -174,6 +177,12 @@ var selectedLinkedVNetNames = (enableNetwork) ? [
   devopsAgentsVNetName
 ]
 
+var selectedNSGNames = (enableNetwork) ? {
+  appsNSGName: networkModule.outputs.appsNSGName
+} : {
+  appsNSGName: appsNSGName
+}
+
 module keyVaultModule 'modules/keyvault.bicep' = {
   name: 'keyVaultModule'
   params: {
@@ -229,7 +238,7 @@ module networkWatcherModule 'modules/networkwatcher.bicep' = {
   params: {
     location: location
     env: env
-    targetNsgName: networkModule.outputs.appsNSGName
+    targetNSGName: selectedNSGNames.appsNSGName
     flowLogsStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
     flowAnalyticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
     flowLogsRetentionDays: flowLogsRetentionDays

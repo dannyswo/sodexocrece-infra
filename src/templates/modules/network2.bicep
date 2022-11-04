@@ -15,6 +15,9 @@ param env string
 @maxLength(4)
 param vnetName string
 
+@description('IP range or CIDR of the Main VNet.')
+param vnetAddressPrefix string
+
 @description('Standard name of the Gateway Subnet.')
 @minLength(4)
 @maxLength(4)
@@ -38,9 +41,6 @@ param endpointsSubnetName string
 
 @description('IP range or CIDR of the Endpoints Subnet.')
 param endpointsSubnetAddressPrefix string
-
-@description('IP range or CIDR of the Main VNet.')
-param vnetAddressPrefix string
 
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags

@@ -8,14 +8,17 @@
     "env": {
       "value": "PRD"
     },
-    "targetNsgName": {
-      "value": "{NULL targetNsgName}"
+    "targetNSGName": {
+      "value": "BRS-MEX-USE2-CRECESDX-PRD-NS01"
     },
-    "targetWorkspaceName": {
-      "value": "{NULL targetWorkspaceName}"
+    "flowLogsStorageAccountName": {
+      "value": "azmxst1ewy566"
+    },
+    "flowAnalyticsWorkspaceName": {
+      "value": "BRS-MEX-USE2-CRECESDX-PRD-MM01"
     },
     "flowLogsRetentionDays": {
-      "value": 30
+      "value": 7
     }
   }
 }

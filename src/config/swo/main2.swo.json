@@ -35,6 +35,9 @@
     "devopsAgentsVNetName": {
       "value": "{NULL devopsAgentsVNetName}"
     },
+    "appsNSGName": {
+      "value": "BRS-MEX-USE2-CRECESDX-DEV-NS01"
+    },
     "enablePrivateEndpoints": {
       "value": true
     },
@@ -58,6 +61,9 @@
     },
     "workspaceCapacityReservation": {
       "value": 0
+    },
+    "flowLogsRetentionDays": {
+      "value": 7
     }
   }
 }

@@ -37,6 +37,9 @@ param jumpServersVNetName string
 @description('Name of the DevOps Agents VNet. Must be defined when enableNetwork is false.')
 param devopsAgentsVNetName string
 
+@description('Name of the NSG attached to Applications Subnet. Must be defined when enableNetwork is false.')
+param appsNSGName string
+
 @description('Create Private Endpoints for the required modules like keyvault, appdatastorage, database and acr.')
 param enablePrivateEndpoints bool = true
 
@@ -66,6 +69,8 @@ param monitoringDataStorageSkuName string
 param workspaceSkuName string
 param workspaceCapacityReservation int
 param workspaceLogRetentionDays int
+
+param flowLogsRetentionDays int
 
 module networkModule 'modules/network1.bicep' = if (enableNetwork) {
   name: 'networkModule'
@@ -116,6 +121,12 @@ var selectedLinkedVNetNames = (enableNetwork) ? [
   devopsAgentsVNetName
 ]
 
+var selectedNSGNames = (enableNetwork) ? {
+  appsNSGName: networkModule.outputs.appsNSGName
+} : {
+  appsNSGName: appsNSGName
+}
+
 module keyVaultModule 'modules/keyvault.bicep' = {
   name: 'keyVaultModule'
   params: {
@@ -162,6 +173,19 @@ module logAnalyticsModule 'modules/loganalytics.bicep' = {
     workspaceCapacityReservation: workspaceCapacityReservation
     logRetentionDays: workspaceLogRetentionDays
     linkedStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
+    standardTags: standardTags
+  }
+}
+
+module networkWatcherModule 'modules/networkwatcher.bicep' = {
+  name: 'networkWatcherModule'
+  params: {
+    location: location
+    env: env
+    targetNSGName: selectedNSGNames.appsNSGName
+    flowLogsStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
+    flowAnalyticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
+    flowLogsRetentionDays: flowLogsRetentionDays
     standardTags: standardTags
   }
 }
