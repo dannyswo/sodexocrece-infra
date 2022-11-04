@@ -23,8 +23,8 @@ param workspaceSkuName string
 @maxValue(180)
 param logRetentionDays int
 
-//@description('ID of the linked Storage Account to store the logs.')
-//param linkedStorageAccountId string
+@description('Name of the linked Storage Account for the Log Analytics Workspace.')
+param linkedStorageAccountName string
 
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
@@ -56,7 +56,8 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
   tags: standardTags
 }
 
-/*
+var linkedStorageAccountId = resourceId('Microsoft.Storage/storageAccounts', linkedStorageAccountName)
+
 resource linkedStorageAccounts 'Microsoft.OperationalInsights/workspaces/linkedStorageAccounts@2020-08-01' = {
   name: 'CustomLogs'
   parent: logAnalyticsWorkspace
@@ -66,7 +67,6 @@ resource linkedStorageAccounts 'Microsoft.OperationalInsights/workspaces/linkedS
     ]
   }
 }
-*/
 
 @description('ID of the Log Analytics Workspace.')
 output workspaceId string = logAnalyticsWorkspace.id

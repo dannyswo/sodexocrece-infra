@@ -1,4 +1,4 @@
-@description('Azure region to deploy the Private Endpoint.')
+@description('Azure region.')
 param location string = resourceGroup().location
 
 @description('Environment code.')

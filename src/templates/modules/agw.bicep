@@ -1,4 +1,4 @@
-@description('Azure region to deploy the AKS Managed Cluster.')
+@description('Azure region.')
 param location string = resourceGroup().location
 
 @description('Environment code.')

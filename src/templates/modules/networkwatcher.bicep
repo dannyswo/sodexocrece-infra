@@ -1,4 +1,4 @@
-@description('Azure region to deploy the AKS Managed Cluster.')
+@description('Azure region.')
 param location string = resourceGroup().location
 
 @description('Environment code.')
@@ -13,7 +13,10 @@ param env string
 @description('Name of the target Network Security Group (NSG) where flow logs will be captured.')
 param targetNsgName string
 
-@description('Name of the target Log Analytics Workspace where flow logs will be analyzed.')
+@description('Name of the Storage Account where flow logs will be stored.')
+param flowLogsStorageAccountName string
+
+@description('Name of the Log Analytics Workspace used in Flow Analytics configuration.')
 param targetWorkspaceName string
 
 @description('Retention days of flow logs captured by the Network Watcher.')
@@ -24,7 +27,7 @@ param flowLogsRetentionDays int
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
-var networkWatcherNameSuffix = 'NW01'
+var networkWatcherNameSuffix = 'MM02'
 
 resource networkWatcher 'Microsoft.Network/networkWatchers@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-${networkWatcherNameSuffix}'
@@ -35,7 +38,10 @@ resource networkWatcher 'Microsoft.Network/networkWatchers@2022-05-01' = {
 }
 
 var targetNSGId = resourceId('Microsoft.Network/networkSecurityGroups', targetNsgName)
-var targetWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', targetWorkspaceName)
+
+var flowLogsStorageAccountId = resourceId('Microsoft.Storage/storageAccounts', flowLogsStorageAccountName)
+
+var flowAnalyticsWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', targetWorkspaceName)
 
 resource flowLogs 'Microsoft.Network/networkWatchers/flowLogs@2022-05-01' = {
   name: '${networkWatcherNameSuffix}-flowLogs'
@@ -44,11 +50,11 @@ resource flowLogs 'Microsoft.Network/networkWatchers/flowLogs@2022-05-01' = {
   properties: {
     enabled: true
     targetResourceId: targetNSGId
-    storageId: flowLogsStorageAccount.id
+    storageId: flowLogsStorageAccountId
     flowAnalyticsConfiguration: {
       networkWatcherFlowAnalyticsConfiguration: {
         enabled: true
-        workspaceResourceId: targetWorkspaceId
+        workspaceResourceId: flowAnalyticsWorkspaceId
         workspaceRegion: location
       }
     }
@@ -60,40 +66,6 @@ resource flowLogs 'Microsoft.Network/networkWatchers/flowLogs@2022-05-01' = {
       enabled: true
       days: flowLogsRetentionDays
     }
-  }
-  tags: standardTags
-}
-
-resource flowLogsStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-ST02'
-  location: location
-  kind: 'StorageV2'
-  sku: {
-    name: 'Standard_LRS'
-  }
-  properties: {
-    accessTier: 'Hot'
-    immutableStorageWithVersioning: {
-      enabled: false
-    }
-    isHnsEnabled: true
-    isNfsV3Enabled: false
-    isSftpEnabled: false
-    largeFileSharesState: 'Disabled'
-    supportsHttpsTrafficOnly: true
-    allowSharedKeyAccess: false
-    isLocalUserEnabled: false
-    allowBlobPublicAccess: false
-    allowCrossTenantReplication: false
-    allowedCopyScope: 'AAD'
-    publicNetworkAccess: 'Disabled'
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-      ipRules: []
-      virtualNetworkRules: []
-    }
-    minimumTlsVersion: '1.2'
   }
   tags: standardTags
 }

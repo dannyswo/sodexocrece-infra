@@ -1,4 +1,4 @@
-@description('Azure region to deploy the Private Endpoint.')
+@description('Azure region.')
 param location string = resourceGroup().location
 
 @description('Environment code.')
@@ -10,23 +10,26 @@ param location string = resourceGroup().location
 ])
 param env string
 
-@description('Suffix used in the Sotrage Account name.')
+@description('Suffix used in the Storage Account name.')
 @minLength(6)
 @maxLength(6)
-param dataStorageNameSuffix string
+param storageAccountNameSuffix string
 
 @description('SKU name of the Storage Account.')
 @allowed([
   'Standard_LRS'
   'Standard_ZRS'
 ])
-param dataStorageSkuName string
+param storageAccountSkuName string
 
 @description('URI of the Key Vault where encryption key of the Storage Account is stored.')
 param keyVaultUri string
 
-@description('Name of the target Log Analytics Workspace where Storage Account access logs will be stored.')
-param targetWorkspaceName string
+@description('List of Subnet names allowed to access the Storage Account in the firewall.')
+param allowedSubnetNames array = []
+
+@description('Name of the Log Analytics Workspace used for diagnostics of the Storage Account.')
+param diagnosticsWorkspaceName string
 
 @description('Retention days of access logs of the Storage Account.')
 @minValue(7)
@@ -36,11 +39,16 @@ param logsRetentionDays int
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
-var storageAccountName = 'azmxst1${dataStorageNameSuffix}'
+var storageAccountName = 'azmxst1${storageAccountNameSuffix}'
 
 var encryptionKeyName = 'MerchantFilesKey'
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
+var virtualNetworkRules = [for allowedSubnetName in allowedSubnetNames: {
+  id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnetName)
+  action: 'Allow'
+}]
+
+resource appsDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   name: storageAccountName
   location: location
   identity: {
@@ -48,17 +56,17 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   }
   kind: 'StorageV2'
   sku: {
-    name: dataStorageSkuName
+    name: storageAccountSkuName
   }
   properties: {
     accessTier: 'Hot'
-    immutableStorageWithVersioning: {
-      enabled: false
-    }
     isHnsEnabled: true
     isNfsV3Enabled: false
     isSftpEnabled: false
     largeFileSharesState: 'Disabled'
+    immutableStorageWithVersioning: {
+      enabled: false
+    }
     encryption: {
       identity: {
         userAssignedIdentity: managedIdentity.id
@@ -86,8 +94,8 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
     networkAcls: {
       bypass: 'None'
       defaultAction: 'Deny'
+      virtualNetworkRules: virtualNetworkRules
       ipRules: []
-      virtualNetworkRules: []
     }
     minimumTlsVersion: '1.2'
   }
@@ -96,7 +104,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
 
 resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01' = {
   name: 'default'
-  parent: storageAccount
+  parent: appsDataStorageAccount
   properties: {
     isVersioningEnabled: false
     restorePolicy: {
@@ -145,13 +153,13 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-prev
   }
 }
 
-var targetWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', targetWorkspaceName)
+var diagnosticsWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', diagnosticsWorkspaceName)
 
-resource storageAccountDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-MM10'
-  scope: storageAccount
+  scope: appsDataStorageAccount
   properties: {
-    workspaceId: targetWorkspaceId
+    workspaceId: diagnosticsWorkspaceId
     logs: [
       {
         category: 'StorageRead'
@@ -181,9 +189,9 @@ resource storageAccountDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-0
   }
 }
 
-resource storageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = {
+resource apsDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-AL03'
-  scope: storageAccount
+  scope: appsDataStorageAccount
   properties: {
     level: 'CanNotDelete'
     notes: 'Storage Account for application data should not be deleted.'
@@ -191,7 +199,7 @@ resource storageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = {
 }
 
 @description('ID of the Storage Account.')
-output storageAccountId string = storageAccount.id
+output storageAccountId string = appsDataStorageAccount.id
 
 @description('ID of the Managed Identity of Storage Account.')
 output storageAccountManagedIdentityId string = managedIdentity.id

@@ -18,8 +18,16 @@ param keyVaultNameSuffix string
 @description('ID of the AAD Tenant used to authenticate requests to the Key Vault.')
 param tenantId string = subscription().tenantId
 
+@description('List of Subnet names allowed to access the Key Vault in the firewall.')
+param allowedSubnetNames array = []
+
 @description('Standard tags applied to all resources.')
 param standardTags object = resourceGroup().tags
+
+var virtualNetworkRules = [for allowedSubnetName in allowedSubnetNames: {
+  id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnetName)
+  ignoreMissingVnetServiceEndpoint: true
+}]
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: 'azmxkv1${keyVaultNameSuffix}'
@@ -40,8 +48,9 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     enabledForTemplateDeployment: false
     publicNetworkAccess: 'Disabled'
     networkAcls: {
-      bypass: 'AzureServices'
+      bypass: 'None'
       defaultAction: 'Deny'
+      virtualNetworkRules: virtualNetworkRules
       ipRules: []
     }
   }

@@ -1,4 +1,4 @@
-@description('Azure region to deploy the Container Registry.')
+@description('Azure region.')
 param location string = resourceGroup().location
 
 @description('Environment code.')
@@ -40,8 +40,16 @@ param untaggedRetentionDays int
 @maxValue(90)
 param softDeleteRetentionDays int
 
+@description('List of IPs allowed to access the Container Registry in the firewall.')
+param allowedIPs array = []
+
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
+
+var ipRules = [for allowedIP in allowedIPs: {
+  value: allowedIP
+  action: 'Allow'
+}]
 
 resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = {
   name: 'azmxcr1${acrNameSuffix}'
@@ -75,7 +83,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = 
     networkRuleBypassOptions: 'None'
     networkRuleSet: {
       defaultAction: 'Deny'
-      ipRules: []
+      ipRules: ipRules
     }
   }
   tags: standardTags

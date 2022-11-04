@@ -1,4 +1,4 @@
-@description('Azure region to deploy the Private Endpoint.')
+@description('Azure region.')
 param location string = resourceGroup().location
 
 @description('Environment code.')
@@ -34,7 +34,7 @@ param serviceId string
 param groupId string
 
 @description('Names of the VNets linked to the DNS Private Zone.')
-param linkedVnetNames array
+param linkedVNetNames array
 
 @description('Standard tags applied to all resources.')
 param standardTags object = resourceGroup().tags
@@ -58,11 +58,11 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
       id: subnetId
     }
     customNetworkInterfaceName: 'BRS-MEX-USE2-CRECESDX-${env}-${privateEndpointName}-NIC'
-    ipConfigurations: [for (item, index) in memberNames: {
+    ipConfigurations: [for (memberName, index) in memberNames: {
       name: '${privateEndpointName}-ipconfig-${memberNames[index]}'
       properties: {
         groupId: groupId
-        memberName: memberNames[index]
+        memberName: memberName
         privateIPAddress: privateIPAddresses[index]
       }
     }]
@@ -96,14 +96,14 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   tags: standardTags
 }
 
-resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (item, index) in linkedVnetNames: {
+resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetName, index) in linkedVNetNames: {
   name: '${privateEndpointName}-networkLink${index}'
   parent: privateDnsZone
   location: 'global'
   properties: {
     registrationEnabled: false
     virtualNetwork: {
-      id: resourceId('Microsoft.Network/virtualNetworks', item)
+      id: resourceId('Microsoft.Network/virtualNetworks', linkedVNetName)
     }
   }
 }]

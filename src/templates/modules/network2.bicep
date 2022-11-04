@@ -1,4 +1,4 @@
-@description('Azure region to deploy the Private Endpoint.')
+@description('Azure region.')
 param location string = resourceGroup().location
 
 @description('Environment code.')
@@ -10,12 +10,12 @@ param location string = resourceGroup().location
 ])
 param env string
 
-@description('Standard name of the VNet.')
-@minLength(3)
-@maxLength(3)
+@description('Standard name of the Main VNet.')
+@minLength(4)
+@maxLength(4)
 param vnetName string
 
-@description('IP range or CIDR of the VNet.')
+@description('IP range or CIDR of the Main VNet.')
 param vnetAddressPrefix string
 
 @description('Names and IP ranges of the Subnets.')
@@ -31,7 +31,7 @@ param vnetAddressPrefix string
 })
 param subnetsAddressPrefixes array
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-05-01' = {
+resource mainVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-${vnetName}'
   location: location
   properties: {
@@ -48,7 +48,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 @batchSize(1)
 resource vnetSubnets 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = [for subnet in subnetsAddressPrefixes: {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-${subnet.name}'
-  parent: virtualNetwork
+  parent: mainVNet
   properties: {
     addressPrefix: subnet.addressPrefix
   }
@@ -60,7 +60,7 @@ var subnetsData = [for (item, index) in subnetsAddressPrefixes: {
 }]
 
 @description('ID of the created VNet.')
-output vnetId string = virtualNetwork.id
+output vnetId string = mainVNet.id
 
 @description('IDs and names of the created Subnets.')
 @metadata({
