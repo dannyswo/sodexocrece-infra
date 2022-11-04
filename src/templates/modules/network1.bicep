@@ -75,6 +75,9 @@ resource gatewayVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
         name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewaySubnetName}'
         properties: {
           addressPrefix: gatewaySubnetAddressPrefix
+          networkSecurityGroup: {
+            id: gatewayNSG.id
+          }
         }
       }
     ]
@@ -98,52 +101,14 @@ resource appsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
         name: 'BRS-MEX-USE2-CRECESDX-${env}-${appsSubnetName}'
         properties: {
           addressPrefix: appsSubnetAddressPrefix
+          networkSecurityGroup: {
+            id: appsNSG.id
+          }
         }
       }
     ]
     enableDdosProtection: false
     enableVmProtection: false
-  }
-  tags: standardTags
-}
-
-resource appsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS01'
-  location: location
-  dependsOn: [
-    appsVNet
-  ]
-  properties: {
-    securityRules: [
-      {
-        name: 'AllowHttp'
-        properties: {
-          access: 'Allow'
-          direction: 'Inbound'
-          protocol: 'Tcp'
-          sourcePortRange: '80'
-          sourceAddressPrefix: '*'
-          destinationPortRange: '80'
-          destinationAddressPrefix: '*'
-          priority: 10
-          description: 'Allow HTTP from anywhere.'
-        }
-      }
-      {
-        name: 'AllowHttps'
-        properties: {
-          access: 'Allow'
-          direction: 'Inbound'
-          protocol: 'Tcp'
-          sourcePortRange: '443'
-          sourceAddressPrefix: '*'
-          destinationPortRange: '443'
-          destinationAddressPrefix: '*'
-          priority: 10
-          description: 'Allow HTTPS from anywhere.'
-        }
-      }
-    ]
   }
   tags: standardTags
 }
@@ -162,6 +127,9 @@ resource endpointsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
         name: 'BRS-MEX-USE2-CRECESDX-${env}-${endpointsSubnetName}'
         properties: {
           addressPrefix: endpointsSubnetAddressPrefix
+          networkSecurityGroup: {
+            id: endpointsNSG.id
+          }
         }
       }
     ]
@@ -221,6 +189,102 @@ resource endpointsAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNet
     allowForwardedTraffic: true
     useRemoteGateways: false
   }
+}
+
+resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS01'
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowHttp'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          destinationPortRange: '80'
+          priority: 10
+          description: 'Allow HTTP.'
+        }
+      }
+      {
+        name: 'AllowHttps'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          destinationPortRange: '443'
+          priority: 11
+          description: 'Allow HTTPS.'
+        }
+      }
+    ]
+  }
+  tags: standardTags
+}
+
+resource appsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS02'
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowHttp'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          destinationPortRange: '80'
+          priority: 10
+          description: 'Allow HTTP.'
+        }
+      }
+      {
+        name: 'AllowHttps'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          destinationPortRange: '443'
+          priority: 11
+          description: 'Allow HTTPS.'
+        }
+      }
+    ]
+  }
+  tags: standardTags
+}
+
+resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS03'
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowHttp'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          destinationPortRange: '80'
+          priority: 10
+          description: 'Allow HTTP.'
+        }
+      }
+      {
+        name: 'AllowHttps'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          destinationPortRange: '443'
+          priority: 11
+          description: 'Allow HTTPS.'
+        }
+      }
+    ]
+  }
+  tags: standardTags
 }
 
 @description('IDs and names of the created VNets.')

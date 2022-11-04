@@ -15,21 +15,35 @@ param env string
 @maxLength(4)
 param vnetName string
 
+@description('Standard name of the Gateway Subnet.')
+@minLength(4)
+@maxLength(4)
+param gatewaySubnetName string
+
+@description('IP range or CIDR of the Gateway Subnet.')
+param gatewaySubnetAddressPrefix string
+
+@description('Standard name of the Applications Subnet.')
+@minLength(4)
+@maxLength(4)
+param appsSubnetName string
+
+@description('IP range or CIDR of the Applications Subnet.')
+param appsSubnetAddressPrefix string
+
+@description('Standard name of the Endpoints Subnet.')
+@minLength(4)
+@maxLength(4)
+param endpointsSubnetName string
+
+@description('IP range or CIDR of the Endpoints Subnet.')
+param endpointsSubnetAddressPrefix string
+
 @description('IP range or CIDR of the Main VNet.')
 param vnetAddressPrefix string
 
-@description('Names and IP ranges of the Subnets.')
-@metadata({
-  name: 'Standard name of the Subnet.'
-  addressPrefix: 'IP range or CIDR of the Subnet.'
-  example: [
-    {
-      name: 'SN01'
-      addressPrefix: '10.169.72.64/27'
-    }
-  ]
-})
-param subnetsAddressPrefixes array
+@description('Standards tags applied to all resources.')
+param standardTags object = resourceGroup().tags
 
 resource mainVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-${vnetName}'
@@ -45,32 +59,164 @@ resource mainVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   }
 }
 
-@batchSize(1)
-resource vnetSubnets 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = [for subnet in subnetsAddressPrefixes: {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-${subnet.name}'
+resource gatewaySubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewaySubnetName}'
   parent: mainVNet
   properties: {
-    addressPrefix: subnet.addressPrefix
+    addressPrefix: gatewaySubnetAddressPrefix
+    networkSecurityGroup: {
+      id: gatewayNSG.id
+    }
   }
-}]
+}
 
-var subnetsData = [for (item, index) in subnetsAddressPrefixes: {
-  subnetId: vnetSubnets[index].id
-  subnetName: vnetSubnets[index].name
-}]
+resource appsSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${appsSubnetName}'
+  properties: {
+    addressPrefix: appsSubnetAddressPrefix
+    networkSecurityGroup: {
+      id: appsNSG.id
+    }
+  }
+}
+
+resource endpointsSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${endpointsSubnetName}'
+  properties: {
+    addressPrefix: endpointsSubnetAddressPrefix
+    networkSecurityGroup: {
+      id: endpointsNSG.id
+    }
+  }
+}
+
+resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS01'
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowHttp'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          destinationPortRange: '80'
+          priority: 10
+          description: 'Allow HTTP.'
+        }
+      }
+      {
+        name: 'AllowHttps'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          destinationPortRange: '443'
+          priority: 11
+          description: 'Allow HTTPS.'
+        }
+      }
+    ]
+  }
+  tags: standardTags
+}
+
+resource appsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS02'
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowHttp'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          destinationPortRange: '80'
+          priority: 10
+          description: 'Allow HTTP.'
+        }
+      }
+      {
+        name: 'AllowHttps'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          destinationPortRange: '443'
+          priority: 11
+          description: 'Allow HTTPS.'
+        }
+      }
+    ]
+  }
+  tags: standardTags
+}
+
+resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS03'
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowHttp'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          destinationPortRange: '80'
+          priority: 10
+          description: 'Allow HTTP.'
+        }
+      }
+      {
+        name: 'AllowHttps'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          destinationPortRange: '443'
+          priority: 11
+          description: 'Allow HTTPS.'
+        }
+      }
+    ]
+  }
+  tags: standardTags
+}
 
 @description('ID of the created VNet.')
 output vnetId string = mainVNet.id
 
 @description('IDs and names of the created Subnets.')
 @metadata({
-  subnetId: 'ID of the Subnet.'
-  subnetName: 'Standard name of the Subnet.'
+  id: 'ID of the Subnet.'
+  name: 'Standard name of the Subnet.'
   example: [
     {
-      subnetId: '/vnet/abc/subnet/123-456-789'
-      subnetName: 'SN01'
+      id: '/vnet/abc/subnet/123'
+      name: 'BRS-MEX-USE2-CRECESDX-DEV-SN01'
     }
   ]
 })
-output subnets array = subnetsData
+output subnets array = [
+  {
+    id: gatewaySubnet.id
+    name: gatewaySubnet.name
+  }
+  {
+    id: appsSubnet.id
+    name: appsSubnet.name
+  }
+  {
+    id: endpointsSubnet.id
+    name: endpointsSubnet.name
+  }
+]
+
+@description('ID of the Applications VNet NSG.')
+output appsNSGId string = appsNSG.id
+
+@description('Name of the Applications VNet NSG.')
+output appsNSGName string = appsNSG.name
