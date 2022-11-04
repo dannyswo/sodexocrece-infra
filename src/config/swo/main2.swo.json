@@ -8,8 +8,8 @@
     "env": {
       "value": "SWO"
     },
-    "keyVaultNameSuffix": {
-      "value": "mat327"
+    "enableNetwork": {
+      "value": true
     }
   }
 }

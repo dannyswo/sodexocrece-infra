@@ -25,8 +25,8 @@ param env string
 })
 param standardTags object = resourceGroup().tags
 
-param monitoringDataStorageNameSuffix string = 'stm305'
-param monitoringDataStorageSkuName string = 'Standard_LRS'
+param monitoringDataStorageNameSuffix string
+param monitoringDataStorageSkuName string
 
 param workspaceSkuName string
 param workspaceLogRetentionDays int

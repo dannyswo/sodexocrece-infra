@@ -5,9 +5,6 @@
     "location": {
       "value": "eastus2"
     },
-    "keyVaultNameSuffix": {
-      "value": "qso355"
-    },
     "env": {
       "value": "UAT"
     },

@@ -202,8 +202,11 @@ resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
+          sourcePortRange: '80'
+          sourceAddressPrefix: '*'
           destinationPortRange: '80'
-          priority: 10
+          destinationAddressPrefix: '*'
+          priority: 110
           description: 'Allow HTTP.'
         }
       }
@@ -213,8 +216,11 @@ resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
+          sourcePortRange: '443'
+          sourceAddressPrefix: '*'
           destinationPortRange: '443'
-          priority: 11
+          destinationAddressPrefix: '*'
+          priority: 111
           description: 'Allow HTTPS.'
         }
       }
@@ -234,8 +240,11 @@ resource appsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
+          sourcePortRange: '80'
+          sourceAddressPrefix: '*'
           destinationPortRange: '80'
-          priority: 10
+          destinationAddressPrefix: '*'
+          priority: 110
           description: 'Allow HTTP.'
         }
       }
@@ -245,8 +254,11 @@ resource appsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
+          sourcePortRange: '443'
+          sourceAddressPrefix: '*'
           destinationPortRange: '443'
-          priority: 11
+          destinationAddressPrefix: '*'
+          priority: 111
           description: 'Allow HTTPS.'
         }
       }
@@ -266,8 +278,11 @@ resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
+          sourcePortRange: '80'
+          sourceAddressPrefix: '*'
           destinationPortRange: '80'
-          priority: 10
+          destinationAddressPrefix: '*'
+          priority: 110
           description: 'Allow HTTP.'
         }
       }
@@ -277,8 +292,11 @@ resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
+          sourcePortRange: '443'
+          sourceAddressPrefix: '*'
           destinationPortRange: '443'
-          priority: 11
+          destinationAddressPrefix: '*'
+          priority: 111
           description: 'Allow HTTPS.'
         }
       }
