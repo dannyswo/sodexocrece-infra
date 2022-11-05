@@ -9,16 +9,19 @@
       "value": "PRD"
     },
     "storageAccountNameSuffix": {
-      "value": "ifv691"
+      "value": "aqw762"
     },
     "storageAccountSkuName": {
       "value": "Standard_ZRS"
     },
     "keyVaultUri": {
-      "value": "{NULL keyVaultUri}"
+      "value": "https://azmxkv1aqw762.vault.azure.net/"
     },
-    "targetWorkspaceId": {
-      "value": "{NULL targetWorkspaceId}"
+    "enableDiagnostics": {
+      "value": true
+    },
+    "diagnosticsWorkspaceName": {
+      "value": "BRS-MEX-USE2-CRECESDX-PRD-MM01"
     },
     "logsRetentionDays": {
       "value": 180

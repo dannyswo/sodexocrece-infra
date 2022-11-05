@@ -21,12 +21,19 @@ param tenantId string = subscription().tenantId
 @description('List of Subnet names allowed to access the Key Vault in the firewall.')
 param allowedSubnetNames array = []
 
+@description('List of IPs or CIDRs allowed to access the Key Vault in the firewall.')
+param allowedIPsOrCIDRs array = []
+
 @description('Standard tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
 var virtualNetworkRules = [for allowedSubnetName in allowedSubnetNames: {
   id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnetName)
   ignoreMissingVnetServiceEndpoint: true
+}]
+
+var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
+  value: allowedIPOrCIDR
 }]
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
@@ -46,16 +53,12 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     enabledForDeployment: false
     enabledForDiskEncryption: false
     enabledForTemplateDeployment: false
-    publicNetworkAccess: 'Disabled'
+    publicNetworkAccess: 'Enabled'
     networkAcls: {
       bypass: 'None'
       defaultAction: 'Deny'
       virtualNetworkRules: virtualNetworkRules
-      ipRules: [
-        {
-          value: '181.134.145.168'
-        }
-      ]
+      ipRules: ipRules
     }
   }
   tags: standardTags

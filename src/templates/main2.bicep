@@ -12,6 +12,8 @@ param location string = resourceGroup().location
 ])
 param env string
 
+// Network settings
+
 @description('Create network resources defined in the network module.')
 param enableNetwork bool = false
 
@@ -63,6 +65,8 @@ param keyVaultPEPrivateIPAddress string
 })
 param standardTags object = resourceGroup().tags
 
+// Resource settings
+
 param keyVaultNameSuffix string
 
 param monitoringDataStorageNameSuffix string
@@ -77,13 +81,25 @@ param flowLogsRetentionDays int
 param appGatewayNameSuffix string
 param appGatewaySkuTier string
 param appGatewaySkuName string
-param appGatewayEnablePublicIP bool
-param appGatewayPrivateIPAddress string
 param appGatewayAutoScaleMinCapacity int
 param appGatewayAutoScaleMaxCapacity int
 param appGatewayEnableHttpPort bool
 param appGatewayEnableHttpsPort bool
 param appGatewayPublicCertificateId string
+param appGatewayEnableDiagnostics bool
+param appGatewayLogsRetentionDays int
+
+param appsDataStorageNameSuffix string
+param appsDataStorageSkuName string
+param appsDataStorageEnableDiagnostics bool
+param appsDataStorageLogsRetentionDays int
+
+// Firewall settings
+
+param keyVaultAllowedSubnetNames array
+param keyVaultAllowedIPsOrCIDRs array
+
+// Resource definitions
 
 module networkModule 'modules/network1.bicep' = if (enableNetwork) {
   name: 'networkModule'
@@ -146,6 +162,8 @@ module keyVaultModule 'modules/keyvault.bicep' = {
     location: location
     env: env
     keyVaultNameSuffix: keyVaultNameSuffix
+    allowedSubnetNames: keyVaultAllowedSubnetNames
+    allowedIPsOrCIDRs: keyVaultAllowedIPsOrCIDRs
     standardTags: standardTags
   }
 }
@@ -211,8 +229,6 @@ module appGatewayModule 'modules/agw.bicep' = {
     appGatewayNameSuffix: appGatewayNameSuffix
     appGatewaySkuTier: appGatewaySkuTier
     appGatewaySkuName: appGatewaySkuName
-    enablePublicIP: appGatewayEnablePublicIP
-    appGatewayPrivateIPAddress: appGatewayPrivateIPAddress
     gatewayVNetName: selectedNetworkNames.gatewayVNetName
     gatewaySubnetName: selectedNetworkNames.gatewaySubnetName
     autoScaleMinCapacity: appGatewayAutoScaleMinCapacity
@@ -220,6 +236,24 @@ module appGatewayModule 'modules/agw.bicep' = {
     enableHttpPort: appGatewayEnableHttpPort
     enableHttpsPort: appGatewayEnableHttpsPort
     publicCertificateId: appGatewayPublicCertificateId
+    enableDiagnostics: appGatewayEnableDiagnostics
+    diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
+    logsRetentionDays: appGatewayLogsRetentionDays
+    standardTags: standardTags
+  }
+}
+
+module appsDataStorageModule 'modules/appsdatastorage.bicep' = {
+  name: 'appsDataStorageModule'
+  params: {
+    location: location
+    env: env
+    storageAccountNameSuffix: appsDataStorageNameSuffix
+    storageAccountSkuName: appsDataStorageSkuName
+    keyVaultUri: keyVaultModule.outputs.keyVaultUri
+    enableDiagnostics: appsDataStorageEnableDiagnostics
+    diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
+    logsRetentionDays: appsDataStorageLogsRetentionDays
     standardTags: standardTags
   }
 }

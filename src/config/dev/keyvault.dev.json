@@ -10,6 +10,12 @@
     },
     "keyVaultNameSuffix": {
       "value": "mat327"
+    },
+    "allowedSubnetNames": {
+      "value": []
+    },
+    "allowedIPsOrCIDRs": {
+      "value": []
     }
   }
 }

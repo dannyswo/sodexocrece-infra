@@ -80,12 +80,6 @@
     "appGatewaySkuName": {
       "value": "WAF_v2"
     },
-    "appGatewayEnablePublicIP": {
-      "value": true
-    },
-    "appGatewayPrivateIPAddress": {
-      "value": "10.169.90.140"
-    },
     "appGatewayAutoScaleMinCapacity": {
       "value": 1
     },
@@ -99,7 +93,25 @@
       "value": false
     },
     "appGatewayPublicCertificateId": {
-      "value": "{NULL appGatewayPublicCertificateId}"
+      "value": "https://azmxkv1mat426.vault.azure.net/secrets/crececonsdx-cert-public/2097309464c84791948ece0406c5e58e"
+    },
+    "appGatewayEnableDiagnostics": {
+      "value": true
+    },
+    "appGatewayLogsRetentionDays": {
+      "value": 7
+    },
+    "appsDataStorageNameSuffix": {
+      "value": "ifv691"
+    },
+    "appsDataStorageSkuName": {
+      "value": "Standard_LRS"
+    },
+    "appsDataStorageEnableDiagnostics": {
+      "value": true
+    },
+    "appsDataStorageLogsRetentionDays": {
+      "value": 7
     },
     "acrNameSuffix": {
       "value": "hle620"
@@ -139,6 +151,12 @@
     },
     "aksEnableEncryptionAtHost": {
       "value": false
+    },
+    "keyVaultAllowedSubnetNames": {
+      "value": []
+    },
+    "keyVaultAllowedIPsOrCIDRs": {
+      "value": []
     }
   }
 }

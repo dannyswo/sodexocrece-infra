@@ -15,10 +15,13 @@
       "value": "Standard_LRS"
     },
     "keyVaultUri": {
-      "value": "{NULL keyVaultUri}"
+      "value": "https://azmxkv1jrx287.vault.azure.net/"
     },
-    "targetWorkspaceId": {
-      "value": "{NULL targetWorkspaceId}"
+    "enableDiagnostics": {
+      "value": true
+    },
+    "diagnosticsWorkspaceName": {
+      "value": "BRS-MEX-USE2-CRECESDX-UAT-MM01"
     },
     "logsRetentionDays": {
       "value": 7

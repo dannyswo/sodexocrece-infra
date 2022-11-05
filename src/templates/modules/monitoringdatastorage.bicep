@@ -25,12 +25,19 @@ param storageAccountSkuName string
 @description('List of Subnet names allowed to access the Storage Account in the firewall.')
 param allowedSubnetNames array = []
 
+@description('List of IPs or CIDRs allowed to access the Storage Account in the firewall.')
+param allowedIPsOrCIDRs array = []
+
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
 var virtualNetworkRules = [for allowedSubnetName in allowedSubnetNames: {
   id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnetName)
   action: 'Allow'
+}]
+
+var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
+  value: allowedIPOrCIDR
 }]
 
 resource monitoringDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
@@ -57,7 +64,7 @@ resource monitoringDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05
       bypass: 'AzureServices'
       defaultAction: 'Deny'
       virtualNetworkRules: virtualNetworkRules
-      ipRules: []
+      ipRules: ipRules
     }
     minimumTlsVersion: 'TLS1_2'
   }

@@ -40,14 +40,14 @@ param untaggedRetentionDays int
 @maxValue(90)
 param softDeleteRetentionDays int
 
-@description('List of IPs allowed to access the Container Registry in the firewall.')
-param allowedIPs array = []
+@description('List of IPs or CIDRs allowed to access the Container Registry in the firewall.')
+param allowedIPsOrCIDRs array = []
 
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
-var ipRules = [for allowedIP in allowedIPs: {
-  value: allowedIP
+var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
+  value: allowedIPOrCIDR
   action: 'Allow'
 }]
 

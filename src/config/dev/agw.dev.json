@@ -17,17 +17,11 @@
     "appGatewaySkuName": {
       "value": "WAF_v2"
     },
-    "enablePublicIP": {
-      "value": true
-    },
     "gatewayVNetName": {
       "value": "BRS-GLB-USE2-APPLICSHR-DEV-VN02"
     },
     "gatewaySubnetName": {
       "value": "BRS-GLB-USE2-APGW-DEV-SN01"
-    },
-    "appGatewayPrivateIPAddress": {
-      "value": "10.169.90.140"
     },
     "autoScaleMinCapacity": {
       "value": 1
@@ -43,6 +37,15 @@
     },
     "publicCertificateId": {
       "value": "{NULL PublicCertificateId}"
+    },
+    "enableDiagnostics": {
+      "value": true
+    },
+    "diagnosticsWorkspaceName": {
+      "value": "BRS-MEX-USE2-CRECESDX-DEV-MM01"
+    },
+    "logsRetentionDays": {
+      "value": 7
     }
   }
 }

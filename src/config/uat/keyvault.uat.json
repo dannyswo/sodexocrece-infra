@@ -10,6 +10,12 @@
     },
     "keyVaultNameSuffix": {
       "value": "xpi676"
+    },
+    "allowedSubnetNames": {
+      "value": []
+    },
+    "allowedIPsOrCIDRs": {
+      "value": []
     }
   }
 }

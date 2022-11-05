@@ -29,17 +29,11 @@ param appGatewaySkuTier string
 ])
 param appGatewaySkuName string
 
-@description('Create frontend public IP for the Application Gateway.')
-param enablePublicIP bool
-
 @description('Name of the Gateway VNet where Application Gateway is deployed.')
 param gatewayVNetName string
 
 @description('Name of the Gateway Subnet where Application Gateway is deployed.')
 param gatewaySubnetName string
-
-@description('Private IP address of the Application Gateway. Must be defined if SKU tier is WAF_v2.')
-param appGatewayPrivateIPAddress string
 
 @description('Minimum capacity for auto scaling of Application Gateway.')
 param autoScaleMinCapacity int
@@ -55,6 +49,17 @@ param enableHttpsPort bool
 
 @description('ID of the public SSL certificate stored in Key Vault.')
 param publicCertificateId string
+
+@description('Enable diagnostics to store Application Gateway logs and metrics.')
+param enableDiagnostics bool
+
+@description('Name of the Log Analytics Workspace used for diagnostics of the Application Gateway. Must be defined if enableDiagnostics is true.')
+param diagnosticsWorkspaceName string
+
+@description('Retention days of Application Gateway logs. Must be defined if enableDiagnostics is true.')
+@minValue(7)
+@maxValue(180)
+param logsRetentionDays int
 
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
@@ -146,7 +151,6 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
     sku: {
       tier: appGatewaySkuTier
       name: appGatewaySkuName
-      //capacity: appGatewaySkuCapacity
     }
     autoscaleConfiguration: {
       minCapacity: autoScaleMinCapacity
@@ -167,11 +171,9 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
       {
         name: '${appGatewayName}-FrontIP-443'
         properties: {
-          privateIPAllocationMethod: 'Static'
-          privateIPAddress: appGatewayPrivateIPAddress
-          publicIPAddress: (enablePublicIP) ? {
+          publicIPAddress: {
             id: publicIpAddress.id
-          } : null
+          }
         }
       }
     ]
@@ -179,7 +181,33 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
     httpListeners: httpListeners
     backendAddressPools: [
       {
-        name: '${appGatewayName}-Backend0'
+        name: '${appGatewayName}-BackendPool-Dummy'
+      }
+    ]
+    backendHttpSettingsCollection: [
+      {
+        name: '${appGatewayName}-BackendHTTPSettings-80'
+        properties: {
+          port: 80
+        }
+      }
+    ]
+    requestRoutingRules: [
+      {
+        name: '${appGatewayName}-RoutingRule-80'
+        properties: {
+          ruleType: 'Basic'
+          httpListener: {
+            id: resourceId('Microsoft.Network/applicationGateways/httpListeners', appGatewayName, '${appGatewayName}-Listener-80')
+          }
+          backendHttpSettings: {
+            id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', appGatewayName, '${appGatewayName}-BackendHTTPSettings-80')
+          }
+          backendAddressPool: {
+            id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', appGatewayName, '${appGatewayName}-BackendPool-Dummy')
+          }
+          priority: 10
+        }
       }
     ]
     sslCertificates: (enableHttpsPort) ? [
@@ -211,11 +239,14 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
         }
       }
     ] : []
+    firewallPolicy: {
+      id: wafPolicies.id
+    }
   }
   tags: standardTags
 }
 
-resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = if (enablePublicIP) {
+resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-PI01'
   location: location
   sku: {
@@ -224,8 +255,8 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = if (
   }
   zones: zones
   properties: {
-    publicIPAllocationMethod: 'Dynamic'
-    deleteOption: 'Delete'
+    publicIPAllocationMethod: 'Static'
+    deleteOption: 'Detach'
   }
   tags: standardTags
 }
@@ -256,6 +287,50 @@ resource wafPolicies 'Microsoft.Network/ApplicationGatewayWebApplicationFirewall
   tags: standardTags
 }
 
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostics) {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-MM04'
+  scope: appGateway
+  properties: {
+    workspaceId: resourceId('Microsoft.OperationalInsights/workspaces', diagnosticsWorkspaceName)
+    logs: [
+      {
+        category: 'ApplicationGatewayAccessLog'
+        enabled: true
+        retentionPolicy: {
+          enabled: true
+          days: logsRetentionDays
+        }
+      }
+      {
+        category: 'ApplicationGatewayPerformanceLog'
+        enabled: true
+        retentionPolicy: {
+          enabled: true
+          days: logsRetentionDays
+        }
+      }
+      {
+        category: 'ApplicationGatewayFirewallLog'
+        enabled: true
+        retentionPolicy: {
+          enabled: true
+          days: logsRetentionDays
+        }
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+        retentionPolicy: {
+          enabled: true
+          days: logsRetentionDays
+        }
+      }
+    ]
+  }
+}
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-AD01'
   location: location
@@ -266,7 +341,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-
 var roleDefinitionId = 'a4417e6f-fecd-4de8-b567-7b0420556985'
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AD02'
+  name: guid(subscription().subscriptionId)
   scope: resourceGroup()
   properties: {
     description: 'Access public certificate in the Key Vault from Application Gateway \'${appGatewayName}\''

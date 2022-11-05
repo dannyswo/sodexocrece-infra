@@ -31,7 +31,7 @@ param serviceId string
 @allowed([
   'vault'
   'registry'
-  'storageAccount'
+  'blob'
   'sqlServer'
 ])
 param groupId string
@@ -47,7 +47,7 @@ var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName,
 var memberNamesDictionary = {
   vault: [ 'default' ]
   registry: [ 'registry', 'registry_data_eastus2' ]
-  storageAccount: [ 'default' ]
+  blob: [ 'blob' ]
   server: [ 'default' ]
 }
 

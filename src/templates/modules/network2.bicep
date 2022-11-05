@@ -96,31 +96,45 @@ resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   properties: {
     securityRules: [
       {
-        name: 'AllowHttp'
+        name: 'AllowInternetHttpInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
-          sourcePortRange: '80'
-          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'Internet'
           destinationPortRange: '80'
           destinationAddressPrefix: '*'
           priority: 110
-          description: 'Allow HTTP.'
+          description: 'Allow Internet HTTP Inbound.'
         }
       }
       {
-        name: 'AllowHttps'
+        name: 'AllowInternetHttpsInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
-          sourcePortRange: '443'
-          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'Internet'
           destinationPortRange: '443'
           destinationAddressPrefix: '*'
           priority: 111
-          description: 'Allow HTTPS.'
+          description: 'Allow Internet HTTPS Inbound.'
+        }
+      }
+      {
+        name: 'AllowInternetAzurePortsInbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'Internet'
+          destinationPortRange: '65200-65535'
+          destinationAddressPrefix: '*'
+          priority: 200
+          description: 'Allow Internet HTTP Inbound.'
         }
       }
     ]
@@ -134,31 +148,31 @@ resource appsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   properties: {
     securityRules: [
       {
-        name: 'AllowHttp'
+        name: 'AllowGatewayHttpInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
-          sourcePortRange: '80'
-          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: gatewaySubnetAddressPrefix
           destinationPortRange: '80'
           destinationAddressPrefix: '*'
           priority: 110
-          description: 'Allow HTTP.'
+          description: 'Allow Gateway HTTP Inbound.'
         }
       }
       {
-        name: 'AllowHttps'
+        name: 'AllowGatewayHttpsInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
-          sourcePortRange: '443'
-          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: gatewaySubnetAddressPrefix
           destinationPortRange: '443'
           destinationAddressPrefix: '*'
           priority: 111
-          description: 'Allow HTTPS.'
+          description: 'Allow Gateway HTTPS Inbound.'
         }
       }
     ]
@@ -172,31 +186,31 @@ resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   properties: {
     securityRules: [
       {
-        name: 'AllowHttp'
+        name: 'AllowApplicationsHttpInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
-          sourcePortRange: '80'
-          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: appsSubnetAddressPrefix
           destinationPortRange: '80'
           destinationAddressPrefix: '*'
           priority: 110
-          description: 'Allow HTTP.'
+          description: 'Allow Applications HTTP Inbound.'
         }
       }
       {
-        name: 'AllowHttps'
+        name: 'AllowApplicationsHttpsInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
-          sourcePortRange: '443'
-          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: appsSubnetAddressPrefix
           destinationPortRange: '443'
           destinationAddressPrefix: '*'
           priority: 111
-          description: 'Allow HTTPS.'
+          description: 'Allow Applications HTTPS Inbound.'
         }
       }
     ]

@@ -9,7 +9,7 @@
       "value": "SWO"
     },
     "privateEndpointName": {
-      "value": "P02"
+      "value": "P04"
     },
     "vnetName": {
       "value": "BRS-GLB-USE2-PVTPNTBRS-DEV-VN02"
@@ -18,13 +18,13 @@
       "value": "BRS-MEX-USE2-PVTPNT-DEV-SN01"
     },
     "privateIPAddresses": {
-      "value": "10.169.88.70"
+      "value": "10.169.88.73"
     },
     "serviceId": {
-      "value": "azmxks1mat327"
+      "value": "azmxst1ifv691"
     },
     "groupId": {
-      "value": "vault"
+      "value": "blob"
     },
     "linkedVNetNames": {
       "value": [

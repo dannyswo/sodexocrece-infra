@@ -25,16 +25,22 @@ param storageAccountSkuName string
 @description('URI of the Key Vault where encryption key of the Storage Account is stored.')
 param keyVaultUri string
 
-@description('Name of the Log Analytics Workspace used for diagnostics of the Storage Account.')
+@description('Enable diagnostics to store Storage Account access logs.')
+param enableDiagnostics bool
+
+@description('Name of the Log Analytics Workspace used for diagnostics of the Storage Account. Must be defined if enableDiagnostics is true.')
 param diagnosticsWorkspaceName string
 
-@description('Retention days of access logs of the Storage Account.')
+@description('Retention days Storage Account access logs. Must be defined if enableDiagnostics is true.')
 @minValue(7)
 @maxValue(180)
 param logsRetentionDays int
 
 @description('List of Subnet names allowed to access the Storage Account in the firewall.')
 param allowedSubnetNames array = []
+
+@description('List of IPs or CIDRs allowed to access the Storage Account in the firewall.')
+param allowedIPsOrCIDRs array = []
 
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
@@ -46,6 +52,10 @@ var encryptionKeyName = 'merchantfileskey'
 var virtualNetworkRules = [for allowedSubnetName in allowedSubnetNames: {
   id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnetName)
   action: 'Allow'
+}]
+
+var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
+  value: allowedIPOrCIDR
 }]
 
 resource appsDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
@@ -92,7 +102,7 @@ resource appsDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' =
       bypass: 'None'
       defaultAction: 'Deny'
       virtualNetworkRules: virtualNetworkRules
-      ipRules: []
+      ipRules: ipRules
     }
     minimumTlsVersion: 'TLS1_2'
   }
@@ -145,13 +155,11 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-prev
   }
 }
 
-var diagnosticsWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', diagnosticsWorkspaceName)
-
-resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-MM10'
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostics) {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-MM04'
   scope: appsDataStorageAccount
   properties: {
-    workspaceId: diagnosticsWorkspaceId
+    workspaceId: resourceId('Microsoft.OperationalInsights/workspaces', diagnosticsWorkspaceName)
     logs: [
       {
         category: 'StorageRead'
