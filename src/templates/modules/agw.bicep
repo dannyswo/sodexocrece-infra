@@ -61,6 +61,8 @@ param diagnosticsWorkspaceName string
 @maxValue(180)
 param logsRetentionDays int
 
+param managedIdentityName string
+
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
@@ -331,24 +333,8 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AD01'
-  location: location
-  tags: standardTags
-}
-
-@description('ID of the Role Definition: Key Vault Certificates Officer | Perform any action on the certificates of a key vault.')
-var roleDefinitionId = 'a4417e6f-fecd-4de8-b567-7b0420556985'
-
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(appGateway.id)
-  scope: resourceGroup()
-  properties: {
-    description: 'Access public certificate in the Key Vault from Application Gateway \'${appGatewayName}\''
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)
-    principalType: 'ServicePrincipal'
-  }
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
+  name: managedIdentityName
 }
 
 resource appGatewayLock 'Microsoft.Authorization/locks@2017-04-01' = {

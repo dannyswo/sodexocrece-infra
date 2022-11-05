@@ -1,5 +1,3 @@
-// temp.bicep
-
 @description('Azure region.')
 param location string = resourceGroup().location
 
@@ -50,21 +48,6 @@ param enablePrivateEndpoints bool = true
 @description('Private IP of the Key Vault\'s Private Endpoint.')
 param keyVaultPEPrivateIPAddress string
 
-@description('Standard tags applied to all resources.')
-@metadata({
-  ApplicationName: ''
-  ApplicationOwner: ''
-  ApplicationSponsor: ''
-  TechnicalContact: ''
-  Billing: ''
-  Maintenance: ''
-  EnvironmentType: ''
-  Security: ''
-  DeploymentDate: ''
-  dd_organization: ''
-})
-param standardTags object = resourceGroup().tags
-
 // Resource settings
 
 param keyVaultNameSuffix string
@@ -99,7 +82,33 @@ param appsDataStorageLogsRetentionDays int
 param keyVaultAllowedSubnetNames array
 param keyVaultAllowedIPsOrCIDRs array
 
+// Tags
+
+@description('Standard tags applied to all resources.')
+@metadata({
+  ApplicationName: ''
+  ApplicationOwner: ''
+  ApplicationSponsor: ''
+  TechnicalContact: ''
+  Billing: ''
+  Maintenance: ''
+  EnvironmentType: ''
+  Security: ''
+  DeploymentDate: ''
+  dd_organization: ''
+})
+param standardTags object = resourceGroup().tags
+
 // Resource definitions
+
+module managedIdentitiesModule 'modules/managedids.bicep' = {
+  name: 'managedIdsModule'
+  params: {
+    location: location
+    env: env
+    standardTags: standardTags
+  }
+}
 
 module networkModule 'modules/network1.bicep' = if (enableNetwork) {
   name: 'networkModule'
@@ -184,6 +193,27 @@ module keyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enabl
   }
 }
 
+module keyVaultObjectsModule 'modules/keyvaultobjects.bicep' = {
+  name: 'keyVaultObjectsModule'
+  params: {
+    keyVaultName: keyVaultModule.outputs.keyVaultName
+    createEncryptionKeys: true
+    appsDataStorageEncryptionKeyName: 'merchant-files-key'
+    createEmptySecrets: false
+    sqlDatabaseAdminUserSecretName: 'merchant-admin-user'
+    sqlDatabaseAdminPassSecretName: 'merchant-admin-password'
+  }
+}
+
+module keyVaultPoliciesModule 'modules/keyvaultpolicies.bicep' = {
+  name: 'keyVaultPoliciesModule'
+  params: {
+    keyVaultName: keyVaultModule.outputs.keyVaultName
+    appGatewayPrincipalId: managedIdentitiesModule.outputs.appGatewayManagedIdentityId
+    appsDataStorageAccountPrincipalId: managedIdentitiesModule.outputs.appsDataStorageManagedIdentityId
+  }
+}
+
 module monitoringDataStorageModule 'modules/monitoringdatastorage.bicep' = {
   name: 'monitoringDataStorageModule'
   params: {
@@ -239,6 +269,7 @@ module appGatewayModule 'modules/agw.bicep' = {
     enableDiagnostics: appGatewayEnableDiagnostics
     diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
     logsRetentionDays: appGatewayLogsRetentionDays
+    managedIdentityName: managedIdentitiesModule.outputs.appGatewayManagedIdentityName
     standardTags: standardTags
   }
 }
@@ -250,10 +281,12 @@ module appsDataStorageModule 'modules/appsdatastorage.bicep' = {
     env: env
     storageAccountNameSuffix: appsDataStorageNameSuffix
     storageAccountSkuName: appsDataStorageSkuName
+    encryptionKeyName: keyVaultObjectsModule.outputs.appsDataStorageEncryptionKeyName
     keyVaultUri: keyVaultModule.outputs.keyVaultUri
     enableDiagnostics: appsDataStorageEnableDiagnostics
     diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
     logsRetentionDays: appsDataStorageLogsRetentionDays
+    managedIdentityName: managedIdentitiesModule.outputs.appsDataStorageManagedIdentityName
     standardTags: standardTags
   }
 }

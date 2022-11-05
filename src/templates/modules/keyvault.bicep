@@ -40,22 +40,23 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: 'azmxkv1${keyVaultNameSuffix}'
   location: location
   properties: {
+    createMode: 'default'
     tenantId: tenantId
     sku: {
       family: 'A'
       name: 'standard'
     }
-    enablePurgeProtection: true
     enableSoftDelete: true
-    softDeleteRetentionInDays: 30
-    enableRbacAuthorization: false
-    accessPolicies: []
+    enablePurgeProtection: true
+    softDeleteRetentionInDays: 1
     enabledForDeployment: false
     enabledForDiskEncryption: false
     enabledForTemplateDeployment: false
+    enableRbacAuthorization: false
+    accessPolicies: []
     publicNetworkAccess: 'Enabled'
     networkAcls: {
-      bypass: 'None'
+      bypass: 'AzureServices'
       defaultAction: 'Deny'
       virtualNetworkRules: virtualNetworkRules
       ipRules: ipRules
@@ -75,6 +76,9 @@ resource keyVaultLock 'Microsoft.Authorization/locks@2017-04-01' = {
 
 @description('ID of the Key Vault instance.')
 output keyVaultId string = keyVault.id
+
+@description('NAmeof the Key Vault instance.')
+output keyVaultName string = keyVault.name
 
 @description('URI of the Key Vault instance.')
 output keyVaultUri string = keyVault.properties.vaultUri

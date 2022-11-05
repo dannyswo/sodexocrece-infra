@@ -22,10 +22,7 @@ var appGatewayAccessPolicy = {
   tenantId: tenantId
   permissions: {
     certificates: [
-      'get'
-      'import'
-      'list'
-      'listissuers'
+      'all'
     ]
   }
 }
@@ -35,17 +32,17 @@ var appsDataStorageAccountAccessPolicy = {
   tenantId: tenantId
   permissions: {
     keys: [
-      'get'
-      'encrypt'
-      'decrypt'
-      'list'
-      'import'
-      'getrotationpolicy'
+      'all'
     ]
   }
 }
 
-var additionalAccessPolicies = [for principalId in principalIds: {
+var azureServicesAccessPolicies = [
+  appGatewayAccessPolicy
+  appsDataStorageAccountAccessPolicy
+]
+
+var applicationsAccessPolicies = [for principalId in principalIds: {
   objectId: principalId
   tenantId: tenantId
   permissions: {
@@ -56,12 +53,25 @@ var additionalAccessPolicies = [for principalId in principalIds: {
   }
 }]
 
-var azureServicesAccessPolicies = [
-  appGatewayAccessPolicy
-  appsDataStorageAccountAccessPolicy
+var additionalAccessPolicies = [
+  {
+    objectId: '40c2e922-9fb6-4186-a53f-44439c85a9df'
+    tenantId: tenantId
+    permissions: {
+      certificates: [
+        'all'
+      ]
+      keys: [
+        'all'
+      ]
+      secrets: [
+        'all'
+      ]
+    }
+  }
 ]
 
-var accessPolicies = concat(azureServicesAccessPolicies, additionalAccessPolicies)
+var accessPolicies = concat(azureServicesAccessPolicies, applicationsAccessPolicies, additionalAccessPolicies)
 
 resource appGatewayAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2022-07-01' = {
   name: 'add'

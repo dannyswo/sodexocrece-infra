@@ -22,6 +22,9 @@ param storageAccountNameSuffix string
 ])
 param storageAccountSkuName string
 
+@description('Name of the CMK used by Storage Account to encrypt blobs.')
+param encryptionKeyName string
+
 @description('URI of the Key Vault where encryption key of the Storage Account is stored.')
 param keyVaultUri string
 
@@ -42,12 +45,12 @@ param allowedSubnetNames array = []
 @description('List of IPs or CIDRs allowed to access the Storage Account in the firewall.')
 param allowedIPsOrCIDRs array = []
 
+param managedIdentityName string
+
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
 var storageAccountName = 'azmxst1${storageAccountNameSuffix}'
-
-var encryptionKeyName = 'merchantfileskey'
 
 var virtualNetworkRules = [for allowedSubnetName in allowedSubnetNames: {
   id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnetName)
@@ -62,7 +65,10 @@ resource appsDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' =
   name: storageAccountName
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
   }
   kind: 'StorageV2'
   sku: {
@@ -135,24 +141,8 @@ resource merchantFilesContainer 'Microsoft.Storage/storageAccounts/blobServices/
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AD03'
-  location: location
-  tags: standardTags
-}
-
-@description('ID of the Role Definition: Key Vault Crypto User | Perform cryptographic operations using keys.')
-var roleDefinitionId = '12338af0-0e69-4776-bea7-57ae8d297424'
-
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(appsDataStorageAccount.id)
-  scope: resourceGroup()
-  properties: {
-    description: 'Access encryption key in the Key Vault from Storage Account \'${storageAccountName}\''
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)
-    principalType: 'ServicePrincipal'
-  }
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
+  name: managedIdentityName
 }
 
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostics) {
