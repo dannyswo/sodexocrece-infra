@@ -45,7 +45,7 @@
       "value": "10.169.88.69"
     },
     "keyVaultNameSuffix": {
-      "value": "mat327"
+      "value": "mat426"
     },
     "monitoringDataStorageNameSuffix": {
       "value": "msv817"
@@ -64,6 +64,36 @@
     },
     "flowLogsRetentionDays": {
       "value": 7
+    },
+    "appGatewayNameSuffix": {
+      "value": "gtc219"
+    },
+    "appGatewaySkuTier": {
+      "value": "WAF_v2"
+    },
+    "appGatewaySkuName": {
+      "value": "WAF_v2"
+    },
+    "appGatewayEnablePublicIP": {
+      "value": true
+    },
+    "appGatewayPrivateIPAddress": {
+      "value": "10.169.90.140"
+    },
+    "appGatewayAutoScaleMinCapacity": {
+      "value": 1
+    },
+    "appGatewayAutoScaleMaxCapacity": {
+      "value": 2
+    },
+    "appGatewayEnableHttpPort": {
+      "value": true
+    },
+    "appGatewayEnableHttpsPort": {
+      "value": false
+    },
+    "appGatewayPublicCertificateId": {
+      "value": "{NULL appGatewayPublicCertificateId}"
     }
   }
 }

@@ -8,10 +8,10 @@
     "env": {
       "value": "SWO"
     },
-    "monitoringDataStorageNameSuffix": {
+    "storageAccountNameSuffix": {
       "value": "msv817"
     },
-    "monitoringDataStorageSkuName": {
+    "storageAccountSkuName": {
       "value": "Standard_LRS"
     }
   }

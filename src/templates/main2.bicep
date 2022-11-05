@@ -1,3 +1,5 @@
+// temp.bicep
+
 @description('Azure region.')
 param location string = resourceGroup().location
 
@@ -71,6 +73,17 @@ param workspaceCapacityReservation int
 param workspaceLogRetentionDays int
 
 param flowLogsRetentionDays int
+
+param appGatewayNameSuffix string
+param appGatewaySkuTier string
+param appGatewaySkuName string
+param appGatewayEnablePublicIP bool
+param appGatewayPrivateIPAddress string
+param appGatewayAutoScaleMinCapacity int
+param appGatewayAutoScaleMaxCapacity int
+param appGatewayEnableHttpPort bool
+param appGatewayEnableHttpsPort bool
+param appGatewayPublicCertificateId string
 
 module networkModule 'modules/network1.bicep' = if (enableNetwork) {
   name: 'networkModule'
@@ -186,6 +199,27 @@ module networkWatcherModule 'modules/networkwatcher.bicep' = {
     flowLogsStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
     flowAnalyticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
     flowLogsRetentionDays: flowLogsRetentionDays
+    standardTags: standardTags
+  }
+}
+
+module appGatewayModule 'modules/agw.bicep' = {
+  name: 'appGatewayModule'
+  params: {
+    location: location
+    env: env
+    appGatewayNameSuffix: appGatewayNameSuffix
+    appGatewaySkuTier: appGatewaySkuTier
+    appGatewaySkuName: appGatewaySkuName
+    enablePublicIP: appGatewayEnablePublicIP
+    appGatewayPrivateIPAddress: appGatewayPrivateIPAddress
+    gatewayVNetName: selectedNetworkNames.gatewayVNetName
+    gatewaySubnetName: selectedNetworkNames.gatewaySubnetName
+    autoScaleMinCapacity: appGatewayAutoScaleMinCapacity
+    autoScaleMaxCapacity: appGatewayAutoScaleMaxCapacity
+    enableHttpPort: appGatewayEnableHttpPort
+    enableHttpsPort: appGatewayEnableHttpsPort
+    publicCertificateId: appGatewayPublicCertificateId
     standardTags: standardTags
   }
 }

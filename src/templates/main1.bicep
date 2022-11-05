@@ -84,12 +84,12 @@ param flowLogsRetentionDays int
 param appGatewayNameSuffix string
 param appGatewaySkuTier string
 param appGatewaySkuName string
-param appGatewaySkuCapacity int
 param appGatewayEnablePublicIP bool
 param appGatewayPrivateIPAddress string
 param appGatewayAutoScaleMinCapacity int
 param appGatewayAutoScaleMaxCapacity int
-param appGatewayEnablePublicCertificate bool
+param appGatewayEnableHttpPort bool
+param appGatewayEnableHttpsPort bool
 param appGatewayPublicCertificateId string
 
 param appsDataStorageNameSuffix string
@@ -254,14 +254,14 @@ module appGatewayModule 'modules/agw.bicep' = {
     appGatewayNameSuffix: appGatewayNameSuffix
     appGatewaySkuTier: appGatewaySkuTier
     appGatewaySkuName: appGatewaySkuName
-    appGatewaySkuCapacity: appGatewaySkuCapacity
     enablePublicIP: appGatewayEnablePublicIP
     appGatewayPrivateIPAddress: appGatewayPrivateIPAddress
     gatewayVNetName: selectedNetworkNames.gatewayVNetName
     gatewaySubnetName: selectedNetworkNames.gatewaySubnetName
     autoScaleMinCapacity: appGatewayAutoScaleMinCapacity
     autoScaleMaxCapacity: appGatewayAutoScaleMaxCapacity
-    enablePublicCertificate: appGatewayEnablePublicCertificate
+    enableHttpPort: appGatewayEnableHttpPort
+    enableHttpsPort: appGatewayEnableHttpsPort
     publicCertificateId: appGatewayPublicCertificateId
     standardTags: standardTags
   }

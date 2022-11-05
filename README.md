@@ -37,6 +37,7 @@ az bicep version
 az login
 az bicep decompile --file .\template.json
 
+az account show
 az account set --subscription [Subscription ID]
 az account list-locations -o table
 ```

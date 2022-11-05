@@ -29,9 +29,6 @@ param appGatewaySkuTier string
 ])
 param appGatewaySkuName string
 
-@description('SKU capacity of the Application Gateway.')
-param appGatewaySkuCapacity int
-
 @description('Create frontend public IP for the Application Gateway.')
 param enablePublicIP bool
 
@@ -50,8 +47,11 @@ param autoScaleMinCapacity int
 @description('Maximum capacity for auto scaling of Application Gateway.')
 param autoScaleMaxCapacity int
 
-@description('Setup the public SSL certificate.')
-param enablePublicCertificate bool
+@description('Enable a Listener on port 80.')
+param enableHttpPort bool
+
+@description('Enable Listener on port 443 and setup the public SSL certificate.')
+param enableHttpsPort bool
 
 @description('ID of the public SSL certificate stored in Key Vault.')
 param publicCertificateId string
@@ -65,46 +65,54 @@ var zones = [ '1', '2', '3' ]
 
 var gatewaySubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', gatewayVNetName, gatewaySubnetName)
 
-var enablePort80 = true
-
 var frontendPort80 = {
   name: '${appGatewayName}-Port-80'
   properties: {
     port: 80
   }
 }
+
 var frontendPort443 = {
   name: '${appGatewayName}-Port-443'
   properties: {
     port: 443
   }
 }
-var frontendPorts = (enablePort80) ? [ frontendPort80, frontendPort443 ] : [ frontendPort443 ]
+
+var frontendPorts = (enableHttpPort && enableHttpsPort) ? [
+  frontendPort80
+  frontendPort443
+] : (enableHttpPort) ? [
+  frontendPort80
+] : (enableHttpsPort) ? [
+  frontendPort443
+] : []
 
 var httpListener80 = {
   name: '${appGatewayName}-Listener-80'
   properties: {
+    protocol: 'Http'
     frontendIPConfiguration: {
       id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', appGatewayName, '${appGatewayName}-FrontIP-443')
     }
-    protocol: 'Http'
     frontendPort: {
       id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', appGatewayName, '${appGatewayName}-Port-80')
     }
   }
 }
+
 var httpListener443 = {
   name: '${appGatewayName}-Listener-443'
   properties: {
+    protocol: 'Https'
     frontendIPConfiguration: {
       id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', appGatewayName, '${appGatewayName}-FrontIP-443')
     }
-    protocol: 'Https'
     frontendPort: {
       id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', appGatewayName, '${appGatewayName}-Port-443')
     }
-    sslCertificate: (enablePublicCertificate) ? {
-      id: resourceId('Microsoft.Network/applicationGateways/sslCertificates', appGatewayName, '${appGatewayName}-SSLCertificate')
+    sslCertificate: (enableHttpsPort) ? {
+      id: resourceId('Microsoft.Network/applicationGateways/sslCertificates', appGatewayName, '${appGatewayName}-SSLCertificate-Public')
     } : null
     sslProfile: {
       id: resourceId('Microsoft.Network/applicationGateways/sslProfiles', appGatewayName, '${appGatewayName}-SSLProfile')
@@ -114,7 +122,15 @@ var httpListener443 = {
     }
   }
 }
-var httpListeners = (enablePort80) ? [ httpListener80, httpListener443 ] : [ httpListener443 ]
+
+var httpListeners = (enableHttpPort && enableHttpsPort) ? [
+  httpListener80
+  httpListener443
+] : (enableHttpPort) ? [
+  httpListener80
+] : (enableHttpsPort) ? [
+  httpListener443
+] : []
 
 resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
   name: appGatewayName
@@ -130,14 +146,13 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
     sku: {
       tier: appGatewaySkuTier
       name: appGatewaySkuName
-      capacity: appGatewaySkuCapacity
+      //capacity: appGatewaySkuCapacity
     }
     autoscaleConfiguration: {
       minCapacity: autoScaleMinCapacity
       maxCapacity: autoScaleMaxCapacity
     }
     enableHttp2: false
-    enableFips: false
     gatewayIPConfigurations: [
       {
         name: '${appGatewayName}-GatewayIPConfig'
@@ -162,15 +177,20 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
     ]
     frontendPorts: frontendPorts
     httpListeners: httpListeners
-    sslCertificates: (enablePublicCertificate) ? [
+    backendAddressPools: [
       {
-        name: '${appGatewayName}-SSLCertificate'
+        name: '${appGatewayName}-Backend0'
+      }
+    ]
+    sslCertificates: (enableHttpsPort) ? [
+      {
+        name: '${appGatewayName}-SSLCertificate-Public'
         properties: {
           keyVaultSecretId: publicCertificateId
         }
       }
     ] : []
-    sslProfiles: [
+    sslProfiles: (enableHttpsPort) ? [
       {
         name: '${appGatewayName}-SSLProfile'
         properties: {
@@ -190,7 +210,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
           }
         }
       }
-    ]
+    ] : []
   }
   tags: standardTags
 }

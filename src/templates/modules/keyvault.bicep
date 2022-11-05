@@ -51,7 +51,11 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
       bypass: 'None'
       defaultAction: 'Deny'
       virtualNetworkRules: virtualNetworkRules
-      ipRules: []
+      ipRules: [
+        {
+          value: '181.134.145.168'
+        }
+      ]
     }
   }
   tags: standardTags

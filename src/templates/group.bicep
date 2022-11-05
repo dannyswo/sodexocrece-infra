@@ -13,7 +13,7 @@ param location string = 'eastus2'
 param env string
 
 @description('Standard tags applied to all resources.')
-@metadata({
+param standardTags object = {
   ApplicationName: ''
   ApplicationOwner: ''
   ApplicationSponsor: ''
@@ -24,8 +24,7 @@ param env string
   Security: ''
   DeploymentDate: ''
   dd_organization: ''
-})
-param standardTags object
+}
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RG01'

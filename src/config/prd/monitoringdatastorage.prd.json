@@ -8,10 +8,10 @@
     "env": {
       "value": "PRD"
     },
-    "monitoringDataStorageNameSuffix": {
+    "storageAccountNameSuffix": {
       "value": "ewy566"
     },
-    "monitoringDataStorageSkuName": {
+    "storageAccountSkuName": {
       "value": "Standard_ZRS"
     }
   }

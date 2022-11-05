@@ -11,11 +11,14 @@
     "workspaceSkuName": {
       "value": "PerGB2018"
     },
-    "workspaceLogRetentionDays": {
-      "value": 30
-    },
     "workspaceCapacityReservation": {
       "value": 0
+    },
+    "logRetentionDays": {
+      "value": 30
+    },
+    "linkedStorageAccountName": {
+      "value": "azmxst1ewy566"
     }
   }
 }

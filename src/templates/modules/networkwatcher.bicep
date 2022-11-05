@@ -29,17 +29,17 @@ param standardTags object = resourceGroup().tags
 
 var networkWatcherNameSuffix = 'MM02'
 
-// resource networkWatcher 'Microsoft.Network/networkWatchers@2022-05-01' = {
-//   name: 'BRS-MEX-USE2-CRECESDX-${env}-${networkWatcherNameSuffix}'
-//   location: location
-//   properties: {
-//   }
-//   tags: standardTags
-// }
-
-resource networkWatcher 'Microsoft.Network/networkWatchers@2022-05-01' existing = {
-  name: 'NetworkWatcher_${location}'
+resource networkWatcher 'Microsoft.Network/networkWatchers@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${networkWatcherNameSuffix}'
+  location: location
+  properties: {
+  }
+  tags: standardTags
 }
+
+// resource networkWatcher 'Microsoft.Network/networkWatchers@2022-05-01' existing = {
+//   name: 'NetworkWatcher_${location}'
+// }
 
 var targetNSGId = resourceId('Microsoft.Network/networkSecurityGroups', targetNSGName)
 

@@ -6,13 +6,7 @@
       "value": "eastus2"
     },
     "env": {
-      "value": "UAT"
-    },
-    "storageAccountNameSuffix": {
-      "value": "sdl307"
-    },
-    "storageAccountSkuName": {
-      "value": "Standard_LRS"
+      "value": "SWO"
     }
   }
 }

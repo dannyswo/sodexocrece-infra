@@ -80,20 +80,26 @@
     "appGatewaySkuName": {
       "value": "WAF_v2"
     },
-    "appGatewaySkuCapacity": {
-      "value": 1
-    },
     "appGatewayEnablePublicIP": {
       "value": true
     },
     "appGatewayPrivateIPAddress": {
-      "value": "10.169.90.135"
+      "value": "10.169.90.140"
     },
     "appGatewayAutoScaleMinCapacity": {
       "value": 1
     },
     "appGatewayAutoScaleMaxCapacity": {
-      "value": 3
+      "value": 2
+    },
+    "appGatewayEnableHttpPort": {
+      "value": true
+    },
+    "appGatewayEnableHttpsPort": {
+      "value": false
+    },
+    "appGatewayPublicCertificateId": {
+      "value": "{NULL appGatewayPublicCertificateId}"
     },
     "acrNameSuffix": {
       "value": "hle620"
