@@ -341,7 +341,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-
 var roleDefinitionId = 'a4417e6f-fecd-4de8-b567-7b0420556985'
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(subscription().subscriptionId)
+  name: guid(appGateway.id)
   scope: resourceGroup()
   properties: {
     description: 'Access public certificate in the Key Vault from Application Gateway \'${appGatewayName}\''

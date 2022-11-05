@@ -145,7 +145,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-
 var roleDefinitionId = '12338af0-0e69-4776-bea7-57ae8d297424'
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AD04'
+  name: guid(appsDataStorageAccount.id)
   scope: resourceGroup()
   properties: {
     description: 'Access encryption key in the Key Vault from Storage Account \'${storageAccountName}\''
