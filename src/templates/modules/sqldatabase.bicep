@@ -190,7 +190,9 @@ var generalPurposeSkus = [
 
 var selectedSku = (skuType == 'GeneralPurpose') ? generalPurposeSkus[skuSize] : standardSkus[skuSize]
 
-var maxSizeBytes = maxSizeGB * 1000000000
+var maxSizeBytes = maxSizeGB * 1024 * 1024 * 1024
+
+var isZoneRedundant = (skuType == 'GeneralPurpose') ? zoneRedundant : false
 
 resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-DB01'
@@ -201,7 +203,7 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
     createMode: 'Default'
     minCapacity: minCapacity
     maxSizeBytes: maxSizeBytes
-    zoneRedundant: zoneRedundant
+    zoneRedundant: isZoneRedundant
     highAvailabilityReplicaCount: 0
     requestedBackupStorageRedundancy: backupRedundancy
     autoPauseDelay: -1
