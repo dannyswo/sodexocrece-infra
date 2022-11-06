@@ -47,6 +47,12 @@
     "appsDataStoragePEPrivateIPAddress": {
       "value": "10.169.88.73"
     },
+    "acrPEPrivateIPAddresses": {
+      "value": [
+        "10.169.88.71",
+        "10.169.88.72"
+      ]
+    },
     "monitoringDataStorageNameSuffix": {
       "value": "msv817"
     },

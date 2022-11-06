@@ -53,6 +53,9 @@ param keyVaultPEPrivateIPAddress string
 @description('Private IP of the Application Data Storage Account\'s Private Endpoint.')
 param appsDataStoragePEPrivateIPAddress string
 
+@description('Private IPs of the Container Registry\'s Private Endpoint. Requires 2 IPs for 2 members: registry and registry_data.')
+param acrPEPrivateIPAddresses array
+
 // Resource properties
 
 param monitoringDataStorageNameSuffix string
@@ -161,7 +164,7 @@ param standardTags object = resourceGroup().tags
 
 // Resource definitions
 
-module managedIdentitiesModule 'modules/managedids.bicep' = {
+module managedIdsModule 'modules/managedids.bicep' = {
   name: 'managedIdsModule'
   params: {
     location: location
@@ -313,8 +316,8 @@ module keyVaultPoliciesModule 'modules/keyvaultpolicies.bicep' = {
   name: 'keyVaultPoliciesModule'
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
-    appGatewayPrincipalId: managedIdentitiesModule.outputs.appGatewayManagedIdentityId
-    appsDataStorageAccountPrincipalId: managedIdentitiesModule.outputs.appsDataStorageManagedIdentityId
+    appGatewayPrincipalId: managedIdsModule.outputs.appGatewayManagedIdentityId
+    appsDataStorageAccountPrincipalId: managedIdsModule.outputs.appsDataStorageManagedIdentityId
   }
 }
 
@@ -323,7 +326,7 @@ module appGatewayModule 'modules/agw.bicep' = {
   params: {
     location: location
     env: env
-    managedIdentityName: managedIdentitiesModule.outputs.appGatewayManagedIdentityName
+    managedIdentityName: managedIdsModule.outputs.appGatewayManagedIdentityName
     appGatewayNameSuffix: appGatewayNameSuffix
     appGatewaySkuTier: appGatewaySkuTier
     appGatewaySkuName: appGatewaySkuName
@@ -347,7 +350,7 @@ module appsDataStorageModule 'modules/appsdatastorage.bicep' = {
   params: {
     location: location
     env: env
-    managedIdentityName: managedIdentitiesModule.outputs.appsDataStorageManagedIdentityName
+    managedIdentityName: managedIdsModule.outputs.appsDataStorageManagedIdentityName
     storageAccountNameSuffix: appsDataStorageNameSuffix
     storageAccountSkuName: appsDataStorageSkuName
     encryptionKeyName: keyVaultObjectsModule.outputs.appsDataStorageEncryptionKeyName
@@ -421,6 +424,22 @@ module acrModule 'modules/acr.bicep' = {
     logsRetentionDays: acrLogsRetentionDays
     enableLock: acrEnableLock
     allowedIPsOrCIDRs: acrAllowedIPsOrCIDRs
+    standardTags: standardTags
+  }
+}
+
+module acrPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'acrPrivateEndpointModule'
+  params: {
+    location: location
+    env: env
+    privateEndpointName: 'PE03'
+    vnetName: selectedNetworkNames.endpointsVNetName
+    subnetName: selectedNetworkNames.endpointsSubnetName
+    privateIPAddresses: acrPEPrivateIPAddresses
+    serviceId: acrModule.outputs.registryId
+    groupId: 'registry'
+    linkedVNetNames: selectedLinkedVNetNames
     standardTags: standardTags
   }
 }
