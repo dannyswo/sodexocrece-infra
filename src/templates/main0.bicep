@@ -60,6 +60,8 @@ param acrPEPrivateIPAddresses array
 // Resource settings
 
 param keyVaultNameSuffix string
+param keyVaultEnablePurgeProtection bool
+param keyVaultSoftDeleteRetentionDays int
 
 param monitoringDataStorageNameSuffix string
 param monitoringDataStorageSkuName string
@@ -88,9 +90,9 @@ param appsDataStorageLogsRetentionDays int
 
 param sqlServerNameSuffix string
 @secure()
-param sqlServerAdminLoginName string
+param sqlServerAdminUser string
 @secure()
-param sqlServerAdminLoginPassword string
+param sqlServerAdminPass string
 param sqlDatabaseSkuType string
 param sqlDatabaseSkuSize int
 param sqlDatabaseMinCapacity int
@@ -354,8 +356,8 @@ module sqlDatabaseModule 'modules/sqldatabase.bicep' = {
     location: location
     env: env
     sqlServerNameSuffix: sqlServerNameSuffix
-    adminLoginName: sqlServerAdminLoginName
-    adminLoginPassword: sqlServerAdminLoginPassword
+    adminUser: sqlServerAdminUser
+    adminPass: sqlServerAdminPass
     skuType: sqlDatabaseSkuType
     skuSize: sqlDatabaseSkuSize
     minCapacity: sqlDatabaseMinCapacity

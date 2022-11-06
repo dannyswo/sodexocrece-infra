@@ -42,16 +42,25 @@
       "value": true
     },
     "keyVaultPEPrivateIPAddress": {
-      "value": "10.169.88.69"
+      "value": "10.169.88.70"
+    },
+    "appsDataStoragePEPrivateIPAddress": {
+      "value": "10.169.88.73"
     },
     "acrPEPrivateIPAddresses": {
       "value": [
-        "10.169.88.72",
-        "10.169.88.74"
+        "10.169.88.71",
+        "10.169.88.72"
       ]
     },
     "keyVaultNameSuffix": {
-      "value": "mat329"
+      "value": "mat330"
+    },
+    "keyVaultEnablePurgeProtection": {
+      "value": true
+    },
+    "keyVaultSoftDeleteRetentionDays": {
+      "value": 7
     },
     "monitoringDataStorageNameSuffix": {
       "value": "msv817"

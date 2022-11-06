@@ -9,17 +9,17 @@ Templates:
 
 Modules:
 
-1. network1
-2. privateendpoint
-3. keyvault
-4. monitoringdatastorage
-5. loganalytics
-6. networkwatcher
-7. agw
-8. appsdatastorage
-10. sqldatabase
-11. acr
-12. aks
+1. managedids
+2. network1
+3. monitoringdatastorage - RL01, MM03
+4. loganalytics - RL02, MM01
+5. networkwatcher - RL03, MM02
+6. keyvault, keyvaultpe, keyvaultobjects, keyvaultpolicies - RL04, MM04
+7. agw - RL05, MM05
+8. appsdatastorage, appsdatastoragepe - RL06, MM06
+10. sqldatabase, sqldatabasepe - RL07, MM07
+11. acr, acrpe - RL08, MM08
+12. aks - RL09
 
 Environments:
 

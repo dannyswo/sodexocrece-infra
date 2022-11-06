@@ -42,10 +42,10 @@
       "value": true
     },
     "keyVaultPEPrivateIPAddress": {
-      "value": "10.169.88.69"
+      "value": "10.169.88.70"
     },
-    "keyVaultNameSuffix": {
-      "value": "mat329"
+    "appsDataStoragePEPrivateIPAddress": {
+      "value": "10.169.88.73"
     },
     "monitoringDataStorageNameSuffix": {
       "value": "msv817"
@@ -63,6 +63,15 @@
       "value": 0
     },
     "flowLogsRetentionDays": {
+      "value": 7
+    },
+    "keyVaultNameSuffix": {
+      "value": "mat330"
+    },
+    "keyVaultEnablePurgeProtection": {
+      "value": true
+    },
+    "keyVaultSoftDeleteRetentionDays": {
       "value": 7
     },
     "appGatewayNameSuffix": {
@@ -87,13 +96,7 @@
       "value": false
     },
     "appGatewayPublicCertificateId": {
-      "value": "https://azmxkv1mat426.vault.azure.net/secrets/crececonsdx-cert-public/2097309464c84791948ece0406c5e58e"
-    },
-    "appGatewayEnableDiagnostics": {
-      "value": true
-    },
-    "appGatewayLogsRetentionDays": {
-      "value": 7
+      "value": "https://azmxkv1mat330.vault.azure.net/secrets/crececonsdx-cert-public/2097309464c84791948ece0406c5e58e"
     },
     "appsDataStorageNameSuffix": {
       "value": "ifv691"
@@ -101,16 +104,83 @@
     "appsDataStorageSkuName": {
       "value": "Standard_LRS"
     },
+    "acrNameSuffix": {
+      "value": "hle620"
+    },
+    "acrSku": {
+      "value": "Premium"
+    },
+    "acrZoneRedundancy": {
+      "value": "Disabled"
+    },
+    "acrUntaggedRetentionDays": {
+      "value": 7
+    },
+    "acrSoftDeleteRetentionDays": {
+      "value": 7
+    },
+    "keyVaultEnableDiagnostics": {
+      "value": true
+    },
+    "keyVaultLogsRetentionDays": {
+      "value": 7
+    },
+    "appGatewayEnableDiagnostics": {
+      "value": true
+    },
+    "appGatewayLogsRetentionDays": {
+      "value": 7
+    },
     "appsDataStorageEnableDiagnostics": {
       "value": true
     },
     "appsDataStorageLogsRetentionDays": {
       "value": 7
     },
+    "acrEnableDiagnostics": {
+      "value": true
+    },
+    "acrLogsRetentionDays": {
+      "value": 7
+    },
+    "monitoringDataStorageEnableLock": {
+      "value": true
+    },
+    "workspaceEnableLock": {
+      "value": true
+    },
+    "networkWatcherEnableLock": {
+      "value": true
+    },
+    "keyVaultEnableLock": {
+      "value": true
+    },
+    "appGatewayEnableLock": {
+      "value": true
+    },
+    "appsDataStorageEnableLock": {
+      "value": true
+    },
+    "acrEnableLock": {
+      "value": true
+    },
     "keyVaultAllowedSubnetNames": {
       "value": []
     },
     "keyVaultAllowedIPsOrCIDRs": {
+      "value": [
+        "181.134.145.168"
+      ]
+    },
+    "appsDataStorageAllowedSubnetNames": {
+      "value": []
+    },
+    "appsDataStorageAllowedIPsOrCIDRs": {
+      "value": [
+        "181.134.145.168"
+      ]
+    },
+    "acrAllowedIPsOrCIDRs": {
       "value": [
         "181.134.145.168"
       ]

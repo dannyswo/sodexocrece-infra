@@ -24,6 +24,9 @@ param flowAnalyticsWorkspaceName string
 @maxValue(180)
 param flowLogsRetentionDays int
 
+@description('Enable Resource Lock on Network Watcher.')
+param enableLock bool
+
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
@@ -74,6 +77,16 @@ resource flowLogs 'Microsoft.Network/networkWatchers/flowLogs@2022-05-01' = {
   }
   tags: standardTags
 }
+
+resource networkWatcherLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-RL03'
+  scope: networkWatcher
+  properties: {
+    level: 'CanNotDelete'
+    notes: 'Network Watcher should not be deleted.'
+  }
+}
+
 
 @description('Name of the created Network Watcher.')
 output networkWatcherId string = networkWatcher.id

@@ -22,6 +22,9 @@ param storageAccountNameSuffix string
 ])
 param storageAccountSkuName string
 
+@description('Enable Resource Lock on Monitoring Data Storage Account.')
+param enableLock bool
+
 @description('List of Subnet names allowed to access the Storage Account in the firewall.')
 param allowedSubnetNames array = []
 
@@ -30,6 +33,8 @@ param allowedIPsOrCIDRs array = []
 
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
+
+// Resource definitions
 
 var virtualNetworkRules = [for allowedSubnetName in allowedSubnetNames: {
   id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnetName)
@@ -97,8 +102,8 @@ resource sqlServerAssessmentsContainer 'Microsoft.Storage/storageAccounts/blobSe
   }
 }
 
-resource monitoringDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AL06'
+resource monitoringDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-RL01'
   scope: monitoringDataStorageAccount
   properties: {
     level: 'CanNotDelete'

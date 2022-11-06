@@ -28,10 +28,10 @@ param kubernetesVersion string
 @description('Name of the Resource Group of the AKS managed resources (VMSS, LB, etc).')
 param nodeResourceGroupName string
 
-@description('Name of the Apps VNet where the AKS Cluster will be deployed.')
+@description('Name of the Apps VNet where the AKS Managed Cluster will be deployed.')
 param vnetName string
 
-@description('Name of the Apps Subnet where the AKS Cluster will be deployed.')
+@description('Name of the Apps Subnet where the AKS Managed Cluster will be deployed.')
 param subnetName string
 
 @description('Enable auto scaling for AKS system node pool.')
@@ -55,8 +55,13 @@ param applicationGatewayName string
 @description('Name of the Log Analytics Workspace managed by OMSAgent add-on.')
 param logAnalyticsWorkspaceName string
 
+@description('Enable Resource Lock on AKS Managed Cluster.')
+param enableLock bool
+
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
+
+// Resource definitions
 
 var selectedNodeResourceGroupName = (env == 'SWO') ? nodeResourceGroupName : 'BRS-MEX-USE2-CRECESDX-${env}-RG02'
 
@@ -159,8 +164,8 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
   tags: standardTags
 }
 
-resource aksLock 'Microsoft.Authorization/locks@2017-04-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AL05'
+resource aksLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-RL09'
   scope: aksCluster
   properties: {
     level: 'CanNotDelete'

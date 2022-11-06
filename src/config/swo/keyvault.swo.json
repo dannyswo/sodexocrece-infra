@@ -11,6 +11,21 @@
     "keyVaultNameSuffix": {
       "value": "mat329"
     },
+    "enablePurgeProtection": {
+      "value": false
+    },
+    "softDeleteRetentionDays": {
+      "value": 7
+    },
+    "enableDiagnostics": {
+      "value": true
+    },
+    "diagnosticsWorkspaceName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
+    },
+    "logsRetentionDays": {
+      "value": 7
+    },
     "allowedSubnetNames": {
       "value": []
     },

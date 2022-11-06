@@ -13,6 +13,8 @@ param env string
 @description('Standard tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
+// Resource definitions
+
 resource appGatewayManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-AD01'
   location: location

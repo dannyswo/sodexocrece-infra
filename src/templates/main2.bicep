@@ -42,15 +42,18 @@ param devopsAgentsVNetName string
 @description('Name of the NSG attached to Applications Subnet. Must be defined when enableNetwork is false.')
 param appsNSGName string
 
+// Private Endpoints properties
+
 @description('Create Private Endpoints for the required modules like keyvault, appdatastorage, database and acr.')
 param enablePrivateEndpoints bool = true
 
 @description('Private IP of the Key Vault\'s Private Endpoint.')
 param keyVaultPEPrivateIPAddress string
 
-// Resource settings
+@description('Private IP of the Application Data Storage Account\'s Private Endpoint.')
+param appsDataStoragePEPrivateIPAddress string
 
-param keyVaultNameSuffix string
+// Resource properties
 
 param monitoringDataStorageNameSuffix string
 param monitoringDataStorageSkuName string
@@ -61,6 +64,10 @@ param workspaceLogRetentionDays int
 
 param flowLogsRetentionDays int
 
+param keyVaultNameSuffix string
+param keyVaultEnablePurgeProtection bool
+param keyVaultSoftDeleteRetentionDays int
+
 param appGatewayNameSuffix string
 param appGatewaySkuTier string
 param appGatewaySkuName string
@@ -69,18 +76,71 @@ param appGatewayAutoScaleMaxCapacity int
 param appGatewayEnableHttpPort bool
 param appGatewayEnableHttpsPort bool
 param appGatewayPublicCertificateId string
-param appGatewayEnableDiagnostics bool
-param appGatewayLogsRetentionDays int
 
 param appsDataStorageNameSuffix string
 param appsDataStorageSkuName string
+
+/*
+param sqlServerNameSuffix string
+@secure()
+param sqlServerAdminUser string
+@secure()
+param sqlServerAdminPass string
+param sqlDatabaseSkuType string
+param sqlDatabaseSkuSize int
+param sqlDatabaseMinCapacity int
+param sqlDatabaseMaxSizeGB int
+param sqlDatabaseZoneRedundant bool
+param sqlDatabaseBackupRedundancy string
+*/
+
+param acrNameSuffix string
+param acrSku string
+param acrZoneRedundancy string
+param acrUntaggedRetentionDays int
+param acrSoftDeleteRetentionDays int
+
+// Diagnostics options
+
+param keyVaultEnableDiagnostics bool
+param keyVaultLogsRetentionDays int
+
+param appGatewayEnableDiagnostics bool
+param appGatewayLogsRetentionDays int
+
 param appsDataStorageEnableDiagnostics bool
 param appsDataStorageLogsRetentionDays int
+
+//param sqlServerEnableAuditing bool
+//param sqlServerAuditLogsRetentionDays int
+//param sqlServerEnableThreatProtection bool
+//param sqlServerEnableVulnerabilityAssessments bool
+
+param acrEnableDiagnostics bool
+param acrLogsRetentionDays int
+
+// Resource Locks switches
+
+param monitoringDataStorageEnableLock bool
+param workspaceEnableLock bool
+param networkWatcherEnableLock bool
+param keyVaultEnableLock bool
+param appGatewayEnableLock bool
+param appsDataStorageEnableLock bool
+//param sqlDatabaseEnableLock bool
+param acrEnableLock bool
 
 // Firewall settings
 
 param keyVaultAllowedSubnetNames array
 param keyVaultAllowedIPsOrCIDRs array
+
+param appsDataStorageAllowedSubnetNames array
+param appsDataStorageAllowedIPsOrCIDRs array
+
+//param sqlServerAllowedIPRanges array
+
+param acrAllowedIPsOrCIDRs array
 
 // Tags
 
@@ -165,12 +225,58 @@ var selectedNSGNames = (enableNetwork) ? {
   appsNSGName: appsNSGName
 }
 
+module monitoringDataStorageModule 'modules/monitoringdatastorage.bicep' = {
+  name: 'monitoringDataStorageModule'
+  params: {
+    location: location
+    env: env
+    storageAccountNameSuffix: monitoringDataStorageNameSuffix
+    storageAccountSkuName: monitoringDataStorageSkuName
+    enableLock: monitoringDataStorageEnableLock
+    standardTags: standardTags
+  }
+}
+
+module logAnalyticsModule 'modules/loganalytics.bicep' = {
+  name: 'logAnalyticsModule'
+  params: {
+    location: location
+    env: env
+    workspaceSkuName: workspaceSkuName
+    workspaceCapacityReservation: workspaceCapacityReservation
+    logRetentionDays: workspaceLogRetentionDays
+    linkedStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
+    enableLock: workspaceEnableLock
+    standardTags: standardTags
+  }
+}
+
+module networkWatcherModule 'modules/networkwatcher.bicep' = {
+  name: 'networkWatcherModule'
+  params: {
+    location: location
+    env: env
+    targetNSGName: selectedNSGNames.appsNSGName
+    flowLogsStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
+    flowAnalyticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
+    flowLogsRetentionDays: flowLogsRetentionDays
+    enableLock: networkWatcherEnableLock
+    standardTags: standardTags
+  }
+}
+
 module keyVaultModule 'modules/keyvault.bicep' = {
   name: 'keyVaultModule'
   params: {
     location: location
     env: env
     keyVaultNameSuffix: keyVaultNameSuffix
+    enablePurgeProtection: keyVaultEnablePurgeProtection
+    softDeleteRetentionDays: keyVaultSoftDeleteRetentionDays
+    enableDiagnostics: keyVaultEnableDiagnostics
+    diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
+    logsRetentionDays: keyVaultLogsRetentionDays
+    enableLock: keyVaultEnableLock
     allowedSubnetNames: keyVaultAllowedSubnetNames
     allowedIPsOrCIDRs: keyVaultAllowedIPsOrCIDRs
     standardTags: standardTags
@@ -198,10 +304,8 @@ module keyVaultObjectsModule 'modules/keyvaultobjects.bicep' = {
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
     createEncryptionKeys: true
-    appsDataStorageEncryptionKeyName: 'merchant-files-key'
-    createEmptySecrets: false
-    sqlDatabaseAdminUserSecretName: 'merchant-admin-user'
-    sqlDatabaseAdminPassSecretName: 'merchant-admin-password'
+    appsDataStorageEncryptionKeyName: 'crececonsdx-files-key4'
+    encryptionKeysIssueDateTime: '11/5/2023 11:30:00 PM'
   }
 }
 
@@ -214,48 +318,12 @@ module keyVaultPoliciesModule 'modules/keyvaultpolicies.bicep' = {
   }
 }
 
-module monitoringDataStorageModule 'modules/monitoringdatastorage.bicep' = {
-  name: 'monitoringDataStorageModule'
-  params: {
-    location: location
-    env: env
-    storageAccountNameSuffix: monitoringDataStorageNameSuffix
-    storageAccountSkuName: monitoringDataStorageSkuName
-    standardTags: standardTags
-  }
-}
-
-module logAnalyticsModule 'modules/loganalytics.bicep' = {
-  name: 'logAnalyticsModule'
-  params: {
-    location: location
-    env: env
-    workspaceSkuName: workspaceSkuName
-    workspaceCapacityReservation: workspaceCapacityReservation
-    logRetentionDays: workspaceLogRetentionDays
-    linkedStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
-    standardTags: standardTags
-  }
-}
-
-module networkWatcherModule 'modules/networkwatcher.bicep' = {
-  name: 'networkWatcherModule'
-  params: {
-    location: location
-    env: env
-    targetNSGName: selectedNSGNames.appsNSGName
-    flowLogsStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
-    flowAnalyticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
-    flowLogsRetentionDays: flowLogsRetentionDays
-    standardTags: standardTags
-  }
-}
-
 module appGatewayModule 'modules/agw.bicep' = {
   name: 'appGatewayModule'
   params: {
     location: location
     env: env
+    managedIdentityName: managedIdentitiesModule.outputs.appGatewayManagedIdentityName
     appGatewayNameSuffix: appGatewayNameSuffix
     appGatewaySkuTier: appGatewaySkuTier
     appGatewaySkuName: appGatewaySkuName
@@ -269,7 +337,7 @@ module appGatewayModule 'modules/agw.bicep' = {
     enableDiagnostics: appGatewayEnableDiagnostics
     diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
     logsRetentionDays: appGatewayLogsRetentionDays
-    managedIdentityName: managedIdentitiesModule.outputs.appGatewayManagedIdentityName
+    enableLock: appGatewayEnableLock
     standardTags: standardTags
   }
 }
@@ -279,6 +347,7 @@ module appsDataStorageModule 'modules/appsdatastorage.bicep' = {
   params: {
     location: location
     env: env
+    managedIdentityName: managedIdentitiesModule.outputs.appsDataStorageManagedIdentityName
     storageAccountNameSuffix: appsDataStorageNameSuffix
     storageAccountSkuName: appsDataStorageSkuName
     encryptionKeyName: keyVaultObjectsModule.outputs.appsDataStorageEncryptionKeyName
@@ -286,7 +355,72 @@ module appsDataStorageModule 'modules/appsdatastorage.bicep' = {
     enableDiagnostics: appsDataStorageEnableDiagnostics
     diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
     logsRetentionDays: appsDataStorageLogsRetentionDays
-    managedIdentityName: managedIdentitiesModule.outputs.appsDataStorageManagedIdentityName
+    enableLock: appsDataStorageEnableLock
+    allowedSubnetNames: appsDataStorageAllowedSubnetNames
+    allowedIPsOrCIDRs: appsDataStorageAllowedIPsOrCIDRs
+    standardTags: standardTags
+  }
+}
+
+module appsDataStoragePrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'appsDataStoragePrivateEndpointModule'
+  params: {
+    location: location
+    env: env
+    privateEndpointName: 'PE04'
+    vnetName: selectedNetworkNames.endpointsVNetName
+    subnetName: selectedNetworkNames.endpointsSubnetName
+    privateIPAddresses: [ appsDataStoragePEPrivateIPAddress ]
+    serviceId: appsDataStorageModule.outputs.storageAccountId
+    groupId: 'blob'
+    linkedVNetNames: selectedLinkedVNetNames
+    standardTags: standardTags
+  }
+}
+
+/*
+module sqlDatabaseModule 'modules/sqldatabase.bicep' = {
+  name: 'sqlDatabaseModule'
+  params: {
+    location: location
+    env: env
+    sqlServerNameSuffix: sqlServerNameSuffix
+    adminUser: sqlServerAdminUser
+    adminPass: sqlServerAdminPass
+    skuType: sqlDatabaseSkuType
+    skuSize: sqlDatabaseSkuSize
+    minCapacity: sqlDatabaseMinCapacity
+    maxSizeGB: sqlDatabaseMaxSizeGB
+    zoneRedundant: sqlDatabaseZoneRedundant
+    backupRedundancy: sqlDatabaseBackupRedundancy
+    enableAuditing: sqlServerEnableAuditing
+    auditStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
+    auditLogsRetentionDays: sqlServerAuditLogsRetentionDays
+    enableThreatProtection: sqlServerEnableThreatProtection
+    enableVulnerabilityAssessments: sqlServerEnableVulnerabilityAssessments
+    assessmentsStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
+    enableLock: sqlDatabaseEnableLock
+    allowedIPRanges: sqlServerAllowedIPRanges
+    standardTags: standardTags
+  }
+}
+*/
+
+module acrModule 'modules/acr.bicep' = {
+  name: 'acrModule'
+  params: {
+    location: location
+    env: env
+    acrNameSuffix: acrNameSuffix
+    acrSku: acrSku
+    zoneRedundancy: acrZoneRedundancy
+    untaggedRetentionDays: acrUntaggedRetentionDays
+    softDeleteRetentionDays: acrSoftDeleteRetentionDays
+    enableDiagnostics: acrEnableDiagnostics
+    diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
+    logsRetentionDays: acrLogsRetentionDays
+    enableLock: acrEnableLock
+    allowedIPsOrCIDRs: acrAllowedIPsOrCIDRs
     standardTags: standardTags
   }
 }

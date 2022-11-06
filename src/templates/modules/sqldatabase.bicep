@@ -17,11 +17,11 @@ param sqlServerNameSuffix string
 
 @description('Login name of the administrator of the Azure SQL Server.')
 @secure()
-param adminLoginName string
+param adminUser string
 
 @description('Login password of the administrator of the Azure SQL Server.')
 @secure()
-param adminLoginPassword string
+param adminPass string
 
 @description('SKU type for the Azure SQL Database.')
 @allowed([
@@ -80,11 +80,16 @@ param assessmentsStorageAccountName string
 @description('List of emails of the SQL Server owners. Must be defined when enableVulnerabilityAssessments is true.')
 param sqlServerOwnerEmails array = []
 
+@description('Enable Resource Lock on Azure SQL Server.')
+param enableLock bool
+
 @description('List of IPs ranges (start and end IP addresss) allowed to access the Azure SQL Server in the firewall.')
 param allowedIPRanges array = []
 
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
+
+// Resource definitions
 
 resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
   name: 'azmxdb1${sqlServerNameSuffix}'
@@ -94,8 +99,8 @@ resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
   }
   properties: {
     version: '12.0'
-    administratorLogin: adminLoginName
-    administratorLoginPassword: adminLoginPassword
+    administratorLogin: adminUser
+    administratorLoginPassword: adminPass
     administrators: {
       azureADOnlyAuthentication: false
     }
@@ -272,8 +277,8 @@ resource vulnerabilityAssessments 'Microsoft.Sql/servers/vulnerabilityAssessment
   }
 }
 
-resource storageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AL04'
+resource storageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-RL07'
   scope: sqlServer
   properties: {
     level: 'CanNotDelete'

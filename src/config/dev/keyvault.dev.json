@@ -9,7 +9,22 @@
       "value": "DEV"
     },
     "keyVaultNameSuffix": {
-      "value": "mat327"
+      "value": "fce789"
+    },
+    "enablePurgeProtection": {
+      "value": false
+    },
+    "softDeleteRetentionDays": {
+      "value": 7
+    },
+    "enableDiagnostics": {
+      "value": true
+    },
+    "diagnosticsWorkspaceName": {
+      "value": "BRS-MEX-USE2-CRECESDX-DEV-MM01"
+    },
+    "logsRetentionDays": {
+      "value": 7
     },
     "allowedSubnetNames": {
       "value": []

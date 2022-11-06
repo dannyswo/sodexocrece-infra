@@ -10,6 +10,9 @@ param location string = resourceGroup().location
 ])
 param env string
 
+@description('Name of the Managed Identity used by Application Gateway.')
+param managedIdentityName string
+
 @description('Suffix used in the name of the Application Gateway.')
 @minLength(6)
 @maxLength(6)
@@ -56,15 +59,22 @@ param enableDiagnostics bool
 @description('Name of the Log Analytics Workspace used for diagnostics of the Application Gateway. Must be defined if enableDiagnostics is true.')
 param diagnosticsWorkspaceName string
 
-@description('Retention days of Application Gateway logs. Must be defined if enableDiagnostics is true.')
+@description('Retention days of the Application Gateway logs. Must be defined if enableDiagnostics is true.')
 @minValue(7)
 @maxValue(180)
 param logsRetentionDays int
 
-param managedIdentityName string
+@description('Enable Resource Lock on Application Gateway.')
+param enableLock bool
 
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
+
+// Resource definitions
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
+  name: managedIdentityName
+}
 
 var appGatewayName = 'azmxwa1${appGatewayNameSuffix}'
 
@@ -290,7 +300,7 @@ resource wafPolicies 'Microsoft.Network/ApplicationGatewayWebApplicationFirewall
 }
 
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostics) {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-MM04'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-MM05'
   scope: appGateway
   properties: {
     workspaceId: resourceId('Microsoft.OperationalInsights/workspaces', diagnosticsWorkspaceName)
@@ -333,12 +343,8 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
-  name: managedIdentityName
-}
-
-resource appGatewayLock 'Microsoft.Authorization/locks@2017-04-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AL02'
+resource appGatewayLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-RL05'
   scope: appGateway
   properties: {
     level: 'CanNotDelete'
@@ -351,6 +357,3 @@ output applicationGatewayId string = appGateway.id
 
 @description('Name of the Application Gateway.')
 output applicationGatewayName string = appGateway.name
-
-@description('ID of the Managed Identity of Application Gateway.')
-output appGatewayManagedIdentityId string = managedIdentity.id

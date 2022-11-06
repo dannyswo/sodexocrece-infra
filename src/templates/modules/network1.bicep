@@ -61,6 +61,8 @@ param endpointsSubnetAddressPrefix string
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
+// Resource definitions
+
 resource gatewayVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewayVNetName}'
   location: location

@@ -10,6 +10,9 @@ param location string = resourceGroup().location
 ])
 param env string
 
+@description('Name of the Managed Identity used by Application Data Storage Account.')
+param managedIdentityName string
+
 @description('Suffix used in the Storage Account name.')
 @minLength(6)
 @maxLength(6)
@@ -34,10 +37,13 @@ param enableDiagnostics bool
 @description('Name of the Log Analytics Workspace used for diagnostics of the Storage Account. Must be defined if enableDiagnostics is true.')
 param diagnosticsWorkspaceName string
 
-@description('Retention days Storage Account access logs. Must be defined if enableDiagnostics is true.')
+@description('Retention days of the Storage Account access logs. Must be defined if enableDiagnostics is true.')
 @minValue(7)
 @maxValue(180)
 param logsRetentionDays int
+
+@description('Enable Resource Lock on Application Gateway.')
+param enableLock bool
 
 @description('List of Subnet names allowed to access the Storage Account in the firewall.')
 param allowedSubnetNames array = []
@@ -45,10 +51,14 @@ param allowedSubnetNames array = []
 @description('List of IPs or CIDRs allowed to access the Storage Account in the firewall.')
 param allowedIPsOrCIDRs array = []
 
-param managedIdentityName string
-
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
+
+// Resource definitions
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
+  name: managedIdentityName
+}
 
 var storageAccountName = 'azmxst1${storageAccountNameSuffix}'
 
@@ -103,7 +113,7 @@ resource appsDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' =
     allowBlobPublicAccess: false
     allowCrossTenantReplication: false
     allowedCopyScope: 'PrivateLink'
-    publicNetworkAccess: 'Disabled'
+    publicNetworkAccess: 'Enabled'
     networkAcls: {
       bypass: 'None'
       defaultAction: 'Deny'
@@ -141,13 +151,9 @@ resource merchantFilesContainer 'Microsoft.Storage/storageAccounts/blobServices/
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
-  name: managedIdentityName
-}
-
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostics) {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-MM04'
-  scope: appsDataStorageAccount
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-MM06'
+  scope: blobServices
   properties: {
     workspaceId: resourceId('Microsoft.OperationalInsights/workspaces', diagnosticsWorkspaceName)
     logs: [
@@ -179,8 +185,8 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
   }
 }
 
-resource apsDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AL03'
+resource apsDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-RL06'
   scope: appsDataStorageAccount
   properties: {
     level: 'CanNotDelete'
@@ -190,6 +196,3 @@ resource apsDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = 
 
 @description('ID of the Storage Account.')
 output storageAccountId string = appsDataStorageAccount.id
-
-@description('ID of the Managed Identity of Storage Account.')
-output storageAccountManagedIdentityId string = managedIdentity.id

@@ -35,6 +35,9 @@ param logRetentionDays int
 @description('Name of the linked Storage Account for the Log Analytics Workspace.')
 param linkedStorageAccountName string
 
+@description('Enable Resource Lock on Monitoring Data Storage Account.')
+param enableLock bool
+
 @description('Standards tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
@@ -79,6 +82,15 @@ resource linkedStorageAccounts 'Microsoft.OperationalInsights/workspaces/linkedS
     storageAccountIds: [
       linkedStorageAccountId
     ]
+  }
+}
+
+resource logAnalyticsWorkspaceLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-RL02'
+  scope: logAnalyticsWorkspace
+  properties: {
+    level: 'CanNotDelete'
+    notes: 'Log Analytics Workspace should not be deleted.'
   }
 }
 

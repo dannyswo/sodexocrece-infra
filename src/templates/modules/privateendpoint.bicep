@@ -42,13 +42,15 @@ param linkedVNetNames array
 @description('Standard tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
+// Resource definitions
+
 var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
 
 var memberNamesDictionary = {
   vault: [ 'default' ]
   registry: [ 'registry', 'registry_data_eastus2' ]
   blob: [ 'blob' ]
-  server: [ 'default' ]
+  sqlServer: [ 'default' ]
 }
 
 var memberNames = memberNamesDictionary[groupId]
@@ -85,7 +87,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
 var privateDnsZoneNamesDictionary = {
   vault: 'privatelink.vaultcore.azure.net'
   registry: 'privatelink${environment().suffixes.acrLoginServer}'
-  storageAccount: 'privatelink.blob${environment().suffixes.storage}'
+  blob: 'privatelink.blob${environment().suffixes.storage}'
   sqlServer: 'privatelink${environment().suffixes.sqlServerHostname}'
 }
 

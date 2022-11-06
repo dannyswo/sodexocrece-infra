@@ -11,6 +11,21 @@
     "keyVaultNameSuffix": {
       "value": "qnw485"
     },
+    "enablePurgeProtection": {
+      "value": true
+    },
+    "softDeleteRetentionDays": {
+      "value": 30
+    },
+    "enableDiagnostics": {
+      "value": true
+    },
+    "diagnosticsWorkspaceName": {
+      "value": "BRS-MEX-USE2-CRECESDX-PRD-MM01"
+    },
+    "logsRetentionDays": {
+      "value": 180
+    },
     "allowedSubnetNames": {
       "value": []
     },
