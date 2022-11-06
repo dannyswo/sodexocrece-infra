@@ -56,14 +56,6 @@
     "enableVulnerabilityAssessments": {
       "value": true
     },
-    "assessmentsStorageAccountUri": {
-      "value": "{NULL assessmentsStorageAccountUri}"
-    },
-    "ownerEmails": {
-      "value": [
-        "danny.zamorano@softwareone.com"
-      ]
-    },
     "enableLock": {
       "value": true
     },

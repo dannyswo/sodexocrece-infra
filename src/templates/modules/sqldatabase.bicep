@@ -79,12 +79,6 @@ param enableThreatProtection bool
 @description('Enable Vulnerability Assessments on Azure SQL Server.')
 param enableVulnerabilityAssessments bool
 
-@description('Blob service URI of the Storage Account where Vulnerability Assessments results will be stored.')
-param assessmentsStorageAccountUri string
-
-@description('List of emails of the SQL Server owners. Must be defined when enableVulnerabilityAssessments is true.')
-param ownerEmails array = []
-
 @description('Enable Resource Lock on Azure SQL Server.')
 param enableLock bool
 
@@ -286,19 +280,11 @@ resource advancedThreatProtectionSettings 'Microsoft.Sql/servers/advancedThreatP
   }
 }
 
-var assessmentsContainerName = 'sqlserverassessments'
-
-resource vulnerabilityAssessments 'Microsoft.Sql/servers/vulnerabilityAssessments@2022-05-01-preview' = if (enableVulnerabilityAssessments) {
+resource sqlVulnerabilityAssessments 'Microsoft.Sql/servers/sqlVulnerabilityAssessments@2022-05-01-preview' = if (enableVulnerabilityAssessments) {
   name: 'default'
   parent: sqlServer
   properties: {
-    recurringScans: {
-      isEnabled: true
-      emails: ownerEmails
-      emailSubscriptionAdmins: false
-    }
-    // storageContainerSasKey: '' [TODO: Verify is SAS Key is needed, Monitoring Data Storage Account is behind a firewall]
-    storageContainerPath: '${assessmentsStorageAccountUri}${assessmentsContainerName}'
+    state: 'Enabled'
   }
 }
 

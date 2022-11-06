@@ -131,7 +131,6 @@ param sqlDatabaseEnableAuditing bool
 param sqlDatabaseAuditLogsRetentionDays int
 param sqlDatabaseEnableThreatProtection bool
 param sqlDatabaseEnableVulnerabilityAssessments bool
-param sqlDatabaseOwnerEmails array
 
 param acrEnableDiagnostics bool
 param acrLogsRetentionDays int
@@ -416,8 +415,6 @@ module sqlDatabaseModule 'modules/sqldatabase.bicep' = {
     logsRetentionDays: sqlDatabaseAuditLogsRetentionDays
     enableThreatProtection: sqlDatabaseEnableThreatProtection
     enableVulnerabilityAssessments: sqlDatabaseEnableVulnerabilityAssessments
-    assessmentsStorageAccountUri: monitoringDataStorageModule.outputs.storageAccountBlobServiceUri
-    ownerEmails: sqlDatabaseOwnerEmails
     enableLock: sqlDatabaseEnableLock
     allowedIPRanges: sqlDatabaseAllowedIPRanges
     standardTags: standardTags

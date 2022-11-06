@@ -188,11 +188,6 @@
     "sqlDatabaseEnableVulnerabilityAssessments": {
       "value": true
     },
-    "sqlDatabaseOwnerEmails": {
-      "value": [
-        "danny.zamorano@softwareone.com"
-      ]
-    },
     "acrEnableDiagnostics": {
       "value": true
     },
