@@ -63,3 +63,7 @@ resource appsDataStorageEncryptionKey 'Microsoft.KeyVault/vaults/keys@2022-07-01
 output appsDataStorageEncryptionKeyId string = (createEncryptionKeys) ? appsDataStorageEncryptionKey.id : ''
 
 output appsDataStorageEncryptionKeyName string = (createEncryptionKeys) ? appsDataStorageEncryptionKey.name : appsDataStorageEncryptionKeyName
+
+output sqlDatabaseAdminUserSecretName string = 'merchant-admin-user'
+
+output sqlDatabaseAdminPassSecretName string = 'merchant-admin-pass'

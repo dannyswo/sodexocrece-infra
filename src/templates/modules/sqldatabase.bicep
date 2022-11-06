@@ -15,13 +15,19 @@ param env string
 @maxLength(6)
 param sqlServerNameSuffix string
 
-@description('Login name of the administrator of the Azure SQL Server.')
+@description('Login name of the SQL Server administrator.')
 @secure()
-param adminUser string
+param sqlAdminLoginName string
 
-@description('Login password of the administrator of the Azure SQL Server.')
+@description('Password of the SQL Server administrator.')
 @secure()
-param adminPass string
+param sqlAdminLoginPass string
+
+@description('Principal ID of the Azure AD administrator.')
+param aadAdminPrincipalId string
+
+@description('Login name of the Azure AD administrator.')
+param aadAdminLoginName string
 
 @description('SKU type for the Azure SQL Database.')
 @allowed([
@@ -41,6 +47,8 @@ param skuSize int
 param minCapacity int
 
 @description('Maximum size in GB of the Azure SQL Database.')
+@minValue(1)
+@maxValue(2000)
 param maxSizeGB int
 
 @description('Enable zone redundancy for the Azure SQL Database.')
@@ -54,19 +62,16 @@ param zoneRedundant bool
 ])
 param backupRedundancy string
 
-@description('Enable Auditing on Azure SQL Server.')
+@description('Enable Auditing feature on Azure SQL Server.')
 param enableAuditing bool
 
-@description('Name of the Storage Account used to store audit logs of the Azure SQL Server.')
-param auditStorageAccountName string
+@description('Name of the Log Analytics Workspace used for diagnostics of the Azure SQL Database. Must be defined if enableAuditing is true.')
+param diagnosticsWorkspaceName string
 
-@description('Subscription ID of the audit logs Storage Account.')
-param auditLogsStorageSubscriptionId string = subscription().subscriptionId
-
-@description('Retention days of audit logs of Azure SQL Server.')
+@description('Retention days of the Azure SQL Database audit logs. Must be defined if enableAuditing is true.')
 @minValue(7)
 @maxValue(180)
-param auditLogsRetentionDays int
+param logsRetentionDays int
 
 @description('Enable Advanced Threat Protection on Azure SQL Server.')
 param enableThreatProtection bool
@@ -74,16 +79,20 @@ param enableThreatProtection bool
 @description('Enable Vulnerability Assessments on Azure SQL Server.')
 param enableVulnerabilityAssessments bool
 
-@description('Name of the Storage Account where Vulnerability Assessments results will be stored.')
-param assessmentsStorageAccountName string
+@description('Blob service URI of the Storage Account where Vulnerability Assessments results will be stored.')
+param assessmentsStorageAccountUri string
 
 @description('List of emails of the SQL Server owners. Must be defined when enableVulnerabilityAssessments is true.')
-param sqlServerOwnerEmails array = []
+param ownerEmails array = []
 
 @description('Enable Resource Lock on Azure SQL Server.')
 param enableLock bool
 
 @description('List of IPs ranges (start and end IP addresss) allowed to access the Azure SQL Server in the firewall.')
+@metadata({
+  startIPAddress: 'First IP in the IP range.'
+  endIPAddress: 'Last IP in the IP range.'
+})
 param allowedIPRanges array = []
 
 @description('Standards tags applied to all resources.')
@@ -99,12 +108,15 @@ resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
   }
   properties: {
     version: '12.0'
-    administratorLogin: adminUser
-    administratorLoginPassword: adminPass
+    administratorLogin: (sqlAdminLoginName != '') ? sqlAdminLoginName : null
+    administratorLoginPassword: (sqlAdminLoginPass != '') ? sqlAdminLoginPass : null
     administrators: {
-      azureADOnlyAuthentication: false
+      administratorType: 'ActiveDirectory'
+      principalType: 'User'
+      sid: aadAdminPrincipalId
+      login: aadAdminLoginName
     }
-    publicNetworkAccess: 'Disabled'
+    publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: 'Disabled'
     minimalTlsVersion: '1.2'
   }
@@ -213,7 +225,7 @@ resource connectionPolicies 'Microsoft.Sql/servers/connectionPolicies@2022-05-01
   }
 }
 
-resource firewallRules 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' = [for (allowedIPRange, index) in allowedIPRanges: {
+resource firewallRules 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' = [for (allowedIPRange, index) in allowedIPRanges: if (true) {
   name: 'firewallRule-${index}'
   parent: sqlServer
   properties: {
@@ -222,33 +234,47 @@ resource firewallRules 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' 
   }
 }]
 
-var auditStorageAccountUri = reference(resourceId('Microsoft.Storage/storageAccounts', auditStorageAccountName)).primaryEndpoints.blob
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableAuditing) {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-MM07'
+  scope: sqlDatabase
+  properties: {
+    workspaceId: resourceId('Microsoft.OperationalInsights/workspaces', diagnosticsWorkspaceName)
+    logs: [
+      {
+        category: 'SQLSecurityAuditEvents'
+        enabled: true
+        retentionPolicy: {
+          enabled: true
+          days: logsRetentionDays
+        }
+      }
+      {
+        category: 'DevOpsOperationsAudit'
+        enabled: true
+        retentionPolicy: {
+          enabled: true
+          days: logsRetentionDays
+        }
+      }
+    ]
+  }
+}
 
 resource auditingSettings 'Microsoft.Sql/servers/auditingSettings@2022-05-01-preview' = if (enableAuditing) {
   name: 'default'
   parent: sqlServer
-  dependsOn: [
-    advancedThreatProtectionSettings
-  ]
   properties: {
     state: 'Enabled'
-    storageEndpoint: auditStorageAccountUri
-    storageAccountSubscriptionId: auditLogsStorageSubscriptionId
     isAzureMonitorTargetEnabled: true
-    isDevopsAuditEnabled: true
-    auditActionsAndGroups: [
-      'BATCH_COMPLETED_GROUP'
-      'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
-      'FAILED_DATABASE_AUTHENTICATION_GROUP'
-      'APPLICATION_ROLE_CHANGE_PASSWORD_GROUP'
-      'BACKUP_RESTORE_GROUP'
-      'USER_CHANGE_PASSWORD_GROUP'
-      'DATABASE_OWNERSHIP_CHANGE_GROUP'
-    ]
-    queueDelayMs: 30000
-    retentionDays: auditLogsRetentionDays
-    isManagedIdentityInUse: true
-    isStorageSecondaryKeyInUse: false
+  }
+}
+
+resource devOpsAuditingSettings 'Microsoft.Sql/servers/devOpsAuditingSettings@2022-05-01-preview' = if (enableAuditing) {
+  name: 'default'
+  parent: sqlServer
+  properties: {
+    state: 'Enabled'
+    isAzureMonitorTargetEnabled: true
   }
 }
 
@@ -260,7 +286,6 @@ resource advancedThreatProtectionSettings 'Microsoft.Sql/servers/advancedThreatP
   }
 }
 
-var assessmentsStorageAccountUri = reference(resourceId('Microsoft.Storage/storageAccounts', assessmentsStorageAccountName)).primaryEndpoints.blob
 var assessmentsContainerName = 'sqlserverassessments'
 
 resource vulnerabilityAssessments 'Microsoft.Sql/servers/vulnerabilityAssessments@2022-05-01-preview' = if (enableVulnerabilityAssessments) {
@@ -269,7 +294,7 @@ resource vulnerabilityAssessments 'Microsoft.Sql/servers/vulnerabilityAssessment
   properties: {
     recurringScans: {
       isEnabled: true
-      emails: sqlServerOwnerEmails
+      emails: ownerEmails
       emailSubscriptionAdmins: false
     }
     // storageContainerSasKey: '' [TODO: Verify is SAS Key is needed, Monitoring Data Storage Account is behind a firewall]

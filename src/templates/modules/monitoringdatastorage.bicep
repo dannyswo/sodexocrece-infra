@@ -116,3 +116,6 @@ output storageAccountId string = monitoringDataStorageAccount.id
 
 @description('Name of the Storage Account.')
 output storageAccountName string = monitoringDataStorageAccount.name
+
+@description('URI of the blob service of the Storage Account.')
+output storageAccountBlobServiceUri string = monitoringDataStorageAccount.properties.primaryEndpoints.blob

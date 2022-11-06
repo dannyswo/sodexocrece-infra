@@ -40,6 +40,7 @@ az bicep decompile --file .\template.json
 az account show
 az account set --subscription [Subscription ID]
 az account list-locations -o table
+az ad signed-in-user show
 ```
 
 Create resources at Subscription level with Bicep:

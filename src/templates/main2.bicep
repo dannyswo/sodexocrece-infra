@@ -53,6 +53,9 @@ param keyVaultPEPrivateIPAddress string
 @description('Private IP of the Application Data Storage Account\'s Private Endpoint.')
 param appsDataStoragePEPrivateIPAddress string
 
+@description('Private IP of the Azure SQL Database\'s Private Endpoint.')
+param sqlDatabasePEPrivateIPAddress string
+
 @description('Private IPs of the Container Registry\'s Private Endpoint. Requires 2 IPs for 2 members: registry and registry_data.')
 param acrPEPrivateIPAddresses array
 
@@ -83,25 +86,35 @@ param appGatewayPublicCertificateId string
 param appsDataStorageNameSuffix string
 param appsDataStorageSkuName string
 
-/*
 param sqlServerNameSuffix string
 @secure()
-param sqlServerAdminUser string
+param sqlDatabaseSQLAdminLoginName string
 @secure()
-param sqlServerAdminPass string
+param sqlDatabaseSQLAdminLoginPass string
+@secure()
+param sqlDatabaseAADAdminLoginName string
 param sqlDatabaseSkuType string
 param sqlDatabaseSkuSize int
 param sqlDatabaseMinCapacity int
 param sqlDatabaseMaxSizeGB int
 param sqlDatabaseZoneRedundant bool
 param sqlDatabaseBackupRedundancy string
-*/
 
 param acrNameSuffix string
 param acrSku string
 param acrZoneRedundancy string
 param acrUntaggedRetentionDays int
 param acrSoftDeleteRetentionDays int
+
+// param aksSkuTier string
+// param aksDnsSuffix string
+// param aksKubernetesVersion string
+// param aksNodeResourceGroupName string
+// param aksEnableAutoScaling bool
+// param aksNodePoolMinCount int
+// param aksNodePoolMaxCount int
+// param aksNodePoolVmSize string
+// param aksEnableEncryptionAtHost bool
 
 // Diagnostics options
 
@@ -114,10 +127,11 @@ param appGatewayLogsRetentionDays int
 param appsDataStorageEnableDiagnostics bool
 param appsDataStorageLogsRetentionDays int
 
-//param sqlServerEnableAuditing bool
-//param sqlServerAuditLogsRetentionDays int
-//param sqlServerEnableThreatProtection bool
-//param sqlServerEnableVulnerabilityAssessments bool
+param sqlDatabaseEnableAuditing bool
+param sqlDatabaseAuditLogsRetentionDays int
+param sqlDatabaseEnableThreatProtection bool
+param sqlDatabaseEnableVulnerabilityAssessments bool
+param sqlDatabaseOwnerEmails array
 
 param acrEnableDiagnostics bool
 param acrLogsRetentionDays int
@@ -130,7 +144,7 @@ param networkWatcherEnableLock bool
 param keyVaultEnableLock bool
 param appGatewayEnableLock bool
 param appsDataStorageEnableLock bool
-//param sqlDatabaseEnableLock bool
+param sqlDatabaseEnableLock bool
 param acrEnableLock bool
 
 // Firewall settings
@@ -141,7 +155,7 @@ param keyVaultAllowedIPsOrCIDRs array
 param appsDataStorageAllowedSubnetNames array
 param appsDataStorageAllowedIPsOrCIDRs array
 
-//param sqlServerAllowedIPRanges array
+param sqlDatabaseAllowedIPRanges array
 
 param acrAllowedIPsOrCIDRs array
 
@@ -381,33 +395,50 @@ module appsDataStoragePrivateEndpointModule 'modules/privateendpoint.bicep' = if
   }
 }
 
-/*
 module sqlDatabaseModule 'modules/sqldatabase.bicep' = {
   name: 'sqlDatabaseModule'
   params: {
     location: location
     env: env
     sqlServerNameSuffix: sqlServerNameSuffix
-    adminUser: sqlServerAdminUser
-    adminPass: sqlServerAdminPass
+    sqlAdminLoginName: sqlDatabaseSQLAdminLoginName
+    sqlAdminLoginPass: sqlDatabaseSQLAdminLoginPass
+    aadAdminPrincipalId: managedIdsModule.outputs.ownerPrincipalId
+    aadAdminLoginName: sqlDatabaseAADAdminLoginName
     skuType: sqlDatabaseSkuType
     skuSize: sqlDatabaseSkuSize
     minCapacity: sqlDatabaseMinCapacity
     maxSizeGB: sqlDatabaseMaxSizeGB
     zoneRedundant: sqlDatabaseZoneRedundant
     backupRedundancy: sqlDatabaseBackupRedundancy
-    enableAuditing: sqlServerEnableAuditing
-    auditStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
-    auditLogsRetentionDays: sqlServerAuditLogsRetentionDays
-    enableThreatProtection: sqlServerEnableThreatProtection
-    enableVulnerabilityAssessments: sqlServerEnableVulnerabilityAssessments
-    assessmentsStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
+    enableAuditing: sqlDatabaseEnableAuditing
+    diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
+    logsRetentionDays: sqlDatabaseAuditLogsRetentionDays
+    enableThreatProtection: sqlDatabaseEnableThreatProtection
+    enableVulnerabilityAssessments: sqlDatabaseEnableVulnerabilityAssessments
+    assessmentsStorageAccountUri: monitoringDataStorageModule.outputs.storageAccountBlobServiceUri
+    ownerEmails: sqlDatabaseOwnerEmails
     enableLock: sqlDatabaseEnableLock
-    allowedIPRanges: sqlServerAllowedIPRanges
+    allowedIPRanges: sqlDatabaseAllowedIPRanges
     standardTags: standardTags
   }
 }
-*/
+
+module sqlDatabasePrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'sqlDatabasePrivateEndpointModule'
+  params: {
+    location: location
+    env: env
+    privateEndpointName: 'PE01'
+    vnetName: selectedNetworkNames.endpointsVNetName
+    subnetName: selectedNetworkNames.endpointsSubnetName
+    privateIPAddresses: [ sqlDatabasePEPrivateIPAddress ]
+    serviceId: sqlDatabaseModule.outputs.sqlServerId
+    groupId: 'sqlServer'
+    linkedVNetNames: selectedLinkedVNetNames
+    standardTags: standardTags
+  }
+}
 
 module acrModule 'modules/acr.bicep' = {
   name: 'acrModule'
@@ -443,3 +474,27 @@ module acrPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePriv
     standardTags: standardTags
   }
 }
+
+/*
+module aksModule 'modules/aks.bicep' = {
+  name: 'aksModule'
+  params: {
+    location: location
+    env: env
+    aksSkuTier: aksSkuTier
+    aksDnsSuffix: aksDnsSuffix
+    kubernetesVersion: aksKubernetesVersion
+    nodeResourceGroupName: aksNodeResourceGroupName
+    vnetName: selectedNetworkNames.appsVNetName
+    subnetName: selectedNetworkNames.appsSubnetName
+    enableAutoScaling: aksEnableAutoScaling
+    minCount: aksNodePoolMinCount
+    maxCount: aksNodePoolMaxCount
+    vmSize: aksNodePoolVmSize
+    enableEncryptionAtHost: aksEnableEncryptionAtHost
+    applicationGatewayName: appGatewayModule.outputs.applicationGatewayName
+    logAnalyticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
+    standardTags: standardTags
+  }
+}
+*/

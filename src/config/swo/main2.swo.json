@@ -47,6 +47,9 @@
     "appsDataStoragePEPrivateIPAddress": {
       "value": "10.169.88.73"
     },
+    "sqlDatabasePEPrivateIPAddress": {
+      "value": "10.169.88.69"
+    },
     "acrPEPrivateIPAddresses": {
       "value": [
         "10.169.88.71",
@@ -110,6 +113,36 @@
     "appsDataStorageSkuName": {
       "value": "Standard_LRS"
     },
+    "sqlServerNameSuffix": {
+      "value": "mjx885"
+    },
+    "sqlDatabaseSQLAdminLoginName": {
+      "value": "svr123"
+    },
+    "sqlDatabaseSQLAdminLoginPass": {
+      "value": "svr101102S"
+    },
+    "sqlDatabaseAADAdminLoginName": {
+      "value": "danny.zamorano"
+    },
+    "sqlDatabaseSkuType": {
+      "value": "Standard"
+    },
+    "sqlDatabaseSkuSize": {
+      "value": 0
+    },
+    "sqlDatabaseMinCapacity": {
+      "value": 1
+    },
+    "sqlDatabaseMaxSizeGB": {
+      "value": 2
+    },
+    "sqlDatabaseZoneRedundant": {
+      "value": true
+    },
+    "sqlDatabaseBackupRedundancy": {
+      "value": "Local"
+    },
     "acrNameSuffix": {
       "value": "hle620"
     },
@@ -143,6 +176,23 @@
     "appsDataStorageLogsRetentionDays": {
       "value": 7
     },
+    "sqlDatabaseEnableAuditing": {
+      "value": true
+    },
+    "sqlDatabaseAuditLogsRetentionDays": {
+      "value": 7
+    },
+    "sqlDatabaseEnableThreatProtection": {
+      "value": true
+    },
+    "sqlDatabaseEnableVulnerabilityAssessments": {
+      "value": true
+    },
+    "sqlDatabaseOwnerEmails": {
+      "value": [
+        "danny.zamorano@softwareone.com"
+      ]
+    },
     "acrEnableDiagnostics": {
       "value": true
     },
@@ -167,6 +217,9 @@
     "appsDataStorageEnableLock": {
       "value": true
     },
+    "sqlDatabaseEnableLock": {
+      "value": true
+    },
     "acrEnableLock": {
       "value": true
     },
@@ -184,6 +237,14 @@
     "appsDataStorageAllowedIPsOrCIDRs": {
       "value": [
         "181.134.145.168"
+      ]
+    },
+    "sqlDatabaseAllowedIPRanges": {
+      "value": [
+        {
+          "startIPAddress": "181.134.145.168",
+          "endIPAddress": "181.134.145.168"
+        }
       ]
     },
     "acrAllowedIPsOrCIDRs": {

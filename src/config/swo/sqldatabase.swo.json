@@ -1,0 +1,74 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus2"
+    },
+    "env": {
+      "value": "SWO"
+    },
+    "sqlServerNameSuffix": {
+      "value": "mjx885"
+    },
+    "sqlAdminLoginName": {
+      "value": "svr123"
+    },
+    "sqlAdminLoginPass": {
+      "value": "svr101102S"
+    },
+    "aadAdminLoginName": {
+      "value": "danny.zamorano"
+    },
+    "adminPrincipalId": {
+      "value": "40c2e922-9fb6-4186-a53f-44439c85a9df"
+    },
+    "skuType": {
+      "value": "Standard"
+    },
+    "skuSize": {
+      "value": 0
+    },
+    "minCapacity": {
+      "value": 1
+    },
+    "maxSizeGB": {
+      "value": 10
+    },
+    "zoneRedundant": {
+      "value": true
+    },
+    "backupRedundancy": {
+      "value": "Local"
+    },
+    "enableAuditing": {
+      "value": true
+    },
+    "diagnosticsWorkspaceName": {
+      "value": "{NULL diagnosticsWorkspaceName}"
+    },
+    "auditLogsRetentionDays": {
+      "value": 7
+    },
+    "enableThreatProtection": {
+      "value": true
+    },
+    "enableVulnerabilityAssessments": {
+      "value": true
+    },
+    "assessmentsStorageAccountUri": {
+      "value": "{NULL assessmentsStorageAccountUri}"
+    },
+    "ownerEmails": {
+      "value": [
+        "danny.zamorano@softwareone.com"
+      ]
+    },
+    "enableLock": {
+      "value": true
+    },
+    "allowedIPRanges": {
+      "value": []
+    }
+  }
+}

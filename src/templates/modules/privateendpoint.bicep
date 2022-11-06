@@ -50,7 +50,7 @@ var memberNamesDictionary = {
   vault: [ 'default' ]
   registry: [ 'registry', 'registry_data_eastus2' ]
   blob: [ 'blob' ]
-  sqlServer: [ 'default' ]
+  sqlServer: [ 'sqlServer' ]
 }
 
 var memberNames = memberNamesDictionary[groupId]
@@ -87,7 +87,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
 var privateDnsZoneNamesDictionary = {
   vault: 'privatelink.vaultcore.azure.net'
   registry: 'privatelink${environment().suffixes.acrLoginServer}'
-  blob: 'privatelink.blob${environment().suffixes.storage}'
+  blob: 'privatelink.blob.${environment().suffixes.storage}'
   sqlServer: 'privatelink${environment().suffixes.sqlServerHostname}'
 }
 

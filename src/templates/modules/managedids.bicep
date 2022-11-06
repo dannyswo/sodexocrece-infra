@@ -76,3 +76,5 @@ output appGatewayManagedIdentityName string = appGatewayManagedIdentity.name
 output appsDataStorageManagedIdentityId string = appsDataStorageManagedIdentity.properties.principalId
 
 output appsDataStorageManagedIdentityName string = appsDataStorageManagedIdentity.name
+
+output ownerPrincipalId string = '40c2e922-9fb6-4186-a53f-44439c85a9df'

@@ -126,5 +126,21 @@
       "type": "Microsoft.Storage/storageAccounts/privateLinkResources"
     }
   ],
-  "Microsoft.Sql/servers": []
+  "Microsoft.Sql/servers": [
+    {
+      "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.Sql/servers/azmxdb1mjx885/privateLinkResources/plr",
+      "name": "plr",
+      "properties": {
+        "groupId": "sqlServer",
+        "requiredMembers": [
+          "sqlServer"
+        ],
+        "requiredZoneNames": [
+          "privatelink.database.windows.net"
+        ]
+      },
+      "resourceGroup": "BRS-MEX-USE2-CRECESDX-SWO-RG01",
+      "type": "Microsoft.Sql/servers/privateLinkResources"
+    }
+  ]
 }
