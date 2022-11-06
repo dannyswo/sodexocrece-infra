@@ -29,7 +29,7 @@ param aadAdminPrincipalId string
 @description('Login name of the Azure AD administrator.')
 param aadAdminLoginName string
 
-@description('SKU type for the Azure SQL Database.')
+@description('SKU type for the Azure SQL Database. Use GeneralPurpose for zone redudant database.')
 @allowed([
   'Standard'
   'GeneralPurpose'
@@ -190,7 +190,47 @@ var generalPurposeSkus = [
 
 var selectedSku = (skuType == 'GeneralPurpose') ? generalPurposeSkus[skuSize] : standardSkus[skuSize]
 
-var maxSizeBytes = maxSizeGB * 1024 * 1024 * 1024
+var standardSkuLimits = [
+  {
+    storageMaxSizeGB: 250 * 1073741824 // 250 GB
+  }
+  {
+    storageMaxSizeGB: 250 * 1073741824 // 250 GB
+  }
+  {
+    storageMaxSizeGB: 250 * 1073741824 // 250 GB
+  }
+  {
+    storageMaxSizeGB: 1024 * 1073741824 // 1024 GB
+  }
+  {
+    storageMaxSizeGB: 1024 * 1073741824 // 1024 GB
+  }
+]
+
+var generalPurposeSkuLimits = [
+  {
+    storageMaxSizeGB: 512 * 1073741824 // 512 GB
+  }
+  {
+    storageMaxSizeGB: 1024 * 1073741824 // 1024 GB
+  }
+  {
+    storageMaxSizeGB: 1024 * 1073741824 // 1024 GB
+  }
+  {
+    storageMaxSizeGB: 2048 * 1073741824 // 2048 GB
+  }
+  {
+    storageMaxSizeGB: 3072 * 1073741824 // 3072 GB
+  }
+]
+
+var selectedSkuLimits = (skuType == 'GeneralPurpose') ? generalPurposeSkuLimits[skuSize] : standardSkuLimits[skuSize]
+
+var maxSizeBytes = maxSizeGB * 1073741824 // 1024 * 1024 * 1024 B
+
+var validMaxSizeBytes = (maxSizeBytes <= selectedSkuLimits.storageMaxSizeGB) ? maxSizeBytes : selectedSkuLimits.storageMaxSizeGB
 
 var isZoneRedundant = (skuType == 'GeneralPurpose') ? zoneRedundant : false
 
@@ -202,7 +242,7 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
   properties: {
     createMode: 'Default'
     minCapacity: minCapacity
-    maxSizeBytes: maxSizeBytes
+    maxSizeBytes: validMaxSizeBytes
     zoneRedundant: isZoneRedundant
     highAvailabilityReplicaCount: 0
     requestedBackupStorageRedundancy: backupRedundancy

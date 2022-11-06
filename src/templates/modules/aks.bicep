@@ -38,22 +38,22 @@ param subnetName string
 param enableAutoScaling bool
 
 @description('Minimum number of nodes in the AKS system node pool.')
-param minCount int
+param nodePoolMinCount int
 
 @description('Maximum number of nodes in the AKS system node pool.')
-param maxCount int
+param nodePoolMaxCount int
 
 @description('VM size of every node in the AKS system node pool.')
-param vmSize string
+param nodePoolVmSize string
 
 @description('Enable encryption at AKS nodes.')
 param enableEncryptionAtHost bool
 
 @description('Name of the Application Gateway managed by AGIC add-on.')
-param applicationGatewayName string
+param appGatewayName string
 
 @description('Name of the Log Analytics Workspace managed by OMSAgent add-on.')
-param logAnalyticsWorkspaceName string
+param workspaceName string
 
 @description('Enable Resource Lock on AKS Managed Cluster.')
 param enableLock bool
@@ -68,10 +68,10 @@ var selectedNodeResourceGroupName = (env == 'SWO') ? nodeResourceGroupName : 'BR
 var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
 
 var enableAGICAddon = false
-var applicationGatewayId = resourceId('Microsoft.Network/applicationGateways', applicationGatewayName)
+var appGatewayId = resourceId('Microsoft.Network/applicationGateways', appGatewayName)
 
 var enableOMSAgentAddon = false
-var logAnalyticsWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', logAnalyticsWorkspaceName)
+var workspaceId = resourceId('Microsoft.OperationalInsights/workspaces', workspaceName)
 
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-KU01'
@@ -96,11 +96,11 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
         availabilityZones: [ '1', '2', '3' ]
         scaleSetPriority: 'Regular'
         enableAutoScaling: enableAutoScaling
-        minCount: minCount
-        maxCount: maxCount
+        minCount: nodePoolMinCount
+        maxCount: nodePoolMaxCount
         count: 1
         scaleDownMode: 'Delete'
-        vmSize: vmSize
+        vmSize: nodePoolVmSize
         osType: 'Linux'
         osSKU: 'Ubuntu'
         osDiskSizeGB: 0
@@ -119,7 +119,6 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
     }
     networkProfile: {
       networkPlugin: 'kubenet'
-      networkPluginMode: 'Overlay'
       networkPolicy: 'calico'
       loadBalancerSku: 'standard'
       loadBalancerProfile: {
@@ -149,13 +148,13 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
       ingressApplicationGateway: {
         enabled: enableAGICAddon
         config: {
-          applicationGatewayId: applicationGatewayId
+          applicationGatewayId: appGatewayId
         }
       }
       omsagent: {
         enabled: enableOMSAgentAddon
         config: {
-          logAnalyticsWorkspaceResourceID: logAnalyticsWorkspaceId
+          logAnalyticsWorkspaceResourceID: workspaceId
         }
       }
     }

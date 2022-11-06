@@ -158,6 +158,33 @@
     "acrSoftDeleteRetentionDays": {
       "value": 7
     },
+    "aksSkuTier": {
+      "value": "Free"
+    },
+    "aksDnsSuffix": {
+      "value": "vnq206"
+    },
+    "aksKubernetesVersion": {
+      "value": "1.23.12"
+    },
+    "aksNodeResourceGroupName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-RG02"
+    },
+    "aksEnableAutoScaling": {
+      "value": true
+    },
+    "aksNodePoolMinCount": {
+      "value": 1
+    },
+    "aksNodePoolMaxCount": {
+      "value": 3
+    },
+    "aksNodePoolVmSize": {
+      "value": "standard_d2s_v3"
+    },
+    "aksEnableEncryptionAtHost": {
+      "value": false
+    },
     "keyVaultEnableDiagnostics": {
       "value": true
     },
@@ -216,6 +243,9 @@
       "value": true
     },
     "acrEnableLock": {
+      "value": true
+    },
+    "aksEnableLock": {
       "value": true
     },
     "keyVaultAllowedSubnetNames": {

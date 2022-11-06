@@ -106,15 +106,15 @@ param acrZoneRedundancy string
 param acrUntaggedRetentionDays int
 param acrSoftDeleteRetentionDays int
 
-// param aksSkuTier string
-// param aksDnsSuffix string
-// param aksKubernetesVersion string
-// param aksNodeResourceGroupName string
-// param aksEnableAutoScaling bool
-// param aksNodePoolMinCount int
-// param aksNodePoolMaxCount int
-// param aksNodePoolVmSize string
-// param aksEnableEncryptionAtHost bool
+param aksSkuTier string
+param aksDnsSuffix string
+param aksKubernetesVersion string
+param aksNodeResourceGroupName string
+param aksEnableAutoScaling bool
+param aksNodePoolMinCount int
+param aksNodePoolMaxCount int
+param aksNodePoolVmSize string
+param aksEnableEncryptionAtHost bool
 
 // Diagnostics options
 
@@ -145,6 +145,7 @@ param appGatewayEnableLock bool
 param appsDataStorageEnableLock bool
 param sqlDatabaseEnableLock bool
 param acrEnableLock bool
+param aksEnableLock bool
 
 // Firewall settings
 
@@ -485,12 +486,13 @@ module aksModule 'modules/aks.bicep' = {
     vnetName: selectedNetworkNames.appsVNetName
     subnetName: selectedNetworkNames.appsSubnetName
     enableAutoScaling: aksEnableAutoScaling
-    minCount: aksNodePoolMinCount
-    maxCount: aksNodePoolMaxCount
-    vmSize: aksNodePoolVmSize
+    nodePoolMinCount: aksNodePoolMinCount
+    nodePoolMaxCount: aksNodePoolMaxCount
+    nodePoolVmSize: aksNodePoolVmSize
     enableEncryptionAtHost: aksEnableEncryptionAtHost
-    applicationGatewayName: appGatewayModule.outputs.applicationGatewayName
-    logAnalyticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
+    appGatewayName: appGatewayModule.outputs.applicationGatewayName
+    workspaceName: logAnalyticsModule.outputs.workspaceName
+    enableLock: aksEnableLock
     standardTags: standardTags
   }
 }

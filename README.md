@@ -26,6 +26,14 @@ Environments:
 * SoftwareONE: SWO
 * Sodexo: DEV, UAT, PRD
 
+Stacks:
+
+* iam: managedids
+* network: network1
+* monitoring: monitoringdatastorage, loganalytics, networkwatcher
+* security: keyvault, keyvaultpe
+
+
 ## Useful Azure CLI Commands
 
 Install and setup Bicep:

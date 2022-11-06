@@ -18,31 +18,37 @@
       "value": "1.23.12"
     },
     "nodeResourceGroupName": {
-      "value": "RG-demo-sodexo-crece-02"
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-RG02"
+    },
+    "vnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN02"
     },
     "subnetName": {
-      "value": "{NULL subnetName}"
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN02"
     },
     "enableAutoScaling": {
       "value": true
     },
-    "minCount": {
+    "nodePoolMinCount": {
       "value": 1
     },
-    "maxCount": {
-      "value": 1
+    "nodePoolMaxCount": {
+      "value": 3
     },
-    "vmSize": {
+    "nodePoolVmSize": {
       "value": "standard_d2s_v3"
     },
     "enableEncryptionAtHost": {
       "value": false
     },
-    "applicationGatewayName": {
-      "value": "{NULL applicationGatewayName}"
+    "appGatewayName": {
+      "value": "azmxwa1gtc219"
     },
-    "logAnalyticsWorkspaceName": {
-      "value": "{NULL logAnalyticsWorkspaceName}"
+    "workspaceName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
+    },
+    "enableLock": {
+      "value": true
     }
   }
 }
