@@ -26,6 +26,9 @@ param softDeleteRetentionDays int
 @description('ID of the AAD Tenant used to authenticate requests to the Key Vault.')
 param tenantId string = subscription().tenantId
 
+@description('Enable RBAC authorization in Key Vault and ignore access policies.')
+param enableRbacAuthorization bool = false
+
 @description('Enable diagnostics to store Key Vault audit logs.')
 param enableDiagnostics bool
 
@@ -79,7 +82,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     enabledForDiskEncryption: false
     enabledForTemplateDeployment: false
     tenantId: tenantId
-    enableRbacAuthorization: false
+    enableRbacAuthorization: enableRbacAuthorization
     accessPolicies: []
     publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
     networkAcls: {

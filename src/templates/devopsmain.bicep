@@ -34,6 +34,9 @@ param devopsKeyVaultWorkspaceName string
 @maxValue(180)
 param devopsKeyVaultLogsRetentionDays int
 
+@description('Enable RBAC authorization in Key Vault and ignore access policies.')
+param devopsKeyVaultEnableRbacAuthorization bool
+
 @description('Enable Resource Lock on Key Vault.')
 param devopsKeyVaultEnableLock bool
 
@@ -62,6 +65,7 @@ module devopsKeyVaultModule 'modules/keyvault.bicep' = {
     enableDiagnostics: devopsKeyVaultEnableDiagnostics
     diagnosticsWorkspaceName: devopsKeyVaultWorkspaceName
     logsRetentionDays: devopsKeyVaultLogsRetentionDays
+    enableRbacAuthorization: devopsKeyVaultEnableRbacAuthorization
     enableLock: devopsKeyVaultEnableLock
     enablePublicAccess: devopsKeyVaultEnablePublicAccess
     allowedSubnetNames: devopsKeyVaultAllowedSubnetNames

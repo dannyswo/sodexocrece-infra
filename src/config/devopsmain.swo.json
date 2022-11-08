@@ -9,13 +9,16 @@
       "value": "SWO"
     },
     "devopsKeyVaultNameSuffix": {
-      "value": "qem937"
+      "value": "qem938"
     },
     "devopsKeyVaultEnablePurgeProtection": {
       "value": true
     },
     "devopsKeyVaultSoftDeleteRetentionDays": {
       "value": 7
+    },
+    "devopsKeyVaultEnableRbacAuthorization": {
+      "value": true
     },
     "devopsKeyVaultEnableDiagnostics": {
       "value": false
