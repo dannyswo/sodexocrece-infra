@@ -13,87 +13,59 @@ param env string
 @description('Suffix used in the Key Vault name.')
 @minLength(6)
 @maxLength(6)
-param keyVaultNameSuffix string
+param devopsKeyVaultNameSuffix string
 
 @description('Enable purge protection feature of the Key Vault.')
-param enablePurgeProtection bool
+param devopsKeyVaultEnablePurgeProtection bool
 
 @description('Retention days of soft-deleted objects in the Key Vault.')
 @minValue(7)
 @maxValue(90)
-param softDeleteRetentionDays int
+param devopsKeyVaultSoftDeleteRetentionDays int
 
-@description('ID of the AAD Tenant used to authenticate requests to the Key Vault.')
-param tenantId string = subscription().tenantId
+@description('Enable diagnostics to store Key Vault audit logs.')
+param devopsKeyVaultEnableDiagnostics bool
+
+@description('Name of the Log Analytics Workspace used for diagnostics of the Key Vault. Must be defined if enableDiagnostics is true.')
+param devopsKeyVaultWorkspaceName string
+
+@description('Retention days of the Key Vault audit logs. Must be defined if enableDiagnostics is true.')
+@minValue(7)
+@maxValue(180)
+param devopsKeyVaultLogsRetentionDays int
 
 @description('Enable Resource Lock on Key Vault.')
-param enableLock bool = true
+param devopsKeyVaultEnableLock bool
 
 @description('Enable public access in the PaaS firewall.')
-param enablePublicAccess bool = true
+param devopsKeyVaultEnablePublicAccess bool
 
 @description('List of Subnet names allowed to access the Key Vault in the PaaS firewall.')
-param allowedSubnetNames array = []
+param devopsKeyVaultAllowedSubnetNames array = []
 
 @description('List of IPs or CIDRs allowed to access the Key Vault in the PaaS firewall.')
-param allowedIPsOrCIDRs array = []
+param devopsKeyVaultAllowedIPsOrCIDRs array = []
 
 @description('Standard tags applied to all resources.')
 param standardTags object = resourceGroup().tags
 
 // Resource definitions
 
-var virtualNetworkRules = [for allowedSubnetName in allowedSubnetNames: {
-  id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnetName)
-  ignoreMissingVnetServiceEndpoint: true
-}]
-
-var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
-  value: allowedIPOrCIDR
-}]
-
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-  name: 'azmxkv1${keyVaultNameSuffix}'
-  location: location
-  properties: {
-    createMode: 'default'
-    sku: {
-      family: 'A'
-      name: 'standard'
-    }
-    enableSoftDelete: true
-    enablePurgeProtection: enablePurgeProtection
-    softDeleteRetentionInDays: softDeleteRetentionDays
-    enabledForDeployment: false
-    enabledForDiskEncryption: false
-    enabledForTemplateDeployment: false
-    tenantId: tenantId
-    enableRbacAuthorization: true
-    publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-      virtualNetworkRules: virtualNetworkRules
-      ipRules: ipRules
-    }
-  }
-  tags: standardTags
-}
-
-resource keyVaultLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-RL10'
-  scope: keyVault
-  properties: {
-    level: 'CanNotDelete'
-    notes: 'Key Vault for Azure DevOps should not be deleted.'
+module devopsKeyVaultModule 'modules/keyvault.bicep' = {
+  name: 'devopsKeyVaultModule'
+  params: {
+    location: location
+    env: env
+    keyVaultNameSuffix: devopsKeyVaultNameSuffix
+    enablePurgeProtection: devopsKeyVaultEnablePurgeProtection
+    softDeleteRetentionDays: devopsKeyVaultSoftDeleteRetentionDays
+    enableDiagnostics: devopsKeyVaultEnableDiagnostics
+    diagnosticsWorkspaceName: devopsKeyVaultWorkspaceName
+    logsRetentionDays: devopsKeyVaultLogsRetentionDays
+    enableLock: devopsKeyVaultEnableLock
+    enablePublicAccess: devopsKeyVaultEnablePublicAccess
+    allowedSubnetNames: devopsKeyVaultAllowedSubnetNames
+    allowedIPsOrCIDRs: devopsKeyVaultAllowedIPsOrCIDRs
+    standardTags: standardTags
   }
 }
-
-@description('ID of the Key Vault instance.')
-output keyVaultId string = keyVault.id
-
-@description('NAmeof the Key Vault instance.')
-output keyVaultName string = keyVault.name
-
-@description('URI of the Key Vault instance.')
-output keyVaultUri string = keyVault.properties.vaultUri
