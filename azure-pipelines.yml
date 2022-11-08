@@ -1,0 +1,37 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+
+variables:
+  group: azuresecrets
+
+pool:
+  name: ubuntu-latest
+steps:
+- bash: |
+    pip install checkov
+- bash: |
+    checkov -d . -o junitxml >> junit.xml
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/junit.xml'
+    testRunTitle: 'Secutiry'
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'ARM Template deployment: Resource Group scope'
+  inputs:
+    azureResourceManagerConnection: 'Visual Studio Enterprise (d387d7c4-3dc1-4a04-b494-176559453375)'
+    subscriptionId: 'd387d7c4-3dc1-4a04-b494-176559453375'
+    resourceGroupName: testbicep
+    location: 'East US 2'
+    csmFile: src/templates/main.bicep
+    csmParametersFile: src/config/main.swo.json
+    deploymentName: 'bicep-arch-sodexo'
+    overrideParameters: >
+      -sqlDatabaseSQLAdminLoginPass $(azureClientSecret)
+
+
