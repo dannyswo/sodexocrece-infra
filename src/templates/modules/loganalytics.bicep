@@ -39,7 +39,7 @@ param linkedStorageAccountName string
 param enableLock bool
 
 @description('Standards tags applied to all resources.')
-param standardTags object = resourceGroup().tags
+param standardTags object
 
 var workspaceSku = (workspaceSkuName == 'CapacityReservation') ? {
   name: workspaceSkuName

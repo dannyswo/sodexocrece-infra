@@ -93,7 +93,7 @@ param enablePublicAccess bool
 param allowedIPRanges array = []
 
 @description('Standards tags applied to all resources.')
-param standardTags object = resourceGroup().tags
+param standardTags object
 
 // Resource definitions
 

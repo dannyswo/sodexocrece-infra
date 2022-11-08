@@ -291,6 +291,20 @@
       "value": [
         "181.134.145.168"
       ]
+    },
+    "standardTags": {
+      "value": {
+        "ApplicationName": "",
+        "ApplicationOwner": "",
+        "ApplicationSponsor": "",
+        "TechnicalContact": "",
+        "Billing": "",
+        "Maintenance": "",
+        "EnvironmentType": "",
+        "Security": "",
+        "DeploymentDate": "",
+        "dd_organization": ""
+      }
     }
   }
 }

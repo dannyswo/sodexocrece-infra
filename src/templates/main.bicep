@@ -179,7 +179,7 @@ param acrAllowedIPsOrCIDRs array
   DeploymentDate: ''
   dd_organization: ''
 })
-param standardTags object = resourceGroup().tags
+param standardTags object
 
 // Resource definitions
 

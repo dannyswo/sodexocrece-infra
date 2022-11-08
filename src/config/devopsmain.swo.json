@@ -40,6 +40,20 @@
     },
     "devopsKeyVaultAllowedIPsOrCIDRs": {
       "value": []
+    },
+    "standardTags": {
+      "value": {
+        "ApplicationName": "",
+        "ApplicationOwner": "",
+        "ApplicationSponsor": "",
+        "TechnicalContact": "",
+        "Billing": "",
+        "Maintenance": "",
+        "EnvironmentType": "",
+        "Security": "",
+        "DeploymentDate": "",
+        "dd_organization": ""
+      }
     }
   }
 }

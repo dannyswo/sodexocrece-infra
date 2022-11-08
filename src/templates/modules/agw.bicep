@@ -68,7 +68,7 @@ param logsRetentionDays int
 param enableLock bool
 
 @description('Standards tags applied to all resources.')
-param standardTags object = resourceGroup().tags
+param standardTags object
 
 // Resource definitions
 

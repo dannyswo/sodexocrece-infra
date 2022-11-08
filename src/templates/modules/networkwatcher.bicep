@@ -28,7 +28,7 @@ param flowLogsRetentionDays int
 param enableLock bool
 
 @description('Standards tags applied to all resources.')
-param standardTags object = resourceGroup().tags
+param standardTags object
 
 var networkWatcherNameSuffix = 'MM02'
 

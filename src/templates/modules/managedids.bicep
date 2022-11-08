@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 param env string
 
 @description('Standard tags applied to all resources.')
-param standardTags object = resourceGroup().tags
+param standardTags object
 
 // Resource definitions
 

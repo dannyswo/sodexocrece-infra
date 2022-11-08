@@ -61,7 +61,7 @@ param enablePublicAccess bool
 param allowedIPsOrCIDRs array = []
 
 @description('Standards tags applied to all resources.')
-param standardTags object = resourceGroup().tags
+param standardTags object
 
 // Resource definitions
 

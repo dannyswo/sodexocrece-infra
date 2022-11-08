@@ -50,7 +50,7 @@ param devopsKeyVaultAllowedSubnetNames array = []
 param devopsKeyVaultAllowedIPsOrCIDRs array = []
 
 @description('Standard tags applied to all resources.')
-param standardTags object = resourceGroup().tags
+param standardTags object
 
 // Resource definitions
 

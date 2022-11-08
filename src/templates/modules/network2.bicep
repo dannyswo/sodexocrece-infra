@@ -43,7 +43,7 @@ param endpointsSubnetName string
 param endpointsSubnetAddressPrefix string
 
 @description('Standards tags applied to all resources.')
-param standardTags object = resourceGroup().tags
+param standardTags object
 
 // Resource definitions
 
