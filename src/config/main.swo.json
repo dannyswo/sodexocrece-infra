@@ -71,11 +71,14 @@
     "workspaceCapacityReservation": {
       "value": 0
     },
+    "flowLogsEnableFlowLogs": {
+      "value": false
+    },
     "flowLogsRetentionDays": {
       "value": 7
     },
     "keyVaultNameSuffix": {
-      "value": "mat330"
+      "value": "mat331"
     },
     "keyVaultEnablePurgeProtection": {
       "value": true
@@ -248,6 +251,9 @@
     "aksEnableLock": {
       "value": true
     },
+    "keyVaultEnablePublicAccess": {
+      "value": true
+    },
     "keyVaultAllowedSubnetNames": {
       "value": []
     },
@@ -255,6 +261,9 @@
       "value": [
         "181.134.145.168"
       ]
+    },
+    "appsDataStorageEnablePublicAccess": {
+      "value": true
     },
     "appsDataStorageAllowedSubnetNames": {
       "value": []
@@ -264,6 +273,9 @@
         "181.134.145.168"
       ]
     },
+    "sqlDatabaseEnablePublicAccess": {
+      "value": true
+    },
     "sqlDatabaseAllowedIPRanges": {
       "value": [
         {
@@ -271,6 +283,9 @@
           "endIPAddress": "181.134.145.168"
         }
       ]
+    },
+    "acrEnablePublicAccess": {
+      "value": true
     },
     "acrAllowedIPsOrCIDRs": {
       "value": [

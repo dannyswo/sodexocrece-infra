@@ -6,14 +6,14 @@ Deployment Commands
 Deploy main templates in Javier's Subscription:
 
 ```
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\main2.bicep -p .\src\config\swo\main2.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\main.bicep -p .\src\config\main.swo.json
 ```
 
 Deploy main templates in Danny's Subscription:
 
 ```
 az deployment sub create -l eastus2 -f .\src\templates\group.bicep -p .\src\config\swo\group.swo.json
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\main2.bicep -p .\src\config\swo\main2.swo.json
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\main.bicep -p .\src\config\main.swo.json
 ```
 
 Deploy individual modules:
@@ -47,7 +47,7 @@ az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\
 Verify failed deployments:
 
 ```
-az deployment group list --resource-group BRS-MEX-USE2-CRECESDX-SWO-RG01 --filter "provisioningState eq 'Failed'"
+az deployment group list --resource-group RG-demo-sodexo-crece --filter "provisioningState eq 'Failed'"
 az deployment group list --resource-group BRS-MEX-USE2-CRECESDX-SWO-RG01 --filter "provisioningState eq 'Failed'"
 ```
 

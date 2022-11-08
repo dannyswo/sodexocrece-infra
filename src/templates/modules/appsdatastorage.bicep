@@ -45,10 +45,13 @@ param logsRetentionDays int
 @description('Enable Resource Lock on Application Gateway.')
 param enableLock bool
 
-@description('List of Subnet names allowed to access the Storage Account in the firewall.')
+@description('Enable public access in the PaaS firewall.')
+param enablePublicAccess bool
+
+@description('List of Subnet names allowed to access the Storage Account in the PaaS firewall.')
 param allowedSubnetNames array = []
 
-@description('List of IPs or CIDRs allowed to access the Storage Account in the firewall.')
+@description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
 param allowedIPsOrCIDRs array = []
 
 @description('Standards tags applied to all resources.')
@@ -113,7 +116,7 @@ resource appsDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' =
     allowBlobPublicAccess: false
     allowCrossTenantReplication: false
     allowedCopyScope: 'PrivateLink'
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
     networkAcls: {
       bypass: 'None'
       defaultAction: 'Deny'

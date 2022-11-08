@@ -26,13 +26,14 @@ Environments:
 * SoftwareONE: SWO
 * Sodexo: DEV, UAT, PRD
 
-Stacks:
+Stacks (experimental):
 
-* iam: managedids
-* network: network1
-* monitoring: monitoringdatastorage, loganalytics, networkwatcher
-* security: keyvault, keyvaultpe
-
+1. iam: managedids, users
+2. network: network1
+3. monitoring: monitoringdatastorage, loganalytics, networkwatcher
+4. security: keyvault, keyvaultpe, keyvaultobjects, keyvaultpolicies
+5. databases: appsdatastorage, appsdatastoragepe, sqldatabase, sqldatabasepe, acr, acrpe
+6. frontend: aks
 
 ## Useful Azure CLI Commands
 

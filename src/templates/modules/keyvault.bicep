@@ -40,10 +40,13 @@ param logsRetentionDays int
 @description('Enable Resource Lock on Key Vault.')
 param enableLock bool
 
-@description('List of Subnet names allowed to access the Key Vault in the firewall.')
+@description('Enable public access in the PaaS firewall.')
+param enablePublicAccess bool
+
+@description('List of Subnet names allowed to access the Key Vault in the PaaS firewall.')
 param allowedSubnetNames array = []
 
-@description('List of IPs or CIDRs allowed to access the Key Vault in the firewall.')
+@description('List of IPs or CIDRs allowed to access the Key Vault in the PaaS firewall.')
 param allowedIPsOrCIDRs array = []
 
 @description('Standard tags applied to all resources.')
@@ -78,7 +81,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     tenantId: tenantId
     enableRbacAuthorization: false
     accessPolicies: []
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'

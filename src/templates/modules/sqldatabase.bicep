@@ -82,6 +82,9 @@ param enableVulnerabilityAssessments bool
 @description('Enable Resource Lock on Azure SQL Server.')
 param enableLock bool
 
+@description('Enable public access in the PaaS firewall.')
+param enablePublicAccess bool
+
 @description('List of IPs ranges (start and end IP addresss) allowed to access the Azure SQL Server in the firewall.')
 @metadata({
   startIPAddress: 'First IP in the IP range.'
@@ -261,7 +264,7 @@ resource connectionPolicies 'Microsoft.Sql/servers/connectionPolicies@2022-05-01
   }
 }
 
-resource firewallRules 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' = [for (allowedIPRange, index) in allowedIPRanges: if (true) {
+resource firewallRules 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' = [for (allowedIPRange, index) in allowedIPRanges: if (!enablePublicAccess) {
   name: 'firewallRule-${index}'
   parent: sqlServer
   properties: {

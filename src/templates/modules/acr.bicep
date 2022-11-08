@@ -54,6 +54,9 @@ param logsRetentionDays int
 @description('Enable Resource Lock on Container Registry.')
 param enableLock bool
 
+@description('Enable public access in the PaaS firewall.')
+param enablePublicAccess bool
+
 @description('List of IPs or CIDRs allowed to access the Container Registry in the firewall.')
 param allowedIPsOrCIDRs array = []
 
@@ -89,13 +92,13 @@ resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = 
         retentionDays: softDeleteRetentionDays
       }
       exportPolicy: {
-        status: 'disabled'
+        status: (enablePublicAccess) ? 'enabled' : 'disabled'
       }
     }
     adminUserEnabled: false
     anonymousPullEnabled: false
     dataEndpointEnabled: false
-    publicNetworkAccess: 'Disabled'
+    publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
     networkRuleBypassOptions: 'None'
     networkRuleSet: {
       defaultAction: 'Deny'
