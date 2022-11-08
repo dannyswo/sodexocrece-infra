@@ -57,7 +57,7 @@
       ]
     },
     "monitoringDataStorageNameSuffix": {
-      "value": "msv817"
+      "value": "msv818"
     },
     "monitoringDataStorageSkuName": {
       "value": "Standard_LRS"
@@ -78,7 +78,7 @@
       "value": 7
     },
     "keyVaultNameSuffix": {
-      "value": "mat331"
+      "value": "mat333"
     },
     "keyVaultEnablePurgeProtection": {
       "value": true
@@ -87,7 +87,7 @@
       "value": 7
     },
     "appGatewayNameSuffix": {
-      "value": "gtc219"
+      "value": "gtc220"
     },
     "appGatewaySkuTier": {
       "value": "WAF_v2"
@@ -111,13 +111,13 @@
       "value": "https://azmxkv1mat330.vault.azure.net/secrets/crececonsdx-cert-public/2097309464c84791948ece0406c5e58e"
     },
     "appsDataStorageNameSuffix": {
-      "value": "ifv691"
+      "value": "ifv692"
     },
     "appsDataStorageSkuName": {
       "value": "Standard_LRS"
     },
     "sqlServerNameSuffix": {
-      "value": "mjx885"
+      "value": "mjx886"
     },
     "sqlDatabaseSQLAdminLoginName": {
       "value": "svr123"
@@ -147,7 +147,7 @@
       "value": "Local"
     },
     "acrNameSuffix": {
-      "value": "hle620"
+      "value": "hle622"
     },
     "acrSku": {
       "value": "Premium"
@@ -165,7 +165,7 @@
       "value": "Free"
     },
     "aksDnsSuffix": {
-      "value": "vnq206"
+      "value": "vnq208"
     },
     "aksKubernetesVersion": {
       "value": "1.23.12"
