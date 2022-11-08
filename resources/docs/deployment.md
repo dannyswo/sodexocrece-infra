@@ -7,6 +7,7 @@ Deploy main templates in Javier's Subscription:
 
 ```
 az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\main.bicep -p .\src\config\main.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\devopsmain.bicep -p .\src\config\devopsmain.swo.json
 ```
 
 Deploy main templates in Danny's Subscription:
@@ -14,6 +15,7 @@ Deploy main templates in Danny's Subscription:
 ```
 az deployment sub create -l eastus2 -f .\src\templates\group.bicep -p .\src\config\swo\group.swo.json
 az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\main.bicep -p .\src\config\main.swo.json
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\devopsmain.bicep -p .\src\config\devopsmain.swo.json
 ```
 
 Deploy individual modules:

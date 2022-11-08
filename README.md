@@ -5,9 +5,10 @@ Infrastructure Repository for Sodexo Crece Project
 
 Templates:
 
-* main1
+* main
+* devopsmain
 
-Modules:
+Modules (instances):
 
 1. managedids
 2. network1
@@ -26,14 +27,14 @@ Environments:
 * SoftwareONE: SWO
 * Sodexo: DEV, UAT, PRD
 
-Stacks (experimental):
+Stacks and modules instances (experimental):
 
 1. iam: managedids, users
 2. network: network1
 3. monitoring: monitoringdatastorage, loganalytics, networkwatcher
 4. security: keyvault, keyvaultpe, keyvaultobjects, keyvaultpolicies
-5. databases: appsdatastorage, appsdatastoragepe, sqldatabase, sqldatabasepe, acr, acrpe
-6. frontend: aks
+5. databases: appsdatastorage, appsdatastoragepe, sqldatabase, sqldatabasepe
+6. frontend: agw, acr, acrpe, aks
 
 ## Useful Azure CLI Commands
 
