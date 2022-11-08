@@ -6,9 +6,21 @@
 trigger:
 - none
 
+variables:
+  group: azuresecrets
+
 pool:
   name: ubuntu-latest
 steps:
+- bash: |
+    pip install checkov
+- bash: |
+    checkov -d . -o junitxml >> junit.xml
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/junit.xml'
+    testRunTitle: 'Secutiry'
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: 'ARM Template deployment: Resource Group scope'
   inputs:
@@ -19,5 +31,7 @@ steps:
     csmFile: src/templates/main.bicep
     csmParametersFile: src/config/main.swo.json
     deploymentName: 'bicep-arch-sodexo'
+    overrideParameters: >
+      -sqlDatabaseSQLAdminLoginPass $(azureClientSecret)
 
 
