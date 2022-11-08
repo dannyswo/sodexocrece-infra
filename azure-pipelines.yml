@@ -1,4 +1,5 @@
 # Starter pipeline
+
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
@@ -10,17 +11,19 @@ variables:
   group: azuresecrets
 
 pool:
-  name: ubuntu-latest
+  vmImage: windows-latest
+
 steps:
-- bash: |
-    pip install checkov
-- bash: |
-    checkov -d . -o junitxml >> junit.xml
-- task: PublishTestResults@2
+- task: BicepInstall@0
   inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/junit.xml'
-    testRunTitle: 'Secutiry'
+    version: 0.10.13
+# - task: BicepBuild@0
+#   inputs:
+#     process: 'multiple'
+#     sourceDirectory: '$(System.DefaultWorkingDirectory)/src/templates/'
+#     outputProcess: stdout
+#     outputDirectory: '$(System.DefaultWorkingDirectory)/src/out' 
+    
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: 'ARM Template deployment: Resource Group scope'
   inputs:
@@ -28,9 +31,10 @@ steps:
     subscriptionId: 'd387d7c4-3dc1-4a04-b494-176559453375'
     resourceGroupName: testbicep
     location: 'East US 2'
-    csmFile: src/templates/main.bicep
-    csmParametersFile: src/config/main.swo.json
+    csmFile: $(System.DefaultWorkingDirectory)/src/templates/devopsmain.bicep
+    csmParametersFile: $(System.DefaultWorkingDirectory)/src/config/devopsmain.swo.json
     deploymentName: 'bicep-arch-sodexo'
+    deploymentMode: Validation
     overrideParameters: >
       -sqlDatabaseSQLAdminLoginPass $(azureClientSecret)
 
