@@ -44,6 +44,7 @@ az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\
 az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\privateendpoint.bicep -p .\src\config\swo\acrpe.swo.json
 
 az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\aks.bicep -p .\src\config\swo\aks.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\aks.bicep -p .\src\config\swo\aks.swo.json -p nodeResourceGroupName=RG-demo-sodexo-crece-03
 ```
 
 Verify failed deployments:
