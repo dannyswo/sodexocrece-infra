@@ -16,13 +16,14 @@ pool:
 steps:
 - task: BicepInstall@0
   inputs:
-    version: 0.10.13
-# - task: BicepBuild@0
-#   inputs:
-#     process: 'multiple'
-#     sourceDirectory: '$(System.DefaultWorkingDirectory)/src/templates/'
-#     outputProcess: stdout
-#     outputDirectory: '$(System.DefaultWorkingDirectory)/src/out' 
+    version: 0.12.40
+
+- task: BicepBuild@0
+  inputs:
+    process: 'multiple'
+    sourceDirectory: '$(System.DefaultWorkingDirectory)/src/templates/'
+    outputProcess: stdout
+    outputDirectory: '$(System.DefaultWorkingDirectory)/src/out' 
     
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: 'ARM Template deployment: Resource Group scope'
