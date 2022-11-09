@@ -10,7 +10,7 @@ param appsDataStorageEncryptionKeyName string
 @description('Issue date time of the generated Encryption Keys.')
 param encryptionKeysIssueDateTime string
 
-// Resource definitions
+// ==================================== Resource definitions ====================================
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName

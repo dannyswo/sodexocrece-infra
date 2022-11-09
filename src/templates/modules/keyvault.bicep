@@ -46,8 +46,12 @@ param enableLock bool
 @description('Enable public access in the PaaS firewall.')
 param enablePublicAccess bool
 
-@description('List of Subnet names allowed to access the Key Vault in the PaaS firewall.')
-param allowedSubnetNames array = []
+@description('List of Subnets allowed to access the Key Vault in the PaaS firewall.')
+@metadata({
+  vnetName: 'Name of the VNet.'
+  subnetName: 'Name of the Subnet'
+})
+param allowedSubnets array = []
 
 @description('List of IPs or CIDRs allowed to access the Key Vault in the PaaS firewall.')
 param allowedIPsOrCIDRs array = []
@@ -55,10 +59,10 @@ param allowedIPsOrCIDRs array = []
 @description('Standard tags applied to all resources.')
 param standardTags object
 
-// Resource definitions
+// ==================================== Resource definitions ====================================
 
-var virtualNetworkRules = [for allowedSubnetName in allowedSubnetNames: {
-  id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnetName)
+var virtualNetworkRules = [for allowedSubnet in allowedSubnets: {
+  id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnet.vnetName, allowedSubnet.subnetName)
   ignoreMissingVnetServiceEndpoint: true
 }]
 

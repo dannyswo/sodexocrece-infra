@@ -48,8 +48,8 @@ param enableLock bool
 @description('Enable public access in the PaaS firewall.')
 param enablePublicAccess bool
 
-@description('List of Subnet names allowed to access the Storage Account in the PaaS firewall.')
-param allowedSubnetNames array = []
+@description('List of Subnet allowed to access the Storage Account in the PaaS firewall.')
+param allowedSubnets array = []
 
 @description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
 param allowedIPsOrCIDRs array = []
@@ -57,7 +57,7 @@ param allowedIPsOrCIDRs array = []
 @description('Standards tags applied to all resources.')
 param standardTags object
 
-// Resource definitions
+// ==================================== Resource definitions ====================================
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
   name: managedIdentityName
@@ -65,8 +65,8 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-
 
 var storageAccountName = 'azmxst1${storageAccountNameSuffix}'
 
-var virtualNetworkRules = [for allowedSubnetName in allowedSubnetNames: {
-  id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnetName)
+var virtualNetworkRules = [for allowedSubnet in allowedSubnets: {
+  id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnet.vnetName, allowedSubnet.subnetName)
   action: 'Allow'
 }]
 

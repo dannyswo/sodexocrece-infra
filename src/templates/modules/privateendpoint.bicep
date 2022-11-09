@@ -42,7 +42,7 @@ param linkedVNetNames array
 @description('Standard tags applied to all resources.')
 param standardTags object
 
-// Resource definitions
+// ==================================== Resource definitions ====================================
 
 var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
 

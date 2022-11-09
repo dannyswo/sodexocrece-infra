@@ -1,0 +1,51 @@
+{
+  "type": "Microsoft.Resources/deploymentScripts",
+  "apiVersion": "2020-10-01",
+  "name": "[format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateName'), ':', ''), '/', '-'))]",
+  "location": "[parameters('location')]",
+  "identity": {
+    "type": "UserAssigned",
+    "userAssignedIdentities": {
+      "[format('{0}', if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]": {}
+    }
+  },
+  "kind": "AzureCLI",
+  "properties": {
+    "forceUpdateTag": "[parameters('forceUpdateTag')]",
+    "azCliVersion": "2.35.0",
+    "timeout": "PT10M",
+    "retentionInterval": "P1D",
+    "environmentVariables": [
+      {
+        "name": "akvName",
+        "value": "[parameters('akvName')]"
+      },
+      {
+        "name": "certName",
+        "value": "[parameters('certificateName')]"
+      },
+      {
+        "name": "certCommonName",
+        "value": "[parameters('certificateCommonName')]"
+      },
+      {
+        "name": "initialDelay",
+        "value": "[parameters('initialScriptDelay')]"
+      },
+      {
+        "name": "retryMax",
+        "value": "10"
+      },
+      {
+        "name": "retrySleep",
+        "value": "5s"
+      }
+    ],
+    "scriptContent": "      #!/bin/bash\n      set -e\n\n      echo \"Waiting on Identity RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n\n      #Retry loop to catch errors (usually RBAC delays)\n      retryLoopCount=0\n      until [ $retryLoopCount -ge $retryMax ]\n      do\n        echo \"Creating AKV Cert $certName with CN $certCommonName (attempt $retryLoopCount)...\"\n        az keyvault certificate create --vault-name $akvName -n $certName -p \"$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )\" \\\n          && break\n\n        sleep $retrySleep\n        retryLoopCount=$((retryLoopCount+1))\n      done\n\n      echo \"Getting Certificate $certName\";\n      retryLoopCount=0\n      createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\n      while [ -z \"$(echo $createdCert | jq -r '.x509ThumbprintHex')\" ] && [ $retryLoopCount -lt $retryMax ]\n      do\n        echo \"Waiting for cert creation (attempt $retryLoopCount)...\"\n        sleep $retrySleep\n        createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\n        retryLoopCount=$((retryLoopCount+1))\n      done\n\n      unversionedSecretId=$(echo $createdCert | jq -r \".sid\" | cut -d'/' -f-5) # remove the version from the url;\n      jsonOutputString=$(echo $createdCert | jq --arg usid $unversionedSecretId '{name: .name ,certSecretId: {versioned: .sid, unversioned: $usid }, thumbprint: .x509Thumbprint, thumbprintHex: .x509ThumbprintHex}')\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n    ",
+    "cleanupPreference": "[parameters('cleanupPreference')]"
+  },
+  "dependsOn": [
+    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
+    "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), 'Microsoft.Authorization/roleAssignments', guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRolesNeededOnKV'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))))]"
+  ]
+}

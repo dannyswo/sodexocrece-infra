@@ -34,7 +34,7 @@ param allowedIPsOrCIDRs array = []
 @description('Standards tags applied to all resources.')
 param standardTags object
 
-// Resource definitions
+// ==================================== Resource definitions ====================================
 
 var virtualNetworkRules = [for allowedSubnetName in allowedSubnetNames: {
   id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnetName)

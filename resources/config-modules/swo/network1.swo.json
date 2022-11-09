@@ -43,6 +43,44 @@
     },
     "endpointsSubnetAddressPrefix": {
       "value": "10.169.88.64/26"
+    },
+    "jumpServersVNetName": {
+      "value": "VN04"
+    },
+    "jumpServersVNetAddressPrefix": {
+      "value": "10.169.50.0/24"
+    },
+    "jumpServersSubnetName": {
+      "value": "SN04"
+    },
+    "jumpServersSubnetAddressPrefix": {
+      "value": "10.169.50.64/26"
+    },
+    "devopsAgentsVNetName": {
+      "value": "VN05"
+    },
+    "devopsAgentsVNetAddressPrefix": {
+      "value": "10.169.60.0/24"
+    },
+    "devopsAgentsSubnetName": {
+      "value": "SN05"
+    },
+    "devopsAgentsSubnetAddressPrefix": {
+      "value": "10.169.60.64/26"
+    },
+    "standardTags": {
+      "value": {
+        "ApplicationName": "",
+        "ApplicationOwner": "",
+        "ApplicationSponsor": "",
+        "TechnicalContact": "",
+        "Billing": "",
+        "Maintenance": "",
+        "EnvironmentType": "",
+        "Security": "",
+        "DeploymentDate": "",
+        "dd_organization": ""
+      }
     }
   }
 }

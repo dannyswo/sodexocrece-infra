@@ -8,6 +8,9 @@
     "env": {
       "value": "SWO"
     },
+    "managedIdentityName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"
+    },
     "aksSkuTier": {
       "value": "Free"
     },
@@ -41,14 +44,46 @@
     "enableEncryptionAtHost": {
       "value": false
     },
+    "enablePrivateCluster": {
+      "value": true
+    },
+    "privateDnsZoneLinkedVNetNames": {
+      "value": [
+        "BRS-MEX-USE2-CRECESDX-SWO-VN04",
+        "BRS-MEX-USE2-CRECESDX-SWO-VN05"
+      ]
+    },
+    "enableAGICAddon": {
+      "value": false
+    },
     "appGatewayName": {
-      "value": "azmxwa1gtc219"
+      "value": "azmxwa1gtc245"
+    },
+    "enableOMSAgentAddon": {
+      "value": false
     },
     "workspaceName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
     },
     "enableLock": {
       "value": true
+    },
+    "enablePublicAccess": {
+      "value": true
+    },
+    "standardTags": {
+      "value": {
+        "ApplicationName": "",
+        "ApplicationOwner": "",
+        "ApplicationSponsor": "",
+        "TechnicalContact": "",
+        "Billing": "",
+        "Maintenance": "",
+        "EnvironmentType": "",
+        "Security": "",
+        "DeploymentDate": "",
+        "dd_organization": ""
+      }
     }
   }
 }

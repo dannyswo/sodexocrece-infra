@@ -26,6 +26,8 @@ param standardTags object = {
   dd_organization: ''
 }
 
+// ==================================== Resource definitions ====================================
+
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RG01'
   location: location

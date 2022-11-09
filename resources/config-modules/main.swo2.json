@@ -57,7 +57,7 @@
       ]
     },
     "monitoringDataStorageNameSuffix": {
-      "value": "msv818"
+      "value": "msv830"
     },
     "monitoringDataStorageSkuName": {
       "value": "Standard_LRS"
@@ -78,7 +78,7 @@
       "value": 7
     },
     "keyVaultNameSuffix": {
-      "value": "mat333"
+      "value": "mat350"
     },
     "keyVaultEnablePurgeProtection": {
       "value": true
@@ -87,7 +87,7 @@
       "value": 7
     },
     "appGatewayNameSuffix": {
-      "value": "gtc220"
+      "value": "gtc240"
     },
     "appGatewaySkuTier": {
       "value": "WAF_v2"
@@ -108,16 +108,16 @@
       "value": false
     },
     "appGatewayPublicCertificateId": {
-      "value": "https://azmxkv1mat330.vault.azure.net/secrets/crececonsdx-cert-public/2097309464c84791948ece0406c5e58e"
+      "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-cert-public/2097309464c84791948ece0406c5e58e"
     },
     "appsDataStorageNameSuffix": {
-      "value": "ifv692"
+      "value": "ifv710"
     },
     "appsDataStorageSkuName": {
       "value": "Standard_LRS"
     },
     "sqlServerNameSuffix": {
-      "value": "mjx886"
+      "value": "mjx900"
     },
     "sqlDatabaseSQLAdminLoginName": {
       "value": "svr123"
@@ -147,7 +147,7 @@
       "value": "Local"
     },
     "acrNameSuffix": {
-      "value": "hle622"
+      "value": "hle650"
     },
     "acrSku": {
       "value": "Premium"

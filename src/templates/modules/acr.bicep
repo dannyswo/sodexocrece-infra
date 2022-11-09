@@ -63,7 +63,7 @@ param allowedIPsOrCIDRs array = []
 @description('Standards tags applied to all resources.')
 param standardTags object
 
-// Resource definitions
+// ==================================== Resource definitions ====================================
 
 var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
   value: allowedIPOrCIDR

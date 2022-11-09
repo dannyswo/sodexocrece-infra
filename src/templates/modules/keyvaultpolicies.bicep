@@ -13,7 +13,7 @@ param appsDataStorageAccountPrincipalId string
 @description('List of AAD Principal IDs allowed to manage Key Vault secrets.')
 param principalIds array = []
 
-// Resource definitions
+// ==================================== Resource definitions ====================================
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName

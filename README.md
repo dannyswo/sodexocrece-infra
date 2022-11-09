@@ -16,8 +16,8 @@ Modules (instances):
 4. loganalytics - RL02, MM01
 5. networkwatcher - RL03, MM02
 6. keyvault, keyvaultpe, keyvaultobjects, keyvaultpolicies - RL04, MM04
-7. agw - RL05, MM05
-8. appsdatastorage, appsdatastoragepe - RL06, MM06
+7. agw - RL05, MM05, AD01
+8. appsdatastorage, appsdatastoragepe - RL06, MM06, AD02
 10. sqldatabase, sqldatabasepe - RL07, MM07
 11. acr, acrpe - RL08, MM08
 12. aks - RL09

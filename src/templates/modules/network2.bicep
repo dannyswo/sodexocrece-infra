@@ -45,7 +45,9 @@ param endpointsSubnetAddressPrefix string
 @description('Standards tags applied to all resources.')
 param standardTags object
 
-// Resource definitions
+// ==================================== Resource definitions ====================================
+
+// ==================================== VNets and Subnets ====================================
 
 resource mainVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-${vnetName}'
@@ -91,6 +93,8 @@ resource endpointsSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' 
     }
   }
 }
+
+// ==================================== Network Security Groups (NSGs) ====================================
 
 resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-NS01'
@@ -215,6 +219,20 @@ resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
           description: 'Allow Applications HTTPS Inbound.'
         }
       }
+      {
+        name: 'AllowSqlServerInbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: appsSubnetAddressPrefix
+          destinationPortRange: '1433'
+          destinationAddressPrefix: '*'
+          priority: 112
+          description: 'Allow Applications SQL Server Inbound.'
+        }
+      }
     ]
   }
   tags: standardTags
@@ -248,6 +266,8 @@ output subnets array = [
     name: endpointsSubnet.name
   }
 ]
+
+// ==================================== Outputs ====================================
 
 @description('ID of the Applications VNet NSG.')
 output appsNSGId string = appsNSG.id

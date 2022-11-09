@@ -58,10 +58,44 @@ param endpointsSubnetName string
 @description('IP range or CIDR of the Endpoints Subnet.')
 param endpointsSubnetAddressPrefix string
 
+@description('Standard name of the Jump Servers VNet.')
+@minLength(4)
+@maxLength(4)
+param jumpServersVNetName string
+
+@description('IP range or CIDR of the Jump Servers VNet.')
+param jumpServersVNetAddressPrefix string
+
+@description('Standard name of the Jump Servers Subnet.')
+@minLength(4)
+@maxLength(4)
+param jumpServersSubnetName string
+
+@description('IP range or CIDR of the Jump Servers Subnet.')
+param jumpServersSubnetAddressPrefix string
+
+@description('Standard name of the DevOps Agents VNet.')
+@minLength(4)
+@maxLength(4)
+param devopsAgentsVNetName string
+
+@description('IP range or CIDR of the DevOps Agents VNet.')
+param devopsAgentsVNetAddressPrefix string
+
+@description('Standard name of the Devops Agents Subnet.')
+@minLength(4)
+@maxLength(4)
+param devopsAgentsSubnetName string
+
+@description('IP range or CIDR of the Devops Agents Subnet.')
+param devopsAgentsSubnetAddressPrefix string
+
 @description('Standards tags applied to all resources.')
 param standardTags object
 
-// Resource definitions
+// ==================================== Resource definitions ====================================
+
+// ==================================== VNets and Subnets ====================================
 
 resource gatewayVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewayVNetName}'
@@ -141,6 +175,60 @@ resource endpointsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   tags: standardTags
 }
 
+resource jumpServersVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${jumpServersVNetName}'
+  location: location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        jumpServersVNetAddressPrefix
+      ]
+    }
+    subnets: [
+      {
+        name: 'BRS-MEX-USE2-CRECESDX-${env}-${jumpServersSubnetName}'
+        properties: {
+          addressPrefix: jumpServersSubnetAddressPrefix
+          networkSecurityGroup: {
+            id: jumpServersNSG.id
+          }
+        }
+      }
+    ]
+    enableDdosProtection: false
+    enableVmProtection: false
+  }
+  tags: standardTags
+}
+
+resource devopsAgentsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${devopsAgentsVNetName}'
+  location: location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        devopsAgentsVNetAddressPrefix
+      ]
+    }
+    subnets: [
+      {
+        name: 'BRS-MEX-USE2-CRECESDX-${env}-${devopsAgentsSubnetName}'
+        properties: {
+          addressPrefix: devopsAgentsSubnetAddressPrefix
+          networkSecurityGroup: {
+            id: devopsAgentsNSG.id
+          }
+        }
+      }
+    ]
+    enableDdosProtection: false
+    enableVmProtection: false
+  }
+  tags: standardTags
+}
+
+// ==================================== VNets Peerings ====================================
+
 resource gatewayAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-VP01'
   parent: gatewayVNet
@@ -192,6 +280,112 @@ resource endpointsAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNet
     useRemoteGateways: false
   }
 }
+
+resource jumpServersAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP05'
+  parent: jumpServersVNet
+  properties: {
+    remoteVirtualNetwork: {
+      id: appsVNet.id
+    }
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    useRemoteGateways: false
+  }
+}
+
+resource appsJumpServerVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP06'
+  parent: appsVNet
+  properties: {
+    remoteVirtualNetwork: {
+      id: jumpServersVNet.id
+    }
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    useRemoteGateways: false
+  }
+}
+
+resource jumpServersEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP07'
+  parent: jumpServersVNet
+  properties: {
+    remoteVirtualNetwork: {
+      id: endpointsVNet.id
+    }
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    useRemoteGateways: false
+  }
+}
+
+resource endpointsJumpServersVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP08'
+  parent: endpointsVNet
+  properties: {
+    remoteVirtualNetwork: {
+      id: jumpServersVNet.id
+    }
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    useRemoteGateways: false
+  }
+}
+
+resource devopsAgentsAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP09'
+  parent: devopsAgentsVNet
+  properties: {
+    remoteVirtualNetwork: {
+      id: appsVNet.id
+    }
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    useRemoteGateways: false
+  }
+}
+
+resource appsDevopsAgentsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP10'
+  parent: appsVNet
+  properties: {
+    remoteVirtualNetwork: {
+      id: devopsAgentsVNet.id
+    }
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    useRemoteGateways: false
+  }
+}
+
+resource devopsAgentsEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP11'
+  parent: devopsAgentsVNet
+  properties: {
+    remoteVirtualNetwork: {
+      id: endpointsVNet.id
+    }
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    useRemoteGateways: false
+  }
+}
+
+resource endpointsDevopsAgentsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP12'
+  parent: endpointsVNet
+  properties: {
+    remoteVirtualNetwork: {
+      id: devopsAgentsVNet.id
+    }
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    useRemoteGateways: false
+  }
+}
+
+// ==================================== Network Security Groups (NSGs) ====================================
 
 resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-NS01'
@@ -251,31 +445,37 @@ resource appsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   properties: {
     securityRules: [
       {
-        name: 'AllowGatewayHttpInbound'
+        name: 'AllowHttpInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
           sourcePortRange: '*'
-          sourceAddressPrefix: gatewaySubnetAddressPrefix
+          sourceAddressPrefixes: [
+            gatewaySubnetAddressPrefix
+            jumpServersSubnetAddressPrefix
+          ]
           destinationPortRange: '80'
           destinationAddressPrefix: '*'
           priority: 110
-          description: 'Allow Gateway HTTP Inbound.'
+          description: 'Allow Gateway and Jump Servers HTTP Inbound.'
         }
       }
       {
-        name: 'AllowGatewayHttpsInbound'
+        name: 'AllowHttpsInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
           sourcePortRange: '*'
-          sourceAddressPrefix: gatewaySubnetAddressPrefix
+          sourceAddressPrefixes: [
+            gatewaySubnetAddressPrefix
+            jumpServersSubnetAddressPrefix
+          ]
           destinationPortRange: '443'
           destinationAddressPrefix: '*'
           priority: 111
-          description: 'Allow Gateway HTTPS Inbound.'
+          description: 'Allow Gateway and Jump Servers HTTPS Inbound.'
         }
       }
     ]
@@ -289,37 +489,110 @@ resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   properties: {
     securityRules: [
       {
-        name: 'AllowApplicationsHttpInbound'
+        name: 'AllowHttpInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
           sourcePortRange: '*'
-          sourceAddressPrefix: appsSubnetAddressPrefix
+          sourceAddressPrefixes: [
+            appsSubnetAddressPrefix
+            jumpServersSubnetAddressPrefix
+          ]
           destinationPortRange: '80'
           destinationAddressPrefix: '*'
           priority: 110
-          description: 'Allow Applications HTTP Inbound.'
+          description: 'Allow Apps and Jump Servers HTTP Inbound.'
         }
       }
       {
-        name: 'AllowApplicationsHttpsInbound'
+        name: 'AllowHttpsInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
           sourcePortRange: '*'
-          sourceAddressPrefix: appsSubnetAddressPrefix
+          sourceAddressPrefixes: [
+            appsSubnetAddressPrefix
+            jumpServersSubnetAddressPrefix
+          ]
           destinationPortRange: '443'
           destinationAddressPrefix: '*'
           priority: 111
-          description: 'Allow Applications HTTPS Inbound.'
+          description: 'Allow Apps and Jump Servers HTTPS Inbound.'
+        }
+      }
+      {
+        name: 'AllowSqlServerInbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefixes: [
+            appsSubnetAddressPrefix
+            jumpServersSubnetAddressPrefix
+          ]
+          destinationPortRange: '1433'
+          destinationAddressPrefix: '*'
+          priority: 112
+          description: 'Allow Apps and Jump Servers SQL Server Inbound.'
         }
       }
     ]
   }
   tags: standardTags
 }
+
+resource jumpServersNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS04'
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowInternetRdpInbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'Internet'
+          destinationPortRange: '3389'
+          destinationAddressPrefix: '*'
+          priority: 120
+          description: 'Allow Internet RDP Inbound.'
+        }
+      }
+    ]
+  }
+  tags: standardTags
+}
+
+resource devopsAgentsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS05'
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowInternetRdpInbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'Internet'
+          destinationPortRange: '3389'
+          destinationAddressPrefix: '*'
+          priority: 120
+          description: 'Allow Internet RDP Inbound.'
+        }
+      }
+    ]
+  }
+  tags: standardTags
+}
+
+// ==================================== Outputs ====================================
 
 @description('IDs and names of the created VNets.')
 @metadata({
@@ -344,6 +617,14 @@ output vnets array = [
   {
     id: endpointsVNet.id
     name: endpointsVNet.name
+  }
+  {
+    id: jumpServersVNet.id
+    name: jumpServersVNet.name
+  }
+  {
+    id: devopsAgentsVNet.id
+    name: devopsAgentsVNet.name
   }
 ]
 
@@ -370,6 +651,14 @@ output subnets array = [
   {
     id: endpointsVNet.properties.subnets[0].id
     name: endpointsVNet.properties.subnets[0].name
+  }
+  {
+    id: jumpServersVNet.properties.subnets[0].id
+    name: jumpServersVNet.properties.subnets[0].name
+  }
+  {
+    id: devopsAgentsVNet.properties.subnets[0].id
+    name: devopsAgentsVNet.properties.subnets[0].name
   }
 ]
 

@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 ])
 param env string
 
-// Network settings
+// ==================================== Network settings ====================================
 
 @description('Create network resources defined in the network module.')
 param enableNetwork bool = false
@@ -59,7 +59,7 @@ param sqlDatabasePEPrivateIPAddress string
 @description('Private IPs of the Container Registry\'s Private Endpoint. Requires 2 IPs for 2 members: registry and registry_data.')
 param acrPEPrivateIPAddresses array
 
-// Resource properties
+// ==================================== Resource properties ====================================
 
 param monitoringDataStorageNameSuffix string
 param monitoringDataStorageSkuName string
@@ -116,8 +116,12 @@ param aksNodePoolMinCount int
 param aksNodePoolMaxCount int
 param aksNodePoolVmSize string
 param aksEnableEncryptionAtHost bool
+param aksEnablePrivateCluster bool
+param aksPrivateDnsZoneLinkedVNetNames array
+param aksEnableAGICAddon bool
+param aksEnableOMSAgentAddon bool
 
-// Diagnostics options
+// ==================================== Diagnostics options ====================================
 
 param keyVaultEnableDiagnostics bool
 param keyVaultLogsRetentionDays int
@@ -136,7 +140,7 @@ param sqlDatabaseEnableVulnerabilityAssessments bool
 param acrEnableDiagnostics bool
 param acrLogsRetentionDays int
 
-// Resource Locks switches
+// ==================================== Resource Locks switches ====================================
 
 param monitoringDataStorageEnableLock bool
 param workspaceEnableLock bool
@@ -148,14 +152,14 @@ param sqlDatabaseEnableLock bool
 param acrEnableLock bool
 param aksEnableLock bool
 
-// Firewall settings
+// ==================================== Firewall settings ====================================
 
 param keyVaultEnablePublicAccess bool
-param keyVaultAllowedSubnetNames array
+param keyVaultAllowedSubnets array
 param keyVaultAllowedIPsOrCIDRs array
 
 param appsDataStorageEnablePublicAccess bool
-param appsDataStorageAllowedSubnetNames array
+param appsDataStorageAllowedSubnets array
 param appsDataStorageAllowedIPsOrCIDRs array
 
 param sqlDatabaseEnablePublicAccess bool
@@ -164,7 +168,9 @@ param sqlDatabaseAllowedIPRanges array
 param acrEnablePublicAccess bool
 param acrAllowedIPsOrCIDRs array
 
-// Tags
+param aksEnablePublicAccess bool
+
+// ==================================== Tags ====================================
 
 @description('Standard tags applied to all resources.')
 @metadata({
@@ -181,7 +187,11 @@ param acrAllowedIPsOrCIDRs array
 })
 param standardTags object
 
-// Resource definitions
+// ==================================== Resource definitions ====================================
+
+module iamModule 'modules/iam.bicep' = {
+  name: 'iamModule'
+}
 
 module managedIdsModule 'modules/managedids.bicep' = {
   name: 'managedIdsModule'
@@ -209,6 +219,14 @@ module networkModule 'modules/network1.bicep' = if (enableNetwork) {
     endpointsVNetAddressPrefix: '10.169.88.0/23'
     endpointsSubnetName: 'SN03'
     endpointsSubnetAddressPrefix: '10.169.88.64/26'
+    jumpServersVNetName: 'VN04'
+    jumpServersVNetAddressPrefix: '10.169.50.0/24'
+    jumpServersSubnetName: 'SN04'
+    jumpServersSubnetAddressPrefix: '10.169.50.64/26'
+    devopsAgentsVNetName: 'VN05'
+    devopsAgentsVNetAddressPrefix: '10.169.60.0/24'
+    devopsAgentsSubnetName: 'SN05'
+    devopsAgentsSubnetAddressPrefix: '10.169.60.64/26'
     standardTags: standardTags
   }
 }
@@ -233,6 +251,8 @@ var selectedLinkedVNetNames = (enableNetwork) ? [
   networkModule.outputs.vnets[0].name
   networkModule.outputs.vnets[1].name
   networkModule.outputs.vnets[2].name
+  networkModule.outputs.vnets[3].name
+  networkModule.outputs.vnets[4].name
 ] : [
   gatewayVNetName
   appsVNetName
@@ -300,7 +320,7 @@ module keyVaultModule 'modules/keyvault.bicep' = {
     logsRetentionDays: keyVaultLogsRetentionDays
     enableLock: keyVaultEnableLock
     enablePublicAccess: keyVaultEnablePublicAccess
-    allowedSubnetNames: keyVaultAllowedSubnetNames
+    allowedSubnets: keyVaultAllowedSubnets
     allowedIPsOrCIDRs: keyVaultAllowedIPsOrCIDRs
     standardTags: standardTags
   }
@@ -327,7 +347,7 @@ module keyVaultObjectsModule 'modules/keyvaultobjects.bicep' = {
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
     createEncryptionKeys: true
-    appsDataStorageEncryptionKeyName: 'crececonsdx-files-key4'
+    appsDataStorageEncryptionKeyName: 'crececonsdx-files-key'
     encryptionKeysIssueDateTime: '11/5/2023 11:30:00 PM'
   }
 }
@@ -380,7 +400,7 @@ module appsDataStorageModule 'modules/appsdatastorage.bicep' = {
     logsRetentionDays: appsDataStorageLogsRetentionDays
     enableLock: appsDataStorageEnableLock
     enablePublicAccess: appsDataStorageEnablePublicAccess
-    allowedSubnetNames: appsDataStorageAllowedSubnetNames
+    allowedSubnets: appsDataStorageAllowedSubnets
     allowedIPsOrCIDRs: appsDataStorageAllowedIPsOrCIDRs
     standardTags: standardTags
   }
@@ -410,7 +430,7 @@ module sqlDatabaseModule 'modules/sqldatabase.bicep' = {
     sqlServerNameSuffix: sqlServerNameSuffix
     sqlAdminLoginName: sqlDatabaseSQLAdminLoginName
     sqlAdminLoginPass: sqlDatabaseSQLAdminLoginPass
-    aadAdminPrincipalId: managedIdsModule.outputs.ownerPrincipalId
+    aadAdminPrincipalId: iamModule.outputs.ownerPrincipalId
     aadAdminLoginName: sqlDatabaseAADAdminLoginName
     skuType: sqlDatabaseSkuType
     skuSize: sqlDatabaseSkuSize
@@ -482,12 +502,12 @@ module acrPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePriv
   }
 }
 
-/*
 module aksModule 'modules/aks.bicep' = {
   name: 'aksModule'
   params: {
     location: location
     env: env
+    managedIdentityName: managedIdsModule.outputs.aksManagedIdentityName
     aksSkuTier: aksSkuTier
     aksDnsSuffix: aksDnsSuffix
     kubernetesVersion: aksKubernetesVersion
@@ -499,10 +519,14 @@ module aksModule 'modules/aks.bicep' = {
     nodePoolMaxCount: aksNodePoolMaxCount
     nodePoolVmSize: aksNodePoolVmSize
     enableEncryptionAtHost: aksEnableEncryptionAtHost
+    enablePrivateCluster: aksEnablePrivateCluster
+    privateDnsZoneLinkedVNetNames: aksPrivateDnsZoneLinkedVNetNames
+    enableAGICAddon: aksEnableAGICAddon
     appGatewayName: appGatewayModule.outputs.applicationGatewayName
+    enableOMSAgentAddon: aksEnableOMSAgentAddon
     workspaceName: logAnalyticsModule.outputs.workspaceName
     enableLock: aksEnableLock
+    enablePublicAccess: aksEnablePublicAccess
     standardTags: standardTags
   }
 }
-*/

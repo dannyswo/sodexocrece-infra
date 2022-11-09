@@ -52,7 +52,7 @@ param devopsKeyVaultAllowedIPsOrCIDRs array = []
 @description('Standard tags applied to all resources.')
 param standardTags object
 
-// Resource definitions
+// ==================================== Resource definitions ====================================
 
 module devopsKeyVaultModule 'modules/keyvault.bicep' = {
   name: 'devopsKeyVaultModule'

@@ -95,7 +95,7 @@ param allowedIPRanges array = []
 @description('Standards tags applied to all resources.')
 param standardTags object
 
-// Resource definitions
+// ==================================== Resource definitions ====================================
 
 resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
   name: 'azmxdb1${sqlServerNameSuffix}'
@@ -113,7 +113,7 @@ resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
       sid: aadAdminPrincipalId
       login: aadAdminLoginName
     }
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
     restrictOutboundNetworkAccess: 'Disabled'
     minimalTlsVersion: '1.2'
   }
@@ -264,7 +264,7 @@ resource connectionPolicies 'Microsoft.Sql/servers/connectionPolicies@2022-05-01
   }
 }
 
-resource firewallRules 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' = [for (allowedIPRange, index) in allowedIPRanges: if (!enablePublicAccess) {
+resource firewallRules 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' = [for (allowedIPRange, index) in allowedIPRanges: if (enablePublicAccess) {
   name: 'firewallRule-${index}'
   parent: sqlServer
   properties: {

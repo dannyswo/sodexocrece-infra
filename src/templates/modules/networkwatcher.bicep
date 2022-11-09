@@ -30,6 +30,8 @@ param enableLock bool
 @description('Standards tags applied to all resources.')
 param standardTags object
 
+// ==================================== Resource definitions ====================================
+
 var networkWatcherNameSuffix = 'MM02'
 
 resource networkWatcher 'Microsoft.Network/networkWatchers@2022-05-01' = {

@@ -10,6 +10,9 @@ param location string = resourceGroup().location
 ])
 param env string
 
+@description('Name of the Managed Identity used by AKS Managed Cluster.')
+param managedIdentityName string
+
 @description('Tier of the AKS Managed Cluster. Use Paid for HA with multiple AZs.')
 @allowed([
   'Free'
@@ -49,8 +52,20 @@ param nodePoolVmSize string
 @description('Enable encryption at AKS nodes.')
 param enableEncryptionAtHost bool
 
+@description('Create the AKS Managed Cluster as private cluster.')
+param enablePrivateCluster bool
+
+@description('Names of the VNets linked to the DNS Private Zone of AKS.')
+param privateDnsZoneLinkedVNetNames array
+
+@description('Enable AKS Application Gateway Ingress Controller Add-on.')
+param enableAGICAddon bool
+
 @description('Name of the Application Gateway managed by AGIC add-on.')
 param appGatewayName string
+
+@description('Enable AKS OMS Agents Add-on.')
+param enableOMSAgentAddon bool
 
 @description('Name of the Log Analytics Workspace managed by OMSAgent add-on.')
 param workspaceName string
@@ -58,20 +73,23 @@ param workspaceName string
 @description('Enable Resource Lock on AKS Managed Cluster.')
 param enableLock bool
 
+@description('Enable public access to the AKS Management Plane.')
+param enablePublicAccess bool
+
 @description('Standards tags applied to all resources.')
 param standardTags object
 
-// Resource definitions
+// ==================================== Resource definitions ====================================
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
+  name: managedIdentityName
+}
+
+var aksDnsPrefix = 'azmxku1${aksDnsSuffix}'
 
 var selectedNodeResourceGroupName = (env == 'SWO') ? nodeResourceGroupName : 'BRS-MEX-USE2-CRECESDX-${env}-RG02'
 
 var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
-
-var enableAGICAddon = false
-var appGatewayId = resourceId('Microsoft.Network/applicationGateways', appGatewayName)
-
-var enableOMSAgentAddon = false
-var workspaceId = resourceId('Microsoft.OperationalInsights/workspaces', workspaceName)
 
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-KU01'
@@ -81,10 +99,13 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
     tier: aksSkuTier
   }
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
   }
   properties: {
-    dnsPrefix: 'azmxku1${aksDnsSuffix}'
+    dnsPrefix: aksDnsPrefix
     kubernetesVersion: kubernetesVersion
     nodeResourceGroup: selectedNodeResourceGroupName
     agentPoolProfiles: [
@@ -113,9 +134,9 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
       }
     ]
     apiServerAccessProfile: {
-      enablePrivateCluster: true
-      enablePrivateClusterPublicFQDN: false
-      privateDNSZone: 'system'
+      enablePrivateCluster: enablePrivateCluster
+      enablePrivateClusterPublicFQDN: enablePrivateCluster
+      privateDNSZone: privateDnsZone.id
     }
     networkProfile: {
       networkPlugin: 'kubenet'
@@ -148,20 +169,40 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
       ingressApplicationGateway: {
         enabled: enableAGICAddon
         config: {
-          applicationGatewayId: appGatewayId
+          applicationGatewayId: resourceId('Microsoft.Network/applicationGateways', appGatewayName)
         }
       }
       omsagent: {
         enabled: enableOMSAgentAddon
         config: {
-          logAnalyticsWorkspaceResourceID: workspaceId
+          logAnalyticsWorkspaceResourceID: resourceId('Microsoft.OperationalInsights/workspaces', workspaceName)
         }
       }
     }
-    publicNetworkAccess: 'Disabled'
+    publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
   }
   tags: standardTags
 }
+
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: '${aksDnsPrefix}.privatelink.eastus2.azmk8s.io'
+  location: 'global'
+  properties: {
+  }
+  tags: standardTags
+}
+
+resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetName, index) in privateDnsZoneLinkedVNetNames: {
+  name: '${aksDnsPrefix}-NetworkLink${index}'
+  parent: privateDnsZone
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: resourceId('Microsoft.Network/virtualNetworks', linkedVNetName)
+    }
+  }
+}]
 
 resource aksLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RL09'
@@ -172,8 +213,8 @@ resource aksLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
   }
 }
 
-@description('URI for private access to the AKS Management Plane.')
+@description('URI of the Private Endpoint to access the AKS Management Plane.')
 output managementPlanePrivateFQDN string = aksCluster.properties.privateFQDN
 
-@description('URI for public access to the AKS Management Plane.')
-output managementPlanePublicFQDN string = aksCluster.properties.azurePortalFQDN
+@description('Special URI for Azure Portal to access to the AKS Management Plane.')
+output managementPlaneAzurePortalFQDN string = aksCluster.properties.azurePortalFQDN

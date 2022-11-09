@@ -41,6 +41,8 @@ param enableLock bool
 @description('Standards tags applied to all resources.')
 param standardTags object
 
+// ==================================== Resource definitions ====================================
+
 var workspaceSku = (workspaceSkuName == 'CapacityReservation') ? {
   name: workspaceSkuName
   capacityReservationLevel: workspaceCapacityReservation

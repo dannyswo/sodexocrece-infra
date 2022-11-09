@@ -13,7 +13,9 @@ param env string
 @description('Standard tags applied to all resources.')
 param standardTags object
 
-// Resource definitions
+// ==================================== Resource definitions ====================================
+
+// ==================================== User-Assigned Managed Identities ====================================
 
 resource appGatewayManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-AD01'
@@ -21,53 +23,78 @@ resource appGatewayManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdenti
   tags: standardTags
 }
 
-@description('ID of the Role Definition: Key Vault Certificates Officer | Perform any action on the certificates of a key vault.')
-var keyVaultCertificatesOfficerRoleDefinitionId = 'a4417e6f-fecd-4de8-b567-7b0420556985'
-
-resource appGatewayManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(appGatewayManagedIdentity.name)
-  scope: resourceGroup()
-  properties: {
-    description: 'Access public certificate in the Key Vault from Application Gateway.'
-    principalId: appGatewayManagedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', keyVaultCertificatesOfficerRoleDefinitionId)
-    principalType: 'ServicePrincipal'
-  }
+resource appsDataStorageManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-AD02'
+  location: location
+  tags: standardTags
 }
 
-resource appsDataStorageManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
+resource aksManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-AD03'
   location: location
   tags: standardTags
 }
 
-@description('ID of the Role Definition: Key Vault Crypto Service Encryption User | Read metadata of keys and perform wrap/unwrap operations.')
-var keyVaultCryptoEncryptionUserRoleDefinitionId = 'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+// ==================================== Role Assignments ====================================
 
-resource appsDataStorageManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(appsDataStorageManagedIdentity.name)
+var appGatewayManagedIdentityRoleDefinitions = [
+  {
+    roleId: 'a4417e6f-fecd-4de8-b567-7b0420556985'
+    roleDescription: 'Key Vault Certificates Officer | Perform any action on the certificates of a key vault.'
+    roleAssignmentDescription: 'Access public certificate in the Key Vault from Application Gateway.'
+  }
+]
+
+resource appGatewayManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in appGatewayManagedIdentityRoleDefinitions: {
+  name: guid('${appGatewayManagedIdentity.name}-${roleDefinition.roleId}')
   scope: resourceGroup()
   properties: {
-    description: 'Access encryption key in the Key Vault from Application Data Storage Account.'
-    principalId: appsDataStorageManagedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', keyVaultCryptoEncryptionUserRoleDefinitionId)
+    description: roleDefinition.roleAssignmentDescription
+    principalId: appGatewayManagedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleId)
     principalType: 'ServicePrincipal'
   }
-}
+}]
 
-@description('ID of the Role Definition: Key Vault Contributor | Lets you manage key vaults.')
-var keyVaultAdministratorRoleDefinitionId = 'f25e0fa2-a7c8-4377-a976-54943a77a395'
+var appsDataStorageManagedIdentityRoleDefinitions = [
+  {
+    roleId: 'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+    roleDescription: 'Key Vault Crypto Service Encryption User | Read metadata of keys and perform wrap/unwrap operations.'
+    roleAssignmentDescription: 'Access encryption key in the Key Vault from Application Data Storage Account.'
+  }
+]
 
-resource devopsEngineerRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid('danny.zamorano@softwareone.com')
+resource appsDataStorageManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in appsDataStorageManagedIdentityRoleDefinitions: {
+  name: guid('${appsDataStorageManagedIdentity.name}-${roleDefinition.roleId}')
   scope: resourceGroup()
   properties: {
-    description: 'DevOps engineer can execute management operations on Key Vault.'
-    principalId: '40c2e922-9fb6-4186-a53f-44439c85a9df'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', keyVaultAdministratorRoleDefinitionId)
-    principalType: 'User'
+    description: roleDefinition.roleAssignmentDescription
+    principalId: appsDataStorageManagedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleId)
+    principalType: 'ServicePrincipal'
   }
-}
+}]
+
+var aksManagedIdentityRoleDefinitions = [
+  {
+    roleId: 'b12aa53e-6015-4669-85d0-8515ebb3ae7f'
+    roleDescription: 'Private DNS Zone Contributor | Lets you manage private DNS zone resources.'
+    roleAssignmentDescription: 'Manage custom Private DNS Zone for AKS Managed Cluster.'
+  }
+]
+
+resource aksManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in aksManagedIdentityRoleDefinitions: {
+  name: guid('${aksManagedIdentity.name}-${roleDefinition.roleId}')
+  scope: resourceGroup()
+  properties: {
+    description: roleDefinition.roleAssignmentDescription
+    principalId: aksManagedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleId)
+    principalType: 'ServicePrincipal'
+  }
+}]
+
+// ==================================== Outputs ====================================
 
 output appGatewayManagedIdentityId string = appGatewayManagedIdentity.properties.principalId
 
@@ -77,4 +104,6 @@ output appsDataStorageManagedIdentityId string = appsDataStorageManagedIdentity.
 
 output appsDataStorageManagedIdentityName string = appsDataStorageManagedIdentity.name
 
-output ownerPrincipalId string = '40c2e922-9fb6-4186-a53f-44439c85a9df'
+output aksManagedIdentityId string = aksManagedIdentity.properties.principalId
+
+output aksManagedIdentityName string = aksManagedIdentity.name
