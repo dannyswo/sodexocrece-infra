@@ -18,25 +18,3 @@ steps:
   inputs:
     version: 0.12.40
 
-- task: BicepBuild@0
-  inputs:
-    process: 'multiple'
-    sourceDirectory: '$(System.DefaultWorkingDirectory)/src/templates/'
-    outputProcess: stdout
-    outputDirectory: '$(System.DefaultWorkingDirectory)/src/out' 
-    
-- task: AzureResourceManagerTemplateDeployment@3
-  displayName: 'ARM Template deployment: Resource Group scope'
-  inputs:
-    azureResourceManagerConnection: 'Visual Studio Enterprise (d387d7c4-3dc1-4a04-b494-176559453375)'
-    subscriptionId: 'd387d7c4-3dc1-4a04-b494-176559453375'
-    resourceGroupName: testbicep
-    location: 'East US 2'
-    csmFile: $(System.DefaultWorkingDirectory)/src/templates/devopsmain.bicep
-    csmParametersFile: $(System.DefaultWorkingDirectory)/src/config/devopsmain.swo.json
-    deploymentName: 'bicep-arch-sodexo'
-    deploymentMode: Validation
-    overrideParameters: >
-      -sqlDatabaseSQLAdminLoginPass $(azureClientSecret)
-
-
