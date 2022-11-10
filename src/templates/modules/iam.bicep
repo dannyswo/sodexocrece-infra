@@ -7,7 +7,7 @@ var devopsEngineer1PrincipalId = '40c2e922-9fb6-4186-a53f-44439c85a9df'
 var keyVaultAdministratorRoleDefinitionId = 'f25e0fa2-a7c8-4377-a976-54943a77a395'
 
 resource devopsEngineer1RoleAssignments1 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid('${devopsEngineer1PrincipalId}-Role1')
+  name: guid(resourceGroup().id, devopsEngineer1PrincipalId, keyVaultAdministratorRoleDefinitionId)
   scope: resourceGroup()
   properties: {
     description: 'DevOps engineer 1 can execute management operations on Key Vault.'
@@ -31,7 +31,7 @@ var aksAdministratorRoleDefinitions = [
 ]
 
 resource devopsEngineer1RoleAssignmentsAKS 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in aksAdministratorRoleDefinitions: {
-  name: guid('${devopsEngineer1PrincipalId}-${roleDefinition.roleId}')
+  name: guid(resourceGroup().id, devopsEngineer1PrincipalId, roleDefinition.roleId)
   scope: resourceGroup()
   properties: {
     description: roleDefinition.roleAssignmentDescription
@@ -50,7 +50,7 @@ var storageAccountAdminRoleDefinitions = [
 ]
 
 resource devopsEngineer1RoleAssignmentsStorageAccount 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in storageAccountAdminRoleDefinitions: {
-  name: guid('${devopsEngineer1PrincipalId}-${roleDefinition.roleId}')
+  name: guid(resourceGroup().id, devopsEngineer1PrincipalId, roleDefinition.roleId)
   scope: resourceGroup()
   properties: {
     description: roleDefinition.roleAssignmentDescription

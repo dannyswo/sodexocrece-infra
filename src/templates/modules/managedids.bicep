@@ -46,7 +46,7 @@ var appGatewayManagedIdentityRoleDefinitions = [
 ]
 
 resource appGatewayManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in appGatewayManagedIdentityRoleDefinitions: {
-  name: guid('${appGatewayManagedIdentity.name}-${roleDefinition.roleId}')
+  name: guid(resourceGroup().id, appGatewayManagedIdentity.id, roleDefinition.roleId)
   scope: resourceGroup()
   properties: {
     description: roleDefinition.roleAssignmentDescription
@@ -65,7 +65,7 @@ var appsDataStorageManagedIdentityRoleDefinitions = [
 ]
 
 resource appsDataStorageManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in appsDataStorageManagedIdentityRoleDefinitions: {
-  name: guid('${appsDataStorageManagedIdentity.name}-${roleDefinition.roleId}')
+  name: guid(resourceGroup().id, appsDataStorageManagedIdentity.id, roleDefinition.roleId)
   scope: resourceGroup()
   properties: {
     description: roleDefinition.roleAssignmentDescription
@@ -84,7 +84,7 @@ var aksManagedIdentityRoleDefinitions = [
 ]
 
 resource aksManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in aksManagedIdentityRoleDefinitions: {
-  name: guid('${aksManagedIdentity.name}-${roleDefinition.roleId}')
+  name: guid(resourceGroup().id, aksManagedIdentity.id, roleDefinition.roleId)
   scope: resourceGroup()
   properties: {
     description: roleDefinition.roleAssignmentDescription

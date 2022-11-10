@@ -1,0 +1,44 @@
+{
+  "properties": {
+    "roleName": "Application Gateway Admin",
+    "description": "Read and update Application Gateway properties.",
+    "assignableScopes": [
+      "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece"
+    ],
+    "permissions": [
+      {
+        "actions": [
+          "*",
+          "Microsoft.Network/applicationGateways/read",
+          "Microsoft.Network/applicationGateways/write",
+          "Microsoft.Network/applicationGateways/getMigrationStatus/action",
+          "Microsoft.Network/applicationGateways/effectiveNetworkSecurityGroups/action",
+          "Microsoft.Network/applicationGateways/effectiveRouteTable/action",
+          "Microsoft.Network/applicationGateways/backendAddressPools/join/action",
+          "Microsoft.Network/applicationGateways/providers/Microsoft.Insights/metricDefinitions/read",
+          "Microsoft.Network/applicationGateways/providers/Microsoft.Insights/logDefinitions/read",
+          "Microsoft.Network/applicationGateways/privateLinkResources/read",
+          "Microsoft.Network/applicationGateways/privateLinkConfigurations/read",
+          "Microsoft.Network/applicationGateways/privateEndpointConnections/write",
+          "Microsoft.Network/applicationGateways/privateEndpointConnections/read",
+          "Microsoft.Network/applicationGateways/restart/action",
+          "Microsoft.Network/applicationGateways/stop/action",
+          "Microsoft.Network/applicationGateways/start/action",
+          "Microsoft.Network/applicationGateways/resolvePrivateLinkServiceId/action",
+          "Microsoft.Network/applicationGateways/getBackendHealthOnDemand/action",
+          "Microsoft.Network/applicationGateways/backendhealth/action"
+        ],
+        "notActions": [
+          "Microsoft.Authorization/*/Delete",
+          "Microsoft.Authorization/*/Write",
+          "Microsoft.Authorization/elevateAccess/Action",
+          "Microsoft.Blueprint/blueprintAssignments/write",
+          "Microsoft.Blueprint/blueprintAssignments/delete",
+          "Microsoft.Compute/galleries/share/action"
+        ],
+        "dataActions": [],
+        "notDataActions": []
+      }
+    ]
+  }
+}

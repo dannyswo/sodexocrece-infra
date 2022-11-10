@@ -87,7 +87,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-
 
 var aksDnsPrefix = 'azmxku1${aksDnsSuffix}'
 
-var selectedNodeResourceGroupName = (env == 'SWO') ? nodeResourceGroupName : 'BRS-MEX-USE2-CRECESDX-${env}-RG02'
+// var selectedNodeResourceGroupName = (env == 'SWO') ? nodeResourceGroupName : 'BRS-MEX-USE2-CRECESDX-${env}-RG02'
 
 var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
 
@@ -107,7 +107,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
   properties: {
     dnsPrefix: aksDnsPrefix
     kubernetesVersion: kubernetesVersion
-    nodeResourceGroup: selectedNodeResourceGroupName
+    nodeResourceGroup: nodeResourceGroupName
     agentPoolProfiles: [
       {
         name: 'nodepool1'
@@ -184,8 +184,10 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
   tags: standardTags
 }
 
+// ==================================== Custom DNS Private Zone ====================================
+
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: '${aksDnsPrefix}.privatelink.eastus2.azmk8s.io'
+  name: 'privatelink.${location}.azmk8s.io'
   location: 'global'
   properties: {
   }
@@ -204,6 +206,123 @@ resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLi
   }
 }]
 
+// ==================================== Role Assignments ====================================
+
+@description('Role Definition IDs for AKS to ACR communication.')
+var aksAcrRoleDefinitions = [
+  {
+    roleId: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+    roleDescription: 'AcrPull | acr pull'
+    roleAssignmentDescription: 'Pull container images from ACR in AKS.'
+  }
+]
+
+resource aksAcrRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksAcrRoleDefinitions: {
+  name: guid(resourceGroup().id, aksCluster.id, roleDefinition.roleId)
+  scope: resourceGroup()
+  properties: {
+    description: roleDefinition.roleAssignmentDescription
+    principalId: aksCluster.properties.identityProfile.kubeletidentity.objectId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleId)
+    principalType: 'ServicePrincipal'
+  }
+}]
+
+@description('Role Definition IDs for AKS to App Gateway communication (RG scope).')
+var aksAppGatewayRoleDefinitions1 = [
+  {
+    roleId: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+    roleDescription: 'Reader | View all resources, but does not allow you to make any changes'
+    roleAssignmentDescription: 'View and list resources from Resource Group where AKS Managed Cluster is deployed.'
+  }
+  {
+    roleId: 'f1a07417-d97a-45cb-824c-7a7467783830'
+    roleDescription: 'Managed Identity Operator | Read and Assign User Assigned Identity'
+    roleAssignmentDescription: 'View and change Managed Identities from AGIC AKS Add-on.'
+  }
+]
+
+resource aksAppGatewayRoleAssignments1 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksAppGatewayRoleDefinitions1: {
+  name: guid(resourceGroup().id, aksCluster.id, roleDefinition.roleId)
+  scope: resourceGroup()
+  properties: {
+    description: roleDefinition.roleAssignmentDescription
+    principalId: aksCluster.properties.addonProfiles.ingressApplicationGateway.identity.objectId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleId)
+    principalType: 'ServicePrincipal'
+  }
+}]
+
+resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' existing = {
+  name: appGatewayName
+}
+
+var appGatewayAdminActions = [
+  'Microsoft.Network/applicationGateways/read'
+  'Microsoft.Network/applicationGateways/write'
+  'Microsoft.Network/applicationGateways/getMigrationStatus/action'
+  'Microsoft.Network/applicationGateways/effectiveNetworkSecurityGroups/action'
+  'Microsoft.Network/applicationGateways/effectiveRouteTable/action'
+  'Microsoft.Network/applicationGateways/backendAddressPools/join/action'
+  'Microsoft.Network/applicationGateways/providers/Microsoft.Insights/metricDefinitions/read'
+  'Microsoft.Network/applicationGateways/providers/Microsoft.Insights/logDefinitions/read'
+  'Microsoft.Network/applicationGateways/privateLinkResources/read'
+  'Microsoft.Network/applicationGateways/privateLinkConfigurations/read'
+  'Microsoft.Network/applicationGateways/privateEndpointConnections/write'
+  'Microsoft.Network/applicationGateways/privateEndpointConnections/read'
+  'Microsoft.Network/applicationGateways/restart/action'
+  'Microsoft.Network/applicationGateways/stop/action'
+  'Microsoft.Network/applicationGateways/start/action'
+  'Microsoft.Network/applicationGateways/resolvePrivateLinkServiceId/action'
+  'Microsoft.Network/applicationGateways/getBackendHealthOnDemand/action'
+  'Microsoft.Network/applicationGateways/backendhealth/action'
+]
+
+var appGatewayAdminRoleName = 'Application Gateway Administrator'
+
+resource appGatewayAdminRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
+  name: guid(resourceGroup().id, aksCluster.id, appGatewayAdminRoleName)
+  properties: {
+    roleName: appGatewayAdminRoleName
+    description: 'View and edit properties of an Application Gateway.'
+    type: 'customRole'
+    permissions: [
+      {
+        actions: appGatewayAdminActions
+        notActions: []
+      }
+    ]
+    assignableScopes: [
+      resourceGroup().id
+    ]
+  }
+}
+
+@description('Role Definition IDs for AKS to App Gateway communication (AGW scope).')
+var aksAppGatewayRoleDefinitions2 = [
+  {
+    roleId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    roleDescription: 'Contributor | Grants full access to manage all resources'
+    roleAssignmentDescription: 'Manage Application Gateway from AGIC AKS Add-on.'
+  }
+  {
+    roleId: appGatewayAdminRoleDefinition.name
+    roleDescription: 'Application Gateway Administrator | View and edit properties of an Application Gateway.'
+    roleAssignmentDescription: 'Manage Application Gateway from AGIC AKS Add-on.'
+  }
+]
+
+resource aksAppGatewayRoleAssignments2 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksAppGatewayRoleDefinitions2: {
+  name: guid(resourceGroup().id, aksCluster.id, roleDefinition.roleId)
+  scope: appGateway
+  properties: {
+    description: roleDefinition.roleAssignmentDescription
+    principalId: aksCluster.properties.addonProfiles.ingressApplicationGateway.identity.objectId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleId)
+    principalType: 'ServicePrincipal'
+  }
+}]
+
 resource aksLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RL09'
   scope: aksCluster
@@ -212,6 +331,8 @@ resource aksLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
     notes: 'AKS Managed Cluster should not be deleted.'
   }
 }
+
+// ==================================== Outputs ====================================
 
 @description('URI of the Private Endpoint to access the AKS Management Plane.')
 output managementPlanePrivateFQDN string = aksCluster.properties.privateFQDN

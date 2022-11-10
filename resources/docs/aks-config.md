@@ -28,7 +28,7 @@ Optional:
 * Monitor CrashLoopBackOff (OOMKilled).
 * Restart Linux nodes every day.
 
-## Connection to the Management Plane
+## Connectino with AKS Management Plane
 
 ```
 az aks get-credentials --resource-group RG-demo-sodexo-crece --name BRS-MEX-USE2-CRECESDX-SWO-KU01
@@ -37,8 +37,12 @@ az aks command invoke \
   --name BRS-MEX-USE2-CRECESDX-SWO-KU01 \
   --command "kubectl get pods -n kube-system"
 
-az acr login -n azmxcr1hle650
-
 az aks command invoke --resource-group RG-demo-sodexo-crece --name BRS-MEX-USE2-CRECESDX-SWO-KU01 --command "kubectl get namespaces"
 az aks command invoke --resource-group RG-demo-sodexo-crece --name BRS-MEX-USE2-CRECESDX-SWO-KU01 --command "kubectl get deployments --all-namespaces"
+```
+
+## Connection to ACR
+
+```
+az acr login -n azmxcr1hle650
 ```

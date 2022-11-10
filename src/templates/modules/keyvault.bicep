@@ -23,6 +23,9 @@ param enablePurgeProtection bool
 @maxValue(90)
 param softDeleteRetentionDays int
 
+@description('Enable ARM to access objects in the Key Vault.')
+param enableArmAccess bool
+
 @description('ID of the AAD Tenant used to authenticate requests to the Key Vault.')
 param tenantId string = subscription().tenantId
 
@@ -45,6 +48,9 @@ param enableLock bool
 
 @description('Enable public access in the PaaS firewall.')
 param enablePublicAccess bool
+
+@description('Allow bypass of PaaS firewall rules to Azure Services.')
+param bypassAzureServices bool
 
 @description('List of Subnets allowed to access the Key Vault in the PaaS firewall.')
 @metadata({
@@ -84,13 +90,13 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     softDeleteRetentionInDays: softDeleteRetentionDays
     enabledForDeployment: false
     enabledForDiskEncryption: false
-    enabledForTemplateDeployment: false
+    enabledForTemplateDeployment: enableArmAccess
     tenantId: tenantId
     enableRbacAuthorization: enableRbacAuthorization
     accessPolicies: []
     publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
     networkAcls: {
-      bypass: 'AzureServices'
+      bypass: (bypassAzureServices) ? 'AzureServices' : 'None'
       defaultAction: 'Deny'
       virtualNetworkRules: virtualNetworkRules
       ipRules: ipRules

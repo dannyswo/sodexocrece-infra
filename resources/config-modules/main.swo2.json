@@ -86,6 +86,9 @@
     "keyVaultSoftDeleteRetentionDays": {
       "value": 7
     },
+    "keyVaultEnableArmAccess": {
+      "value": false
+    },
     "appGatewayNameSuffix": {
       "value": "gtc240"
     },
@@ -268,6 +271,9 @@
     },
     "keyVaultEnablePublicAccess": {
       "value": false
+    },
+    "keyVaultEnableAzureServices": {
+      "value": true
     },
     "keyVaultAllowedSubnets": {
       "value": []

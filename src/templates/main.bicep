@@ -74,6 +74,7 @@ param flowLogsRetentionDays int
 param keyVaultNameSuffix string
 param keyVaultEnablePurgeProtection bool
 param keyVaultSoftDeleteRetentionDays int
+param keyVaultEnableArmAccess bool
 
 param appGatewayNameSuffix string
 param appGatewaySkuTier string
@@ -155,6 +156,7 @@ param aksEnableLock bool
 // ==================================== Firewall settings ====================================
 
 param keyVaultEnablePublicAccess bool
+param keyVaultEnableAzureServices bool
 param keyVaultAllowedSubnets array
 param keyVaultAllowedIPsOrCIDRs array
 
@@ -315,11 +317,13 @@ module keyVaultModule 'modules/keyvault.bicep' = {
     keyVaultNameSuffix: keyVaultNameSuffix
     enablePurgeProtection: keyVaultEnablePurgeProtection
     softDeleteRetentionDays: keyVaultSoftDeleteRetentionDays
+    enableArmAccess: keyVaultEnableArmAccess
     enableDiagnostics: keyVaultEnableDiagnostics
     diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
     logsRetentionDays: keyVaultLogsRetentionDays
     enableLock: keyVaultEnableLock
     enablePublicAccess: keyVaultEnablePublicAccess
+    bypassAzureServices: keyVaultEnableAzureServices
     allowedSubnets: keyVaultAllowedSubnets
     allowedIPsOrCIDRs: keyVaultAllowedIPsOrCIDRs
     standardTags: standardTags
