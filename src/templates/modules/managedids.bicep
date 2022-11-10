@@ -35,6 +35,37 @@ resource aksManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@20
   tags: standardTags
 }
 
+// ==================================== Custom Role Definitions ====================================
+
+var routeTablesAdminActions = [
+  'Microsoft.Network/routeTables/read'
+  'Microsoft.Network/routeTables/write'
+  'Microsoft.Network/routeTables/join/action'
+  'Microsoft.Network/routeTables/routes/read'
+  'Microsoft.Network/routeTables/routes/write'
+  'Microsoft.Network/routeTables/routes/delete'
+]
+
+var routeTableAdminRoleName = 'Route Table Administrator'
+
+resource routeTableAdminRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
+  name: guid(resourceGroup().id, aksManagedIdentity.id, routeTableAdminRoleName)
+  properties: {
+    roleName: routeTableAdminRoleName
+    description: 'View and edit properties of Route Tables.'
+    type: 'customRole'
+    permissions: [
+      {
+        actions: routeTablesAdminActions
+        notActions: []
+      }
+    ]
+    assignableScopes: [
+      resourceGroup().id
+    ]
+  }
+}
+
 // ==================================== Role Assignments ====================================
 
 var appGatewayManagedIdentityRoleDefinitions = [
@@ -80,6 +111,11 @@ var aksManagedIdentityRoleDefinitions = [
     roleId: 'b12aa53e-6015-4669-85d0-8515ebb3ae7f'
     roleDescription: 'Private DNS Zone Contributor | Lets you manage private DNS zone resources.'
     roleAssignmentDescription: 'Manage custom Private DNS Zone for AKS Managed Cluster.'
+  }
+  {
+    roleId: routeTableAdminRoleDefinition.name
+    roleDescription: 'Route Table Administrator | View and edit properties of Route Tables.'
+    roleAssignmentDescription: 'Manage custom Rouble Table for AKS Managed Cluster.'
   }
 ]
 

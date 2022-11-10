@@ -79,6 +79,8 @@ param keyVaultEnableArmAccess bool
 param appGatewayNameSuffix string
 param appGatewaySkuTier string
 param appGatewaySkuName string
+param appGatewayFrontendPrivateIPAddress string
+param appGatewayEnablePublicFrontendIP bool
 param appGatewayAutoScaleMinCapacity int
 param appGatewayAutoScaleMaxCapacity int
 param appGatewayEnableHttpPort bool
@@ -111,7 +113,6 @@ param acrSoftDeleteRetentionDays int
 param aksSkuTier string
 param aksDnsSuffix string
 param aksKubernetesVersion string
-param aksNodeResourceGroupName string
 param aksEnableAutoScaling bool
 param aksNodePoolMinCount int
 param aksNodePoolMaxCount int
@@ -209,26 +210,29 @@ module networkModule 'modules/network1.bicep' = if (enableNetwork) {
   params: {
     location: location
     env: env
-    gatewayVNetName: 'VN01'
+    gatewayVNetNameSuffix: 'VN01'
     gatewayVNetAddressPrefix: '10.169.90.0/24'
-    gatewaySubnetName: 'SN01'
+    gatewaySubnetNameSuffix: 'SN01'
     gatewaySubnetAddressPrefix: '10.169.90.128/25'
-    appsVNetName: 'VN02'
+    appsVNetNameSuffix: 'VN02'
     appsVNetAddressPrefix: '10.169.72.0/21'
-    appsSubnetName: 'SN02'
+    appsSubnetNameSuffix: 'SN02'
     appsSubnetAddressPrefix: '10.169.72.64/27'
-    endpointsVNetName: 'VN03'
+    endpointsVNetNameSuffix: 'VN03'
     endpointsVNetAddressPrefix: '10.169.88.0/23'
-    endpointsSubnetName: 'SN03'
+    endpointsSubnetNameSuffix: 'SN03'
     endpointsSubnetAddressPrefix: '10.169.88.64/26'
-    jumpServersVNetName: 'VN04'
+    jumpServersVNetNameSuffix: 'VN04'
     jumpServersVNetAddressPrefix: '10.169.50.0/24'
-    jumpServersSubnetName: 'SN04'
+    jumpServersSubnetNameSuffix: 'SN04'
     jumpServersSubnetAddressPrefix: '10.169.50.64/26'
-    devopsAgentsVNetName: 'VN05'
+    devopsAgentsVNetNameSuffix: 'VN05'
     devopsAgentsVNetAddressPrefix: '10.169.60.0/24'
-    devopsAgentsSubnetName: 'SN05'
+    devopsAgentsSubnetNameSuffix: 'SN05'
     devopsAgentsSubnetAddressPrefix: '10.169.60.64/26'
+    enableCustomRouteTable: true
+    enableKeyVaultServiceEndpoint: true
+    enableStorageAccountServiceEndpoint: true
     standardTags: standardTags
   }
 }
@@ -376,6 +380,8 @@ module appGatewayModule 'modules/agw.bicep' = {
     appGatewaySkuName: appGatewaySkuName
     gatewayVNetName: selectedNetworkNames.gatewayVNetName
     gatewaySubnetName: selectedNetworkNames.gatewaySubnetName
+    frontendPrivateIPAddress: appGatewayFrontendPrivateIPAddress
+    enablePublicFrontendIP: appGatewayEnablePublicFrontendIP
     autoScaleMinCapacity: appGatewayAutoScaleMinCapacity
     autoScaleMaxCapacity: appGatewayAutoScaleMaxCapacity
     enableHttpPort: appGatewayEnableHttpPort
@@ -515,7 +521,6 @@ module aksModule 'modules/aks.bicep' = {
     aksSkuTier: aksSkuTier
     aksDnsSuffix: aksDnsSuffix
     kubernetesVersion: aksKubernetesVersion
-    nodeResourceGroupName: aksNodeResourceGroupName
     vnetName: selectedNetworkNames.appsVNetName
     subnetName: selectedNetworkNames.appsSubnetName
     enableAutoScaling: aksEnableAutoScaling

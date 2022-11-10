@@ -98,6 +98,12 @@
     "appGatewaySkuName": {
       "value": "WAF_v2"
     },
+    "appGatewayFrontendPrivateIPAddress": {
+      "value": "10.169.90.140"
+    },
+    "appGatewayEnablePublicFrontendIP": {
+      "value": true
+    },
     "appGatewayAutoScaleMinCapacity": {
       "value": 1
     },
@@ -172,9 +178,6 @@
     },
     "aksKubernetesVersion": {
       "value": "1.23.12"
-    },
-    "aksNodeResourceGroupName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-RG02"
     },
     "aksEnableAutoScaling": {
       "value": true

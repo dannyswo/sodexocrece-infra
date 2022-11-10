@@ -38,6 +38,12 @@ param gatewayVNetName string
 @description('Name of the Gateway Subnet where Application Gateway is deployed.')
 param gatewaySubnetName string
 
+@description('Frontend private IP address of Application Gateway.')
+param frontendPrivateIPAddress string
+
+@description('Configure HTTP Listeners to receive traffic on public frontend IP. Otherwise, use private frontend IP.')
+param enablePublicFrontendIP bool
+
 @description('Minimum capacity for auto scaling of Application Gateway.')
 param autoScaleMinCapacity int
 
@@ -96,21 +102,17 @@ var frontendPort443 = {
   }
 }
 
-var frontendPorts = (enableHttpPort && enableHttpsPort) ? [
-  frontendPort80
-  frontendPort443
-] : (enableHttpPort) ? [
-  frontendPort80
-] : (enableHttpsPort) ? [
-  frontendPort443
-] : []
+var frontendPortsList0 = (enableHttpPort) ? [ frontendPort80 ] : []
+var frontendPortsList = (enableHttpsPort) ? concat(frontendPortsList0, [ frontendPort443 ]) : frontendPortsList0
+
+var publicOrPrivateFrontendIPName = (enablePublicFrontendIP) ? '${appGatewayName}-FrontIP-Public' : '${appGatewayName}-FrontIP-Private'
 
 var httpListener80 = {
   name: '${appGatewayName}-Listener-80'
   properties: {
     protocol: 'Http'
     frontendIPConfiguration: {
-      id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', appGatewayName, '${appGatewayName}-FrontIP-443')
+      id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', appGatewayName, publicOrPrivateFrontendIPName)
     }
     frontendPort: {
       id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', appGatewayName, '${appGatewayName}-Port-80')
@@ -123,7 +125,7 @@ var httpListener443 = {
   properties: {
     protocol: 'Https'
     frontendIPConfiguration: {
-      id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', appGatewayName, '${appGatewayName}-FrontIP-443')
+      id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', appGatewayName, publicOrPrivateFrontendIPName)
     }
     frontendPort: {
       id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', appGatewayName, '${appGatewayName}-Port-443')
@@ -140,14 +142,8 @@ var httpListener443 = {
   }
 }
 
-var httpListeners = (enableHttpPort && enableHttpsPort) ? [
-  httpListener80
-  httpListener443
-] : (enableHttpPort) ? [
-  httpListener80
-] : (enableHttpsPort) ? [
-  httpListener443
-] : []
+var httpListenersList0 = (enableHttpPort) ? [ httpListener80 ] : []
+var httpListenersList = (enableHttpsPort) ? concat(httpListenersList0, [ httpListener443 ]) : httpListenersList0
 
 resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
   name: appGatewayName
@@ -181,16 +177,26 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
     ]
     frontendIPConfigurations: [
       {
-        name: '${appGatewayName}-FrontIP-443'
+        name: '${appGatewayName}-FrontIP-Public'
         properties: {
           publicIPAddress: {
             id: publicIpAddress.id
           }
         }
       }
+      {
+        name: '${appGatewayName}-FrontIP-Private'
+        properties: {
+          privateIPAllocationMethod: 'Static'
+          privateIPAddress: frontendPrivateIPAddress
+          subnet: {
+            id: gatewaySubnetId
+          }
+        }
+      }
     ]
-    frontendPorts: frontendPorts
-    httpListeners: httpListeners
+    frontendPorts: frontendPortsList
+    httpListeners: httpListenersList
     backendAddressPools: [
       {
         name: '${appGatewayName}-BackendPool-Dummy'
@@ -259,7 +265,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
 }
 
 resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-PI01'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-IP01'
   location: location
   sku: {
     name: 'Standard'

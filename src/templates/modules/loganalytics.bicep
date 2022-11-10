@@ -60,7 +60,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
     sku: workspaceSku
     features: {
       immediatePurgeDataOn30Days: false
-      disableLocalAuth: true
+      disableLocalAuth: false
       enableDataExport: false
       enableLogAccessUsingOnlyResourcePermissions: false
     }

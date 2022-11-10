@@ -28,9 +28,6 @@ param aksDnsSuffix string
 @description('Version of the Kubernetes software used by AKS.')
 param kubernetesVersion string
 
-@description('Name of the Resource Group of the AKS managed resources (VMSS, LB, etc).')
-param nodeResourceGroupName string
-
 @description('Name of the Apps VNet where the AKS Managed Cluster will be deployed.')
 param vnetName string
 
@@ -87,8 +84,6 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-
 
 var aksDnsPrefix = 'azmxku1${aksDnsSuffix}'
 
-// var selectedNodeResourceGroupName = (env == 'SWO') ? nodeResourceGroupName : 'BRS-MEX-USE2-CRECESDX-${env}-RG02'
-
 var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
 
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-preview' = {
@@ -107,7 +102,6 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
   properties: {
     dnsPrefix: aksDnsPrefix
     kubernetesVersion: kubernetesVersion
-    nodeResourceGroup: nodeResourceGroupName
     agentPoolProfiles: [
       {
         name: 'nodepool1'

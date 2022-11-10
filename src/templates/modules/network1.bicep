@@ -10,85 +10,94 @@ param location string = resourceGroup().location
 ])
 param env string
 
-@description('Standard name of the Gateway VNet.')
+@description('Suffix of the Gateway VNet name.')
 @minLength(4)
 @maxLength(4)
-param gatewayVNetName string
+param gatewayVNetNameSuffix string
 
 @description('IP range or CIDR of the Gateway VNet.')
 param gatewayVNetAddressPrefix string
 
-@description('Standard name of the Gateway Subnet.')
+@description('Suffix of the Gateway Subnet name.')
 @minLength(4)
 @maxLength(4)
-param gatewaySubnetName string
+param gatewaySubnetNameSuffix string
 
 @description('IP range or CIDR of the Gateway Subnet.')
 param gatewaySubnetAddressPrefix string
 
-@description('Standard name of the Applications VNet.')
+@description('Suffix of the Applications VNet name.')
 @minLength(4)
 @maxLength(4)
-param appsVNetName string
+param appsVNetNameSuffix string
 
 @description('IP range or CIDR of the Applications VNet.')
 param appsVNetAddressPrefix string
 
-@description('Standard name of the Applications Subnet.')
+@description('Suffix of the Applications Subnet name.')
 @minLength(4)
 @maxLength(4)
-param appsSubnetName string
+param appsSubnetNameSuffix string
 
 @description('IP range or CIDR of the Applications Subnet.')
 param appsSubnetAddressPrefix string
 
-@description('Standard name of the Endpoints VNet.')
+@description('Suffix name of the Endpoints VNet name.')
 @minLength(4)
 @maxLength(4)
-param endpointsVNetName string
+param endpointsVNetNameSuffix string
 
 @description('IP range or CIDR of the Endpoints VNet.')
 param endpointsVNetAddressPrefix string
 
-@description('Standard name of the Endpoints Subnet.')
+@description('Suffix of the Endpoints Subnet name.')
 @minLength(4)
 @maxLength(4)
-param endpointsSubnetName string
+param endpointsSubnetNameSuffix string
 
 @description('IP range or CIDR of the Endpoints Subnet.')
 param endpointsSubnetAddressPrefix string
 
-@description('Standard name of the Jump Servers VNet.')
+@description('Suffix name of the Jump Servers VNet name.')
 @minLength(4)
 @maxLength(4)
-param jumpServersVNetName string
+param jumpServersVNetNameSuffix string
 
 @description('IP range or CIDR of the Jump Servers VNet.')
 param jumpServersVNetAddressPrefix string
 
-@description('Standard name of the Jump Servers Subnet.')
+@description('Suffix of the Jump Servers Subnet name.')
 @minLength(4)
 @maxLength(4)
-param jumpServersSubnetName string
+param jumpServersSubnetNameSuffix string
 
 @description('IP range or CIDR of the Jump Servers Subnet.')
 param jumpServersSubnetAddressPrefix string
 
-@description('Standard name of the DevOps Agents VNet.')
+@description('Suffix of the DevOps Agents VNet name.')
 @minLength(4)
 @maxLength(4)
-param devopsAgentsVNetName string
+param devopsAgentsVNetNameSuffix string
 
 @description('IP range or CIDR of the DevOps Agents VNet.')
 param devopsAgentsVNetAddressPrefix string
 
-@description('Standard name of the Devops Agents Subnet.')
+@description('Suffix of the Devops Agents Subnet name.')
 @minLength(4)
 @maxLength(4)
-param devopsAgentsSubnetName string
+param devopsAgentsSubnetNameSuffix string
 
 @description('IP range or CIDR of the Devops Agents Subnet.')
 param devopsAgentsSubnetAddressPrefix string
+
+@description('Enable custom Route Table for AKS attached to Gateway and Apps VNet.')
+param enableCustomRouteTable bool
+
+@description('Enable Key Vault Service Endpoint on Gateway Subnet.')
+param enableKeyVaultServiceEndpoint bool
+
+@description('Enable Storage Account Service Endpoint on Gateway and Apps Subnet.')
+param enableStorageAccountServiceEndpoint bool
 
 @description('Standards tags applied to all resources.')
 param standardTags object
@@ -97,8 +106,24 @@ param standardTags object
 
 // ==================================== VNets and Subnets ====================================
 
+var serviceEndpointDefinitions = {
+  keyVault: {
+    locations: [ location ]
+    service: 'Microsoft.KeyVault'
+  }
+  storageAccount: {
+    locations: [ location ]
+    service: 'Microsoft.Storage'
+  }
+}
+
+var gatewaySubnetServiceEndpoints0 = (enableKeyVaultServiceEndpoint) ? [ serviceEndpointDefinitions.keyVault ] : []
+var gatewaySubnetServiceEndpoints = (enableStorageAccountServiceEndpoint) ? concat(gatewaySubnetServiceEndpoints0, [ serviceEndpointDefinitions.storageAccount ]) : gatewaySubnetServiceEndpoints0
+
+var appsSubnetServiceEndpoints = (enableStorageAccountServiceEndpoint) ? [ serviceEndpointDefinitions.storageAccount ] : []
+
 resource gatewayVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewayVNetName}'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewayVNetNameSuffix}'
   location: location
   properties: {
     addressSpace: {
@@ -108,12 +133,16 @@ resource gatewayVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
     }
     subnets: [
       {
-        name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewaySubnetName}'
+        name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewaySubnetNameSuffix}'
         properties: {
           addressPrefix: gatewaySubnetAddressPrefix
           networkSecurityGroup: {
             id: gatewayNSG.id
           }
+          routeTable: (enableCustomRouteTable) ? {
+            id: aksCustomRouteTable.id
+          } : null
+          serviceEndpoints: gatewaySubnetServiceEndpoints
         }
       }
     ]
@@ -124,7 +153,7 @@ resource gatewayVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 }
 
 resource appsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-${appsVNetName}'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${appsVNetNameSuffix}'
   location: location
   properties: {
     addressSpace: {
@@ -134,12 +163,16 @@ resource appsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
     }
     subnets: [
       {
-        name: 'BRS-MEX-USE2-CRECESDX-${env}-${appsSubnetName}'
+        name: 'BRS-MEX-USE2-CRECESDX-${env}-${appsSubnetNameSuffix}'
         properties: {
           addressPrefix: appsSubnetAddressPrefix
           networkSecurityGroup: {
             id: appsNSG.id
           }
+          routeTable: (enableCustomRouteTable) ? {
+            id: aksCustomRouteTable.id
+          } : null
+          serviceEndpoints: appsSubnetServiceEndpoints
         }
       }
     ]
@@ -150,7 +183,7 @@ resource appsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 }
 
 resource endpointsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-${endpointsVNetName}'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${endpointsVNetNameSuffix}'
   location: location
   properties: {
     addressSpace: {
@@ -160,7 +193,7 @@ resource endpointsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
     }
     subnets: [
       {
-        name: 'BRS-MEX-USE2-CRECESDX-${env}-${endpointsSubnetName}'
+        name: 'BRS-MEX-USE2-CRECESDX-${env}-${endpointsSubnetNameSuffix}'
         properties: {
           addressPrefix: endpointsSubnetAddressPrefix
           networkSecurityGroup: {
@@ -176,7 +209,7 @@ resource endpointsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 }
 
 resource jumpServersVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-${jumpServersVNetName}'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${jumpServersVNetNameSuffix}'
   location: location
   properties: {
     addressSpace: {
@@ -186,7 +219,7 @@ resource jumpServersVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
     }
     subnets: [
       {
-        name: 'BRS-MEX-USE2-CRECESDX-${env}-${jumpServersSubnetName}'
+        name: 'BRS-MEX-USE2-CRECESDX-${env}-${jumpServersSubnetNameSuffix}'
         properties: {
           addressPrefix: jumpServersSubnetAddressPrefix
           networkSecurityGroup: {
@@ -202,7 +235,7 @@ resource jumpServersVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 }
 
 resource devopsAgentsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-${devopsAgentsVNetName}'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${devopsAgentsVNetNameSuffix}'
   location: location
   properties: {
     addressSpace: {
@@ -212,7 +245,7 @@ resource devopsAgentsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
     }
     subnets: [
       {
-        name: 'BRS-MEX-USE2-CRECESDX-${env}-${devopsAgentsSubnetName}'
+        name: 'BRS-MEX-USE2-CRECESDX-${env}-${devopsAgentsSubnetNameSuffix}'
         properties: {
           addressPrefix: devopsAgentsSubnetAddressPrefix
           networkSecurityGroup: {
@@ -588,6 +621,17 @@ resource devopsAgentsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = 
         }
       }
     ]
+  }
+  tags: standardTags
+}
+
+// ==================================== Route Tables ====================================
+
+resource aksCustomRouteTable 'Microsoft.Network/routeTables@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-UD01'
+  location: location
+  properties: {
+    routes: []
   }
   tags: standardTags
 }

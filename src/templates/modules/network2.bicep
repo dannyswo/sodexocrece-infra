@@ -18,26 +18,26 @@ param vnetName string
 @description('IP range or CIDR of the Main VNet.')
 param vnetAddressPrefix string
 
-@description('Standard name of the Gateway Subnet.')
+@description('Suffix of the Gateway Subnet name.')
 @minLength(4)
 @maxLength(4)
-param gatewaySubnetName string
+param gatewaySubnetNameSuffix string
 
 @description('IP range or CIDR of the Gateway Subnet.')
 param gatewaySubnetAddressPrefix string
 
-@description('Standard name of the Applications Subnet.')
+@description('Suffix of the Applications Subnet name.')
 @minLength(4)
 @maxLength(4)
-param appsSubnetName string
+param appsSubnetNameSuffix string
 
 @description('IP range or CIDR of the Applications Subnet.')
 param appsSubnetAddressPrefix string
 
-@description('Standard name of the Endpoints Subnet.')
+@description('Suffix of the Endpoints Subnet name.')
 @minLength(4)
 @maxLength(4)
-param endpointsSubnetName string
+param endpointsSubnetNameSuffix string
 
 @description('IP range or CIDR of the Endpoints Subnet.')
 param endpointsSubnetAddressPrefix string
@@ -64,7 +64,7 @@ resource mainVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 }
 
 resource gatewaySubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewaySubnetName}'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewaySubnetNameSuffix}'
   parent: mainVNet
   properties: {
     addressPrefix: gatewaySubnetAddressPrefix
@@ -75,7 +75,7 @@ resource gatewaySubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = 
 }
 
 resource appsSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-${appsSubnetName}'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${appsSubnetNameSuffix}'
   properties: {
     addressPrefix: appsSubnetAddressPrefix
     networkSecurityGroup: {
@@ -85,7 +85,7 @@ resource appsSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = {
 }
 
 resource endpointsSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-${endpointsSubnetName}'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${endpointsSubnetNameSuffix}'
   properties: {
     addressPrefix: endpointsSubnetAddressPrefix
     networkSecurityGroup: {
@@ -154,31 +154,35 @@ resource appsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   properties: {
     securityRules: [
       {
-        name: 'AllowGatewayHttpInbound'
+        name: 'AllowHttpInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
           sourcePortRange: '*'
-          sourceAddressPrefix: gatewaySubnetAddressPrefix
+          sourceAddressPrefixes: [
+            gatewaySubnetAddressPrefix
+          ]
           destinationPortRange: '80'
           destinationAddressPrefix: '*'
           priority: 110
-          description: 'Allow Gateway HTTP Inbound.'
+          description: 'Allow Gateway and Jump Servers HTTP Inbound.'
         }
       }
       {
-        name: 'AllowGatewayHttpsInbound'
+        name: 'AllowHttpsInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
           sourcePortRange: '*'
-          sourceAddressPrefix: gatewaySubnetAddressPrefix
+          sourceAddressPrefixes: [
+            gatewaySubnetAddressPrefix
+          ]
           destinationPortRange: '443'
           destinationAddressPrefix: '*'
           priority: 111
-          description: 'Allow Gateway HTTPS Inbound.'
+          description: 'Allow Gateway and Jump Servers HTTPS Inbound.'
         }
       }
     ]
@@ -192,31 +196,35 @@ resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   properties: {
     securityRules: [
       {
-        name: 'AllowApplicationsHttpInbound'
+        name: 'AllowHttpInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
           sourcePortRange: '*'
-          sourceAddressPrefix: appsSubnetAddressPrefix
+          sourceAddressPrefixes: [
+            appsSubnetAddressPrefix
+          ]
           destinationPortRange: '80'
           destinationAddressPrefix: '*'
           priority: 110
-          description: 'Allow Applications HTTP Inbound.'
+          description: 'Allow Apps and Jump Servers HTTP Inbound.'
         }
       }
       {
-        name: 'AllowApplicationsHttpsInbound'
+        name: 'AllowHttpsInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
           sourcePortRange: '*'
-          sourceAddressPrefix: appsSubnetAddressPrefix
+          sourceAddressPrefixes: [
+            appsSubnetAddressPrefix
+          ]
           destinationPortRange: '443'
           destinationAddressPrefix: '*'
           priority: 111
-          description: 'Allow Applications HTTPS Inbound.'
+          description: 'Allow Apps and Jump Servers HTTPS Inbound.'
         }
       }
       {
@@ -226,11 +234,13 @@ resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
           direction: 'Inbound'
           protocol: 'Tcp'
           sourcePortRange: '*'
-          sourceAddressPrefix: appsSubnetAddressPrefix
+          sourceAddressPrefixes: [
+            appsSubnetAddressPrefix
+          ]
           destinationPortRange: '1433'
           destinationAddressPrefix: '*'
           priority: 112
-          description: 'Allow Applications SQL Server Inbound.'
+          description: 'Allow Apps and Jump Servers SQL Server Inbound.'
         }
       }
     ]
