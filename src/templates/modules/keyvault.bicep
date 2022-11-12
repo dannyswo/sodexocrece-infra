@@ -30,7 +30,7 @@ param enableArmAccess bool
 param tenantId string = subscription().tenantId
 
 @description('Enable RBAC authorization in Key Vault and ignore access policies.')
-param enableRbacAuthorization bool = false
+param enableRbacAuthorization bool
 
 @description('Enable diagnostics to store Key Vault audit logs.')
 param enableDiagnostics bool

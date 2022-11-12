@@ -4,14 +4,17 @@ param keyVaultName string
 @description('ID of the AAD Tenant of the Principal IDs.')
 param tenantId string = subscription().tenantId
 
-@description('ID of the Managed Identity used by Application Gateway.')
+@description('ID of the Managed Identity used by appGateway.')
 param appGatewayPrincipalId string
 
-@description('ID of the Managed Identity used by Application Data Storage Account.')
+@description('ID of the Managed Identity used by appsDataStorage.')
 param appsDataStorageAccountPrincipalId string
 
-@description('List of AAD Principal IDs allowed to manage Key Vault secrets.')
-param principalIds array = []
+@description('List of applications AAD Principal IDs allowed to read Secrets.')
+param applicationsPrincipalIds array = []
+
+@description('List of administrators AAD Principal IDs allowed to manage Key Vault objects.')
+param adminsPrincipalIds array = []
 
 // ==================================== Resource definitions ====================================
 
@@ -19,13 +22,66 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
 }
 
+var allCertificatesPermissions = [
+  'backup'
+  'create'
+  'delete'
+  'deleteissuers'
+  'get'
+  'getissuers'
+  'import'
+  'list'
+  'listissuers'
+  'managecontacts'
+  'manageissuers'
+  'purge'
+  'recover'
+  'restore'
+  'setissuers'
+  'update'
+]
+
+var allKeysPermissions = [
+  'backup'
+  'create'
+  'decrypt'
+  'delete'
+  'encrypt'
+  'get'
+  'getrotationpolicy'
+  'import'
+  'list'
+  'purge'
+  'recover'
+  'release'
+  'restore'
+  'rotate'
+  'setrotationpolicy'
+  'sign'
+  'unwrapKey'
+  'update'
+  'verify'
+  'wrapKey'
+]
+
+var allSecretsPermissions = [
+  'backup'
+  'delete'
+  'get'
+  'list'
+  'purge'
+  'recover'
+  'restore'
+  'set'
+]
+
 var appGatewayAccessPolicy = {
   objectId: appGatewayPrincipalId
   tenantId: tenantId
   permissions: {
-    certificates: [
-      'all'
-    ]
+    certificates: allCertificatesPermissions
+    keys: allKeysPermissions
+    secrets: allSecretsPermissions
   }
 }
 
@@ -33,9 +89,7 @@ var appsDataStorageAccountAccessPolicy = {
   objectId: appsDataStorageAccountPrincipalId
   tenantId: tenantId
   permissions: {
-    keys: [
-      'all'
-    ]
+    keys: allKeysPermissions
   }
 }
 
@@ -44,8 +98,8 @@ var azureServicesAccessPolicies = [
   appsDataStorageAccountAccessPolicy
 ]
 
-var applicationsAccessPolicies = [for principalId in principalIds: {
-  objectId: principalId
+var applicationsAccessPolicies = [for applicationPrincipalId in applicationsPrincipalIds: {
+  objectId: applicationPrincipalId
   tenantId: tenantId
   permissions: {
     secrets: [
@@ -55,25 +109,17 @@ var applicationsAccessPolicies = [for principalId in principalIds: {
   }
 }]
 
-var additionalAccessPolicies = [
-  {
-    objectId: '40c2e922-9fb6-4186-a53f-44439c85a9df'
-    tenantId: tenantId
-    permissions: {
-      certificates: [
-        'all'
-      ]
-      keys: [
-        'all'
-      ]
-      secrets: [
-        'all'
-      ]
-    }
+var adminsAccessPolicies = [for adminPrincipalId in adminsPrincipalIds: {
+  objectId: adminPrincipalId
+  tenantId: tenantId
+  permissions: {
+    certificates: allCertificatesPermissions
+    keys: allKeysPermissions
+    secrets: allSecretsPermissions
   }
-]
+}]
 
-var accessPolicies = concat(azureServicesAccessPolicies, applicationsAccessPolicies, additionalAccessPolicies)
+var accessPolicies = concat(azureServicesAccessPolicies, applicationsAccessPolicies, adminsAccessPolicies)
 
 resource appGatewayAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2022-07-01' = {
   name: 'add'

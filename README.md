@@ -3,18 +3,27 @@ Infrastructure Repository for Sodexo Crece Project
 
 ## Project structure
 
-Templates:
+Templates and Modules (instances):
 
-* main
-* devopsmain
+devopsmain
 
-Modules (instances):
+1. devopsmanagedids: Managed Identities of infrastructure services and Role Assignments for them.
+2. devopsiam: Role Assignments for DevOps, admin, system owner Users / Groups.
 
-1. managedids
-2. network1
-3. monitoringdatastorage - RL01, MM03
-4. loganalytics - RL02, MM01
+3. monitoringdatastorage - RL01, MM03: Storage Account for monitoring data, used by networkwatcher and loganalytics.
+4. loganalytics - RL02, MM01: , used by keyvault, agw, appsdatastorage, sqldatabase, acr, aks.
 5. networkwatcher - RL03, MM02
+
+3. devopskeyvault - RL10, MM10: Key Vault for infrastructure services.
+4. devopskeyvaultobjects: Encryption Keys and Secrets creation, and Certificates import.
+5. devopskeyvaultpolicies: Key Vault Access Policies for Managed Identities and Users / Groups.
+
+
+main
+
+1. managedids: Managed Identities of applications and Role Assignments for them.
+2. iam: Role Assignments for application developer Users / Groups.
+2. network1 (optional): VNets and Subnets, Peerings, NSGs, custom Route Table for AKS, only for SWO environment.
 6. keyvault, keyvaultpe, keyvaultobjects, keyvaultpolicies - RL04, MM04
 7. agw - RL05, MM05, AD01
 8. appsdatastorage, appsdatastoragepe - RL06, MM06, AD02
@@ -44,9 +53,9 @@ Install and setup Bicep:
 az bicep install
 az bicep upgrade
 az bicep version
-az login
 az bicep decompile --file .\template.json
 
+az login
 az account show
 az account set --subscription [Subscription ID]
 az account list-locations -o table

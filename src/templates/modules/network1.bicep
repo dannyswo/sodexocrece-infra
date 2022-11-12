@@ -288,8 +288,34 @@ resource appsGatewayVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetwo
   }
 }
 
+resource gatewayEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP03'
+  parent: gatewayVNet
+  properties: {
+    remoteVirtualNetwork: {
+      id: endpointsVNet.id
+    }
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    useRemoteGateways: false
+  }
+}
+
+resource endpointsGatewayVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP04'
+  parent: endpointsVNet
+  properties: {
+    remoteVirtualNetwork: {
+      id: gatewayVNet.id
+    }
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    useRemoteGateways: false
+  }
+}
+
 resource appsEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP02'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP05'
   parent: appsVNet
   properties: {
     remoteVirtualNetwork: {
@@ -302,7 +328,7 @@ resource appsEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNet
 }
 
 resource endpointsAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP04'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP06'
   parent: endpointsVNet
   properties: {
     remoteVirtualNetwork: {
@@ -315,7 +341,7 @@ resource endpointsAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNet
 }
 
 resource jumpServersAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP05'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP07'
   parent: jumpServersVNet
   properties: {
     remoteVirtualNetwork: {
@@ -328,7 +354,7 @@ resource jumpServersAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualN
 }
 
 resource appsJumpServerVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP06'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP08'
   parent: appsVNet
   properties: {
     remoteVirtualNetwork: {
@@ -341,7 +367,7 @@ resource appsJumpServerVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNe
 }
 
 resource jumpServersEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP07'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP09'
   parent: jumpServersVNet
   properties: {
     remoteVirtualNetwork: {
@@ -354,7 +380,7 @@ resource jumpServersEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/vir
 }
 
 resource endpointsJumpServersVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP08'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP10'
   parent: endpointsVNet
   properties: {
     remoteVirtualNetwork: {
@@ -367,7 +393,7 @@ resource endpointsJumpServersVNetsPeering 'Microsoft.Network/virtualNetworks/vir
 }
 
 resource devopsAgentsAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP09'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP11'
   parent: devopsAgentsVNet
   properties: {
     remoteVirtualNetwork: {
@@ -380,7 +406,7 @@ resource devopsAgentsAppsVNetsPeering 'Microsoft.Network/virtualNetworks/virtual
 }
 
 resource appsDevopsAgentsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP10'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP12'
   parent: appsVNet
   properties: {
     remoteVirtualNetwork: {
@@ -393,7 +419,7 @@ resource appsDevopsAgentsVNetsPeering 'Microsoft.Network/virtualNetworks/virtual
 }
 
 resource devopsAgentsEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP11'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP13'
   parent: devopsAgentsVNet
   properties: {
     remoteVirtualNetwork: {
@@ -406,7 +432,7 @@ resource devopsAgentsEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/vi
 }
 
 resource endpointsDevopsAgentsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP12'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP14'
   parent: endpointsVNet
   properties: {
     remoteVirtualNetwork: {
@@ -464,7 +490,77 @@ resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
           destinationPortRange: '65200-65535'
           destinationAddressPrefix: '*'
           priority: 200
+          description: 'Allow Internet Azure Ports Inbound.'
+        }
+      }
+      {
+        name: 'AllowGatewayManagerAzurePortsInbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'GatewayManager'
+          destinationPortRange: '65200-65535'
+          destinationAddressPrefix: '*'
+          priority: 201
+          description: 'Allow GatewayManager Azure Ports Inbound.'
+        }
+      }
+      {
+        name: 'AllowInternetHttpOutbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationPortRange: '80'
+          destinationAddressPrefix: 'Internet'
+          priority: 110
           description: 'Allow Internet HTTP Inbound.'
+        }
+      }
+      {
+        name: 'AllowInternetHttpsOutbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'Internet'
+          priority: 111
+          description: 'Allow Internet HTTPS Inbound.'
+        }
+      }
+      {
+        name: 'AllowGatewayManagerAzurePortsOutbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationPortRange: '65200-65535'
+          destinationAddressPrefix: 'GatewayManager'
+          priority: 200
+          description: 'Allow GatewayManager Azure Ports Outbound.'
+        }
+      }
+      {
+        name: 'AllowInternetAzurePortsOutbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationPortRange: '65200-65535'
+          destinationAddressPrefix: 'Internet'
+          priority: 201
+          description: 'Allow Internet Azure Ports Outbound.'
         }
       }
     ]

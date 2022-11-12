@@ -32,7 +32,7 @@ az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\
 az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\keyvault.bicep -p .\resources\config-modules\swo\keyvault.swo.json
 az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\privateendpoint.bicep -p .\resources\config-modules\swo\keyvaultpe.swo.json
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\agw.bicep -p .\resources\config-modules\swo\agw.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\agw.bicep -p .\resources\config-modules\swo\agw.swo.json
 
 az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\appsdatastorage.bicep -p .\resources\config-modules\swo\appsdatastorage.swo.json
 az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\privateendpoint.bicep -p .\resources\config-modules\swo\appsdatastoragepe.swo.json

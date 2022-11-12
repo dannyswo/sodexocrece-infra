@@ -87,7 +87,22 @@
       "value": 7
     },
     "keyVaultEnableArmAccess": {
+      "value": true
+    },
+    "keyVaultEnableRbacAuthorization": {
       "value": false
+    },
+    "keyVaultEncryptionKeysIssueDateTime": {
+      "value": "11/5/2023 11:30:00 PM"
+    },
+    "keyVaultSecrtsIssueDateTime": {
+      "value": "11/5/2023 11:30:00 PM"
+    },
+    "keyVaultAppGatewayPublicCertificatePath": {
+      "value": "certificates/cert-public.pfx"
+    },
+    "keyVaultAppGatewayPrivateCertificatePath": {
+      "value": "certificates/cert-private.pfx"
     },
     "appGatewayNameSuffix": {
       "value": "gtc220"
@@ -117,7 +132,10 @@
       "value": false
     },
     "appGatewayPublicCertificateId": {
-      "value": "https://azmxkv1mat330.vault.azure.net/secrets/crececonsdx-cert-public/2097309464c84791948ece0406c5e58e"
+      "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-appgateway-cert-public2"
+    },
+    "appGatewayPrivateCertificateId": {
+      "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-appgateway-cert-public2"
     },
     "appsDataStorageNameSuffix": {
       "value": "ifv692"
@@ -275,7 +293,7 @@
     "keyVaultEnablePublicAccess": {
       "value": false
     },
-    "keyVaultEnableAzureServices": {
+    "keyVaultBypassAzureServices": {
       "value": true
     },
     "keyVaultAllowedSubnets": {

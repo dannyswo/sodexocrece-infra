@@ -74,6 +74,11 @@ var appGatewayManagedIdentityRoleDefinitions = [
     roleDescription: 'Key Vault Certificates Officer | Perform any action on the certificates of a key vault.'
     roleAssignmentDescription: 'Access public certificate in the Key Vault from Application Gateway.'
   }
+  {
+    roleId: 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
+    roleDescription: 'Key Vault Secrets Officer | Perform any action on the secrets of a key vault'
+    roleAssignmentDescription: 'Access secrets in the Key Vault from Application Gateway.'
+  }
 ]
 
 resource appGatewayManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in appGatewayManagedIdentityRoleDefinitions: {

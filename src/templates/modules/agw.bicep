@@ -59,6 +59,9 @@ param enableHttpsPort bool
 @description('ID of the public SSL certificate stored in Key Vault.')
 param publicCertificateId string
 
+@description('ID of the private SSL certificate stored in Key Vault.')
+param privateCertificateId string
+
 @description('Enable diagnostics to store Application Gateway logs and metrics.')
 param enableDiagnostics bool
 
@@ -145,6 +148,8 @@ var httpListener443 = {
 var httpListenersList0 = (enableHttpPort) ? [ httpListener80 ] : []
 var httpListenersList = (enableHttpsPort) ? concat(httpListenersList0, [ httpListener443 ]) : httpListenersList0
 
+var dummyRoutingRuleListener = (enableHttpPort) ? '${appGatewayName}-Listener-80' : (enableHttpsPort) ? '${appGatewayName}-Listener-443' : 'NotConfigured'
+
 resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
   name: appGatewayName
   location: location
@@ -204,7 +209,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
     ]
     backendHttpSettingsCollection: [
       {
-        name: '${appGatewayName}-BackendHTTPSettings-80'
+        name: '${appGatewayName}-BackendHTTPSettings-Dummy'
         properties: {
           port: 80
         }
@@ -212,14 +217,14 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
     ]
     requestRoutingRules: [
       {
-        name: '${appGatewayName}-RoutingRule-80'
+        name: '${appGatewayName}-RoutingRule-Dummy'
         properties: {
           ruleType: 'Basic'
           httpListener: {
-            id: resourceId('Microsoft.Network/applicationGateways/httpListeners', appGatewayName, '${appGatewayName}-Listener-80')
+            id: resourceId('Microsoft.Network/applicationGateways/httpListeners', appGatewayName, dummyRoutingRuleListener)
           }
           backendHttpSettings: {
-            id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', appGatewayName, '${appGatewayName}-BackendHTTPSettings-80')
+            id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', appGatewayName, '${appGatewayName}-BackendHTTPSettings-Dummy')
           }
           backendAddressPool: {
             id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', appGatewayName, '${appGatewayName}-BackendPool-Dummy')
@@ -235,6 +240,14 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
           keyVaultSecretId: publicCertificateId
         }
       }
+      /*
+      {
+        name: '${appGatewayName}-SSLCertificate-Private'
+        properties: {
+          keyVaultSecretId: privateCertificateId
+        }
+      }
+      */
     ] : []
     sslProfiles: (enableHttpsPort) ? [
       {
@@ -253,6 +266,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
               'TLSv1_0'
               'TLSv1_1'
             ]
+            policyType: 'Custom'
           }
         }
       }
@@ -265,7 +279,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
 }
 
 resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-IP01'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-IP02'
   location: location
   sku: {
     name: 'Standard'
@@ -274,7 +288,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = {
   zones: zones
   properties: {
     publicIPAllocationMethod: 'Static'
-    deleteOption: 'Detach'
+    deleteOption: 'Delete'
   }
   tags: standardTags
 }

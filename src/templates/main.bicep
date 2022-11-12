@@ -75,6 +75,12 @@ param keyVaultNameSuffix string
 param keyVaultEnablePurgeProtection bool
 param keyVaultSoftDeleteRetentionDays int
 param keyVaultEnableArmAccess bool
+param keyVaultEnableRbacAuthorization bool
+
+param keyVaultEncryptionKeysIssueDateTime string
+param keyVaultSecrtsIssueDateTime string
+param keyVaultAppGatewayPublicCertificatePath string
+param keyVaultAppGatewayPrivateCertificatePath string
 
 param appGatewayNameSuffix string
 param appGatewaySkuTier string
@@ -86,6 +92,7 @@ param appGatewayAutoScaleMaxCapacity int
 param appGatewayEnableHttpPort bool
 param appGatewayEnableHttpsPort bool
 param appGatewayPublicCertificateId string
+param appGatewayPrivateCertificateId string
 
 param appsDataStorageNameSuffix string
 param appsDataStorageSkuName string
@@ -157,7 +164,7 @@ param aksEnableLock bool
 // ==================================== Firewall settings ====================================
 
 param keyVaultEnablePublicAccess bool
-param keyVaultEnableAzureServices bool
+param keyVaultBypassAzureServices bool
 param keyVaultAllowedSubnets array
 param keyVaultAllowedIPsOrCIDRs array
 
@@ -322,12 +329,13 @@ module keyVaultModule 'modules/keyvault.bicep' = {
     enablePurgeProtection: keyVaultEnablePurgeProtection
     softDeleteRetentionDays: keyVaultSoftDeleteRetentionDays
     enableArmAccess: keyVaultEnableArmAccess
+    enableRbacAuthorization: keyVaultEnableRbacAuthorization
     enableDiagnostics: keyVaultEnableDiagnostics
     diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
     logsRetentionDays: keyVaultLogsRetentionDays
     enableLock: keyVaultEnableLock
     enablePublicAccess: keyVaultEnablePublicAccess
-    bypassAzureServices: keyVaultEnableAzureServices
+    bypassAzureServices: keyVaultBypassAzureServices
     allowedSubnets: keyVaultAllowedSubnets
     allowedIPsOrCIDRs: keyVaultAllowedIPsOrCIDRs
     standardTags: standardTags
@@ -353,10 +361,25 @@ module keyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enabl
 module keyVaultObjectsModule 'modules/keyvaultobjects.bicep' = {
   name: 'keyVaultObjectsModule'
   params: {
+    location: location
     keyVaultName: keyVaultModule.outputs.keyVaultName
     createEncryptionKeys: true
-    appsDataStorageEncryptionKeyName: 'crececonsdx-files-key'
-    encryptionKeysIssueDateTime: '11/5/2023 11:30:00 PM'
+    appsDataStorageEncryptionKeyName: 'crececonsdx-files-key' // crececonsdx-appsdatastorage-key
+    encryptionKeysIssueDateTime: keyVaultEncryptionKeysIssueDateTime
+    createSecrets: false
+    enableRandomPasswordsGeneration: false
+    sqlDatabaseSQLAdminNameSecretName: 'crececonsdx-sqldatabase-sqladminloginname2'
+    sqlDatabaseSQLAdminNameSecretValue: sqlDatabaseSQLAdminLoginName
+    sqlDatabaseSQLAdminPassSecretName: 'crececonsdx-sqldatabase-sqladminloginpass'
+    sqlDatabaseSQLAdminPassSecretValue: sqlDatabaseSQLAdminLoginPass
+    sqlDatabaseAADAdminNameSecretName: 'crececonsdx-sqldatabase-aadadminloginname'
+    sqlDatabaseAADAdminNameSecretValue: sqlDatabaseAADAdminLoginName
+    secrtsIssueDateTime: keyVaultSecrtsIssueDateTime
+    importCertificates: false
+    appGatewayPublicCertificateName: 'crececonsdx-appgateway-cert-public'
+    appGatewayPublicCertificatePath: keyVaultAppGatewayPublicCertificatePath
+    appGatewayPrivateCertificateName: 'crececonsdx-appgateway-cert-private'
+    appGatewayPrivateCertificatePath: keyVaultAppGatewayPrivateCertificatePath
   }
 }
 
@@ -366,9 +389,13 @@ module keyVaultPoliciesModule 'modules/keyvaultpolicies.bicep' = {
     keyVaultName: keyVaultModule.outputs.keyVaultName
     appGatewayPrincipalId: managedIdsModule.outputs.appGatewayManagedIdentityId
     appsDataStorageAccountPrincipalId: managedIdsModule.outputs.appsDataStorageManagedIdentityId
+    adminsPrincipalIds: [
+      iamModule.outputs.ownerPrincipalId
+    ]
   }
 }
 
+/*
 module appGatewayModule 'modules/agw.bicep' = {
   name: 'appGatewayModule'
   params: {
@@ -387,6 +414,7 @@ module appGatewayModule 'modules/agw.bicep' = {
     enableHttpPort: appGatewayEnableHttpPort
     enableHttpsPort: appGatewayEnableHttpsPort
     publicCertificateId: appGatewayPublicCertificateId
+    privateCertificateId: appGatewayPrivateCertificateId
     enableDiagnostics: appGatewayEnableDiagnostics
     diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
     logsRetentionDays: appGatewayLogsRetentionDays
@@ -394,6 +422,7 @@ module appGatewayModule 'modules/agw.bicep' = {
     standardTags: standardTags
   }
 }
+*/
 
 module appsDataStorageModule 'modules/appsdatastorage.bicep' = {
   name: 'appsDataStorageModule'
@@ -512,6 +541,7 @@ module acrPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePriv
   }
 }
 
+/*
 module aksModule 'modules/aks.bicep' = {
   name: 'aksModule'
   params: {
@@ -539,3 +569,4 @@ module aksModule 'modules/aks.bicep' = {
     standardTags: standardTags
   }
 }
+*/

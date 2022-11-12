@@ -1,11 +1,16 @@
+Log Analytics Workspace Configuration
+-------------------------------------
 
-## Log Analytics Queries
+## Workspace settings
 
-### Audit events queries
+Set disableLocalAuth=false to allow OMSAgent to connect to Log Analytics Workspace.
+
+
+## Log Analytics queries
+
+Audit events queries:
 
 ```
 AzureDiagnostics
 | summarize AuditEventsPerResource = count() by ResourceType
 ```
-
-Set disableLocalAuth=false to allow OMSAgent to connect to Log Analytics Workspace.
