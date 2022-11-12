@@ -137,6 +137,9 @@
     "appGatewayPrivateCertificateId": {
       "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-appgateway-cert-public2"
     },
+    "appGatewayWafPoliciesMode": {
+      "value": "Detection"
+    },
     "appsDataStorageNameSuffix": {
       "value": "ifv692"
     },
@@ -290,8 +293,20 @@
     "aksEnableLock": {
       "value": true
     },
-    "keyVaultEnablePublicAccess": {
+    "monitoringDataStorageEnablePublicAccess": {
       "value": false
+    },
+    "monitoringDataStorageBypassAzureServices": {
+      "value": true
+    },
+    "monitoringDataStorageAllowedSubnets": {
+      "value": []
+    },
+    "monitoringDataStorageAllowedIPsOrCIDRs": {
+      "value": []
+    },
+    "keyVaultEnablePublicAccess": {
+      "value": true
     },
     "keyVaultBypassAzureServices": {
       "value": true
@@ -305,6 +320,9 @@
     "appsDataStorageEnablePublicAccess": {
       "value": false
     },
+    "appsDataStorageBypassAzureServices": {
+      "value": false
+    },
     "appsDataStorageAllowedSubnets": {
       "value": []
     },
@@ -314,10 +332,16 @@
     "sqlDatabaseEnablePublicAccess": {
       "value": false
     },
+    "sqlDatabaseAllowedSubnets": {
+      "value": []
+    },
     "sqlDatabaseAllowedIPRanges": {
       "value": []
     },
     "acrEnablePublicAccess": {
+      "value": false
+    },
+    "acrBypassAzureServices": {
       "value": false
     },
     "acrAllowedIPsOrCIDRs": {

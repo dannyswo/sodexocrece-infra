@@ -147,17 +147,19 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
         'IPv4'
       ]
     }
-    // autoUpgradeProfile: { }
-    // podIdentityProfile: { }
-    // ingressProfile: { }
-    // workloadAutoScalerProfile: { }
-    // securityProfile: { }
-    // autoUpgradeProfile: { }
-    // azureMonitorProfile: { }
+    autoUpgradeProfile: {
+      upgradeChannel: 'none'
+    }
     enableRBAC: true
     aadProfile: {
       enableAzureRBAC: true
       managed: true
+    }
+    disableLocalAccounts: true
+    securityProfile: {
+      workloadIdentity: {
+        enabled: true
+      }
     }
     addonProfiles: {
       ingressApplicationGateway: {

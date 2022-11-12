@@ -99,10 +99,10 @@
       "value": "11/5/2023 11:30:00 PM"
     },
     "keyVaultAppGatewayPublicCertificatePath": {
-      "value": "certificates/cert-public.pfx"
+      "value": "../../certificates/cert-public.pfx"
     },
     "keyVaultAppGatewayPrivateCertificatePath": {
-      "value": "certificates/cert-private.pfx"
+      "value": "../../certificates/cert-private.pfx"
     },
     "appGatewayNameSuffix": {
       "value": "gtc245"
@@ -135,7 +135,10 @@
       "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-appgateway-cert-public2"
     },
     "appGatewayPrivateCertificateId": {
-      "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-appgateway-cert-public2"
+      "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-appgateway-cert-private7"
+    },
+    "appGatewayWafPoliciesMode": {
+      "value": "Detection"
     },
     "appsDataStorageNameSuffix": {
       "value": "ifv710"
@@ -290,6 +293,18 @@
     "aksEnableLock": {
       "value": true
     },
+    "monitoringDataStorageEnablePublicAccess": {
+      "value": false
+    },
+    "monitoringDataStorageBypassAzureServices": {
+      "value": true
+    },
+    "monitoringDataStorageAllowedSubnets": {
+      "value": []
+    },
+    "monitoringDataStorageAllowedIPsOrCIDRs": {
+      "value": []
+    },
     "keyVaultEnablePublicAccess": {
       "value": true
     },
@@ -305,6 +320,9 @@
     "appsDataStorageEnablePublicAccess": {
       "value": false
     },
+    "appsDataStorageBypassAzureServices": {
+      "value": false
+    },
     "appsDataStorageAllowedSubnets": {
       "value": []
     },
@@ -314,10 +332,16 @@
     "sqlDatabaseEnablePublicAccess": {
       "value": false
     },
+    "sqlDatabaseAllowedSubnets": {
+      "value": []
+    },
     "sqlDatabaseAllowedIPRanges": {
       "value": []
     },
     "acrEnablePublicAccess": {
+      "value": false
+    },
+    "acrBypassAzureServices": {
       "value": false
     },
     "acrAllowedIPsOrCIDRs": {

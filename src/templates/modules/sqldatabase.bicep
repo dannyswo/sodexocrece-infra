@@ -85,6 +85,13 @@ param enableLock bool
 @description('Enable public access in the PaaS firewall.')
 param enablePublicAccess bool
 
+@description('List of Subnets allowed to access the Azure SQL Database in the firewall.')
+@metadata({
+  vnetName: 'Name of VNet.'
+  subnetName: 'Name of the Subnet.'
+})
+param allowedSubnets array = []
+
 @description('List of IPs ranges (start and end IP addresss) allowed to access the Azure SQL Server in the firewall.')
 @metadata({
   startIPAddress: 'First IP in the IP range.'
@@ -264,8 +271,17 @@ resource connectionPolicies 'Microsoft.Sql/servers/connectionPolicies@2022-05-01
   }
 }
 
+resource virtualNetworkRules 'Microsoft.Sql/servers/virtualNetworkRules@2022-05-01-preview' = [for (allowedSubnet, index) in allowedSubnets: if (enablePublicAccess) {
+  name: 'virtualNetworkRules-${index}'
+  parent: sqlServer
+  properties: {
+    virtualNetworkSubnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnet.vnetName, allowedSubnet.subnetName)
+    ignoreMissingVnetServiceEndpoint: false
+  }
+}]
+
 resource firewallRules 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' = [for (allowedIPRange, index) in allowedIPRanges: if (enablePublicAccess) {
-  name: 'firewallRule-${index}'
+  name: 'firewallRules-${index}'
   parent: sqlServer
   properties: {
     startIpAddress: allowedIPRange.startIPAddress

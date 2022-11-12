@@ -126,15 +126,14 @@ resource sqlDatabaseSQLAdminNameSecret 'Microsoft.KeyVault/vaults/secrets@2022-0
 }
 
 resource sqlDatabaseSQLAdminPassScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (createSecrets && enableRandomPasswordsGeneration) {
-  name: sqlDatabaseSQLAdminPassSecretName
+  name: 'sqlDatabaseSQLAdminPassScript'
   location: location
   kind: 'AzurePowerShell'
   properties: {
     azPowerShellVersion: '7.0'
     retentionInterval: 'P1D'
     timeout: 'PT10M'
-    //scriptContent: loadTextContent('../../scripts/Generate-RandomPassword.ps1')
-    primaryScriptUri: '../../scripts/Generate-RandomPassword.ps1'
+    scriptContent: loadTextContent('../../scripts/Generate-RandomPassword.ps1')
   }
 }
 
@@ -169,8 +168,8 @@ resource sqlDatabaseAADAdminNameSecret 'Microsoft.KeyVault/vaults/secrets@2022-0
 
 // ==================================== Certificates ====================================
 
-resource appGatewayPrivateCertImportScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (importCertificates) {
-  name: 'script-import-appgateway-private-cert'
+resource appGatewayPrivateCertificateImportScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (importCertificates) {
+  name: 'appGatewayPrivateCertificateImportScript'
   location: location
   kind: 'AzureCLI'
   properties: {
@@ -178,15 +177,33 @@ resource appGatewayPrivateCertImportScript 'Microsoft.Resources/deploymentScript
     retentionInterval: 'P1D'
     timeout: 'PT10M'
     arguments: '\'${keyVault.name}\' \'${appGatewayPrivateCertificateName}\' \'${appGatewayPrivateCertificatePath}\''
-    //scriptContent: loadTextContent('../../scripts/import-keyvault-certificate.sh')
-    primaryScriptUri: '../../scripts/import-keyvault-certificate.sh'
+    scriptContent: loadTextContent('../../scripts/import-keyvault-certificate.sh')
+  }
+}
+
+resource appGatewayPublicCertificateImportScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (importCertificates) {
+  name: 'appGatewayPublicCertificateImportScript'
+  location: location
+  kind: 'AzureCLI'
+  properties: {
+    azCliVersion: '2.30.0'
+    retentionInterval: 'P1D'
+    timeout: 'PT10M'
+    arguments: '\'${keyVault.name}\' \'${appGatewayPublicCertificateName}\' \'${appGatewayPublicCertificatePath}\''
+    scriptContent: loadTextContent('../../scripts/import-keyvault-certificate.sh')
   }
 }
 
 // ==================================== Outputs ====================================
 
-@description('ID of the appsDataStorage Encryption Key.')
+@description('ID of the applications data Storage Account Encryption Key.')
 output appsDataStorageEncryptionKeyId string = (createEncryptionKeys) ? appsDataStorageEncryptionKey.id : ''
 
-@description('Name of the appsDataStorage Encryption Key.')
+@description('Name of the applications data Storage Account Encryption Key.')
 output appsDataStorageEncryptionKeyName string = (createEncryptionKeys) ? appsDataStorageEncryptionKey.name : appsDataStorageEncryptionKeyName
+
+@description('ID of the Application Gateway private Certificate.')
+output appGatewayPrivateCertificateId string = (importCertificates) ? appGatewayPrivateCertificateImportScript.properties.outputs.Result : ''
+
+@description('ID of the Application Gateway public Certificate.')
+output appGatewayPublicCertificateId string = (importCertificates) ? appGatewayPublicCertificateImportScript.properties.outputs.Result : ''

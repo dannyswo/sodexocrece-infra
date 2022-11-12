@@ -11,25 +11,30 @@ devopsmain
 2. devopsiam: Role Assignments for DevOps, admin, system owner Users / Groups.
 
 3. monitoringdatastorage - RL01, MM03: Storage Account for monitoring data, used by networkwatcher and loganalytics.
-4. loganalytics - RL02, MM01: , used by keyvault, agw, appsdatastorage, sqldatabase, acr, aks.
-5. networkwatcher - RL03, MM02
+4. loganalytics - RL02, MM01: Workspace for logs and metrics collection and analysis, used by keyvault, agw, appsdatastorage, sqldatabase, acr, aks.
+5. networkwatcher - RL03, MM02: exports Flow Logs to monitoringdatastorage.
 
 3. devopskeyvault - RL10, MM10: Key Vault for infrastructure services.
-4. devopskeyvaultobjects: Encryption Keys and Secrets creation, and Certificates import.
-5. devopskeyvaultpolicies: Key Vault Access Policies for Managed Identities and Users / Groups.
-
+4. devopskeyvaultobjects: creation of Encryption Keys and Secrets, import of  Certificates.
+5. devopskeyvaultpolicies: configures Key Vault Access Policies for Managed Identities and Users / Groups.
 
 main
 
 1. managedids: Managed Identities of applications and Role Assignments for them.
 2. iam: Role Assignments for application developer Users / Groups.
-2. network1 (optional): VNets and Subnets, Peerings, NSGs, custom Route Table for AKS, only for SWO environment.
-6. keyvault, keyvaultpe, keyvaultobjects, keyvaultpolicies - RL04, MM04
-7. agw - RL05, MM05, AD01
-8. appsdatastorage, appsdatastoragepe - RL06, MM06, AD02
-10. sqldatabase, sqldatabasepe - RL07, MM07
-11. acr, acrpe - RL08, MM08
-12. aks - RL09
+3. network1 (optional): VNets and Subnets, Peerings, NSGs, custom Route Table for AKS, only for SWO environment.
+4. keyvault - RL04, MM04: Key Vault for applications.
+5. keyvaultpe (optional): Private Endpoints, Private DNS Zone and VNet Links.
+6. devopskeyvaultobjects: creation of Encryption Keys or Secrets for applications.
+7. keyvaultpolicies: configures Key Vault Access Policies for Managed Identities and Users / Groups.
+8. agw - RL05, MM05, AD01: Application Gateway, WAF Policies.
+9. appsdatastorage - RL06, MM06, AD02: Storage Account for applications data, Blob Container.
+10. appsdatastoragepe (optional): Private Endpoints, Private DNS Zone and VNet Links.
+11. sqldatabase - RL07, MM07: Azure SQL Server, SQL Database.
+12. sqldatabasepe (optional): Private Endpoints, Private DNS Zone and VNet Links.
+13. acr - RL08, MM08: Container Registry required by aks.
+14. acrpe (optional): Private Endpoints, Private DNS Zone and VNet Links.
+15. aks - RL09: AKS Managed Cluster, custom Private DNS Zone and required Role Assignments. Depends on loganalytics, agw.
 
 Environments:
 

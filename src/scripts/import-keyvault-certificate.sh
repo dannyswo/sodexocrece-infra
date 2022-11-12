@@ -13,4 +13,4 @@ unversionedSecretId=$(echo $versionedSecretId | cut -d'/' -f-5)
 
 json="{ \"Result\": \"$unversionedSecretId\" }"
 
-echo "$json" > $AZ_SCRIPTS_OUTPUT_PATH
+echo $json > "$AZ_SCRIPTS_OUTPUT_PATH"

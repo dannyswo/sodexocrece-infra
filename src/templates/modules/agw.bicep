@@ -62,6 +62,13 @@ param publicCertificateId string
 @description('ID of the private SSL certificate stored in Key Vault.')
 param privateCertificateId string
 
+@description('Application Gateway WAF Policies mode.')
+@allowed([
+  'Detection'
+  'Prevention'
+])
+param wafPoliciesMode string
+
 @description('Enable diagnostics to store Application Gateway logs and metrics.')
 param enableDiagnostics bool
 
@@ -240,14 +247,12 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
           keyVaultSecretId: publicCertificateId
         }
       }
-      /*
       {
         name: '${appGatewayName}-SSLCertificate-Private'
         properties: {
           keyVaultSecretId: privateCertificateId
         }
       }
-      */
     ] : []
     sslProfiles: (enableHttpsPort) ? [
       {
@@ -299,7 +304,7 @@ resource wafPolicies 'Microsoft.Network/ApplicationGatewayWebApplicationFirewall
   properties: {
     policySettings: {
       state: 'Enabled'
-      mode: 'Detection'
+      mode: wafPoliciesMode
       requestBodyCheck: true
       fileUploadLimitInMb: 100
       maxRequestBodySizeInKb: 128

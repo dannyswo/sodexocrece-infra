@@ -22,13 +22,23 @@ param storageAccountNameSuffix string
 ])
 param storageAccountSkuName string
 
-@description('Enable Resource Lock on Monitoring Data Storage Account.')
+@description('Enable Resource Lock on monitoring data Storage Account.')
 param enableLock bool
 
-@description('List of Subnet names allowed to access the Storage Account in the firewall.')
-param allowedSubnetNames array = []
+@description('Enable public access in the PaaS firewall.')
+param enablePublicAccess bool
 
-@description('List of IPs or CIDRs allowed to access the Storage Account in the firewall.')
+@description('Allow bypass of PaaS firewall rules to Azure Services.')
+param bypassAzureServices bool
+
+@description('List of Subnets allowed to access the Storage Account in the PaaS firewall.')
+@metadata({
+  vnetName: 'Name of VNet.'
+  subnetName: 'Name of the Subnet.'
+})
+param allowedSubnets array = []
+
+@description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
 param allowedIPsOrCIDRs array = []
 
 @description('Standards tags applied to all resources.')
@@ -36,8 +46,8 @@ param standardTags object
 
 // ==================================== Resource definitions ====================================
 
-var virtualNetworkRules = [for allowedSubnetName in allowedSubnetNames: {
-  id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnetName)
+var virtualNetworkRules = [for allowedSubnet in allowedSubnets: {
+  id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnet.vnetName, allowedSubnet.subnetName)
   action: 'Allow'
 }]
 
@@ -64,9 +74,9 @@ resource monitoringDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05
     allowBlobPublicAccess: false
     allowCrossTenantReplication: false
     allowedCopyScope: 'AAD'
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
     networkAcls: {
-      bypass: 'AzureServices'
+      bypass: (bypassAzureServices) ? 'AzureServices, Logging, Metrics' : 'None'
       defaultAction: 'Deny'
       virtualNetworkRules: virtualNetworkRules
       ipRules: ipRules

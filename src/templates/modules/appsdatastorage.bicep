@@ -25,11 +25,11 @@ param storageAccountNameSuffix string
 ])
 param storageAccountSkuName string
 
-@description('Name of the CMK used by Storage Account to encrypt blobs.')
-param encryptionKeyName string
-
 @description('URI of the Key Vault where encryption key of the Storage Account is stored.')
 param keyVaultUri string
+
+@description('Name of the CMK used by Storage Account to encrypt blobs.')
+param encryptionKeyName string
 
 @description('Enable diagnostics to store Storage Account access logs.')
 param enableDiagnostics bool
@@ -42,13 +42,20 @@ param diagnosticsWorkspaceName string
 @maxValue(180)
 param logsRetentionDays int
 
-@description('Enable Resource Lock on Application Gateway.')
+@description('Enable Resource Lock on applications data Storage Account.')
 param enableLock bool
 
 @description('Enable public access in the PaaS firewall.')
 param enablePublicAccess bool
 
-@description('List of Subnet allowed to access the Storage Account in the PaaS firewall.')
+@description('Allow bypass of PaaS firewall rules to Azure Services.')
+param bypassAzureServices bool
+
+@description('List of Subnets allowed to access the Storage Account in the PaaS firewall.')
+@metadata({
+  vnetName: 'Name of VNet.'
+  subnetName: 'Name of the Subnet.'
+})
 param allowedSubnets array = []
 
 @description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
@@ -118,7 +125,7 @@ resource appsDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' =
     allowedCopyScope: 'PrivateLink'
     publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
     networkAcls: {
-      bypass: 'None'
+      bypass: (bypassAzureServices) ? 'AzureServices' : 'None'
       defaultAction: 'Deny'
       virtualNetworkRules: virtualNetworkRules
       ipRules: ipRules

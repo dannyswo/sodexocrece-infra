@@ -54,13 +54,13 @@
       ]
     },
     "enableAGICAddon": {
-      "value": false
+      "value": true
     },
     "appGatewayName": {
       "value": "azmxwa1gtc245"
     },
     "enableOMSAgentAddon": {
-      "value": false
+      "value": true
     },
     "workspaceName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"

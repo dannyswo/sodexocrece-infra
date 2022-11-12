@@ -51,3 +51,8 @@ az keyvault certificate import \
   --name crececonsdx-appgateway-cert-private \
   --file cert-private.pfx
 ```
+
+```
+./src/scripts/import-keyvault-certificate.sh "azmxkv1mat350" "crececonsdx-appgateway-cert-private" "certificates/cert-private.pfx"
+.\src\scripts\import-keyvault-certificate.cmd "azmxkv1mat350" "crececonsdx-appgateway-cert-private" "certificates/cert-private.pfx"
+```

@@ -93,6 +93,7 @@ param appGatewayEnableHttpPort bool
 param appGatewayEnableHttpsPort bool
 param appGatewayPublicCertificateId string
 param appGatewayPrivateCertificateId string
+param appGatewayWafPoliciesMode string
 
 param appsDataStorageNameSuffix string
 param appsDataStorageSkuName string
@@ -163,19 +164,27 @@ param aksEnableLock bool
 
 // ==================================== Firewall settings ====================================
 
+param monitoringDataStorageEnablePublicAccess bool
+param monitoringDataStorageBypassAzureServices bool
+param monitoringDataStorageAllowedSubnets array
+param monitoringDataStorageAllowedIPsOrCIDRs array
+
 param keyVaultEnablePublicAccess bool
 param keyVaultBypassAzureServices bool
 param keyVaultAllowedSubnets array
 param keyVaultAllowedIPsOrCIDRs array
 
 param appsDataStorageEnablePublicAccess bool
+param appsDataStorageBypassAzureServices bool
 param appsDataStorageAllowedSubnets array
 param appsDataStorageAllowedIPsOrCIDRs array
 
 param sqlDatabaseEnablePublicAccess bool
+param sqlDatabaseAllowedSubnets array
 param sqlDatabaseAllowedIPRanges array
 
 param acrEnablePublicAccess bool
+param acrBypassAzureServices bool
 param acrAllowedIPsOrCIDRs array
 
 param aksEnablePublicAccess bool
@@ -240,6 +249,8 @@ module networkModule 'modules/network1.bicep' = if (enableNetwork) {
     enableCustomRouteTable: true
     enableKeyVaultServiceEndpoint: true
     enableStorageAccountServiceEndpoint: true
+    enableSqlDatabaseServiceEndpoint: true
+    enableContainerRegistryServiceEndpoint: true
     standardTags: standardTags
   }
 }
@@ -288,6 +299,10 @@ module monitoringDataStorageModule 'modules/monitoringdatastorage.bicep' = {
     storageAccountNameSuffix: monitoringDataStorageNameSuffix
     storageAccountSkuName: monitoringDataStorageSkuName
     enableLock: monitoringDataStorageEnableLock
+    enablePublicAccess: monitoringDataStorageEnablePublicAccess
+    bypassAzureServices: monitoringDataStorageBypassAzureServices
+    allowedSubnets: monitoringDataStorageAllowedSubnets
+    allowedIPsOrCIDRs: monitoringDataStorageAllowedIPsOrCIDRs
     standardTags: standardTags
   }
 }
@@ -364,21 +379,21 @@ module keyVaultObjectsModule 'modules/keyvaultobjects.bicep' = {
     location: location
     keyVaultName: keyVaultModule.outputs.keyVaultName
     createEncryptionKeys: true
-    appsDataStorageEncryptionKeyName: 'crececonsdx-files-key' // crececonsdx-appsdatastorage-key
+    appsDataStorageEncryptionKeyName: 'crececonsdx-files-key' // 'crececonsdx-appsdatastorage-key'
     encryptionKeysIssueDateTime: keyVaultEncryptionKeysIssueDateTime
-    createSecrets: false
+    createSecrets: true
     enableRandomPasswordsGeneration: false
-    sqlDatabaseSQLAdminNameSecretName: 'crececonsdx-sqldatabase-sqladminloginname2'
+    sqlDatabaseSQLAdminNameSecretName: 'crececonsdx-sqldatabase-sqladminloginname2' // 'crececonsdx-sqldatabase-sqladminloginname'
     sqlDatabaseSQLAdminNameSecretValue: sqlDatabaseSQLAdminLoginName
-    sqlDatabaseSQLAdminPassSecretName: 'crececonsdx-sqldatabase-sqladminloginpass'
+    sqlDatabaseSQLAdminPassSecretName: 'crececonsdx-sqldatabase-sqladminloginpass2' // 'crececonsdx-sqldatabase-sqladminloginpass'
     sqlDatabaseSQLAdminPassSecretValue: sqlDatabaseSQLAdminLoginPass
     sqlDatabaseAADAdminNameSecretName: 'crececonsdx-sqldatabase-aadadminloginname'
     sqlDatabaseAADAdminNameSecretValue: sqlDatabaseAADAdminLoginName
     secrtsIssueDateTime: keyVaultSecrtsIssueDateTime
     importCertificates: false
-    appGatewayPublicCertificateName: 'crececonsdx-appgateway-cert-public'
+    appGatewayPublicCertificateName: 'crececonsdx-appgateway-cert-public3' // 'crececonsdx-appgateway-cert-public'
     appGatewayPublicCertificatePath: keyVaultAppGatewayPublicCertificatePath
-    appGatewayPrivateCertificateName: 'crececonsdx-appgateway-cert-private'
+    appGatewayPrivateCertificateName: 'crececonsdx-appgateway-cert-private6' // 'crececonsdx-appgateway-cert-private'
     appGatewayPrivateCertificatePath: keyVaultAppGatewayPrivateCertificatePath
   }
 }
@@ -415,6 +430,7 @@ module appGatewayModule 'modules/agw.bicep' = {
     enableHttpsPort: appGatewayEnableHttpsPort
     publicCertificateId: appGatewayPublicCertificateId
     privateCertificateId: appGatewayPrivateCertificateId
+    wafPoliciesMode: appGatewayWafPoliciesMode
     enableDiagnostics: appGatewayEnableDiagnostics
     diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
     logsRetentionDays: appGatewayLogsRetentionDays
@@ -432,13 +448,14 @@ module appsDataStorageModule 'modules/appsdatastorage.bicep' = {
     managedIdentityName: managedIdsModule.outputs.appsDataStorageManagedIdentityName
     storageAccountNameSuffix: appsDataStorageNameSuffix
     storageAccountSkuName: appsDataStorageSkuName
-    encryptionKeyName: keyVaultObjectsModule.outputs.appsDataStorageEncryptionKeyName
     keyVaultUri: keyVaultModule.outputs.keyVaultUri
+    encryptionKeyName: keyVaultObjectsModule.outputs.appsDataStorageEncryptionKeyName
     enableDiagnostics: appsDataStorageEnableDiagnostics
     diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
     logsRetentionDays: appsDataStorageLogsRetentionDays
     enableLock: appsDataStorageEnableLock
     enablePublicAccess: appsDataStorageEnablePublicAccess
+    bypassAzureServices: appsDataStorageBypassAzureServices
     allowedSubnets: appsDataStorageAllowedSubnets
     allowedIPsOrCIDRs: appsDataStorageAllowedIPsOrCIDRs
     standardTags: standardTags
@@ -484,6 +501,7 @@ module sqlDatabaseModule 'modules/sqldatabase.bicep' = {
     enableVulnerabilityAssessments: sqlDatabaseEnableVulnerabilityAssessments
     enableLock: sqlDatabaseEnableLock
     enablePublicAccess: sqlDatabaseEnablePublicAccess
+    allowedSubnets: sqlDatabaseAllowedSubnets
     allowedIPRanges: sqlDatabaseAllowedIPRanges
     standardTags: standardTags
   }
@@ -520,6 +538,7 @@ module acrModule 'modules/acr.bicep' = {
     logsRetentionDays: acrLogsRetentionDays
     enableLock: acrEnableLock
     enablePublicAccess: acrEnablePublicAccess
+    bypassAzureServices: acrBypassAzureServices
     allowedIPsOrCIDRs: acrAllowedIPsOrCIDRs
     standardTags: standardTags
   }

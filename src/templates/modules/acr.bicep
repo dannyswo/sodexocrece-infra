@@ -57,7 +57,10 @@ param enableLock bool
 @description('Enable public access in the PaaS firewall.')
 param enablePublicAccess bool
 
-@description('List of IPs or CIDRs allowed to access the Container Registry in the firewall.')
+@description('Allow bypass of PaaS firewall rules to Azure Services.')
+param bypassAzureServices bool
+
+@description('List of IPs or CIDRs allowed to access the Container Registry in the PaaS firewall.')
 param allowedIPsOrCIDRs array = []
 
 @description('Standards tags applied to all resources.')
@@ -99,7 +102,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = 
     anonymousPullEnabled: false
     dataEndpointEnabled: false
     publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
-    networkRuleBypassOptions: 'None'
+    networkRuleBypassOptions: (bypassAzureServices) ? 'AzureServices' : 'None'
     networkRuleSet: {
       defaultAction: 'Deny'
       ipRules: ipRules

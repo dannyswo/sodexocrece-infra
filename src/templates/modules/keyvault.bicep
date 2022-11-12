@@ -69,7 +69,7 @@ param standardTags object
 
 var virtualNetworkRules = [for allowedSubnet in allowedSubnets: {
   id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnet.vnetName, allowedSubnet.subnetName)
-  ignoreMissingVnetServiceEndpoint: true
+  ignoreMissingVnetServiceEndpoint: false
 }]
 
 var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {

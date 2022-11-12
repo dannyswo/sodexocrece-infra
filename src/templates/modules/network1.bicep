@@ -93,11 +93,17 @@ param devopsAgentsSubnetAddressPrefix string
 @description('Enable custom Route Table for AKS attached to Gateway and Apps VNet.')
 param enableCustomRouteTable bool
 
-@description('Enable Key Vault Service Endpoint on Gateway Subnet.')
+@description('Enable Key Vault Service Endpoint on Gateway and Apps Subnet.')
 param enableKeyVaultServiceEndpoint bool
 
 @description('Enable Storage Account Service Endpoint on Gateway and Apps Subnet.')
 param enableStorageAccountServiceEndpoint bool
+
+@description('Enable Azure SQL Database Service Endpoint on Apps Subnet.')
+param enableSqlDatabaseServiceEndpoint bool
+
+@description('Enable Container Registry Service Endpoint on Apps Subnet.')
+param enableContainerRegistryServiceEndpoint bool
 
 @description('Standards tags applied to all resources.')
 param standardTags object
@@ -115,12 +121,23 @@ var serviceEndpointDefinitions = {
     locations: [ location ]
     service: 'Microsoft.Storage'
   }
+  sql: {
+    locations: [ location ]
+    service: 'Microsoft.Sql'
+  }
+  containerRegistry: {
+    locations: [ location ]
+    service: 'Microsoft.ContainerRegistry'
+  }
 }
 
 var gatewaySubnetServiceEndpoints0 = (enableKeyVaultServiceEndpoint) ? [ serviceEndpointDefinitions.keyVault ] : []
 var gatewaySubnetServiceEndpoints = (enableStorageAccountServiceEndpoint) ? concat(gatewaySubnetServiceEndpoints0, [ serviceEndpointDefinitions.storageAccount ]) : gatewaySubnetServiceEndpoints0
 
-var appsSubnetServiceEndpoints = (enableStorageAccountServiceEndpoint) ? [ serviceEndpointDefinitions.storageAccount ] : []
+var appsSubnetServiceEndpoints0 = (enableKeyVaultServiceEndpoint) ? [ serviceEndpointDefinitions.keyVault ] : []
+var appsSubnetServiceEndpoints1 = (enableStorageAccountServiceEndpoint) ? concat(appsSubnetServiceEndpoints0, [ serviceEndpointDefinitions.storageAccount ]) : appsSubnetServiceEndpoints0
+var appsSubnetServiceEndpoints2 = (enableSqlDatabaseServiceEndpoint) ? concat(appsSubnetServiceEndpoints1, [ serviceEndpointDefinitions.sql ]) : appsSubnetServiceEndpoints1
+var appsSubnetServiceEndpoints = (enableContainerRegistryServiceEndpoint) ? concat(appsSubnetServiceEndpoints2, [ serviceEndpointDefinitions.containerRegistry ]) : appsSubnetServiceEndpoints2
 
 resource gatewayVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewayVNetNameSuffix}'
