@@ -1,3 +1,14 @@
+/**
+ * Module: network2
+ * Depends on: N/A
+ * Used by: system/main
+ * Common resources: N/A
+ */
+
+// ==================================== Parameters ====================================
+
+// ==================================== Common parameters ====================================
+
 @description('Azure region.')
 param location string = resourceGroup().location
 
@@ -9,6 +20,11 @@ param location string = resourceGroup().location
   'PRD'
 ])
 param env string
+
+@description('Standards tags applied to all resources.')
+param standardTags object
+
+// ==================================== Resource properties ====================================
 
 @description('Standard name of the Main VNet.')
 @minLength(4)
@@ -42,10 +58,7 @@ param endpointsSubnetNameSuffix string
 @description('IP range or CIDR of the Endpoints Subnet.')
 param endpointsSubnetAddressPrefix string
 
-@description('Standards tags applied to all resources.')
-param standardTags object
-
-// ==================================== Resource definitions ====================================
+// ==================================== Resources ====================================
 
 // ==================================== VNets and Subnets ====================================
 
@@ -247,6 +260,8 @@ resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   }
   tags: standardTags
 }
+
+// ==================================== Outputs ====================================
 
 @description('ID of the created VNet.')
 output vnetId string = mainVNet.id

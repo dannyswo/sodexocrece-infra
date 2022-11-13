@@ -218,12 +218,6 @@
     "aksEnablePrivateCluster": {
       "value": true
     },
-    "aksPrivateDnsZoneLinkedVNetNames": {
-      "value": [
-        "BRS-MEX-USE2-CRECESDX-SWO-VN04",
-        "BRS-MEX-USE2-CRECESDX-SWO-VN05"
-      ]
-    },
     "aksEnableAGICAddon": {
       "value": true
     },

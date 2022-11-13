@@ -1,3 +1,14 @@
+/**
+ * Module: network1
+ * Depends on: N/A
+ * Used by: system/main
+ * Common resources: N/A
+ */
+
+// ==================================== Parameters ====================================
+
+// ==================================== Common parameters ====================================
+
 @description('Azure region.')
 param location string = resourceGroup().location
 
@@ -9,6 +20,11 @@ param location string = resourceGroup().location
   'PRD'
 ])
 param env string
+
+@description('Standards tags applied to all resources.')
+param standardTags object
+
+// ==================================== Resource properties ====================================
 
 @description('Suffix of the Gateway VNet name.')
 @minLength(4)
@@ -105,10 +121,7 @@ param enableSqlDatabaseServiceEndpoint bool
 @description('Enable Container Registry Service Endpoint on Apps Subnet.')
 param enableContainerRegistryServiceEndpoint bool
 
-@description('Standards tags applied to all resources.')
-param standardTags object
-
-// ==================================== Resource definitions ====================================
+// ==================================== Resources ====================================
 
 // ==================================== VNets and Subnets ====================================
 

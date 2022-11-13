@@ -1,3 +1,14 @@
+/**
+ * Module: networkwatcher
+ * Depends on: monitoringdatastorage
+ * Used by: shared/main
+ * Common resources: RL01, MM03
+ */
+
+// ==================================== Parameters ====================================
+
+// ==================================== Common parameters ====================================
+
 @description('Azure region.')
 param location string = resourceGroup().location
 
@@ -9,6 +20,11 @@ param location string = resourceGroup().location
   'PRD'
 ])
 param env string
+
+@description('Standards tags applied to all resources.')
+param standardTags object
+
+// ==================================== Resource properties ====================================
 
 @description('Name of the target Network Security Group (NSG) where flow logs will be captured.')
 param targetNSGName string
@@ -24,13 +40,14 @@ param flowAnalyticsWorkspaceName string
 @maxValue(180)
 param flowLogsRetentionDays int
 
+// ==================================== Resource Lock switch ====================================
+
 @description('Enable Resource Lock on Network Watcher.')
 param enableLock bool
 
-@description('Standards tags applied to all resources.')
-param standardTags object
+// ==================================== Resources ====================================
 
-// ==================================== Resource definitions ====================================
+// ==================================== Network Watcher ====================================
 
 var networkWatcherNameSuffix = 'MM02'
 
@@ -46,6 +63,8 @@ resource networkWatcher 'Microsoft.Network/networkWatchers@2022-05-01' = {
 //   name: 'NetworkWatcher_${location}'
 // }
 
+// ==================================== Network Watcher Flow Logs ====================================
+
 var targetNSGId = resourceId('Microsoft.Network/networkSecurityGroups', targetNSGName)
 
 var flowLogsStorageAccountId = resourceId('Microsoft.Storage/storageAccounts', flowLogsStorageAccountName)
@@ -53,7 +72,7 @@ var flowLogsStorageAccountId = resourceId('Microsoft.Storage/storageAccounts', f
 var flowAnalyticsWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', flowAnalyticsWorkspaceName)
 
 resource flowLogs 'Microsoft.Network/networkWatchers/flowLogs@2022-05-01' = {
-  name: '${networkWatcherNameSuffix}-flowLogs'
+  name: '${networkWatcherNameSuffix}-FlowLogs'
   parent: networkWatcher
   location: location
   properties: {
@@ -80,6 +99,8 @@ resource flowLogs 'Microsoft.Network/networkWatchers/flowLogs@2022-05-01' = {
   tags: standardTags
 }
 
+// ==================================== Resource Lock ====================================
+
 resource networkWatcherLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RL03'
   scope: networkWatcher
@@ -89,6 +110,7 @@ resource networkWatcherLock 'Microsoft.Authorization/locks@2017-04-01' = if (ena
   }
 }
 
+// ==================================== Outputs ====================================
 
 @description('Name of the created Network Watcher.')
 output networkWatcherId string = networkWatcher.id

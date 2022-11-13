@@ -1,3 +1,14 @@
+/**
+ * Module: serviceendpointpolicies
+ * Depends on: N/A
+ * Used by: system/main
+ * Resources: N/A
+ */
+
+// ==================================== Parameters ====================================
+
+// ==================================== Common parameters ====================================
+
 @description('Azure region.')
 param location string = resourceGroup().location
 
@@ -10,16 +21,18 @@ param location string = resourceGroup().location
 ])
 param env string
 
-@description('ID of the Key Vault.')
-param keyVaultId string
-
-@description('ID of the Storage Account for monitoring data.')
-param monitoringDataStorageAccountId string
-
 @description('Standards tags applied to all resources.')
 param standardTags object
 
-// ==================================== Resource definitions ====================================
+// ==================================== Resource properties ====================================
+
+@description('ID of the Key Vault.')
+param keyVaultId string
+
+@description('ID of the monitoring data Storage Account.')
+param monitoringDataStorageAccountId string
+
+// ==================================== Resources ====================================
 
 // ==================================== Service Endpoint Policies ====================================
 
@@ -52,7 +65,7 @@ resource monitoringDataStorageServiceEndpointPolicies 'Microsoft.Network/service
         name: 'SE02-Definition1'
         properties: {
           service: 'Microsoft.Storage'
-          description: 'Access to Storage Account for monitoring data via Service Endpoint.'
+          description: 'Access to monitoring data Storage Account via Service Endpoint.'
           serviceResources: [
             monitoringDataStorageAccountId
           ]
@@ -68,5 +81,5 @@ resource monitoringDataStorageServiceEndpointPolicies 'Microsoft.Network/service
 @description('ID of the Service Endpoint Policies to access Key Vault.')
 output keyVaultServiceEndpointPoliciesId string = keyVaultServiceEndpointPolicies.id
 
-@description('ID of the Service Endpoint Policies to access Storage Account for monitoring data.')
+@description('ID of the Service Endpoint Policies to access monitoring data Storage Account.')
 output monitoringDataStorageServiceEndpointPoliciesId string = monitoringDataStorageServiceEndpointPolicies.id

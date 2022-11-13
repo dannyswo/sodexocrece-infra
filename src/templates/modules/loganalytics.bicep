@@ -1,3 +1,14 @@
+/**
+ * Module: loganalytics
+ * Depends on: monitoringdatastorage
+ * Used by: shared/main
+ * Common resources: RL02
+ */
+
+// ==================================== Parameters ====================================
+
+// ==================================== Common parameters ====================================
+
 @description('Azure region to deploy the AKS Managed Cluster.')
 param location string = resourceGroup().location
 
@@ -9,6 +20,11 @@ param location string = resourceGroup().location
   'PRD'
 ])
 param env string
+
+@description('Standards tags applied to all resources.')
+param standardTags object
+
+// ==================================== Resource properties ====================================
 
 @description('SKU name of the Log Analytics Workspace.')
 @allowed([
@@ -35,13 +51,14 @@ param logRetentionDays int
 @description('Name of the linked Storage Account for the Log Analytics Workspace.')
 param linkedStorageAccountName string
 
-@description('Enable Resource Lock on Monitoring Data Storage Account.')
+// ==================================== Resource Lock switch ====================================
+
+@description('Enable Resource Lock on monitoring data Storage Account.')
 param enableLock bool
 
-@description('Standards tags applied to all resources.')
-param standardTags object
+// ==================================== Resources ====================================
 
-// ==================================== Resource definitions ====================================
+// ==================================== Log Analytics Workspace ====================================
 
 var workspaceSku = (workspaceSkuName == 'CapacityReservation') ? {
   name: workspaceSkuName
@@ -87,6 +104,8 @@ resource linkedStorageAccounts 'Microsoft.OperationalInsights/workspaces/linkedS
   }
 }
 
+// ==================================== Resource Lock ====================================
+
 resource logAnalyticsWorkspaceLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RL02'
   scope: logAnalyticsWorkspace
@@ -95,6 +114,8 @@ resource logAnalyticsWorkspaceLock 'Microsoft.Authorization/locks@2017-04-01' = 
     notes: 'Log Analytics Workspace should not be deleted.'
   }
 }
+
+// ==================================== Outputs ====================================
 
 @description('ID of the Log Analytics Workspace.')
 output workspaceId string = logAnalyticsWorkspace.id

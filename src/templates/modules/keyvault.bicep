@@ -1,3 +1,14 @@
+/**
+ * Module: infrakeyvault
+ * Depends on: loganalytics
+ * Used by: shared/main
+ * Common resources: RL04, MM04
+ */
+
+ // ==================================== Parameters ====================================
+
+ // ==================================== Common parameters ====================================
+
 @description('Azure region to deploy the Key Vault.')
 param location string = resourceGroup().location
 
@@ -9,6 +20,8 @@ param location string = resourceGroup().location
   'PRD'
 ])
 param env string
+
+// ==================================== Resource properties ====================================
 
 @description('Suffix used in the Key Vault name.')
 @minLength(6)
@@ -32,6 +45,8 @@ param tenantId string = subscription().tenantId
 @description('Enable RBAC authorization in Key Vault and ignore access policies.')
 param enableRbacAuthorization bool
 
+// ==================================== Diagnostics options ====================================
+
 @description('Enable diagnostics to store Key Vault audit logs.')
 param enableDiagnostics bool
 
@@ -43,8 +58,12 @@ param diagnosticsWorkspaceName string
 @maxValue(180)
 param logsRetentionDays int
 
+// ==================================== Resource Lock switch ====================================
+
 @description('Enable Resource Lock on Key Vault.')
 param enableLock bool
+
+// ==================================== PaaS Firewall settings ====================================
 
 @description('Enable public access in the PaaS firewall.')
 param enablePublicAccess bool
@@ -65,7 +84,9 @@ param allowedIPsOrCIDRs array = []
 @description('Standard tags applied to all resources.')
 param standardTags object
 
-// ==================================== Resource definitions ====================================
+// ==================================== Resources ====================================
+
+// ==================================== Key Vault ====================================
 
 var virtualNetworkRules = [for allowedSubnet in allowedSubnets: {
   id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnet.vnetName, allowedSubnet.subnetName)
@@ -105,6 +126,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   tags: standardTags
 }
 
+// ==================================== Diagnostics ====================================
+
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostics) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-MM04'
   scope: keyVault
@@ -123,6 +146,8 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
   }
 }
 
+// ==================================== Resource Lock ====================================
+
 resource keyVaultLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RL04'
   scope: keyVault
@@ -132,10 +157,12 @@ resource keyVaultLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLoc
   }
 }
 
+// ==================================== Outputs ====================================
+
 @description('ID of the Key Vault instance.')
 output keyVaultId string = keyVault.id
 
-@description('NAmeof the Key Vault instance.')
+@description('Name of the Key Vault instance.')
 output keyVaultName string = keyVault.name
 
 @description('URI of the Key Vault instance.')

@@ -1,3 +1,14 @@
+/**
+ * Module: keyvaultpolicies
+ * Depends on: infrakeyvault
+ * Used by: shared/main
+ * Common resources: N/A
+ */
+
+// ==================================== Parameters ====================================
+
+// ==================================== Resource properties ====================================
+
 @description('Name of the Key Vault.')
 param keyVaultName string
 
@@ -16,11 +27,9 @@ param applicationsPrincipalIds array = []
 @description('List of administrators AAD Principal IDs allowed to manage Key Vault objects.')
 param adminsPrincipalIds array = []
 
-// ==================================== Resource definitions ====================================
+// ==================================== Resources ====================================
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
-  name: keyVaultName
-}
+// ==================================== Key Vault Access Policies ====================================
 
 var allCertificatesPermissions = [
   'backup'
@@ -127,4 +136,10 @@ resource appGatewayAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2022
   properties: {
     accessPolicies: accessPolicies
   }
+}
+
+// ==================================== Key Vault ====================================
+
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+  name: keyVaultName
 }

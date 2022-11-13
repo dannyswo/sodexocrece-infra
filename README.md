@@ -5,50 +5,39 @@ Infrastructure Repository for Sodexo Crece Project
 
 Templates and Modules (instances):
 
-devopsmain
+shared/main
 
-1. devopsmanagedids: Managed Identities of infrastructure services and Role Assignments for them.
-2. devopsiam: Role Assignments for DevOps, admin, system owner Users / Groups.
+1. infraManagedIdsModule (inframanagedids): Managed Identities of infrastructure services and Role Assignments for them.
+2. infraIamModule (infraiam): Role Assignments for DevOps, admin, system owner Users / Groups.
+3. monitoringDataStorageModule (monitoringdatastorage): Storage Account for monitoring data, used by networkwatcher and loganalytics. [RL01, MM03]
+4. logAnalyticsModule (loganalytics): Workspace for logs and metrics collection and analysis, used by keyvault, agw, appsdatastorage, sqldatabase, acr, aks. [RL02, MM01]
+5. networkWatcherModule (networkwatcher): exports Flow Logs to monitoringdatastorage. [RL03, MM02]
+6. infraKeyVaultModule (infrakeyvault): Key Vault for infrastructure services. [RL10, MM10]
+7. infraKeyVaultObjectsModule (infrakeyvaultobjects): creation of Encryption Keys and Secrets, import of  Certificates.
+8. infraKeyVaultPoliciesModule (infrakeyvaultpolicies): configures Key Vault Access Policies for Managed Identities and Users / Groups.
 
-3. monitoringdatastorage - RL01, MM03: Storage Account for monitoring data, used by networkwatcher and loganalytics.
-4. loganalytics - RL02, MM01: Workspace for logs and metrics collection and analysis, used by keyvault, agw, appsdatastorage, sqldatabase, acr, aks.
-5. networkwatcher - RL03, MM02: exports Flow Logs to monitoringdatastorage.
+system/main
 
-3. devopskeyvault - RL10, MM10: Key Vault for infrastructure services.
-4. devopskeyvaultobjects: creation of Encryption Keys and Secrets, import of  Certificates.
-5. devopskeyvaultpolicies: configures Key Vault Access Policies for Managed Identities and Users / Groups.
-
-main
-
-1. managedids: Managed Identities of applications and Role Assignments for them.
-2. iam: Role Assignments for application developer Users / Groups.
-3. network1 (optional): VNets and Subnets, Peerings, NSGs, custom Route Table for AKS, only for SWO environment.
-4. keyvault - RL04, MM04: Key Vault for applications.
-5. keyvaultpe (optional): Private Endpoints, Private DNS Zone and VNet Links.
-6. devopskeyvaultobjects: creation of Encryption Keys or Secrets for applications.
-7. keyvaultpolicies: configures Key Vault Access Policies for Managed Identities and Users / Groups.
-8. agw - RL05, MM05, AD01: Application Gateway, WAF Policies.
-9. appsdatastorage - RL06, MM06, AD02: Storage Account for applications data, Blob Container.
-10. appsdatastoragepe (optional): Private Endpoints, Private DNS Zone and VNet Links.
-11. sqldatabase - RL07, MM07: Azure SQL Server, SQL Database.
-12. sqldatabasepe (optional): Private Endpoints, Private DNS Zone and VNet Links.
-13. acr - RL08, MM08: Container Registry required by aks.
-14. acrpe (optional): Private Endpoints, Private DNS Zone and VNet Links.
-15. aks - RL09: AKS Managed Cluster, custom Private DNS Zone and required Role Assignments. Depends on loganalytics, agw.
+1. appsManagedIdsModule (appsmanagedids): Managed Identities of applications and Role Assignments for them.
+2. appsIamModule (appsiam): Role Assignments for application developer Users / Groups.
+3. networkModule (network1, optional): VNets and Subnets, Peerings, NSGs, custom Route Table for AKS, only for SWO environment.
+4. appsKeyVaultModule (appskeyvault): Key Vault for applications. [RL04, MM04]
+5. appsKeyVaultPrivateEndpointModule (privateendpoint, optional): Private Endpoints, Private DNS Zone and VNet Links.
+6. appsKeyVaultObjectsModule (appskeyvaultobjects): creation of Encryption Keys or Secrets for applications.
+7. appsKeyVaultPoliciesModule (appskeyvaultpolicies): configures Key Vault Access Policies for Managed Identities and Users / Groups.
+8. appGatewayModule (agw): Application Gateway, WAF Policies. [RL05, MM05, AD01]
+9. appsDataStorageModule (appsdatastorage): Storage Account for applications data, Blob Container. [RL06, MM06, AD02]
+10. appsDataStoragePrivateEndpointModule (privateendpoint, optional): Private Endpoints, Private DNS Zone and VNet Links.
+11. sqlDatabaseModule (sqldatabase): Azure SQL Server, SQL Database. [RL07, MM07]
+12. sqlDatabasePrivateEndpointModule (privateendpoint, optional): Private Endpoints, Private DNS Zone and VNet Links.
+13. acrModule (acr): Container Registry required by aks. [RL08, MM08]
+14. acrPrivateEndpointModule (privateendpoint, optional): Private Endpoints, Private DNS Zone and VNet Links.
+15. aksModule (aks): AKS Managed Cluster, custom Private DNS Zone and required Role Assignments. Depends on loganalytics, agw. [RL09, AD03]
 
 Environments:
 
 * SoftwareONE: SWO
 * Sodexo: DEV, UAT, PRD
-
-Stacks and modules instances (experimental):
-
-1. iam: managedids, users
-2. network: network1
-3. monitoring: monitoringdatastorage, loganalytics, networkwatcher
-4. security: keyvault, keyvaultpe, keyvaultobjects, keyvaultpolicies
-5. databases: appsdatastorage, appsdatastoragepe, sqldatabase, sqldatabasepe
-6. frontend: agw, acr, acrpe, aks
 
 ## Useful Azure CLI Commands
 

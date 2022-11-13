@@ -1,3 +1,14 @@
+/**
+ * Module: sqldatabase
+ * Depends on: loganalytics
+ * Used by: system/main
+ * Common resources: RL07, MM07
+ */
+
+// ==================================== Parameters ====================================
+
+// ==================================== Common parameters ====================================
+
 @description('Azure region.')
 param location string = resourceGroup().location
 
@@ -9,6 +20,11 @@ param location string = resourceGroup().location
   'PRD'
 ])
 param env string
+
+@description('Standards tags applied to all resources.')
+param standardTags object
+
+// ==================================== Resource properties ====================================
 
 @description('Suffix used in the name of the Azure SQL Server.')
 @minLength(6)
@@ -62,6 +78,8 @@ param zoneRedundant bool
 ])
 param backupRedundancy string
 
+// ==================================== Diagnostics options ====================================
+
 @description('Enable Auditing feature on Azure SQL Server.')
 param enableAuditing bool
 
@@ -79,8 +97,12 @@ param enableThreatProtection bool
 @description('Enable Vulnerability Assessments on Azure SQL Server.')
 param enableVulnerabilityAssessments bool
 
+// ==================================== Resource Lock switch ====================================
+
 @description('Enable Resource Lock on Azure SQL Server.')
 param enableLock bool
+
+// ==================================== PaaS Firewall settings ====================================
 
 @description('Enable public access in the PaaS firewall.')
 param enablePublicAccess bool
@@ -99,10 +121,9 @@ param allowedSubnets array = []
 })
 param allowedIPRanges array = []
 
-@description('Standards tags applied to all resources.')
-param standardTags object
+// ==================================== Resources ====================================
 
-// ==================================== Resource definitions ====================================
+// ==================================== SQL Server ====================================
 
 resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
   name: 'azmxdb1${sqlServerNameSuffix}'
@@ -126,6 +147,8 @@ resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
   }
   tags: standardTags
 }
+
+// ==================================== SQL Database ====================================
 
 var standardSkus = [
   {
@@ -271,6 +294,8 @@ resource connectionPolicies 'Microsoft.Sql/servers/connectionPolicies@2022-05-01
   }
 }
 
+// ==================================== PaaS Firewall ====================================
+
 resource virtualNetworkRules 'Microsoft.Sql/servers/virtualNetworkRules@2022-05-01-preview' = [for (allowedSubnet, index) in allowedSubnets: if (enablePublicAccess) {
   name: 'virtualNetworkRules-${index}'
   parent: sqlServer
@@ -288,6 +313,8 @@ resource firewallRules 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' 
     endIpAddress: allowedIPRange.endIPAddress
   }
 }]
+
+// ==================================== Diagnostics / Auditing ====================================
 
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableAuditing) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-MM07'
@@ -349,6 +376,8 @@ resource sqlVulnerabilityAssessments 'Microsoft.Sql/servers/sqlVulnerabilityAsse
   }
 }
 
+// ==================================== Resource Lock ====================================
+
 resource storageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RL07'
   scope: sqlServer
@@ -358,8 +387,10 @@ resource storageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (ena
   }
 }
 
-@description('ID of the Azure SQL Server')
+// ==================================== Outputs ====================================
+
+@description('ID of the Azure SQL Server instance.')
 output sqlServerId string = sqlServer.id
 
-@description('ID of the Azure SQL Database')
+@description('ID of the Azure SQL Database.')
 output sqlDatabaseId string = sqlDatabase.id

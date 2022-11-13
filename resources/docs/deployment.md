@@ -21,30 +21,29 @@ az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\
 Deploy individual modules:
 
 ```
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\managedids.bicep -p .\resources\config-modules\swo\managedids.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\managedids.bicep -p .\resources\config-modules\swo\managedids.swo.json
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\network1.bicep -p .\resources\config-modules\swo\network1.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\network1.bicep -p .\resources\config-modules\swo\network1.swo.json
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\monitoringdatastorage.bicep -p .\resources\config-modules\swo\monitoringdatastorage.swo.json
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\loganalytics.bicep -p .\resources\config-modules\swo\loganalytics.swo.json
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\networkwatcher.bicep -p .\resources\config-modules\swo\networkwatcher.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\monitoringdatastorage.bicep -p .\resources\config-modules\swo\monitoringdatastorage.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\loganalytics.bicep -p .\resources\config-modules\swo\loganalytics.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\networkwatcher.bicep -p .\resources\config-modules\swo\networkwatcher.swo.json
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\keyvault.bicep -p .\resources\config-modules\swo\keyvault.swo.json
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\privateendpoint.bicep -p .\resources\config-modules\swo\keyvaultpe.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\keyvault.bicep -p .\resources\config-modules\swo\keyvault.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\privateendpoint.bicep -p .\resources\config-modules\swo\keyvaultpe.swo.json
 
 az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\agw.bicep -p .\resources\config-modules\swo\agw.swo.json
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\appsdatastorage.bicep -p .\resources\config-modules\swo\appsdatastorage.swo.json
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\privateendpoint.bicep -p .\resources\config-modules\swo\appsdatastoragepe.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\appsdatastorage.bicep -p .\resources\config-modules\swo\appsdatastorage.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\privateendpoint.bicep -p .\resources\config-modules\swo\appsdatastoragepe.swo.json
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\sqldatabase.bicep -p .\resources\config-modules\swo\sqldatabase.swo.json
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\privateendpoint.bicep -p .\resources\config-modules\swo\sqldatabasepe.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\sqldatabase.bicep -p .\resources\config-modules\swo\sqldatabase.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\privateendpoint.bicep -p .\resources\config-modules\swo\sqldatabasepe.swo.json
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\acr.bicep -p .\resources\config-modules\swo\acr.swo.json
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\privateendpoint.bicep -p .\resources\config-modules\swo\acrpe.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\acr.bicep -p .\resources\config-modules\swo\acr.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\privateendpoint.bicep -p .\resources\config-modules\swo\acrpe.swo.json
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\modules\aks.bicep -p .\resources\config-modules\swo\aks.swo.json
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\aks.bicep -p .\resources\config-modules\swo\aks.swo.json -p nodeResourceGroupName=RG-demo-sodexo-crece-03
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\aks.bicep -p .\resources\config-modules\swo\aks.swo.json
 ```
 
 Verify failed deployments:

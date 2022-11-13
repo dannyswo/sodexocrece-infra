@@ -1,0 +1,26 @@
+/**
+ * Module: [Module name]
+ * Depends on: [List of module names]
+ * Used by: shared/main | system/main
+ * Common resources: [Suffixes of common resources like resourceLocks (RL), diagnosticsSettings (MM) or managedIdentities (AD)]
+ */
+
+// ==================================== Parameters ====================================
+
+
+// ==================================== Common parameters ====================================
+
+// ==================================== Resource properties ====================================
+
+// ==================================== Diagnostics options ====================================
+
+// ==================================== Resource Lock switch ====================================
+
+// ==================================== PaaS Firewall settings ====================================
+
+
+// ==================================== Resources ====================================
+
+
+// ==================================== Outputs ====================================
+

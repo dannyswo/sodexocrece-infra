@@ -1,4 +1,11 @@
+/**
+ * Template: shared/group
+ * Modules: N/A
+ */
+
 targetScope = 'subscription'
+
+// ==================================== Parameters ====================================
 
 @description('Azure region.')
 param location string = 'eastus2'
@@ -26,7 +33,7 @@ param standardTags object = {
   dd_organization: ''
 }
 
-// ==================================== Resource definitions ====================================
+// ==================================== Resources ====================================
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RG01'

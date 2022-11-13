@@ -1,3 +1,14 @@
+/**
+ * Module: privateendpoint
+ * Depends on: network1 (optional)
+ * Used by: system/main
+ * Resources: RL01, MM03
+ */
+
+// ==================================== Parameters ====================================
+
+// ==================================== Common parameters ====================================
+
 @description('Azure region.')
 param location string = resourceGroup().location
 
@@ -9,6 +20,11 @@ param location string = resourceGroup().location
   'PRD'
 ])
 param env string
+
+@description('Standard tags applied to all resources.')
+param standardTags object
+
+// ==================================== Resource properties ====================================
 
 @description('Standard name of the Private Endpoint.')
 @minLength(4)
@@ -39,10 +55,9 @@ param groupId string
 @description('Names of the VNets linked to the DNS Private Zone.')
 param linkedVNetNames array
 
-@description('Standard tags applied to all resources.')
-param standardTags object
+// ==================================== Resources ====================================
 
-// ==================================== Resource definitions ====================================
+// ==================================== Private Endpoint ====================================
 
 var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
 
@@ -83,6 +98,8 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
   }
   tags: standardTags
 }
+
+// ==================================== Private DNS Zone ====================================
 
 var privateDnsZoneNamesDictionary = {
   vault: 'privatelink.vaultcore.azure.net'
@@ -127,3 +144,8 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
     ]
   }
 }
+
+// ==================================== Outputs ====================================
+
+@description('Private IP address used by the Private Endpoint NIC.')
+output privateEndpointPrivateIPAddress string = privateEndpoint.properties.ipConfigurations[0].properties.privateIPAddress

@@ -1,3 +1,14 @@
+/**
+ * Module: monitoringdatastorage
+ * Depends on: N/A
+ * Used by: shared/main
+ * Common resources: RL01
+ */
+
+// ==================================== Parameters ====================================
+
+// ==================================== Common parameters ====================================
+
 @description('Azure region.')
 param location string = resourceGroup().location
 
@@ -9,6 +20,11 @@ param location string = resourceGroup().location
   'PRD'
 ])
 param env string
+
+@description('Standards tags applied to all resources.')
+param standardTags object
+
+// ==================================== Resource properties ====================================
 
 @description('Suffix used in the Storage Account name.')
 @minLength(6)
@@ -22,8 +38,12 @@ param storageAccountNameSuffix string
 ])
 param storageAccountSkuName string
 
+// ==================================== Resource Lock switch ====================================
+
 @description('Enable Resource Lock on monitoring data Storage Account.')
 param enableLock bool
+
+// ==================================== PaaS Firewall settings ====================================
 
 @description('Enable public access in the PaaS firewall.')
 param enablePublicAccess bool
@@ -41,10 +61,7 @@ param allowedSubnets array = []
 @description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
 param allowedIPsOrCIDRs array = []
 
-@description('Standards tags applied to all resources.')
-param standardTags object
-
-// ==================================== Resource definitions ====================================
+// ==================================== Resources ====================================
 
 var virtualNetworkRules = [for allowedSubnet in allowedSubnets: {
   id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnet.vnetName, allowedSubnet.subnetName)
@@ -112,6 +129,8 @@ resource sqlServerAssessmentsContainer 'Microsoft.Storage/storageAccounts/blobSe
   }
 }
 
+// ==================================== Resource Lock ====================================
+
 resource monitoringDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RL01'
   scope: monitoringDataStorageAccount
@@ -121,11 +140,13 @@ resource monitoringDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04
   }
 }
 
+// ==================================== Outputs ====================================
+
 @description('ID of the Storage Account.')
 output storageAccountId string = monitoringDataStorageAccount.id
 
 @description('Name of the Storage Account.')
 output storageAccountName string = monitoringDataStorageAccount.name
 
-@description('URI of the blob service of the Storage Account.')
+@description('URI of the Blob Service of the Storage Account.')
 output storageAccountBlobServiceUri string = monitoringDataStorageAccount.properties.primaryEndpoints.blob

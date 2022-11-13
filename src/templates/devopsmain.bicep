@@ -1,4 +1,17 @@
-@description('Azure region to deploy the Key Vault.')
+/**
+ * Template: shared/main
+ * Modules:
+ * - IAM: infraManagedIdsModule (inframanagedids), infraIamModule (infraiam)
+ * - Security: infraKeyVaultModule (infrakeyvault), infraKeyVaultObjectsModule (infrakeyvaultobjects), infraKeyVaultPoliciesModule (infrakeyvaultpolicies)
+ * - Storage: monitoringDataStorageModule (monitoringdatastorage)
+ * - Monitoring: logAnalyticsModule (loganalytics), networkWatcherModule (networkwatcher)
+ */
+
+ // ==================================== Parameters ====================================
+
+ // ==================================== Common parameters ====================================
+
+@description('Azure region.')
 param location string = resourceGroup().location
 
 @description('Environment code.')
@@ -10,49 +23,49 @@ param location string = resourceGroup().location
 ])
 param env string
 
-@description('Suffix used in the Key Vault name.')
-@minLength(6)
-@maxLength(6)
+// ==================================== Resource properties ====================================
+
 param devopsKeyVaultNameSuffix string
-
-@description('Enable purge protection feature of the Key Vault.')
 param devopsKeyVaultEnablePurgeProtection bool
-
-@description('Retention days of soft-deleted objects in the Key Vault.')
-@minValue(7)
-@maxValue(90)
 param devopsKeyVaultSoftDeleteRetentionDays int
+param devopsKeyVaultEnableRbacAuthorization bool
+param devopsKeyVaultEnableArmAccess bool
 
-@description('Enable diagnostics to store Key Vault audit logs.')
+// ==================================== Diagnostics options ====================================
+
 param devopsKeyVaultEnableDiagnostics bool
-
-@description('Name of the Log Analytics Workspace used for diagnostics of the Key Vault. Must be defined if enableDiagnostics is true.')
 param devopsKeyVaultWorkspaceName string
-
-@description('Retention days of the Key Vault audit logs. Must be defined if enableDiagnostics is true.')
-@minValue(7)
-@maxValue(180)
 param devopsKeyVaultLogsRetentionDays int
 
-@description('Enable RBAC authorization in Key Vault and ignore access policies.')
-param devopsKeyVaultEnableRbacAuthorization bool
+// ==================================== Resource Locks switches ====================================
 
-@description('Enable Resource Lock on Key Vault.')
 param devopsKeyVaultEnableLock bool
 
-@description('Enable public access in the PaaS firewall.')
+// ==================================== PaaS Firewall settings ====================================
+
 param devopsKeyVaultEnablePublicAccess bool
+param devopsKeyVaultBypassAzureServices bool
+param devopsKeyVaultAllowedSubnets array
+param devopsKeyVaultAllowedIPsOrCIDRs array
 
-@description('List of Subnet names allowed to access the Key Vault in the PaaS firewall.')
-param devopsKeyVaultAllowedSubnetNames array = []
-
-@description('List of IPs or CIDRs allowed to access the Key Vault in the PaaS firewall.')
-param devopsKeyVaultAllowedIPsOrCIDRs array = []
+// ==================================== Tags ====================================
 
 @description('Standard tags applied to all resources.')
+@metadata({
+  ApplicationName: ''
+  ApplicationOwner: ''
+  ApplicationSponsor: ''
+  TechnicalContact: ''
+  Billing: ''
+  Maintenance: ''
+  EnvironmentType: ''
+  Security: ''
+  DeploymentDate: ''
+  dd_organization: ''
+})
 param standardTags object
 
-// ==================================== Resource definitions ====================================
+// ==================================== Resources ====================================
 
 module devopsKeyVaultModule 'modules/keyvault.bicep' = {
   name: 'devopsKeyVaultModule'
@@ -62,13 +75,15 @@ module devopsKeyVaultModule 'modules/keyvault.bicep' = {
     keyVaultNameSuffix: devopsKeyVaultNameSuffix
     enablePurgeProtection: devopsKeyVaultEnablePurgeProtection
     softDeleteRetentionDays: devopsKeyVaultSoftDeleteRetentionDays
+    enableRbacAuthorization: devopsKeyVaultEnableRbacAuthorization
+    enableArmAccess: devopsKeyVaultEnableArmAccess
     enableDiagnostics: devopsKeyVaultEnableDiagnostics
     diagnosticsWorkspaceName: devopsKeyVaultWorkspaceName
     logsRetentionDays: devopsKeyVaultLogsRetentionDays
-    enableRbacAuthorization: devopsKeyVaultEnableRbacAuthorization
     enableLock: devopsKeyVaultEnableLock
     enablePublicAccess: devopsKeyVaultEnablePublicAccess
-    allowedSubnetNames: devopsKeyVaultAllowedSubnetNames
+    bypassAzureServices: devopsKeyVaultBypassAzureServices
+    allowedSubnets: devopsKeyVaultAllowedSubnets
     allowedIPsOrCIDRs: devopsKeyVaultAllowedIPsOrCIDRs
     standardTags: standardTags
   }

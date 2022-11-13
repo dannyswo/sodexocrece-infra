@@ -1,3 +1,16 @@
+/**
+ * Module: infrakeyvaultobjects
+ * Depends on: infrakeyvault
+ * Used by: shared/main
+ * Common resources: N/A
+ */
+
+// ==================================== Parameters ====================================
+
+// ==================================== Common parameters ====================================
+
+// ==================================== Resource properties ====================================
+
 @description('Azure region.')
 param location string = resourceGroup().location
 
@@ -58,17 +71,13 @@ param appGatewayPrivateCertificateName string
 @description('File path of the private certificate.')
 param appGatewayPrivateCertificatePath string
 
-// ==================================== Resource definitions ====================================
+// ==================================== Resources ====================================
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
-  name: keyVaultName
-}
+// ==================================== Encryption Keys ====================================
 
 var expiryTime = 'P1Y'
 var timeAfterCreate = 'P11M'
 var timeBeforeExpiry = 'P2M'
-
-// ==================================== Encryption Keys ====================================
 
 var expiryDateTime = dateTimeAdd(encryptionKeysIssueDateTime, expiryTime)
 var expiryDateTimeSinceEpoch = dateTimeToEpoch(expiryDateTime)
@@ -192,6 +201,12 @@ resource appGatewayPublicCertificateImportScript 'Microsoft.Resources/deployment
     arguments: '\'${keyVault.name}\' \'${appGatewayPublicCertificateName}\' \'${appGatewayPublicCertificatePath}\''
     scriptContent: loadTextContent('../../scripts/import-keyvault-certificate.sh')
   }
+}
+
+// ==================================== Key Vault ====================================
+
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+  name: keyVaultName
 }
 
 // ==================================== Outputs ====================================

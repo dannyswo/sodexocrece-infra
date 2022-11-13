@@ -8,9 +8,6 @@
     "env": {
       "value": "SWO"
     },
-    "managedIdentityName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"
-    },
     "aksSkuTier": {
       "value": "Free"
     },
@@ -19,15 +16,6 @@
     },
     "kubernetesVersion": {
       "value": "1.23.12"
-    },
-    "nodeResourceGroupName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-RG02"
-    },
-    "vnetName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN02"
-    },
-    "subnetName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN02"
     },
     "enableAutoScaling": {
       "value": true
@@ -47,12 +35,6 @@
     "enablePrivateCluster": {
       "value": true
     },
-    "privateDnsZoneLinkedVNetNames": {
-      "value": [
-        "BRS-MEX-USE2-CRECESDX-SWO-VN04",
-        "BRS-MEX-USE2-CRECESDX-SWO-VN05"
-      ]
-    },
     "enableAGICAddon": {
       "value": true
     },
@@ -61,9 +43,6 @@
     },
     "enableOMSAgentAddon": {
       "value": true
-    },
-    "workspaceName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
     },
     "enableLock": {
       "value": true
@@ -84,6 +63,24 @@
         "DeploymentDate": "",
         "dd_organization": ""
       }
+    },
+    "managedIdentityName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"
+    },
+    "vnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN02"
+    },
+    "subnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN02"
+    },
+    "privateDnsZoneLinkedVNetNames": {
+      "value": [
+        "BRS-MEX-USE2-CRECESDX-SWO-VN04",
+        "BRS-MEX-USE2-CRECESDX-SWO-VN05"
+      ]
+    },
+    "workspaceName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
     }
   }
 }

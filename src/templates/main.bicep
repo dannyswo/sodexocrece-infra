@@ -1,3 +1,18 @@
+/**
+ * Template: system/main
+ * Modules:
+ * - IAM: appsManagedIdsModule (appsmanagedids), appsIamModule (appsiam)
+ * - Network: networkModule (network1), serviceEndpointPoliciesModule (serviceendpointmodule), appGatewayModule (agw)
+ * - Security: appsKeyVaultModule (appskeyvault), appsKeyVaultPrivateEndpointModule (privateendpoint), appsKeyVaultObjectsModule (appskeyvaultobjects), appsKeyVaultPoliciesModule (appskeyvaultpolicies)
+ * - Storage: appsDataStorageModule (appsdatastorage), appsDataStoragePrivateEndpointModule (privateendpoint)
+ * - Databases: sqlDatabaseModule (sqldatabase), sqlDatabasePrivateEndpointModule (privateendpoint)
+ * - Frontend: acrModule (acr), acrPrivateEndpointModule (privateendpoint), aksModule (aks)
+ */
+
+// ==================================== Parameters ====================================
+
+// ==================================== Common parameters ====================================
+
 @description('Azure region.')
 param location string = resourceGroup().location
 
@@ -44,19 +59,19 @@ param appsNSGName string
 
 // Private Endpoints properties
 
-@description('Create Private Endpoints for the required modules like keyvault, appdatastorage, database and acr.')
+@description('Create Private Endpoints for the required modules like appskeyvault, appsdatastorage, sqldatabase and acr.')
 param enablePrivateEndpoints bool = true
 
-@description('Private IP of the Key Vault\'s Private Endpoint.')
+@description('Private IP address of Private Endpoint used by Key Vault for applications.')
 param keyVaultPEPrivateIPAddress string
 
-@description('Private IP of the Application Data Storage Account\'s Private Endpoint.')
+@description('Private IP address of Private Endpoint used by applications data Storage Account.')
 param appsDataStoragePEPrivateIPAddress string
 
-@description('Private IP of the Azure SQL Database\'s Private Endpoint.')
+@description('Private IP address of Private Endpoint used by Azure SQL Database.')
 param sqlDatabasePEPrivateIPAddress string
 
-@description('Private IPs of the Container Registry\'s Private Endpoint. Requires 2 IPs for 2 members: registry and registry_data.')
+@description('Private IPs oaddresses of Private Endpoint used by Container Registry. Requires 2 IPs for 2 members: registry and registry_data.')
 param acrPEPrivateIPAddresses array
 
 // ==================================== Resource properties ====================================
@@ -127,7 +142,6 @@ param aksNodePoolMaxCount int
 param aksNodePoolVmSize string
 param aksEnableEncryptionAtHost bool
 param aksEnablePrivateCluster bool
-param aksPrivateDnsZoneLinkedVNetNames array
 param aksEnableAGICAddon bool
 param aksEnableOMSAgentAddon bool
 
@@ -162,7 +176,7 @@ param sqlDatabaseEnableLock bool
 param acrEnableLock bool
 param aksEnableLock bool
 
-// ==================================== Firewall settings ====================================
+// ==================================== PaaS Firewall settings ====================================
 
 param monitoringDataStorageEnablePublicAccess bool
 param monitoringDataStorageBypassAzureServices bool
@@ -206,7 +220,7 @@ param aksEnablePublicAccess bool
 })
 param standardTags object
 
-// ==================================== Resource definitions ====================================
+// ==================================== Modules ====================================
 
 module iamModule 'modules/iam.bicep' = {
   name: 'iamModule'
@@ -281,6 +295,16 @@ var selectedLinkedVNetNames = (enableNetwork) ? [
   gatewayVNetName
   appsVNetName
   endpointsVNetName
+  jumpServersVNetName
+  devopsAgentsVNetName
+]
+
+var selectedAksPrivateDnsZoneLinkedVNetNames = (enableNetwork) ? [
+  networkModule.outputs.vnets[1].name
+  networkModule.outputs.vnets[3].name
+  networkModule.outputs.vnets[4].name
+] : [
+  appsVNetName
   jumpServersVNetName
   devopsAgentsVNetName
 ]
@@ -405,7 +429,7 @@ module keyVaultPoliciesModule 'modules/keyvaultpolicies.bicep' = {
     appGatewayPrincipalId: managedIdsModule.outputs.appGatewayManagedIdentityId
     appsDataStorageAccountPrincipalId: managedIdsModule.outputs.appsDataStorageManagedIdentityId
     adminsPrincipalIds: [
-      iamModule.outputs.ownerPrincipalId
+      iamModule.outputs.administratorPrincipalId
     ]
   }
 }
@@ -486,7 +510,7 @@ module sqlDatabaseModule 'modules/sqldatabase.bicep' = {
     sqlServerNameSuffix: sqlServerNameSuffix
     sqlAdminLoginName: sqlDatabaseSQLAdminLoginName
     sqlAdminLoginPass: sqlDatabaseSQLAdminLoginPass
-    aadAdminPrincipalId: iamModule.outputs.ownerPrincipalId
+    aadAdminPrincipalId: iamModule.outputs.administratorPrincipalId
     aadAdminLoginName: sqlDatabaseAADAdminLoginName
     skuType: sqlDatabaseSkuType
     skuSize: sqlDatabaseSkuSize
@@ -578,7 +602,7 @@ module aksModule 'modules/aks.bicep' = {
     nodePoolVmSize: aksNodePoolVmSize
     enableEncryptionAtHost: aksEnableEncryptionAtHost
     enablePrivateCluster: aksEnablePrivateCluster
-    privateDnsZoneLinkedVNetNames: aksPrivateDnsZoneLinkedVNetNames
+    privateDnsZoneLinkedVNetNames: selectedAksPrivateDnsZoneLinkedVNetNames
     enableAGICAddon: aksEnableAGICAddon
     appGatewayName: appGatewayModule.outputs.applicationGatewayName
     enableOMSAgentAddon: aksEnableOMSAgentAddon

@@ -1,3 +1,14 @@
+/**
+ * Module: acr
+ * Depends on: loganalytics
+ * Used by: system/main
+ * Common resources: RL08, MM08
+ */
+
+// ==================================== Parameters ====================================
+
+// ==================================== Common parameters ====================================
+
 @description('Azure region.')
 param location string = resourceGroup().location
 
@@ -9,6 +20,11 @@ param location string = resourceGroup().location
   'PRD'
 ])
 param env string
+
+@description('Standards tags applied to all resources.')
+param standardTags object
+
+// ==================================== Resource properties ====================================
 
 @description('Suffix used in the Container Registry name.')
 @minLength(6)
@@ -40,6 +56,8 @@ param untaggedRetentionDays int
 @maxValue(90)
 param softDeleteRetentionDays int
 
+// ==================================== Diagnostics options ====================================
+
 @description('Enable diagnostics to store Container Registry audit logs.')
 param enableDiagnostics bool
 
@@ -51,8 +69,12 @@ param diagnosticsWorkspaceName string
 @maxValue(180)
 param logsRetentionDays int
 
+// ==================================== Resource Lock switch ====================================
+
 @description('Enable Resource Lock on Container Registry.')
 param enableLock bool
+
+// ==================================== PaaS Firewall settings ====================================
 
 @description('Enable public access in the PaaS firewall.')
 param enablePublicAccess bool
@@ -63,10 +85,9 @@ param bypassAzureServices bool
 @description('List of IPs or CIDRs allowed to access the Container Registry in the PaaS firewall.')
 param allowedIPsOrCIDRs array = []
 
-@description('Standards tags applied to all resources.')
-param standardTags object
+// ==================================== Resources ====================================
 
-// ==================================== Resource definitions ====================================
+// ==================================== Container Registry ====================================
 
 var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
   value: allowedIPOrCIDR
@@ -111,6 +132,8 @@ resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = 
   tags: standardTags
 }
 
+// ==================================== Diagnotics ====================================
+
 resource diagnosticSettings 'microsoft.insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostics) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-MM08'
   scope: registry
@@ -147,6 +170,8 @@ resource diagnosticSettings 'microsoft.insights/diagnosticSettings@2021-05-01-pr
   }
 }
 
+// ==================================== Resource Lock ====================================
+
 resource apsDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RL08'
   scope: registry
@@ -155,6 +180,8 @@ resource apsDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = 
     notes: 'Container Registry should not be deleted.'
   }
 }
+
+// ==================================== Outputs ====================================
 
 @description('ID of the Container Registry.')
 output registryId string = registry.id

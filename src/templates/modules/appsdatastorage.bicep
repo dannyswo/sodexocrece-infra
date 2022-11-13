@@ -1,3 +1,14 @@
+/**
+ * Module: appsdatastorage
+ * Depends on: inframanagedids, infrakeyvault, loganalytics
+ * Used by: system/main
+ * Common resources: RL06, MM06, AD02
+ */
+
+// ==================================== Parameters ====================================
+
+// ==================================== Common parameters ====================================
+
 @description('Azure region.')
 param location string = resourceGroup().location
 
@@ -10,7 +21,12 @@ param location string = resourceGroup().location
 ])
 param env string
 
-@description('Name of the Managed Identity used by Application Data Storage Account.')
+@description('Standards tags applied to all resources.')
+param standardTags object
+
+// ==================================== Resource properties ====================================
+
+@description('Name of the Managed Identity used by applications data Storage Account.')
 param managedIdentityName string
 
 @description('Suffix used in the Storage Account name.')
@@ -31,6 +47,8 @@ param keyVaultUri string
 @description('Name of the CMK used by Storage Account to encrypt blobs.')
 param encryptionKeyName string
 
+// ==================================== Diagnostics options ====================================
+
 @description('Enable diagnostics to store Storage Account access logs.')
 param enableDiagnostics bool
 
@@ -42,8 +60,12 @@ param diagnosticsWorkspaceName string
 @maxValue(180)
 param logsRetentionDays int
 
+// ==================================== Resource Lock switch ====================================
+
 @description('Enable Resource Lock on applications data Storage Account.')
 param enableLock bool
+
+// ==================================== PaaS Firewall settings ====================================
 
 @description('Enable public access in the PaaS firewall.')
 param enablePublicAccess bool
@@ -61,14 +83,9 @@ param allowedSubnets array = []
 @description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
 param allowedIPsOrCIDRs array = []
 
-@description('Standards tags applied to all resources.')
-param standardTags object
+// ==================================== Resources ====================================
 
-// ==================================== Resource definitions ====================================
-
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
-  name: managedIdentityName
-}
+// ==================================== Stoarge Account ====================================
 
 var storageAccountName = 'azmxst1${storageAccountNameSuffix}'
 
@@ -161,6 +178,14 @@ resource merchantFilesContainer 'Microsoft.Storage/storageAccounts/blobServices/
   }
 }
 
+// ==================================== Managed Identity ====================================
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
+  name: managedIdentityName
+}
+
+// ==================================== Diagnostics ====================================
+
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostics) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-MM06'
   scope: blobServices
@@ -195,6 +220,8 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
   }
 }
 
+// ==================================== Resource Lock ====================================
+
 resource apsDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RL06'
   scope: appsDataStorageAccount
@@ -204,5 +231,10 @@ resource apsDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = 
   }
 }
 
+// ==================================== Outputs ====================================
+
 @description('ID of the Storage Account.')
 output storageAccountId string = appsDataStorageAccount.id
+
+@description('Name of the Storage Account.')
+output storageAccountName string = appsDataStorageAccount.name

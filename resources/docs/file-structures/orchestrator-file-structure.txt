@@ -1,0 +1,29 @@
+/**
+ * Template: system/main | shared/main
+ * Modules:
+ * - Network: [List of network related module instance names and module names]
+ * - Security: [List of security related module instance names and module names]
+ * - Storage: [List of storage related module instance names and module names]
+ * - Databases: [List of database related module instance names and module names]
+ * - Frontend: [List of frontend related module instance names and module names]
+ */
+
+// ==================================== Parameters ====================================
+
+
+// ==================================== Common parameters ====================================
+
+// ==================================== Resource properties ====================================
+
+// ==================================== Diagnostics options ====================================
+
+// ==================================== Resource Lock switch ====================================
+
+// ==================================== PaaS Firewall settings ====================================
+
+
+// ==================================== Resources ====================================
+
+
+// ==================================== Outputs ====================================
+

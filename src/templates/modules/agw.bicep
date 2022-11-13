@@ -1,3 +1,14 @@
+/**
+ * Module: agw
+ * Depends on: inframanagedids, infrakeyvault, network1 (optional), loganalytics
+ * Used by: system/main
+ * Common resources: RL05, MM05
+ */
+
+ // ==================================== Parameters ====================================
+
+ // ==================================== Common parameters ====================================
+
 @description('Azure region.')
 param location string = resourceGroup().location
 
@@ -9,6 +20,11 @@ param location string = resourceGroup().location
   'PRD'
 ])
 param env string
+
+@description('Standards tags applied to all resources.')
+param standardTags object
+
+// ==================================== Resource properties ====================================
 
 @description('Name of the Managed Identity used by Application Gateway.')
 param managedIdentityName string
@@ -69,6 +85,8 @@ param privateCertificateId string
 ])
 param wafPoliciesMode string
 
+// ==================================== Diagnostics options ====================================
+
 @description('Enable diagnostics to store Application Gateway logs and metrics.')
 param enableDiagnostics bool
 
@@ -80,17 +98,14 @@ param diagnosticsWorkspaceName string
 @maxValue(180)
 param logsRetentionDays int
 
+// ==================================== Resource Lock switch ====================================
+
 @description('Enable Resource Lock on Application Gateway.')
 param enableLock bool
 
-@description('Standards tags applied to all resources.')
-param standardTags object
+// ==================================== Resources ====================================
 
-// ==================================== Resource definitions ====================================
-
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
-  name: managedIdentityName
-}
+// ==================================== Application Gateway ====================================
 
 var appGatewayName = 'azmxwa1${appGatewayNameSuffix}'
 
@@ -298,6 +313,8 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = {
   tags: standardTags
 }
 
+// ==================================== Web Application Firewall Policies ====================================
+
 resource wafPolicies 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-WP01'
   location: location
@@ -323,6 +340,14 @@ resource wafPolicies 'Microsoft.Network/ApplicationGatewayWebApplicationFirewall
   }
   tags: standardTags
 }
+
+// ==================================== Managed Identity ====================================
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
+  name: managedIdentityName
+}
+
+// ==================================== Diagnotics ====================================
 
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostics) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-MM05'
@@ -368,6 +393,8 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
   }
 }
 
+// ==================================== Resource Lock ====================================
+
 resource appGatewayLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RL05'
   scope: appGateway
@@ -376,6 +403,8 @@ resource appGatewayLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableL
     notes: 'Application Gateway should not be deleted.'
   }
 }
+
+// ==================================== Outputs ====================================
 
 @description('ID of the Application Gateway.')
 output applicationGatewayId string = appGateway.id
