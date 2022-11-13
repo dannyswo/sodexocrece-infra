@@ -5,9 +5,9 @@
  * Common resources: RL09, AD03
  */
 
- // ==================================== Parameters ====================================
+// ==================================== Parameters ====================================
 
- // ==================================== Common parameters ====================================
+// ==================================== Common parameters ====================================
 
 @description('Azure region.')
 param location string = resourceGroup().location
@@ -71,11 +71,32 @@ param enablePrivateCluster bool
 @description('Names of the VNets linked to the DNS Private Zone of AKS.')
 param privateDnsZoneLinkedVNetNames array
 
+@description('Enable Pod-Managed Identity feature on the AKS Managed Cluster.')
+param enablePodManagedIdentity bool
+
+@description('Enable Workload Identity feature on the AKS Managed Cluster.')
+param enableWorkloadIdentity bool
+
 @description('Enable AKS Application Gateway Ingress Controller Add-on.')
 param enableAGICAddon bool
 
 @description('Name of the Application Gateway managed by AGIC add-on.')
 param appGatewayName string
+
+@description('List of Pod Identities spec with name, namespace and Managed Identity name.')
+@metadata({
+  podIdentityName: 'Name of the Pod Identity.'
+  podIdentityNamespace: 'Name where the Pod can use the Pod Identity.'
+  managedIdentityName: 'Name of the application Managed Identity.'
+  example: [
+    {
+      podIdentityName: 'merchant-view-podid'
+      podIdentityNamespace: 'merchant-ns'
+      managedIdentityName: 'BRS-MEX-USE2-CRECESDX-SWO-AD04'
+    }
+  ]
+})
+param podIdentities array
 
 // ==================================== Diagnostics options ====================================
 
@@ -119,31 +140,6 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
   properties: {
     dnsPrefix: aksDnsPrefix
     kubernetesVersion: kubernetesVersion
-    agentPoolProfiles: [
-      {
-        name: 'nodepool1'
-        mode: 'System'
-        type: 'VirtualMachineScaleSets'
-        vnetSubnetID: subnetId
-        availabilityZones: [ '1', '2', '3' ]
-        scaleSetPriority: 'Regular'
-        enableAutoScaling: enableAutoScaling
-        minCount: nodePoolMinCount
-        maxCount: nodePoolMaxCount
-        count: 1
-        scaleDownMode: 'Delete'
-        vmSize: nodePoolVmSize
-        osType: 'Linux'
-        osSKU: 'Ubuntu'
-        osDiskSizeGB: 0
-        osDiskType: 'Managed'
-        enableEncryptionAtHost: enableEncryptionAtHost
-        upgradeSettings: {
-          maxSurge: '1'
-        }
-        tags: standardTags
-      }
-    ]
     apiServerAccessProfile: {
       enablePrivateCluster: enablePrivateCluster
       enablePrivateClusterPublicFQDN: enablePrivateCluster
@@ -173,9 +169,13 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
       managed: true
     }
     disableLocalAccounts: true
+    podIdentityProfile: {
+      enabled: enablePodManagedIdentity
+      userAssignedIdentities: podIdentitiesWithManagedIdentities
+    }
     securityProfile: {
       workloadIdentity: {
-        enabled: true
+        enabled: (enablePodManagedIdentity) ? false : enableWorkloadIdentity
       }
     }
     addonProfiles: {
@@ -195,6 +195,35 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
     publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
   }
   tags: standardTags
+}
+
+// ==================================== AKS Agent Pools ====================================
+
+resource agentPool1 'Microsoft.ContainerService/managedClusters/agentPools@2022-09-02-preview' = {
+  name: 'agentpool1'
+  parent: aksCluster
+  properties: {
+    mode: 'System'
+    type: 'VirtualMachineScaleSets'
+    vnetSubnetID: subnetId
+    availabilityZones: [ '1', '2', '3' ]
+    scaleSetPriority: 'Regular'
+    enableAutoScaling: enableAutoScaling
+    minCount: nodePoolMinCount
+    maxCount: nodePoolMaxCount
+    count: 1
+    scaleDownMode: 'Delete'
+    vmSize: nodePoolVmSize
+    osType: 'Linux'
+    osSKU: 'Ubuntu'
+    osDiskSizeGB: 0
+    osDiskType: 'Managed'
+    enableEncryptionAtHost: enableEncryptionAtHost
+    upgradeSettings: {
+      maxSurge: '1'
+    }
+    tags: standardTags
+  }
 }
 
 // ==================================== Custom Private DNS Zone ====================================
@@ -219,7 +248,7 @@ resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLi
   }
 }]
 
-// ==================================== Managed Identity ====================================
+// ==================================== AKS Managed Identity ====================================
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
   name: managedIdentityName
@@ -342,6 +371,19 @@ resource aksAppGatewayRoleAssignments2 'Microsoft.Authorization/roleAssignments@
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
     principalType: 'ServicePrincipal'
   }
+}]
+
+// ==================================== Apps Managed Identities ====================================
+
+resource appsManagedIdentities 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = [for podIdentity in podIdentities: {
+  name: podIdentity.managedIdentityName
+}]
+
+var podIdentitiesWithManagedIdentities = [for (podIdentity, index) in podIdentities: {
+  identity: appsManagedIdentities[index]
+  name: podIdentity.podIdentityName
+  namespace: podIdentity.podIdentityNamespace
+  bindingSelector: podIdentity.podIdentityName
 }]
 
 // ==================================== Resource Lock ====================================

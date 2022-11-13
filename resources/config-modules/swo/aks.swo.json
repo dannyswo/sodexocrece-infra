@@ -35,6 +35,15 @@
     "enablePrivateCluster": {
       "value": true
     },
+    "enablePodManagedIdentity": {
+      "value": false
+    },
+    "podIdentities": {
+      "value": []
+    },
+    "enableWorkloadIdentity": {
+      "value": true
+    },
     "enableAGICAddon": {
       "value": true
     },

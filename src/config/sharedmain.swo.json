@@ -8,37 +8,37 @@
     "env": {
       "value": "SWO"
     },
-    "devopsKeyVaultNameSuffix": {
+    "sharedKeyVaultNameSuffix": {
       "value": "qem938"
     },
-    "devopsKeyVaultEnablePurgeProtection": {
+    "sharedKeyVaultEnablePurgeProtection": {
       "value": true
     },
-    "devopsKeyVaultSoftDeleteRetentionDays": {
+    "sharedKeyVaultSoftDeleteRetentionDays": {
       "value": 7
     },
-    "devopsKeyVaultEnableRbacAuthorization": {
+    "sharedKeyVaultEnableRbacAuthorization": {
       "value": true
     },
-    "devopsKeyVaultEnableDiagnostics": {
+    "sharedKeyVaultEnableDiagnostics": {
       "value": false
     },
-    "devopsKeyVaultWorkspaceName": {
+    "sharedKeyVaultWorkspaceName": {
       "value": ""
     },
-    "devopsKeyVaultLogsRetentionDays": {
+    "sharedKeyVaultLogsRetentionDays": {
       "value": 7
     },
-    "devopsKeyVaultEnableLock": {
+    "sharedKeyVaultEnableLock": {
       "value": true
     },
-    "devopsKeyVaultEnablePublicAccess": {
+    "sharedKeyVaultEnablePublicAccess": {
       "value": true
     },
-    "devopsKeyVaultAllowedSubnetNames": {
+    "sharedKeyVaultAllowedSubnetNames": {
       "value": []
     },
-    "devopsKeyVaultAllowedIPsOrCIDRs": {
+    "sharedKeyVaultAllowedIPsOrCIDRs": {
       "value": []
     },
     "standardTags": {

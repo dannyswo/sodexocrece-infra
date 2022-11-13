@@ -218,6 +218,15 @@
     "aksEnablePrivateCluster": {
       "value": true
     },
+    "aksEnablePodManagedIdentity": {
+      "value": false
+    },
+    "aksPodIdentities": {
+      "value": []
+    },
+    "aksEnableWorkloadIdentity": {
+      "value": true
+    },
     "aksEnableAGICAddon": {
       "value": true
     },

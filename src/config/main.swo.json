@@ -99,10 +99,10 @@
       "value": "11/5/2023 11:30:00 PM"
     },
     "keyVaultAppGatewayPublicCertificatePath": {
-      "value": "certificates/cert-public.pfx"
+      "value": "../../certificates/cert-public.pfx"
     },
     "keyVaultAppGatewayPrivateCertificatePath": {
-      "value": "certificates/cert-private.pfx"
+      "value": "../../certificates/cert-private.pfx"
     },
     "appGatewayNameSuffix": {
       "value": "gtc220"
@@ -135,7 +135,7 @@
       "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-appgateway-cert-public2"
     },
     "appGatewayPrivateCertificateId": {
-      "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-appgateway-cert-public2"
+      "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-appgateway-cert-private7"
     },
     "appGatewayWafPoliciesMode": {
       "value": "Detection"
@@ -216,6 +216,15 @@
       "value": false
     },
     "aksEnablePrivateCluster": {
+      "value": true
+    },
+    "aksEnablePodManagedIdentity": {
+      "value": false
+    },
+    "aksPodIdentities": {
+      "value": []
+    },
+    "aksEnableWorkloadIdentity": {
       "value": true
     },
     "aksEnableAGICAddon": {

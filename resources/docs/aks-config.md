@@ -71,5 +71,11 @@ az extension add --name aks-preview
 az feature register --namespace "Microsoft.ContainerService" --name "EnableWorkloadIdentityPreview"
 az feature list -o table --query "[?contains(name, 'Microsoft.ContainerService/EnableWorkloadIdentityPreview')].{Name:name,State:properties.state}"
 az provider register --namespace Microsoft.ContainerService
+```
 
+Enable aks-preview extension for AAD Pod-Managed Identity:
+
+```
+az feature register --name EnablePodIdentityPreview --namespace Microsoft.ContainerService
+az extension add --name aks-preview
 ```

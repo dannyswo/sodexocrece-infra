@@ -7,6 +7,8 @@ targetScope = 'subscription'
 
 // ==================================== Parameters ====================================
 
+// ==================================== Common parameters ====================================
+
 @description('Azure region.')
 param location string = 'eastus2'
 

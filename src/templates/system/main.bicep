@@ -1,9 +1,9 @@
 /**
  * Template: system/main
  * Modules:
- * - IAM: appsManagedIdsModule (appsmanagedids), appsIamModule (appsiam)
- * - Network: networkModule (network1), serviceEndpointPoliciesModule (serviceendpointmodule), appGatewayModule (agw)
- * - Security: appsKeyVaultModule (appskeyvault), appsKeyVaultPrivateEndpointModule (privateendpoint), appsKeyVaultObjectsModule (appskeyvaultobjects), appsKeyVaultPoliciesModule (appskeyvaultpolicies)
+ * - IAM: appsUsersModule (appsusers), appsManagedIdsModule (appsmanagedids), appsRgRbacModule (appsrg-rbac), appsKeyVaultRbacModule (appskeyvault-rbac)
+ * - Network: networkModule (network1), serviceEndpointPoliciesModule (serviceendpointpolicies), appGatewayModule (agw)
+ * - Security: appsKeyVaultModule (appskeyvault), appsKeyVaultPrivateEndpointModule (privateendpoint), appsKeyVaultObjectsModule (appskeyvaultobjects), appsKeyVaultPoliciesModule (appskeyvaultpolicies), appsKeyVaultRbacModule (appskeyvault-rbac)
  * - Storage: appsDataStorageModule (appsdatastorage), appsDataStoragePrivateEndpointModule (privateendpoint)
  * - Databases: sqlDatabaseModule (sqldatabase), sqlDatabasePrivateEndpointModule (privateendpoint)
  * - Frontend: acrModule (acr), acrPrivateEndpointModule (privateendpoint), aksModule (aks)
@@ -24,6 +24,21 @@ param location string = resourceGroup().location
   'PRD'
 ])
 param env string
+
+@description('Standard tags applied to all resources.')
+@metadata({
+  ApplicationName: ''
+  ApplicationOwner: ''
+  ApplicationSponsor: ''
+  TechnicalContact: ''
+  Billing: ''
+  Maintenance: ''
+  EnvironmentType: ''
+  Security: ''
+  DeploymentDate: ''
+  dd_organization: ''
+})
+param standardTags object
 
 // ==================================== Network settings ====================================
 
@@ -142,6 +157,9 @@ param aksNodePoolMaxCount int
 param aksNodePoolVmSize string
 param aksEnableEncryptionAtHost bool
 param aksEnablePrivateCluster bool
+param aksEnablePodManagedIdentity bool
+param aksPodIdentities array
+param aksEnableWorkloadIdentity bool
 param aksEnableAGICAddon bool
 param aksEnableOMSAgentAddon bool
 
@@ -203,35 +221,26 @@ param acrAllowedIPsOrCIDRs array
 
 param aksEnablePublicAccess bool
 
-// ==================================== Tags ====================================
-
-@description('Standard tags applied to all resources.')
-@metadata({
-  ApplicationName: ''
-  ApplicationOwner: ''
-  ApplicationSponsor: ''
-  TechnicalContact: ''
-  Billing: ''
-  Maintenance: ''
-  EnvironmentType: ''
-  Security: ''
-  DeploymentDate: ''
-  dd_organization: ''
-})
-param standardTags object
-
 // ==================================== Modules ====================================
 
-module iamModule 'modules/iam.bicep' = {
-  name: 'iamModule'
+module appsUsersModule 'modules/appsusers.bicep' = {
+  name: 'appsUsersModule'
 }
 
-module managedIdsModule 'modules/managedids.bicep' = {
-  name: 'managedIdsModule'
+module appsManagedIdsModule 'modules/appsmanagedids.bicep' = {
+  name: 'appsManagedIdsModule'
   params: {
     location: location
     env: env
     standardTags: standardTags
+  }
+}
+
+module appsRgRbacModule 'modules/appsrg-rbac.bicep' = {
+  name: 'appsRgRbacModule'
+  params: {
+    administratorPrincipalId: appsUsersModule.outputs.administratorPrincipalId
+    aksManagedIdentityName: appsManagedIdsModule.outputs.aksManagedIdentityName
   }
 }
 
@@ -331,6 +340,13 @@ module monitoringDataStorageModule 'modules/monitoringdatastorage.bicep' = {
   }
 }
 
+module monitoringDataStorageContainersModule 'modules/monitoringdatastorage-containers.bicep' = {
+  name: 'monitoringDataStorageContainersModule'
+  params: {
+    monitoringDataStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
+  }
+}
+
 module logAnalyticsModule 'modules/loganalytics.bicep' = {
   name: 'logAnalyticsModule'
   params: {
@@ -359,8 +375,8 @@ module networkWatcherModule 'modules/networkwatcher.bicep' = if (flowLogsEnableF
   }
 }
 
-module keyVaultModule 'modules/keyvault.bicep' = {
-  name: 'keyVaultModule'
+module appsKeyVaultModule 'modules/appskeyvault.bicep' = {
+  name: 'appsKeyVaultModule'
   params: {
     location: location
     env: env
@@ -381,8 +397,8 @@ module keyVaultModule 'modules/keyvault.bicep' = {
   }
 }
 
-module keyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
-  name: 'keyVaultPrivateEndpointModule'
+module appsKeyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'appsKeyVaultPrivateEndpointModule'
   params: {
     location: location
     env: env
@@ -390,18 +406,18 @@ module keyVaultPrivateEndpointModule 'modules/privateendpoint.bicep' = if (enabl
     vnetName: selectedNetworkNames.endpointsVNetName
     subnetName: selectedNetworkNames.endpointsSubnetName
     privateIPAddresses: [ keyVaultPEPrivateIPAddress ]
-    serviceId: keyVaultModule.outputs.keyVaultId
+    serviceId: appsKeyVaultModule.outputs.keyVaultId
     groupId: 'vault'
     linkedVNetNames: selectedLinkedVNetNames
     standardTags: standardTags
   }
 }
 
-module keyVaultObjectsModule 'modules/keyvaultobjects.bicep' = {
-  name: 'keyVaultObjectsModule'
+module appsKeyVaultObjectsModule 'modules/appskeyvault-objects.bicep' = {
+  name: 'appsKeyVaultObjectsModule'
   params: {
     location: location
-    keyVaultName: keyVaultModule.outputs.keyVaultName
+    keyVaultName: appsKeyVaultModule.outputs.keyVaultName
     createEncryptionKeys: true
     appsDataStorageEncryptionKeyName: 'crececonsdx-files-key' // 'crececonsdx-appsdatastorage-key'
     encryptionKeysIssueDateTime: keyVaultEncryptionKeysIssueDateTime
@@ -422,14 +438,14 @@ module keyVaultObjectsModule 'modules/keyvaultobjects.bicep' = {
   }
 }
 
-module keyVaultPoliciesModule 'modules/keyvaultpolicies.bicep' = {
-  name: 'keyVaultPoliciesModule'
+module appsKeyVaultPoliciesModule 'modules/appskeyvault-policies.bicep' = {
+  name: 'appsKeyVaultPoliciesModule'
   params: {
-    keyVaultName: keyVaultModule.outputs.keyVaultName
-    appGatewayPrincipalId: managedIdsModule.outputs.appGatewayManagedIdentityId
-    appsDataStorageAccountPrincipalId: managedIdsModule.outputs.appsDataStorageManagedIdentityId
+    keyVaultName: appsKeyVaultModule.outputs.keyVaultName
+    appGatewayPrincipalId: appsManagedIdsModule.outputs.appGatewayManagedIdentityId
+    appsDataStorageAccountPrincipalId: appsManagedIdsModule.outputs.appsDataStorageManagedIdentityId
     adminsPrincipalIds: [
-      iamModule.outputs.administratorPrincipalId
+      appsUsersModule.outputs.administratorPrincipalId
     ]
   }
 }
@@ -440,7 +456,7 @@ module appGatewayModule 'modules/agw.bicep' = {
   params: {
     location: location
     env: env
-    managedIdentityName: managedIdsModule.outputs.appGatewayManagedIdentityName
+    managedIdentityName: appsManagedIdsModule.outputs.appGatewayManagedIdentityName
     appGatewayNameSuffix: appGatewayNameSuffix
     appGatewaySkuTier: appGatewaySkuTier
     appGatewaySkuName: appGatewaySkuName
@@ -469,11 +485,11 @@ module appsDataStorageModule 'modules/appsdatastorage.bicep' = {
   params: {
     location: location
     env: env
-    managedIdentityName: managedIdsModule.outputs.appsDataStorageManagedIdentityName
+    managedIdentityName: appsManagedIdsModule.outputs.appsDataStorageManagedIdentityName
     storageAccountNameSuffix: appsDataStorageNameSuffix
     storageAccountSkuName: appsDataStorageSkuName
-    keyVaultUri: keyVaultModule.outputs.keyVaultUri
-    encryptionKeyName: keyVaultObjectsModule.outputs.appsDataStorageEncryptionKeyName
+    keyVaultUri: appsKeyVaultModule.outputs.keyVaultUri
+    encryptionKeyName: appsKeyVaultObjectsModule.outputs.appsDataStorageEncryptionKeyName
     enableDiagnostics: appsDataStorageEnableDiagnostics
     diagnosticsWorkspaceName: logAnalyticsModule.outputs.workspaceName
     logsRetentionDays: appsDataStorageLogsRetentionDays
@@ -483,6 +499,13 @@ module appsDataStorageModule 'modules/appsdatastorage.bicep' = {
     allowedSubnets: appsDataStorageAllowedSubnets
     allowedIPsOrCIDRs: appsDataStorageAllowedIPsOrCIDRs
     standardTags: standardTags
+  }
+}
+
+module appsDataStorageContainersModule 'modules/appsdatastorage-containers.bicep' = {
+  name: 'appsDataStorageContainersModule'
+  params: {
+    appsDataStorageAccountName: appsDataStorageModule.outputs.storageAccountName
   }
 }
 
@@ -510,7 +533,7 @@ module sqlDatabaseModule 'modules/sqldatabase.bicep' = {
     sqlServerNameSuffix: sqlServerNameSuffix
     sqlAdminLoginName: sqlDatabaseSQLAdminLoginName
     sqlAdminLoginPass: sqlDatabaseSQLAdminLoginPass
-    aadAdminPrincipalId: iamModule.outputs.administratorPrincipalId
+    aadAdminPrincipalId: appsUsersModule.outputs.administratorPrincipalId
     aadAdminLoginName: sqlDatabaseAADAdminLoginName
     skuType: sqlDatabaseSkuType
     skuSize: sqlDatabaseSkuSize
@@ -590,7 +613,7 @@ module aksModule 'modules/aks.bicep' = {
   params: {
     location: location
     env: env
-    managedIdentityName: managedIdsModule.outputs.aksManagedIdentityName
+    managedIdentityName: appsManagedIdsModule.outputs.aksManagedIdentityName
     aksSkuTier: aksSkuTier
     aksDnsSuffix: aksDnsSuffix
     kubernetesVersion: aksKubernetesVersion
@@ -603,6 +626,9 @@ module aksModule 'modules/aks.bicep' = {
     enableEncryptionAtHost: aksEnableEncryptionAtHost
     enablePrivateCluster: aksEnablePrivateCluster
     privateDnsZoneLinkedVNetNames: selectedAksPrivateDnsZoneLinkedVNetNames
+    enablePodManagedIdentity: aksEnablePodManagedIdentity
+    podIdentities: aksPodIdentities
+    enableWorkloadIdentity: aksEnableWorkloadIdentity
     enableAGICAddon: aksEnableAGICAddon
     appGatewayName: appGatewayModule.outputs.applicationGatewayName
     enableOMSAgentAddon: aksEnableOMSAgentAddon

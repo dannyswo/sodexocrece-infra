@@ -6,44 +6,44 @@ Deployment Commands
 Deploy main templates in Javier's Subscription:
 
 ```
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\main.bicep -p .\resources\config-modules\main.swo2.json
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\devopsmain.bicep -p .\src\config\devopsmain.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\main.bicep -p .\src\config\main.swo2.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\shared\sharedmain.bicep -p .\src\config\sharedmain.swo.json
 ```
 
 Deploy main templates in Danny's Subscription:
 
 ```
-az deployment sub create -l eastus2 -f .\src\templates\group.bicep -p .\resources\config-modules\swo\group.swo.json
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\main.bicep -p .\resources\config-modules\main.swo2.json
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\devopsmain.bicep -p .\src\config\devopsmain.swo.json
+az deployment sub create -l eastus2 -f .\src\templates\group.bicep -p .\src\config\group.swo.json
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\system\main.bicep -p .\src\config\main.swo2.json
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\shared\sharedmain.bicep -p .\src\config\sharedmain.swo.json
 ```
 
 Deploy individual modules:
 
 ```
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\managedids.bicep -p .\resources\config-modules\swo\managedids.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\shared\modules\inframanagedids.bicep -p .\resources\config-modules\swo\managedids.swo.json
 
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\network1.bicep -p .\resources\config-modules\swo\network1.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\modules\network1.bicep -p .\resources\config-modules\swo\network1.swo.json
 
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\monitoringdatastorage.bicep -p .\resources\config-modules\swo\monitoringdatastorage.swo.json
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\loganalytics.bicep -p .\resources\config-modules\swo\loganalytics.swo.json
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\networkwatcher.bicep -p .\resources\config-modules\swo\networkwatcher.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\shared\modules\monitoringdatastorage.bicep -p .\resources\config-modules\swo\monitoringdatastorage.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\shared\modules\loganalytics.bicep -p .\resources\config-modules\swo\loganalytics.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\shared\modules\networkwatcher.bicep -p .\resources\config-modules\swo\networkwatcher.swo.json
 
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\keyvault.bicep -p .\resources\config-modules\swo\keyvault.swo.json
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\privateendpoint.bicep -p .\resources\config-modules\swo\keyvaultpe.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\modules\appskeyvault.bicep -p .\resources\config-modules\swo\keyvault.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\modules\privateendpoint.bicep -p .\resources\config-modules\swo\keyvaultpe.swo.json
 
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\agw.bicep -p .\resources\config-modules\swo\agw.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\modules\agw.bicep -p .\resources\config-modules\swo\agw.swo.json
 
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\appsdatastorage.bicep -p .\resources\config-modules\swo\appsdatastorage.swo.json
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\privateendpoint.bicep -p .\resources\config-modules\swo\appsdatastoragepe.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\modules\appsdatastorage.bicep -p .\resources\config-modules\swo\appsdatastorage.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\modules\privateendpoint.bicep -p .\resources\config-modules\swo\appsdatastoragepe.swo.json
 
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\sqldatabase.bicep -p .\resources\config-modules\swo\sqldatabase.swo.json
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\privateendpoint.bicep -p .\resources\config-modules\swo\sqldatabasepe.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\modules\sqldatabase.bicep -p .\resources\config-modules\swo\sqldatabase.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\modules\privateendpoint.bicep -p .\resources\config-modules\swo\sqldatabasepe.swo.json
 
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\acr.bicep -p .\resources\config-modules\swo\acr.swo.json
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\privateendpoint.bicep -p .\resources\config-modules\swo\acrpe.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\modules\acr.bicep -p .\resources\config-modules\swo\acr.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\modules\privateendpoint.bicep -p .\resources\config-modules\swo\acrpe.swo.json
 
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\modules\aks.bicep -p .\resources\config-modules\swo\aks.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\modules\aks.bicep -p .\resources\config-modules\swo\aks.swo.json
 ```
 
 Verify failed deployments:

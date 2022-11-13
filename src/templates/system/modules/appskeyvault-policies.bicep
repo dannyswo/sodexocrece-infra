@@ -130,7 +130,7 @@ var adminsAccessPolicies = [for adminPrincipalId in adminsPrincipalIds: {
 
 var accessPolicies = concat(azureServicesAccessPolicies, applicationsAccessPolicies, adminsAccessPolicies)
 
-resource appGatewayAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2022-07-01' = {
+resource appsKeyVaultAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2022-07-01' = {
   name: 'add'
   parent: keyVault
   properties: {
@@ -143,3 +143,7 @@ resource appGatewayAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2022
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
 }
+
+// ==================================== Outputs ====================================
+
+output appsKeyVaultAccessPoliciesAdded string = 'added'

@@ -169,15 +169,6 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01
   }
 }
 
-resource merchantFilesContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
-  name: 'merchantfiles'
-  parent: blobServices
-  properties: {
-    publicAccess: 'None'
-    metadata: {}
-  }
-}
-
 // ==================================== Managed Identity ====================================
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
@@ -238,3 +229,6 @@ output storageAccountId string = appsDataStorageAccount.id
 
 @description('Name of the Storage Account.')
 output storageAccountName string = appsDataStorageAccount.name
+
+@description('URI of the Blob Service of the Storage Account.')
+output storageAccountBlobServiceUri string = appsDataStorageAccount.properties.primaryEndpoints.blob

@@ -7,8 +7,6 @@
 
 // ==================================== Parameters ====================================
 
-// ==================================== Common parameters ====================================
-
 // ==================================== Resource properties ====================================
 
 @description('Azure region.')
@@ -140,9 +138,10 @@ resource sqlDatabaseSQLAdminPassScript 'Microsoft.Resources/deploymentScripts@20
   kind: 'AzurePowerShell'
   properties: {
     azPowerShellVersion: '7.0'
+    cleanupPreference: 'OnExpiration'
     retentionInterval: 'P1D'
     timeout: 'PT10M'
-    scriptContent: loadTextContent('../../scripts/Generate-RandomPassword.ps1')
+    scriptContent: loadTextContent('../../../scripts/Generate-RandomPassword.ps1')
   }
 }
 
@@ -183,10 +182,11 @@ resource appGatewayPrivateCertificateImportScript 'Microsoft.Resources/deploymen
   kind: 'AzureCLI'
   properties: {
     azCliVersion: '2.30.0'
+    cleanupPreference: 'OnExpiration'
     retentionInterval: 'P1D'
     timeout: 'PT10M'
     arguments: '\'${keyVault.name}\' \'${appGatewayPrivateCertificateName}\' \'${appGatewayPrivateCertificatePath}\''
-    scriptContent: loadTextContent('../../scripts/import-keyvault-certificate.sh')
+    scriptContent: loadTextContent('../../../scripts/import-keyvault-certificate.sh')
   }
 }
 
@@ -196,10 +196,11 @@ resource appGatewayPublicCertificateImportScript 'Microsoft.Resources/deployment
   kind: 'AzureCLI'
   properties: {
     azCliVersion: '2.30.0'
+    cleanupPreference: 'OnExpiration'
     retentionInterval: 'P1D'
     timeout: 'PT10M'
     arguments: '\'${keyVault.name}\' \'${appGatewayPublicCertificateName}\' \'${appGatewayPublicCertificatePath}\''
-    scriptContent: loadTextContent('../../scripts/import-keyvault-certificate.sh')
+    scriptContent: loadTextContent('../../../scripts/import-keyvault-certificate.sh')
   }
 }
 

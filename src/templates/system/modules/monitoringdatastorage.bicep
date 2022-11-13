@@ -120,15 +120,6 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01
   }
 }
 
-resource sqlServerAssessmentsContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
-  name: 'sqlserverassessments'
-  parent: blobServices
-  properties: {
-    publicAccess: 'None'
-    metadata: {}
-  }
-}
-
 // ==================================== Resource Lock ====================================
 
 resource monitoringDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
