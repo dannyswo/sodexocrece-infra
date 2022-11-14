@@ -1,6 +1,6 @@
 /**
- * Module: appskeyvault-rbac
- * Depends on: appskeyvault
+ * Module: infrakeyvault-rbac
+ * Depends on: infrakeyvault
  * Used by: shared/main
  * Common resources: N/A
  */

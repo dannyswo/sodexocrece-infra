@@ -49,6 +49,7 @@ Optional:
 ## Connectino with AKS Management Plane
 
 ```
+az aks install-cli
 az aks get-credentials --resource-group RG-demo-sodexo-crece --name BRS-MEX-USE2-CRECESDX-SWO-KU01
 
 az aks command invoke `
@@ -76,6 +77,6 @@ az provider register --namespace Microsoft.ContainerService
 Enable aks-preview extension for AAD Pod-Managed Identity:
 
 ```
-az feature register --name EnablePodIdentityPreview --namespace Microsoft.ContainerService
+az feature register --namespace "Microsoft.ContainerService" --name "EnablePodIdentityPreview"
 az extension add --name aks-preview
 ```

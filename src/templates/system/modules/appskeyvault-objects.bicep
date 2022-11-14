@@ -1,5 +1,5 @@
 /**
- * Module: infrakeyvaultobjects
+ * Module: infrakeyvault-objects
  * Depends on: infrakeyvault
  * Used by: shared/main
  * Common resources: N/A

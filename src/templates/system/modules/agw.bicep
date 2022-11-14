@@ -5,9 +5,9 @@
  * Common resources: RL05, MM05
  */
 
- // ==================================== Parameters ====================================
+// ==================================== Parameters ====================================
 
- // ==================================== Common parameters ====================================
+// ==================================== Common parameters ====================================
 
 @description('Azure region.')
 param location string = resourceGroup().location
@@ -132,7 +132,7 @@ var frontendPortsList = (enableHttpsPort) ? concat(frontendPortsList0, [ fronten
 
 var publicOrPrivateFrontendIPName = (enablePublicFrontendIP) ? '${appGatewayName}-FrontIP-Public' : '${appGatewayName}-FrontIP-Private'
 
-var httpListener80 = {
+var httpListener80 = (enableHttpPort) ? {
   name: '${appGatewayName}-Listener-80'
   properties: {
     protocol: 'Http'
@@ -143,9 +143,9 @@ var httpListener80 = {
       id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', appGatewayName, '${appGatewayName}-Port-80')
     }
   }
-}
+} : {}
 
-var httpListener443 = {
+var httpListener443 = (enableHttpsPort) ? {
   name: '${appGatewayName}-Listener-443'
   properties: {
     protocol: 'Https'
@@ -155,22 +155,22 @@ var httpListener443 = {
     frontendPort: {
       id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', appGatewayName, '${appGatewayName}-Port-443')
     }
-    sslCertificate: (enableHttpsPort) ? {
+    sslCertificate: {
       id: resourceId('Microsoft.Network/applicationGateways/sslCertificates', appGatewayName, '${appGatewayName}-SSLCertificate-Public')
-    } : null
+    }
     sslProfile: {
-      id: resourceId('Microsoft.Network/applicationGateways/sslProfiles', appGatewayName, '${appGatewayName}-SSLProfile')
+      id: resourceId('Microsoft.Network/applicationGateways/sslProfiles', appGatewayName, '${appGatewayName}-SSLProfile-Sodexo')
     }
     firewallPolicy: {
       id: wafPolicies.id
     }
   }
-}
+} : {}
 
 var httpListenersList0 = (enableHttpPort) ? [ httpListener80 ] : []
 var httpListenersList = (enableHttpsPort) ? concat(httpListenersList0, [ httpListener443 ]) : httpListenersList0
 
-var dummyRoutingRuleListener = (enableHttpPort) ? '${appGatewayName}-Listener-80' : (enableHttpsPort) ? '${appGatewayName}-Listener-443' : 'NotConfigured'
+var dummyRoutingRuleListenerName = (enableHttpPort) ? '${appGatewayName}-Listener-80' : (enableHttpsPort) ? '${appGatewayName}-Listener-443' : 'NotConfigured'
 
 resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
   name: appGatewayName
@@ -243,7 +243,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
         properties: {
           ruleType: 'Basic'
           httpListener: {
-            id: resourceId('Microsoft.Network/applicationGateways/httpListeners', appGatewayName, dummyRoutingRuleListener)
+            id: resourceId('Microsoft.Network/applicationGateways/httpListeners', appGatewayName, dummyRoutingRuleListenerName)
           }
           backendHttpSettings: {
             id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', appGatewayName, '${appGatewayName}-BackendHTTPSettings-Dummy')
@@ -271,7 +271,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
     ] : []
     sslProfiles: (enableHttpsPort) ? [
       {
-        name: '${appGatewayName}-SSLProfile'
+        name: '${appGatewayName}-SSLProfile-Sodexo'
         properties: {
           sslPolicy: {
             minProtocolVersion: 'TLSv1_2'
@@ -291,6 +291,21 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
         }
       }
     ] : []
+    sslPolicy: {
+      minProtocolVersion: 'TLSv1_2'
+      cipherSuites: [
+        'TLS_DHE_RSA_WITH_AES_128_GCM_SHA256'
+        'TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256'
+        'TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384'
+        'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256'
+        'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'
+      ]
+      disabledSslProtocols: [
+        'TLSv1_0'
+        'TLSv1_1'
+      ]
+      policyType: 'Custom'
+    }
     firewallPolicy: {
       id: wafPolicies.id
     }

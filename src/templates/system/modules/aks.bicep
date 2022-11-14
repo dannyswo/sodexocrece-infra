@@ -140,6 +140,31 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
   properties: {
     dnsPrefix: aksDnsPrefix
     kubernetesVersion: kubernetesVersion
+    agentPoolProfiles: [
+      {
+        name: 'agentpool1'
+        mode: 'System'
+        type: 'VirtualMachineScaleSets'
+        vnetSubnetID: subnetId
+        availabilityZones: [ '1', '2', '3' ]
+        scaleSetPriority: 'Regular'
+        enableAutoScaling: enableAutoScaling
+        minCount: nodePoolMinCount
+        maxCount: nodePoolMaxCount
+        count: 1
+        scaleDownMode: 'Delete'
+        vmSize: nodePoolVmSize
+        osType: 'Linux'
+        osSKU: 'Ubuntu'
+        osDiskSizeGB: 0
+        osDiskType: 'Managed'
+        enableEncryptionAtHost: enableEncryptionAtHost
+        upgradeSettings: {
+          maxSurge: '1'
+        }
+        tags: standardTags
+      }
+    ]
     apiServerAccessProfile: {
       enablePrivateCluster: enablePrivateCluster
       enablePrivateClusterPublicFQDN: enablePrivateCluster
@@ -197,35 +222,6 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
   tags: standardTags
 }
 
-// ==================================== AKS Agent Pools ====================================
-
-resource agentPool1 'Microsoft.ContainerService/managedClusters/agentPools@2022-09-02-preview' = {
-  name: 'agentpool1'
-  parent: aksCluster
-  properties: {
-    mode: 'System'
-    type: 'VirtualMachineScaleSets'
-    vnetSubnetID: subnetId
-    availabilityZones: [ '1', '2', '3' ]
-    scaleSetPriority: 'Regular'
-    enableAutoScaling: enableAutoScaling
-    minCount: nodePoolMinCount
-    maxCount: nodePoolMaxCount
-    count: 1
-    scaleDownMode: 'Delete'
-    vmSize: nodePoolVmSize
-    osType: 'Linux'
-    osSKU: 'Ubuntu'
-    osDiskSizeGB: 0
-    osDiskType: 'Managed'
-    enableEncryptionAtHost: enableEncryptionAtHost
-    upgradeSettings: {
-      maxSurge: '1'
-    }
-    tags: standardTags
-  }
-}
-
 // ==================================== Custom Private DNS Zone ====================================
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
@@ -246,6 +242,7 @@ resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLi
       id: resourceId('Microsoft.Network/virtualNetworks', linkedVNetName)
     }
   }
+  tags: standardTags
 }]
 
 // ==================================== AKS Managed Identity ====================================
@@ -375,16 +372,7 @@ resource aksAppGatewayRoleAssignments2 'Microsoft.Authorization/roleAssignments@
 
 // ==================================== Apps Managed Identities ====================================
 
-resource appsManagedIdentities 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = [for podIdentity in podIdentities: {
-  name: podIdentity.managedIdentityName
-}]
-
-var podIdentitiesWithManagedIdentities = [for (podIdentity, index) in podIdentities: {
-  identity: appsManagedIdentities[index]
-  name: podIdentity.podIdentityName
-  namespace: podIdentity.podIdentityNamespace
-  bindingSelector: podIdentity.podIdentityName
-}]
+var podIdentitiesWithManagedIdentities = []
 
 // ==================================== Resource Lock ====================================
 

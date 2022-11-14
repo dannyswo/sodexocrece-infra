@@ -41,7 +41,7 @@
     "privateCertificateId": {
       "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-appgateway-cert-private7"
     },
-    "appGatewayWafPoliciesMode": {
+    "wafPoliciesMode": {
       "value": "Detection"
     },
     "enableDiagnostics": {

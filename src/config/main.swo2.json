@@ -105,7 +105,7 @@
       "value": "../../certificates/cert-private.pfx"
     },
     "appGatewayNameSuffix": {
-      "value": "gtc245"
+      "value": "gtc248"
     },
     "appGatewaySkuTier": {
       "value": "WAF_v2"
@@ -225,7 +225,7 @@
       "value": []
     },
     "aksEnableWorkloadIdentity": {
-      "value": true
+      "value": false
     },
     "aksEnableAGICAddon": {
       "value": true

@@ -1,5 +1,5 @@
 /**
- * Module: rg-rbac
+ * Module: infrarg-rbac
  * Depends on: N/A
  * Used by: shared/main
  * Common resources: N/A

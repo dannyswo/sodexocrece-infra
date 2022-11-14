@@ -42,13 +42,13 @@
       "value": []
     },
     "enableWorkloadIdentity": {
-      "value": true
+      "value": false
     },
     "enableAGICAddon": {
       "value": true
     },
     "appGatewayName": {
-      "value": "azmxwa1gtc245"
+      "value": "azmxwa1gtc248"
     },
     "enableOMSAgentAddon": {
       "value": true

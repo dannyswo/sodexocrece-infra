@@ -1,5 +1,5 @@
 /**
- * Module: infraiam
+ * Module: infrausers
  * Depends on: N/A
  * Used by: shared/main
  * Common resources: N/A

@@ -1,5 +1,5 @@
 /**
- * Module: keyvaultpolicies
+ * Module: infrakeyvault-policies
  * Depends on: infrakeyvault
  * Used by: shared/main
  * Common resources: N/A
