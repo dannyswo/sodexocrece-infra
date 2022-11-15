@@ -1,6 +1,6 @@
 /**
- * Module: infrakeyvault
- * Depends on: monitoringworkspace
+ * Module: infraKeyVault
+ * Depends on: monitoringWorkspace
  * Used by: shared/mainShared
  * Common resources: RL04, MM04
  */

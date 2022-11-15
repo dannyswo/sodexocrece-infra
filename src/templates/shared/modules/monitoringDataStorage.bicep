@@ -1,5 +1,5 @@
 /**
- * Module: monitoringdatastorage
+ * Module: monitoringDataStorage
  * Depends on: N/A
  * Used by: shared/mainShared
  * Common resources: RL01

@@ -51,6 +51,7 @@ Optional:
 ```
 az aks install-cli
 az aks get-credentials --resource-group RG-demo-sodexo-crece --name BRS-MEX-USE2-CRECESDX-SWO-KU01
+az aks get-credentials --resource-group BRS-MEX-USE2-CRECESDX-SWO-RG01 --name BRS-MEX-USE2-CRECESDX-SWO-KU01
 ```
 
 ```
@@ -66,23 +67,23 @@ az aks command invoke --resource-group RG-demo-sodexo-crece --name BRS-MEX-USE2-
 ## Docker repository and images
 
 ```
-az acr login -n azmxcr1hle650
-az acr repository list --name azmxcr1hle650
-az acr repository show --name azmxcr1hle650 --repository merchat-view
+az acr login -n azmxcr1hym659
+az acr repository list --name azmxcr1hym659
+az acr repository show --name azmxcr1hym659 --repository merchat-view
 ```
 
 ```
 docker pull nginx:latest
-docker tag nginx:latest azmxcr1hle650.azurecr.io/nginx:latest
-docker push azmxcr1hle650.azurecr.io/nginx:latest
+docker tag nginx:latest azmxcr1hym659.azurecr.io/nginx:latest
+docker push azmxcr1hym659.azurecr.io/nginx:latest
 ```
 
 ## Helm Charts management
 
 ```
 USER_NAME="00000000-0000-0000-0000-000000000000"
-PASSWORD=$(az acr login --name azmxcr1hle650 --expose-token --output tsv --query accessToken)
-helm registry login azmxcr1hle650.azurecr.io --username $USER_NAME --password $PASSWORD
+PASSWORD=$(az acr login --name azmxcr1hym659 --expose-token --output tsv --query accessToken)
+helm registry login azmxcr1hym659.azurecr.io --username $USER_NAME --password $PASSWORD
 ```
 
 ```
@@ -91,8 +92,8 @@ helm repo add [repository-name] [url]
 
 helm package [chart-path]
 helm lint [chart]
-helm push [package].tgz oci://azmxcr1hle650.azurecr.io/helm
-az acr repository show --name azmxcr1hle650 --repository helm/crecesdx-ingress-chart
+helm push [package].tgz oci://azmxcr1hym659.azurecr.io/helm
+az acr repository show --name azmxcr1hym659 --repository helm/crecesdx-ingress-chart
 helm search [keyword]
 
 helm install [app-name] --dry-run --debug

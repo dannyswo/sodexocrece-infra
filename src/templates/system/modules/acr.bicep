@@ -1,6 +1,6 @@
 /**
  * Module: acr
- * Depends on: monitoringworkspace
+ * Depends on: monitoringWorkspace
  * Used by: system/mainSystem
  * Common resources: RL08, MM08
  */

@@ -1,6 +1,6 @@
 /**
- * Module: appskeyvault
- * Depends on: monitoringworkspace
+ * Module: appsKeyVault
+ * Depends on: monitoringWorkspace
  * Used by: system/mainSystem
  * Common resources: RL04, MM04
  */

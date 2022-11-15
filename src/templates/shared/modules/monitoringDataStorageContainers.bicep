@@ -1,6 +1,6 @@
 /**
- * Module: monitoringdatastorage-containers
- * Depends on: monitoringdatastorage
+ * Module: monitoringDataStorageContainers
+ * Depends on: monitoringDataStorage
  * Used by: shared/mainShared
  * Common resources: N/A
  */

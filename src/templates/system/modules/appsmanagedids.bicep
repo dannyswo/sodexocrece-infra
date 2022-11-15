@@ -1,5 +1,5 @@
 /**
- * Module: appsmanagedids
+ * Module: appsManagedIds
  * Depends on: N/A
  * Used by: system/mainSystem
  * Common resources: N/A

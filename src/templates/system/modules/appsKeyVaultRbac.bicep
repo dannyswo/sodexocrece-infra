@@ -1,6 +1,6 @@
 /**
- * Module: appskeyvault-rbac
- * Depends on: appskeyvault
+ * Module: appsKeyVaultRbac
+ * Depends on: appsKeyVault, appsManagedIds, teamUsers
  * Used by: system/mainSystem
  * Common resources: N/A
  */

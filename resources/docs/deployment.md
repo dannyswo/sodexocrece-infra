@@ -1,7 +1,7 @@
 Deployment Commands
 -------------------
 
-## Deployment commands
+## Deployment of main templates
 
 Deploy main templates in Javier's Subscription:
 
@@ -18,10 +18,10 @@ az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\
 
 az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\shared\mainShared.bicep -p .\src\config\main-shared.swo.json -p secrtsSqlDatabaseSqlAdminLoginName=svr123 -p secrtsSqlDatabaseSqlAdminLoginPass=svr101102S -p secrtsVaultSqlDatabaseAADAdminLoginName=danny.zamorano
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\system\mainSystem.bicep -p .\src\config\main-system.swo.json
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\system\mainSystem.bicep -p .\src\config\main-system.swo.json -p administratorPrincipalId=40c2e922-9fb6-4186-a53f-44439c85a9df
 ```
 
-Deploy individual modules:
+## Deployment of individual modules (for testing)
 
 ```
 az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\shared\modules\inframanagedids.bicep -p .\resources\config-modules\swo\managedids.swo.json
@@ -48,6 +48,8 @@ az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\mod
 
 az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\modules\aks.bicep -p .\resources\config-modules\swo\aks.swo.json
 ```
+
+## Useful deployment commands
 
 Verify failed deployments:
 

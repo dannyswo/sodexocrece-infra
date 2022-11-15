@@ -1,6 +1,6 @@
 /**
- * Module: appskeyvault-policies
- * Depends on: appskeyvault
+ * Module: appsKeyVaultPolicies
+ * Depends on: appsKeyVault, appsManagedIds, teamUsers
  * Used by: system/mainSystem
  * Common resources: N/A
  */

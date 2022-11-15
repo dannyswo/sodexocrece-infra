@@ -9,7 +9,7 @@
 
 // ==================================== Common parameters ====================================
 
-@description('Azure region to deploy the AKS Managed Cluster.')
+@description('Azure region.')
 param location string = resourceGroup().location
 
 @description('Environment code.')
@@ -26,14 +26,14 @@ param standardTags object
 
 // ==================================== Resource properties ====================================
 
-@description('SKU name of the Log Analytics Workspace.')
+@description('SKU name of the monitoring Workspace.')
 @allowed([
   'PerGB2018'
   'CapacityReservation'
 ])
 param workspaceSkuName string
 
-@description('Capacity reservation in GBs for the Log Analytics Workspace.')
+@description('Capacity reservation in GBs for the monitoring Workspace.')
 @allowed([
   0
   100
@@ -43,17 +43,17 @@ param workspaceSkuName string
 ])
 param workspaceCapacityReservation int
 
-@description('Retention days of logs managed by Log Analytics Workspace.')
+@description('Retention days of logs managed by monitoring Workspace.')
 @minValue(7)
 @maxValue(730)
 param logRetentionDays int
 
-@description('Name of the linked Storage Account for the Log Analytics Workspace.')
+@description('Name of the linked Storage Account for the monitoring Workspace.')
 param linkedStorageAccountName string
 
 // ==================================== Resource Lock switch ====================================
 
-@description('Enable Resource Lock on monitoring data Storage Account.')
+@description('Enable Resource Lock on monitoring Workspace.')
 param enableLock bool
 
 // ==================================== Resources ====================================

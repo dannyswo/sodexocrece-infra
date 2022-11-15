@@ -1,6 +1,6 @@
 /**
  * Module: agw
- * Depends on: inframanagedids, infrakeyvault, network1 (optional), monitoringworkspace
+ * Depends on: infraManagedIds, infraKeyVault, network1 (optional), monitoringWorkspace
  * Used by: system/mainSystem
  * Common resources: RL05, MM05
  */

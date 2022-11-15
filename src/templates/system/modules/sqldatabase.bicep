@@ -1,6 +1,6 @@
 /**
- * Module: sqldatabase
- * Depends on: infrausers, monitoringworkspace
+ * Module: sqlDatabase
+ * Depends on: monitoringWorkspace
  * Used by: system/mainSystem
  * Common resources: RL07, MM07
  */

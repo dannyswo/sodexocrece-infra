@@ -77,15 +77,6 @@ param privateDnsZoneLinkedVNetNames array
 @description('Enable Pod-Managed Identity feature on the AKS Managed Cluster.')
 param enablePodManagedIdentity bool
 
-@description('Enable Workload Identity feature on the AKS Managed Cluster.')
-param enableWorkloadIdentity bool
-
-@description('Enable AKS Application Gateway Ingress Controller Add-on.')
-param enableAGICAddon bool
-
-@description('Name of the Application Gateway managed by AGIC add-on.')
-param appGatewayName string
-
 @description('List of Pod Identities spec with name, namespace and Managed Identity name.')
 @metadata({
   podIdentityName: 'Name of the Pod Identity.'
@@ -101,9 +92,18 @@ param appGatewayName string
 })
 param podIdentities array
 
+@description('Enable Workload Identity feature on the AKS Managed Cluster.')
+param enableWorkloadIdentity bool
+
+@description('Enable AKS Application Gateway Ingress Controller Add-on.')
+param enableAGICAddon bool
+
+@description('Name of the Application Gateway managed by AGIC add-on.')
+param appGatewayName string
+
 // ==================================== Diagnostics options ====================================
 
-@description('Enable AKS OMS Agents Add-on.')
+@description('Enable AKS OMS Agent Add-on.')
 param enableOMSAgentAddon bool
 
 @description('Name of the Log Analytics Workspace managed by OMSAgent add-on.')
@@ -353,7 +353,7 @@ var appGatewayAdminActions = [
   'Microsoft.Network/applicationGateways/backendhealth/action'
 ]
 
-var appGatewayAdminRoleName = 'Application Gateway Administrator'
+var appGatewayAdminRoleName = 'Application Gateway Administrator 2'
 
 resource appGatewayAdminRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
   name: guid(tenantId, resourceGroup().id, aksCluster.id, appGatewayAdminRoleName)

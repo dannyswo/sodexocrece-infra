@@ -1,6 +1,6 @@
 /**
- * Module: appskeyvault-objects
- * Depends on: appskeyvault
+ * Module: appsKeyVaultObjects
+ * Depends on: appsKeyVault
  * Used by: system/mainSystem
  * Common resources: N/A
  */

@@ -1,6 +1,6 @@
 /**
- * Module: appsdatastorage
- * Depends on: inframanagedids, infrakeyvault, monitoringworkspace
+ * Module: appsDataStorage
+ * Depends on: infraManagedIds, infraKeyVault, monitoringWorkspace
  * Used by: system/mainSystem
  * Common resources: RL06, MM06, AD02
  */

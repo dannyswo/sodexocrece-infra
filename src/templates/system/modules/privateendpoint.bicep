@@ -1,5 +1,5 @@
 /**
- * Module: privateendpoint
+ * Module: privateEndpoint
  * Depends on: network1 (optional)
  * Used by: system/mainSystem
  * Resources: N/A

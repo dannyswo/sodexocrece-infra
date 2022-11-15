@@ -1,6 +1,6 @@
 /**
- * Module: infrakeyvault-policies
- * Depends on: infrakeyvault, inframanagedids, infrausers
+ * Module: infraKeyVaultPolicies
+ * Depends on: infraKeyVault, infraManagedids, infraUsers
  * Used by: shared/mainShared
  * Common resources: N/A
  */

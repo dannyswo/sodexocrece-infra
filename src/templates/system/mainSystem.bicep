@@ -1,12 +1,11 @@
 /**
  * Template: system/mainSystem
  * Modules:
- * - IAM: teamUsersModule (teamusers), appsManagedIdsModule (appsmanagedids), teamRgRbacModule (teamrg-rbac), appsKeyVaultRbacModule (appskeyvault-rbac)
- * - Network: appGatewayModule (agw), appsKeyVaultPrivateEndpointModule (privateendpoint), appsDataStoragePrivateEndpointModule (privateendpoint), sqlDatabasePrivateEndpointModule (privateendpoint), acrPrivateEndpointModule (privateendpoint)
- * - Monitoring: networkWatcherModule (networkwatcher)
- * - Security: appsKeyVaultModule (appskeyvault), appsKeyVaultObjectsModule (appskeyvaultobjects), appsKeyVaultPoliciesModule (appskeyvaultpolicies), appsKeyVaultRbacModule (appskeyvault-rbac)
- * - Storage: appsDataStorageModule (appsdatastorage)
- * - Databases: sqlDatabaseModule (sqldatabase)
+ * - IAM: teamUsersModule (teamUsers), appsManagedIdsModule (appsManagedIds), teamRgRbacModule (teamRgRbac)
+ * - Network: appGatewayModule (agw), appsDataStoragePrivateEndpointModule (privateEndpoint), sqlDatabasePrivateEndpointModule (privateEndpoint), acrPrivateEndpointModule (privateEndpoint)
+ * - Monitoring: networkWatcherModule (networkWatcher)
+ * - Storage: appsDataStorageModule (appsDataStorage), appsDataStorageContainersModule (appsDataStorageContainers)
+ * - Databases: sqlDatabaseModule (sqlDatabase)
  * - Frontend: acrModule (acr), aksModule (aks)
  */
 
@@ -88,8 +87,10 @@ param acrPEPrivateIPAddresses array
 
 // ==================================== Monitoring dependencies ====================================
 
+@description('Name of the monitoring data Storage Account.')
 param monitoringDataStorageAccountName string
 
+@description('Name of the monitoring Workspace.')
 param monitoringWorkspaceName string
 
 // ==================================== Security dependencies ====================================
@@ -97,15 +98,22 @@ param monitoringWorkspaceName string
 @secure()
 param administratorPrincipalId string
 
+@description('Name of the Managed Identity used by the Application Gateway.')
 param appGatewayManageIdentityName string
+@description('Name of the Managed Identity used by applications data Storage Account.')
 param appsDataStorageManagedIdentityName string
+@description('Name of the Managed Identity used by the AKS Managed Cluster.')
 param aksManagedIdentityName string
 
+@description('URI of the infrastructure Key Vault.')
 param infraKeyVaultUri string
 
+@description('ID of the public SSL certificate stored in infrastructure Key Vault.')
 param appGatewayPublicCertificateId string
+@description('ID of the private SSL certificate stored in infrastructure Key Vault.')
 param appGatewayPrivateCertificateId string
 
+@description('Name of the Encryption Key used by applications data Storage Account.')
 param appsDataStorageEncryptionKeyName string
 
 @secure()
@@ -117,92 +125,227 @@ param sqlDatabaseAADAdminLoginName string
 
 // ==================================== Resource properties ====================================
 
+@description('Enable Flow Logs and create Network Watcher.')
 param enableFlowLogs bool
+@description('Retention days of flow logs captured by the Network Watcher.')
 param flowLogsRetentionDays int
 
+@description('Suffix used in the name of the Application Gateway.')
+@minLength(6)
+@maxLength(6)
 param appGatewayNameSuffix string
+@description('SKU tier of the Application Gateway.')
+@allowed([
+  'Standard_v2'
+  'WAF_v2'
+])
 param appGatewaySkuTier string
+@description('SKU name of the Application Gateway.')
+@allowed([
+  'Standard_v2'
+  'WAF_v2'
+])
 param appGatewaySkuName string
+@description('Frontend private IP address of Application Gateway.')
 param appGatewayFrontendPrivateIPAddress string
+@description('Configure HTTP Listeners to receive traffic on public frontend IP. Otherwise, use private frontend IP.')
 param appGatewayEnablePublicFrontendIP bool
+@description('Minimum capacity for auto scaling of Application Gateway.')
 param appGatewayAutoScaleMinCapacity int
+@description('Maximum capacity for auto scaling of Application Gateway.')
 param appGatewayAutoScaleMaxCapacity int
+@description('Enable a Listener on port 80.')
 param appGatewayEnableHttpPort bool
+@description('Enable Listener on port 443 and setup the public SSL certificate.')
 param appGatewayEnableHttpsPort bool
+@description('Application Gateway WAF Policies mode.')
+@allowed([
+  'Detection'
+  'Prevention'
+])
 param appGatewayWafPoliciesMode string
 
+@description('Suffix used in the applications data Storage Account name.')
+@minLength(6)
+@maxLength(6)
 param appsDataStorageNameSuffix string
+@description('SKU name of the Storage Account.')
+@allowed([
+  'Standard_LRS'
+  'Standard_ZRS'
+])
 param appsDataStorageSkuName string
 
+@description('Suffix used in the name of the Azure SQL Server.')
+@minLength(6)
+@maxLength(6)
 param sqlServerNameSuffix string
+@description('SKU type for the Azure SQL Database. Use GeneralPurpose for zone redudant database.')
+@allowed([
+  'Standard'
+  'GeneralPurpose'
+])
 param sqlDatabaseSkuType string
+@description('SKU size for the Azure SQL Database.')
 param sqlDatabaseSkuSize int
+@description('Minimum capacity of the Azure SQL Database.')
 param sqlDatabaseMinCapacity int
+@description('Maximum size in GB of the Azure SQL Database.')
 param sqlDatabaseMaxSizeGB int
+@description('Enable zone redundancy for the Azure SQL Database.')
 param sqlDatabaseZoneRedundant bool
+@description('Storage redundancy used by the backups of the Azure SQL Database.')
 param sqlDatabaseBackupRedundancy string
 
+@description('Suffix used in the Container Registry name.')
+@minLength(6)
+@maxLength(6)
 param acrNameSuffix string
+@description('Selected tier for the Container Registry.')
+@allowed([
+  'Basic'
+  'Standard'
+  'Premium'
+])
 param acrSku string
+@description('If zone redundancy Enabled or Disabled for the Container Registry.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
 param acrZoneRedundancy string
+@description('Retention days of untagged images in the Container Registry.')
 param acrUntaggedRetentionDays int
+@description('Retention days of soft deleted images in the Container Registry.')
 param acrSoftDeleteRetentionDays int
 
+@description('Tier of the AKS Managed Cluster. Use Paid for HA with multiple AZs.')
+@allowed([
+  'Free'
+  'Paid'
+])
 param aksSkuTier string
+@description('Suffix used in the DNS name of the AKS Managed Cluster.')
+@minLength(6)
+@maxLength(6)
 param aksDnsSuffix string
+@description('Version of the Kubernetes software used by AKS.')
 param aksKubernetesVersion string
+@description('Enable auto scaling for AKS system node pool.')
 param aksEnableAutoScaling bool
+@description('Minimum number of nodes in the AKS system node pool.')
 param aksNodePoolMinCount int
+@description('Maximum number of nodes in the AKS system node pool.')
 param aksNodePoolMaxCount int
+@description('VM size of every node in the AKS system node pool.')
 param aksNodePoolVmSize string
+@description('Enable encryption at AKS nodes.')
 param aksEnableEncryptionAtHost bool
+@description('Create the AKS Managed Cluster as private cluster.')
 param aksEnablePrivateCluster bool
+@description('Enable Pod-Managed Identity feature on the AKS Managed Cluster.')
 param aksEnablePodManagedIdentity bool
+@description('List of Pod Identities spec with name, namespace and Managed Identity name.')
+@metadata({
+  podIdentityName: 'Name of the Pod Identity.'
+  podIdentityNamespace: 'Name where the Pod can use the Pod Identity.'
+  managedIdentityName: 'Name of the application Managed Identity.'
+  example: [
+    {
+      podIdentityName: 'merchant-view-podid'
+      podIdentityNamespace: 'merchant-ns'
+      managedIdentityName: 'BRS-MEX-USE2-CRECESDX-SWO-AD04'
+    }
+  ]
+})
 param aksPodIdentities array
+@description('Enable Workload Identity feature on the AKS Managed Cluster.')
 param aksEnableWorkloadIdentity bool
+@description('Enable AKS Application Gateway Ingress Controller Add-on.')
 param aksEnableAGICAddon bool
-param aksEnableOMSAgentAddon bool
 
 // ==================================== Diagnostics options ====================================
 
+@description('Enable diagnostics to store Application Gateway logs and metrics.')
 param appGatewayEnableDiagnostics bool
+@description('Retention days of the Application Gateway logs. Must be defined if enableDiagnostics is true.')
 param appGatewayLogsRetentionDays int
 
+@description('Enable diagnostics to store applications data Storage Account access logs.')
 param appsDataStorageEnableDiagnostics bool
+@description('Retention days of the applications data Storage Account access logs. Must be defined if enableDiagnostics is true.')
 param appsDataStorageLogsRetentionDays int
 
+@description('Enable Auditing feature on Azure SQL Server.')
 param sqlDatabaseEnableAuditing bool
+@description('Retention days of the Azure SQL Database audit logs. Must be defined if enableAuditing is true.')
 param sqlDatabaseAuditLogsRetentionDays int
+@description('Enable Advanced Threat Protection on Azure SQL Server.')
 param sqlDatabaseEnableThreatProtection bool
+@description('Enable Vulnerability Assessments on Azure SQL Server.')
 param sqlDatabaseEnableVulnerabilityAssessments bool
 
+@description('Enable diagnostics to store Container Registry audit logs.')
 param acrEnableDiagnostics bool
+@description('Retention days of the Container Registry audit logs. Must be defined if enableDiagnostics is true.')
 param acrLogsRetentionDays int
+
+@description('Enable AKS OMS Agent Add-on.')
+param aksEnableOMSAgentAddon bool
 
 // ==================================== Resource Locks switches ====================================
 
+@description('Enable Resource Lock on Network Watcher.')
 param networkWatcherEnableLock bool
+@description('Enable Resource Lock on Application Gateway.')
 param appGatewayEnableLock bool
+@description('Enable Resource Lock on applications data Storage Account.')
 param appsDataStorageEnableLock bool
+@description('Enable Resource Lock on Azure SQL Server.')
 param sqlDatabaseEnableLock bool
+@description('Enable Resource Lock on Container Registry.')
 param acrEnableLock bool
+@description('Enable Resource Lock on AKS Managed Cluster.')
 param aksEnableLock bool
 
 // ==================================== PaaS Firewall settings ====================================
 
+@description('Enable public access in the PaaS firewall.')
 param appsDataStorageEnablePublicAccess bool
+@description('Allow bypass of PaaS firewall rules to Azure Services.')
 param appsDataStorageBypassAzureServices bool
+@description('List of Subnets allowed to access the Storage Account in the PaaS firewall.')
+@metadata({
+  vnetName: 'Name of VNet.'
+  subnetName: 'Name of the Subnet.'
+})
 param appsDataStorageAllowedSubnets array
+@description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
 param appsDataStorageAllowedIPsOrCIDRs array
 
+@description('Enable public access in the PaaS firewall.')
 param sqlDatabaseEnablePublicAccess bool
+@description('List of Subnets allowed to access the Azure SQL Database in the firewall.')
+@metadata({
+  vnetName: 'Name of VNet.'
+  subnetName: 'Name of the Subnet.'
+})
 param sqlDatabaseAllowedSubnets array
+@description('List of IPs ranges (start and end IP addresss) allowed to access the Azure SQL Server in the firewall.')
+@metadata({
+  startIPAddress: 'First IP in the IP range.'
+  endIPAddress: 'Last IP in the IP range.'
+})
 param sqlDatabaseAllowedIPRanges array
 
+@description('Enable public access in the PaaS firewall.')
 param acrEnablePublicAccess bool
+@description('Allow bypass of PaaS firewall rules to Azure Services.')
 param acrBypassAzureServices bool
+@description('List of IPs or CIDRs allowed to access the Container Registry in the PaaS firewall.')
 param acrAllowedIPsOrCIDRs array
 
+@description('Enable public access to the AKS Management Plane.')
 param aksEnablePublicAccess bool
 
 // ==================================== Modules ====================================

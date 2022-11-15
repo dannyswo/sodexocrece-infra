@@ -1,5 +1,5 @@
 /**
- * Module: teamrg-rbac
+ * Module: teamRgRbac
  * Depends on: N/A
  * Used by: system/mainSystem
  * Common resources: N/A

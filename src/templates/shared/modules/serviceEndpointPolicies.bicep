@@ -1,5 +1,5 @@
 /**
- * Module: serviceendpointpolicies
+ * Module: serviceEndpointPolicies
  * Depends on: N/A
  * Used by: system/mainShared
  * Resources: N/A

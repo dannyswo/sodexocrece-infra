@@ -1,6 +1,6 @@
 /**
- * Module: infrakeyvault-rbac
- * Depends on: infrakeyvault, inframanagedids, infrausers
+ * Module: infraKeyVaultRbac
+ * Depends on: infraKeyVault, infraManagedIds, infraUsers
  * Used by: shared/mainShared
  * Common resources: N/A
  */

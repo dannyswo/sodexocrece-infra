@@ -1,5 +1,5 @@
 /**
- * Module: appsUsers
+ * Module: teamUsers
  * Depends on: N/A
  * Used by: system/mainSystem
  * Common resources: N/A

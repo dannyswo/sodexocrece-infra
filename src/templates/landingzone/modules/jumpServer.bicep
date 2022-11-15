@@ -1,6 +1,6 @@
 /**
  * Module: jumpServer
- * Depends on: N/A
+ * Depends on: network1
  * Used by: landingzone/mainLandingZone
  * Common resources: N/A
  */

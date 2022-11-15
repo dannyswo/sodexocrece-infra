@@ -1,6 +1,6 @@
 /**
- * Module: networkwatcher
- * Depends on: monitoringdatastorage
+ * Module: networkWatcher
+ * Depends on: monitoringDataStorage
  * Used by: system/mainSystem
  * Common resources: RL01, MM03
  */

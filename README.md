@@ -3,40 +3,41 @@ Infrastructure Repository for Sodexo Crece Project
 
 ## Project structure
 
-Templates and Modules (instances):
+Templates and Modules:
 
-shared/main
+landingzone/mainLandingZone (optional, only for SWO environments)
 
-1. infraUsersModules (infrausers): Principals IDs of administrator Users / Groups.
-2. infraManagedIdsModule (inframanagedids): Managed Identities of infrastructure services.
-3. infraRgRbacModule (rg-rbac): Role Assignments for administrators / infrastructure services under Resource Group scope.
-4. monitoringDataStorageModule (monitoringdatastorage): Storage Account for monitoring data, used by networkwatcher and loganalytics. [RL01, MM03]
-5. logAnalyticsModule (loganalytics): Workspace for logs and metrics collection and analysis, used by keyvault, agw, appsdatastorage, sqldatabase, acr, aks. [RL02, MM01]
-6. networkWatcherModule (networkwatcher): exports Flow Logs to monitoringdatastorage. [RL03, MM02]
-7. infraKeyVaultModule (infrakeyvault): Key Vault for infrastructure services. [RL10, MM10]
-8. infraKeyVaultObjectsModule (infrakeyvaultobjects): creation of Encryption Keys and Secrets, import of Certificates.
-9. infraKeyVaultPoliciesModule (infrakeyvaultpolicies): configures Key Vault Access Policies for Managed Identities and Users / Groups.
-10. infraKeyVaultRbac (infrakeyvault-rbac): Role Assignments under infrastructure Key Vault scope.
+1. **networkModule** (network1): VNets and Subnets, Peerings, NSGs, custom Route Table for AKS, only for SWO environment.
 
-system/main
+shared/mainShared
 
-1. appsUsersModules (appsusers): Principals IDs of project team Users / Groups.
-2. appsManagedIdsModule (appsmanagedids): Managed Identities of applications.
-3. appsRgRbacModule (rg-rbac): Role Assignments for applications / team under Resource Group scope.
-4. networkModule (network1, optional): VNets and Subnets, Peerings, NSGs, custom Route Table for AKS, only for SWO environment.
-5. appsKeyVaultModule (appskeyvault): Key Vault for applications. [RL04, MM04]
-6. appsKeyVaultPrivateEndpointModule (privateendpoint, optional): Private Endpoints, Private DNS Zone and VNet Links.
-7. appsKeyVaultObjectsModule (appskeyvaultobjects): creation of Encryption Keys or Secrets for applications.
-8. appsKeyVaultPoliciesModule (appskeyvaultpolicies): configures Key Vault Access Policies for Managed Identities and Users / Groups.
-9. appsKeyVaultRbac (appskeyvault-rbac): Role Assignments for applications / teams under applications Key Vault scope.
-10. appGatewayModule (agw): Application Gateway, WAF Policies. [RL05, MM05, AD01]
-11. appsDataStorageModule (appsdatastorage): Storage Account for applications data, Blob Container. [RL06, MM06, AD02]
-12. appsDataStoragePrivateEndpointModule (privateendpoint, optional): Private Endpoints, Private DNS Zone and VNet Links.
-13. sqlDatabaseModule (sqldatabase): Azure SQL Server, SQL Database. [RL07, MM07]
-14. sqlDatabasePrivateEndpointModule (privateendpoint, optional): Private Endpoints, Private DNS Zone and VNet Links.
-15. acrModule (acr): Container Registry required by aks. [RL08, MM08]
-16. acrPrivateEndpointModule (privateendpoint, optional): Private Endpoints, Private DNS Zone and VNet Links.
-17. aksModule (aks): AKS Managed Cluster, custom Private DNS Zone and required Role Assignments. Depends on loganalytics, agw. [RL09, AD03]
+1. **infraUsersModules** (infraUsers): Principals IDs of administrator Users / Groups.
+2. **infraManagedIdsModule** (infraManagedIds): Managed Identities of infrastructure services.
+3. **infraRgRbacModule** (infraRbRbac): Role Assignments for administrators / infrastructure services under Resource Group scope.
+4. **monitoringDataStorageModule** (monitoringDataStorage): Storage Account for monitoring data, used by networkWatcher and monitoringWorkspace. \[RL01\]
+5. **monitoringDataStorageContainersModule** (monitoringDataStorageContainers): Containers of the monitoring data Storage Account. \[RL01, MM03\]
+6. **monitoringWorkspaceModule** (monitoringWorkspace): Workspace for logs and metrics collection and analysis, used by keyvault, agw, appsdatastorage, sqldatabase, acr, aks. \[RL02, MM01\]
+7. **infraKeyVaultModule** (infraKeyVault): Key Vault for applications. \[RL04, MM04\]
+8. **infraKeyVaultPrivateEndpointModule** (privateEndpoint): Private Endpoints, Private DNS Zone and VNet Links.
+9. **infraKeyVaultObjectsModule** (infraKeyVaultObjects): creation of Encryption Keys or Secrets for applications.
+10. **infraKeyVaultPoliciesModule** (infraKeyVaultPolicies): configures Key Vault Access Policies for Managed Identities and Users / Groups.
+11. **infraKeyVaultRbac** (infraKeyVaultRbac): Role Assignments for applications / teams under applications Key Vault scope.
+
+system/mainSystem
+
+1. **teamUsersModules** (teamUsers): Principals IDs of project team Users / Groups.
+2. **appsManagedIdsModule** (appsManagedIds): Managed Identities of applications.
+3. **teamRgRbacModule** (teamRgRbac): Role Assignments for applications / team under Resource Group scope.
+4. **networkWatcherModule** (networkWatcher): exports Flow Logs to monitoringdatastorage. \[RL03, MM02\]
+5. **appGatewayModule** (agw): Application Gateway, WAF Policies. \[RL05, MM05, AD01\]
+6. **appsDataStorageModule** (appsDataStorage): Storage Account for applications data, Blob Container. [RL06, MM06, AD02\]
+7. **appsDataStorageContainersModule** (appsDataStorageContainers): Containers of the applications data Storage Account.
+8. **appsDataStoragePrivateEndpointModule** (privateEndpoint): Private Endpoints, Private DNS Zone and VNet Links.
+9. **sqlDatabaseModule** (sqlDatabase): Azure SQL Server, SQL Database. \[RL07, MM07\]
+10. **sqlDatabasePrivateEndpointModule** (privateEndpoint): Private Endpoints, Private DNS Zone and VNet Links.
+11. **acrModule** (acr): Container Registry required by aks. \[RL08, MM08\]
+12. **acrPrivateEndpointModule** (privateEndpoint): Private Endpoints, Private DNS Zone and VNet Links.
+13. **aksModule** (aks): AKS Managed Cluster, custom Private DNS Zone and required Role Assignments. Depends on loganalytics, agw. \[RL09, AD03\]
 
 Environments:
 

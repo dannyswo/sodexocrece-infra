@@ -1,6 +1,6 @@
 /**
- * Module: appsdatastorage-containers
- * Depends on: appsdatastorage
+ * Module: appsDataStorageContainers
+ * Depends on: appsDataStorage
  * Used by: system/mainSystem
  * Common resources: N/A
  */
