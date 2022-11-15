@@ -10,6 +10,9 @@
     },
     "createNetwork": {
       "value": true
+    },
+    "createJumpServer": {
+      "value": false
     }
   }
 }

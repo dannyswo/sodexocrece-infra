@@ -1,7 +1,7 @@
 /**
  * Module: privateendpoint
  * Depends on: network1 (optional)
- * Used by: system/mainSystem
+ * Used by: shared/mainShared
  * Resources: N/A
  */
 

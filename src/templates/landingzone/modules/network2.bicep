@@ -292,10 +292,28 @@ output subnets array = [
   }
 ]
 
-// ==================================== Outputs ====================================
-
-@description('ID of the Applications VNet NSG.')
-output appsNSGId string = appsNSG.id
-
-@description('Name of the Applications VNet NSG.')
-output appsNSGName string = appsNSG.name
+@description('List of IDs and names of the created NSGs.')
+@metadata({
+  id: 'ID of the NSG.'
+  name: 'Standard name of the NSG.'
+  example: [
+    {
+      id: '/networkSecurityGroups/BRS-MEX-USE2-CRECESDX-DEV-NS01'
+      name: 'BRS-MEX-USE2-CRECESDX-DEV-NS01'
+    }
+  ]
+})
+output networkSecurityGroups array = [
+  {
+    id: gatewayNSG.id
+    name: gatewayNSG.name
+  }
+  {
+    id: appsNSG.id
+    name: appsNSG.name
+  }
+  {
+    id: endpointsNSG.id
+    name: endpointsNSG.name
+  }
+]

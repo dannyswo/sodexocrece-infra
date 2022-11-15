@@ -41,6 +41,37 @@ param env string
 })
 param standardTags object = resourceGroup().tags
 
+// ==================================== Network dependencies ====================================
+
+@description('Name of the Gateway VNet.')
+param gatewayVNetName string
+
+@description('Name of the Gateway Subnet.')
+param gatewaySubnetName string
+
+@description('Name of the Applications VNet.')
+param appsVNetName string
+
+@description('Name of the Applications Subnet.')
+param appsSubnetName string
+
+@description('Name of the Endpoints VNet.')
+param endpointsVNetName string
+
+@description('Name of the Endpoints Subnet.')
+param endpointsSubnetName string
+
+@description('Name of the Jump Servers VNet.')
+param jumpServersVNetName string
+
+@description('Name of the DevOps Agents VNet.')
+param devopsAgentsVNetName string
+
+// ==================================== Private Endpoints settings ====================================
+
+@description('Private IP address of Private Endpoint used by infrastructure Key Vault.')
+param infraKeyVaultPEPrivateIPAddress string
+
 // ==================================== Resource properties ====================================
 
 param monitoringDataStorageNameSuffix string
@@ -115,6 +146,23 @@ module infraRgRbacModule 'modules/infraRgRbac.bicep' = {
   }
 }
 
+var selectedNetworkNames = {
+  gatewayVNetName: gatewayVNetName
+  gatewaySubnetName: gatewaySubnetName
+  appsVNetName: appsVNetName
+  appsSubnetName: appsSubnetName
+  endpointsVNetName: endpointsVNetName
+  endpointsSubnetName: endpointsSubnetName
+}
+
+var selectedLinkedVNetNames = [
+  gatewayVNetName
+  appsVNetName
+  endpointsVNetName
+  jumpServersVNetName
+  devopsAgentsVNetName
+]
+
 module monitoringDataStorageModule 'modules/monitoringDataStorage.bicep' = {
   name: 'monitoringDataStorageModule'
   params: {
@@ -171,6 +219,22 @@ module infraKeyVaultModule 'modules/infraKeyVault.bicep' = {
     bypassAzureServices: infraKeyVaultBypassAzureServices
     allowedSubnets: infraKeyVaultAllowedSubnets
     allowedIPsOrCIDRs: infraKeyVaultAllowedIPsOrCIDRs
+  }
+}
+
+module infraKeyVaultPrivateEndpointModule 'modules/privateEndpoint.bicep' = {
+  name: 'infraKeyVaultPrivateEndpointModule'
+  params: {
+    location: location
+    env: env
+    standardTags: standardTags
+    privateEndpointName: 'PE02'
+    vnetName: selectedNetworkNames.endpointsVNetName
+    subnetName: selectedNetworkNames.endpointsSubnetName
+    privateIPAddresses: [ infraKeyVaultPEPrivateIPAddress ]
+    serviceId: infraKeyVaultModule.outputs.keyVaultId
+    groupId: 'vault'
+    linkedVNetNames: selectedLinkedVNetNames
   }
 }
 

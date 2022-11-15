@@ -1,0 +1,87 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus2"
+        },
+        "networkInterfaceName": {
+            "value": "brs-mex-use2-crec592"
+        },
+        "enableAcceleratedNetworking": {
+            "value": true
+        },
+        "networkSecurityGroupId": {
+            "value": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Network/networkSecurityGroups/BRS-MEX-USE2-CRECESDX-SWO-NS04"
+        },
+        "subnetName": {
+            "value": "BRS-MEX-USE2-CRECESDX-SWO-SN04"
+        },
+        "virtualNetworkId": {
+            "value": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Network/virtualNetworks/BRS-MEX-USE2-CRECESDX-SWO-VN04"
+        },
+        "publicIpAddressName": {
+            "value": "BRS-MEX-USE2-CRECESDX-SWO-PI30"
+        },
+        "publicIpAddressType": {
+            "value": "Static"
+        },
+        "publicIpAddressSku": {
+            "value": "Standard"
+        },
+        "pipDeleteOption": {
+            "value": "Delete"
+        },
+        "virtualMachineName": {
+            "value": "BRS-MEX-USE2-CRECESDX-SWO-VM01"
+        },
+        "virtualMachineComputerName": {
+            "value": "BRS-MEX-USE2-CR"
+        },
+        "virtualMachineRG": {
+            "value": "RG-demo-sodexo-crece"
+        },
+        "osDiskType": {
+            "value": "Premium_LRS"
+        },
+        "osDiskDeleteOption": {
+            "value": "Delete"
+        },
+        "virtualMachineSize": {
+            "value": "Standard_D2s_v3"
+        },
+        "nicDeleteOption": {
+            "value": "Delete"
+        },
+        "adminUsername": {
+            "value": "danny.zamorano"
+        },
+        "adminPassword": {
+            "value": null
+        },
+        "patchMode": {
+            "value": "AutomaticByOS"
+        },
+        "enableHotpatching": {
+            "value": false
+        },
+        "autoShutdownStatus": {
+            "value": "Enabled"
+        },
+        "autoShutdownTime": {
+            "value": "00:00"
+        },
+        "autoShutdownTimeZone": {
+            "value": "SA Pacific Standard Time"
+        },
+        "autoShutdownNotificationStatus": {
+            "value": "Enabled"
+        },
+        "autoShutdownNotificationLocale": {
+            "value": "en"
+        },
+        "autoShutdownNotificationEmail": {
+            "value": "danny.zamorano@softwareone.com"
+        }
+    }
+}

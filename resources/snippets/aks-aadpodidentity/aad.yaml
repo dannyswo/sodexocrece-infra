@@ -1,0 +1,9 @@
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentity
+metadata:
+  name: aksarch2
+  namespace: default
+spec:
+  type: 0
+  resourceID: ${manage_identity_id}
+  clientID: ${manage_identity_client_id}

@@ -44,6 +44,9 @@ param standardTags object = resourceGroup().tags
 @description('Create VNets, Subnets and NSGs resources.')
 param createNetwork bool
 
+@description('Create VM in the Jump Servers Subnet.')
+param createJumpServer bool
+
 // ==================================== Modules ====================================
 
 module networkModule 'modules/network1.bicep' = if (createNetwork) {
@@ -80,18 +83,35 @@ module networkModule 'modules/network1.bicep' = if (createNetwork) {
   }
 }
 
-// module subnetsAttachmentsModule 'modules/subnetsAttachments.bicep' = if (!createNetwork) {
-//   name: 'subnetsAttachmentsModule'
-//   params: {
-//     gatewaySubnetName: gatewaySubnetName
-//     appsSubnetName: appsSubnetName
-//     endpointsSubnetName: endpointsSubnetName
-//     jumpServersSubnetName: jumpServersSubnetName
-//     devopsAgentsSubnetName: devopsAgentsSubnetName
-//     enableCustomRouteTable: enableCustomRouteTable
-//     enableKeyVaultServiceEndpoint: enableKeyVaultServiceEndpoint
-//     enableStorageAccountServiceEndpoint: enableStorageAccountServiceEndpoint
-//     enableSqlDatabaseServiceEndpoint: enableSqlDatabaseServiceEndpoint
-//     enableContainerRegistryServiceEndpoint: enableContainerRegistryServiceEndpoint
-//   }
-// }
+module jumpServerModule 'modules/jumpServer.bicep' = if (createNetwork && createJumpServer) {
+  name: 'jumpServerModule'
+  params: {
+    location: location
+    env: env
+    standardTags: standardTags
+    adminUsername: 'danny.zamorano'
+    adminPassword: 'l$##IYRdst84y%'
+    jumpServersVNetName: networkModule.outputs.vnets[3].name
+    jumpServersSubnetName: networkModule.outputs.subnets[3].name
+    jumpServersNSGName: networkModule.outputs.networkSecurityGroups[3].name
+  }
+}
+
+module networkAttachmentsModule 'modules/networkAttachments.bicep' = if (!createNetwork) {
+  name: 'networkAttachmentsModule'
+  params: {
+    location: location
+    env: env
+    standardTags: standardTags
+    // gatewaySubnetName: gatewaySubnetName
+    // appsSubnetName: appsSubnetName
+    // endpointsSubnetName: endpointsSubnetName
+    // jumpServersSubnetName: jumpServersSubnetName
+    // devopsAgentsSubnetName: devopsAgentsSubnetName
+    // enableCustomRouteTable: enableCustomRouteTable
+    // enableKeyVaultServiceEndpoint: enableKeyVaultServiceEndpoint
+    // enableStorageAccountServiceEndpoint: enableStorageAccountServiceEndpoint
+    // enableSqlDatabaseServiceEndpoint: enableSqlDatabaseServiceEndpoint
+    // enableContainerRegistryServiceEndpoint: enableContainerRegistryServiceEndpoint
+  }
+}

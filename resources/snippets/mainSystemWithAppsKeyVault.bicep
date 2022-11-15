@@ -45,37 +45,40 @@ param standardTags object = resourceGroup().tags
 
 // ==================================== Network dependencies ====================================
 
-@description('Name of the Gateway VNet.')
+@description('Name of the Gateway VNet. Must be defined when enableNetwork is false.')
 param gatewayVNetName string
 
-@description('Name of the Gateway Subnet.')
+@description('Name of the Gateway Subnet. Must be defined when enableNetwork is false.')
 param gatewaySubnetName string
 
-@description('Name of the Applications VNet.')
+@description('Name of the Applications VNet. Must be defined when enableNetwork is false.')
 param appsVNetName string
 
-@description('Name of the Applications Subnet.')
+@description('Name of the Applications Subnet. Must be defined when enableNetwork is false.')
 param appsSubnetName string
 
-@description('Name of the Endpoints VNet.')
+@description('Name of the Endpoints VNet. Must be defined when enableNetwork is false.')
 param endpointsVNetName string
 
-@description('Name of the Endpoints Subnet.')
+@description('Name of the Endpoints Subnet. Must be defined when enableNetwork is false.')
 param endpointsSubnetName string
 
-@description('Name of the Jump Servers VNet.')
+@description('Name of the Jump Servers VNet. Must be defined when enableNetwork is false.')
 param jumpServersVNetName string
 
-@description('Name of the DevOps Agents VNet.')
+@description('Name of the DevOps Agents VNet. Must be defined when enableNetwork is false.')
 param devopsAgentsVNetName string
 
-@description('Name of the NSG attached to Applications Subnet.')
+@description('Name of the NSG attached to Applications Subnet. Must be defined when enableNetwork is false.')
 param appsNSGName string
 
 // ==================================== Private Endpoints settings ====================================
 
 @description('Create Private Endpoints for the required modules like appskeyvault, appsdatastorage, sqldatabase and acr.')
 param enablePrivateEndpoints bool = true
+
+@description('Private IP address of Private Endpoint used by Key Vault for applications.')
+param appsKeyVaultPEPrivateIPAddress string
 
 @description('Private IP address of Private Endpoint used by applications data Storage Account.')
 param appsDataStoragePEPrivateIPAddress string
@@ -119,6 +122,12 @@ param sqlDatabaseAADAdminLoginName string
 
 param enableFlowLogs bool
 param flowLogsRetentionDays int
+
+param appsKeyVaultNameSuffix string
+param appsKeyVaultEnablePurgeProtection bool
+param appsKeyVaultSoftDeleteRetentionDays int
+param appsKeyVaultEnableArmAccess bool
+param appsKeyVaultEnableRbacAuthorization bool
 
 param appGatewayNameSuffix string
 param appGatewaySkuTier string
@@ -165,6 +174,9 @@ param aksEnableOMSAgentAddon bool
 
 // ==================================== Diagnostics options ====================================
 
+param appsKeyVaultEnableDiagnostics bool
+param appsKeyVaultLogsRetentionDays int
+
 param appGatewayEnableDiagnostics bool
 param appGatewayLogsRetentionDays int
 
@@ -182,6 +194,7 @@ param acrLogsRetentionDays int
 // ==================================== Resource Locks switches ====================================
 
 param networkWatcherEnableLock bool
+param appsKeyVaultEnableLock bool
 param appGatewayEnableLock bool
 param appsDataStorageEnableLock bool
 param sqlDatabaseEnableLock bool
@@ -189,6 +202,11 @@ param acrEnableLock bool
 param aksEnableLock bool
 
 // ==================================== PaaS Firewall settings ====================================
+
+param appsKeyVaultEnablePublicAccess bool
+param appsKeyVaultBypassAzureServices bool
+param appsKeyVaultAllowedSubnets array
+param appsKeyVaultAllowedIPsOrCIDRs array
 
 param appsDataStorageEnablePublicAccess bool
 param appsDataStorageBypassAzureServices bool
@@ -266,6 +284,61 @@ module networkWatcherModule 'modules/networkWatcher.bicep' = if (enableFlowLogs)
     flowAnalyticsWorkspaceName: monitoringWorkspaceName
     flowLogsRetentionDays: flowLogsRetentionDays
     enableLock: networkWatcherEnableLock
+  }
+}
+
+module appsKeyVaultModule 'modules/appsKeyVault.bicep' = {
+  name: 'appsKeyVaultModule'
+  params: {
+    location: location
+    env: env
+    standardTags: standardTags
+    keyVaultNameSuffix: appsKeyVaultNameSuffix
+    enablePurgeProtection: appsKeyVaultEnablePurgeProtection
+    softDeleteRetentionDays: appsKeyVaultSoftDeleteRetentionDays
+    enableArmAccess: appsKeyVaultEnableArmAccess
+    enableRbacAuthorization: appsKeyVaultEnableRbacAuthorization
+    enableDiagnostics: appsKeyVaultEnableDiagnostics
+    diagnosticsWorkspaceName: monitoringWorkspaceName
+    logsRetentionDays: appsKeyVaultLogsRetentionDays
+    enableLock: appsKeyVaultEnableLock
+    enablePublicAccess: appsKeyVaultEnablePublicAccess
+    bypassAzureServices: appsKeyVaultBypassAzureServices
+    allowedSubnets: appsKeyVaultAllowedSubnets
+    allowedIPsOrCIDRs: appsKeyVaultAllowedIPsOrCIDRs
+  }
+}
+
+module appsKeyVaultPrivateEndpointModule 'modules/privateEndpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'appsKeyVaultPrivateEndpointModule'
+  params: {
+    location: location
+    env: env
+    standardTags: standardTags
+    privateEndpointName: 'PE02'
+    vnetName: selectedNetworkNames.endpointsVNetName
+    subnetName: selectedNetworkNames.endpointsSubnetName
+    privateIPAddresses: [ appsKeyVaultPEPrivateIPAddress ]
+    serviceId: appsKeyVaultModule.outputs.keyVaultId
+    groupId: 'vault'
+    linkedVNetNames: selectedLinkedVNetNames
+  }
+}
+
+module appsKeyVaultObjectsModule 'modules/appsKeyVaultObjects.bicep' = {
+  name: 'appsKeyVaultObjectsModule'
+  params: {
+    location: location
+    keyVaultName: appsKeyVaultModule.outputs.keyVaultName
+  }
+}
+
+module appsKeyVaultPoliciesModule 'modules/appsKeyVaultPolicies.bicep' = {
+  name: 'appsKeyVaultPoliciesModule'
+  params: {
+    keyVaultName: appsKeyVaultModule.outputs.keyVaultName
+    applicationsPrincipalIds: []
+    teamPrincipalIds: []
   }
 }
 

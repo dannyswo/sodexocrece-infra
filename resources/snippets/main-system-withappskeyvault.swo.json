@@ -21,7 +21,7 @@
       "value": "BRS-MEX-USE2-CRECESDX-SWO-SN02"
     },
     "endpointsVNetName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN03"
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN02"
     },
     "endpointsSubnetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-SN03"
@@ -37,6 +37,9 @@
     },
     "enablePrivateEndpoints": {
       "value": true
+    },
+    "appsKeyVaultPEPrivateIPAddress": {
+      "value": "10.169.88.70"
     },
     "appsDataStoragePEPrivateIPAddress": {
       "value": "10.169.88.73"
@@ -69,13 +72,13 @@
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"
     },
     "infraKeyVaultUri": {
-      "value": "https://azmxkv1qta774.vault.azure.net/"
+      "value": "https://azmxkv1ady351.vault.azure.net/"
     },
     "appGatewayPublicCertificateId": {
-      "value": "https://azmxkv1qta774.vault.azure.net/secrets/crececonsdx-appgateway-cert-public"
+      "value": "https://azmxkv1ady351.vault.azure.net/secrets/crececonsdx-appgateway-cert-public"
     },
     "appGatewayPrivateCertificateId": {
-      "value": "https://azmxkv1qta774.vault.azure.net/secrets/crececonsdx-appgateway-cert-private"
+      "value": "https://azmxkv1ady351.vault.azure.net/secrets/crececonsdx-appgateway-cert-private"
     },
     "appsDataStorageEncryptionKeyName": {
       "value": "crececonsdx-appsdatastorage-key"
@@ -83,7 +86,7 @@
     "sqlDatabaseSqlAdminLoginName": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1qta774"
+          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1ady351"
         },
         "secretName": "crececonsdx-sqldatabase-sqladminloginname"
       }
@@ -91,7 +94,7 @@
     "sqlDatabaseSqlAdminLoginPass": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1qta774"
+          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1ady351"
         },
         "secretName": "crececonsdx-sqldatabase-sqladminloginpass"
       }
@@ -99,7 +102,7 @@
     "sqlDatabaseAADAdminLoginName": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1qta774"
+          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1ady351"
         },
         "secretName": "crececonsdx-sqldatabase-aadadminloginname"
       }
@@ -109,6 +112,21 @@
     },
     "flowLogsRetentionDays": {
       "value": 7
+    },
+    "appsKeyVaultNameSuffix": {
+      "value": "vjf297"
+    },
+    "appsKeyVaultEnablePurgeProtection": {
+      "value": true
+    },
+    "appsKeyVaultSoftDeleteRetentionDays": {
+      "value": 7
+    },
+    "appsKeyVaultEnableArmAccess": {
+      "value": false
+    },
+    "appsKeyVaultEnableRbacAuthorization": {
+      "value": false
     },
     "appGatewayNameSuffix": {
       "value": "eae511"
@@ -224,6 +242,12 @@
     "aksEnableOMSAgentAddon": {
       "value": true
     },
+    "appsKeyVaultEnableDiagnostics": {
+      "value": true
+    },
+    "appsKeyVaultLogsRetentionDays": {
+      "value": 7
+    },
     "appGatewayEnableDiagnostics": {
       "value": true
     },
@@ -257,6 +281,9 @@
     "networkWatcherEnableLock": {
       "value": true
     },
+    "appsKeyVaultEnableLock": {
+      "value": true
+    },
     "appGatewayEnableLock": {
       "value": true
     },
@@ -271,6 +298,18 @@
     },
     "aksEnableLock": {
       "value": true
+    },
+    "appsKeyVaultEnablePublicAccess": {
+      "value": false
+    },
+    "appsKeyVaultBypassAzureServices": {
+      "value": false
+    },
+    "appsKeyVaultAllowedSubnets": {
+      "value": []
+    },
+    "appsKeyVaultAllowedIPsOrCIDRs": {
+      "value": []
     },
     "appsDataStorageEnablePublicAccess": {
       "value": false

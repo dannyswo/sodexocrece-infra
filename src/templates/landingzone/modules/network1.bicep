@@ -782,7 +782,7 @@ resource aksCustomRouteTable 'Microsoft.Network/routeTables@2022-05-01' = {
   name: 'Standard name of the VNet.'
   example: [
     {
-      id: '/vnet/abc'
+      id: '/virtualNetworks/BRS-MEX-USE2-CRECESDX-DEV-VN01'
       name: 'BRS-MEX-USE2-CRECESDX-DEV-VN01'
     }
   ]
@@ -816,7 +816,7 @@ output vnets array = [
   name: 'Standard name of the Subnet.'
   example: [
     {
-      id: '/vnet/abc/subnet/123'
+      id: '/virtualNetworks/BRS-MEX-USE2-CRECESDX-DEV-VN01/subnets/BRS-MEX-USE2-CRECESDX-DEV-SN01'
       name: 'BRS-MEX-USE2-CRECESDX-DEV-SN01'
     }
   ]
@@ -844,8 +844,36 @@ output subnets array = [
   }
 ]
 
-@description('ID of the NSG attached to the Applications VNet.')
-output appsNSGId string = appsNSG.id
-
-@description('Name of the NSG attached to the Applications VNet.')
-output appsNSGName string = appsNSG.name
+@description('List of IDs and names of the created NSGs.')
+@metadata({
+  id: 'ID of the NSG.'
+  name: 'Standard name of the NSG.'
+  example: [
+    {
+      id: '/networkSecurityGroups/BRS-MEX-USE2-CRECESDX-DEV-NS01'
+      name: 'BRS-MEX-USE2-CRECESDX-DEV-NS01'
+    }
+  ]
+})
+output networkSecurityGroups array = [
+  {
+    id: gatewayNSG.id
+    name: gatewayNSG.name
+  }
+  {
+    id: appsNSG.id
+    name: appsNSG.name
+  }
+  {
+    id: endpointsNSG.id
+    name: endpointsNSG.name
+  }
+  {
+    id: jumpServersNSG.id
+    name: jumpServersNSG.name
+  }
+  {
+    id: devopsAgentsNSG.id
+    name: devopsAgentsNSG.name
+  }
+]
