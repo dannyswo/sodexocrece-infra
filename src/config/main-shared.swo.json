@@ -1,0 +1,120 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus2"
+    },
+    "env": {
+      "value": "SWO"
+    },
+    "monitoringDataStorageNameSuffix": {
+      "value": "zzs259"
+    },
+    "monitoringDataStorageSkuName": {
+      "value": "Standard_LRS"
+    },
+    "monitoringWorkspaceSkuName": {
+      "value": "PerGB2018"
+    },
+    "monitoringWorkspaceCapacityReservation": {
+      "value": 0
+    },
+    "monitoringWorkspaceLogRetentionDays": {
+      "value": 30
+    },
+    "infraKeyVaultNameSuffix": {
+      "value": "qta774"
+    },
+    "infraKeyVaultEnablePurgeProtection": {
+      "value": true
+    },
+    "infraKeyVaultSoftDeleteRetentionDays": {
+      "value": 7
+    },
+    "infraKeyVaultEnableArmAccess": {
+      "value": true
+    },
+    "infraKeyVaultEnableRbacAuthorization": {
+      "value": false
+    },
+    "encryptionKeysIssueDateTime": {
+      "value": "11/15/2022 08:00:00 AM"
+    },
+    "secrtsIssueDateTime": {
+      "value": "11/15/2022 08:00:00 AM"
+    },
+    "createServiceEndpointPolicies": {
+      "value": false
+    },
+    "infraKeyVaultEnableDiagnostics": {
+      "value": true
+    },
+    "infraKeyVaultLogsRetentionDays": {
+      "value": 7
+    },
+    "monitoringDataStorageEnableLock": {
+      "value": true
+    },
+    "monitoringWorkspaceEnableLock": {
+      "value": true
+    },
+    "infraKeyVaultEnableLock": {
+      "value": true
+    },
+    "monitoringDataStorageEnablePublicAccess": {
+      "value": false
+    },
+    "monitoringDataStorageBypassAzureServices": {
+      "value": true
+    },
+    "monitoringDataStorageAllowedSubnets": {
+      "value": [
+        {
+          "vnetName": "BRS-MEX-USE2-CRECESDX-SWO-VN01",
+          "subnetName": "BRS-MEX-USE2-CRECESDX-SWO-SN01"
+        },
+        {
+          "vnetName": "BRS-MEX-USE2-CRECESDX-SWO-VN02",
+          "subnetName": "BRS-MEX-USE2-CRECESDX-SWO-SN02"
+        },
+        {
+          "vnetName": "BRS-MEX-USE2-CRECESDX-SWO-VN04",
+          "subnetName": "BRS-MEX-USE2-CRECESDX-SWO-SN04"
+        },
+        {
+          "vnetName": "BRS-MEX-USE2-CRECESDX-SWO-VN05",
+          "subnetName": "BRS-MEX-USE2-CRECESDX-SWO-SN05"
+        }
+      ]
+    },
+    "monitoringDataStorageAllowedIPsOrCIDRs": {
+      "value": []
+    },
+    "infraKeyVaultEnablePublicAccess": {
+      "value": false
+    },
+    "infraKeyVaultBypassAzureServices": {
+      "value": true
+    },
+    "infraKeyVaultAllowedSubnets": {
+      "value": [
+        {
+          "vnetName": "BRS-MEX-USE2-CRECESDX-SWO-VN01",
+          "subnetName": "BRS-MEX-USE2-CRECESDX-SWO-SN01"
+        },
+        {
+          "vnetName": "BRS-MEX-USE2-CRECESDX-SWO-VN04",
+          "subnetName": "BRS-MEX-USE2-CRECESDX-SWO-SN04"
+        },
+        {
+          "vnetName": "BRS-MEX-USE2-CRECESDX-SWO-VN05",
+          "subnetName": "BRS-MEX-USE2-CRECESDX-SWO-SN05"
+        }
+      ]
+    },
+    "infraKeyVaultAllowedIPsOrCIDRs": {
+      "value": []
+    }
+  }
+}

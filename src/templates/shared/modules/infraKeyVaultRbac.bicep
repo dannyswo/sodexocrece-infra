@@ -1,7 +1,7 @@
 /**
  * Module: infrakeyvault-rbac
- * Depends on: infrakeyvault
- * Used by: shared/main
+ * Depends on: infrakeyvault, inframanagedids, infrausers
+ * Used by: shared/mainShared
  * Common resources: N/A
  */
 
@@ -9,8 +9,8 @@
 
 // ==================================== Resource properties ====================================
 
-@description('Name of the applications Key Vault.')
-param appsKeyVaultName string
+@description('Name of the infrastructure Key Vault.')
+param infraKeyVaultName string
 
 @description('Principal ID of the system administrator.')
 param administratorPrincipalId string
@@ -43,8 +43,8 @@ var administratorRoleDefinitions = [
 ]
 
 resource administratorRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in administratorRoleDefinitions: {
-  name: guid(appsKeyVault.id, administratorPrincipalId, roleDefinition.roleName)
-  scope: appsKeyVault
+  name: guid(infraKeyVault.id, administratorPrincipalId, roleDefinition.roleName)
+  scope: infraKeyVault
   properties: {
     description: roleDefinition.roleAssignmentDescription
     principalId: administratorPrincipalId
@@ -69,8 +69,8 @@ var appGatewayManagedIdentityRoleDefinitions = [
 ]
 
 resource appGatewayManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in appGatewayManagedIdentityRoleDefinitions: {
-  name: guid(appsKeyVault.id, appGatewayManagedIdentity.id, roleDefinition.roleName)
-  scope: appsKeyVault
+  name: guid(infraKeyVault.id, appGatewayManagedIdentity.id, roleDefinition.roleName)
+  scope: infraKeyVault
   properties: {
     description: roleDefinition.roleAssignmentDescription
     principalId: appGatewayManagedIdentity.properties.principalId
@@ -90,8 +90,8 @@ var appsDataStorageManagedIdentityRoleDefinitions = [
 ]
 
 resource appsDataStorageManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in appsDataStorageManagedIdentityRoleDefinitions: {
-  name: guid(appsKeyVault.id, appsDataStorageManagedIdentity.id, roleDefinition.roleName)
-  scope: appsKeyVault
+  name: guid(infraKeyVault.id, appsDataStorageManagedIdentity.id, roleDefinition.roleName)
+  scope: infraKeyVault
   properties: {
     description: roleDefinition.roleAssignmentDescription
     principalId: appsDataStorageManagedIdentity.properties.principalId
@@ -102,8 +102,8 @@ resource appsDataStorageManagedIdentityRoleAssignments 'Microsoft.Authorization/
 
 // ==================================== Scope ====================================
 
-resource appsKeyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
-  name: appsKeyVaultName
+resource infraKeyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+  name: infraKeyVaultName
 }
 
 // ==================================== Security Principals ====================================
@@ -119,4 +119,4 @@ resource appsDataStorageManagedIdentity 'Microsoft.ManagedIdentity/userAssignedI
 // ==================================== Outputs ====================================
 
 @description('ACK of Role Assignments.')
-output administratorRoleAssignmentsAck string = 'assigned'
+output roleAssignmentsAck string = 'assigned'

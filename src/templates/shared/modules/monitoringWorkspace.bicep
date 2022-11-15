@@ -1,7 +1,7 @@
 /**
  * Module: loganalytics
  * Depends on: monitoringdatastorage
- * Used by: shared/main
+ * Used by: shared/mainShared
  * Common resources: RL02
  */
 
@@ -44,7 +44,7 @@ param workspaceSkuName string
 param workspaceCapacityReservation int
 
 @description('Retention days of logs managed by Log Analytics Workspace.')
-@minValue(30)
+@minValue(7)
 @maxValue(730)
 param logRetentionDays int
 

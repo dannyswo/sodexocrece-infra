@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus2"
+    },
+    "env": {
+      "value": "SWO"
+    },
+    "standardTags": {
+      "value": {
+        "ApplicationName": "BRS.LATAM.MX.Crececonsdx",
+        "ApplicationOwner": "luis.miranda@sodexo.com",
+        "ApplicationSponsor": "javier.solano@sodexo.com",
+        "TechnicalContact": "xavier.claraz@sodexo.com",
+        "Maintenance": "{ \"InternalAssetIdentifier\": \"\", \"Provider\": \"SoftwareONE\", \"ProviderAssetIdentifier\": \"\", \"MaintenanceWindow\": \"TBD\", \"ServiceLevel\": \"TBD\" }",
+        "EnvironmentType": "DEV",
+        "Security": "{ \"C\": 4, \"I\": 4, \"A\": 4, \"ITCritical\": 1, \"BusCritical\": 1, \"Situation\": \"Exposed\", \"DJ\": 0, \"ITOps\": \"SoftwareONE\", \"SecOps\": \"GISS\", \"hasPD\": 1, \"Scope\": \"Local\", \"DRP\": 1 }",
+        "DeploymentDate": "2022-11-15T0800 UTC (autogenatered)",
+        "AllowShutdown": "True (for non-prod environments)",
+        "dd_organization": "MX (only for prod environments)",
+        "Env": "dev",
+        "stack": "Crececonsdx"
+      }
+    }
+  }
+}

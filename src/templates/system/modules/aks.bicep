@@ -1,7 +1,7 @@
 /**
  * Module: aks
- * Depends on: inframanagedids, network1 (optional), agw, loganalytics
- * Used by: system/main
+ * Depends on: inframanagedids, network1 (optional), agw, monitoringworkspace
+ * Used by: system/mainSystem
  * Common resources: RL09, AD03
  */
 
@@ -28,6 +28,9 @@ param standardTags object
 
 @description('Name of the Managed Identity used by AKS Managed Cluster.')
 param managedIdentityName string
+
+@description('ID of the AAD Tenant used to register new custom Role Definitions.')
+param tenantId string = subscription().tenantId
 
 @description('Tier of the AKS Managed Cluster. Use Paid for HA with multiple AZs.')
 @allowed([
@@ -251,49 +254,6 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-
   name: managedIdentityName
 }
 
-// ==================================== Custom Role Definitions ====================================
-
-var appGatewayAdminActions = [
-  'Microsoft.Network/applicationGateways/read'
-  'Microsoft.Network/applicationGateways/write'
-  'Microsoft.Network/applicationGateways/getMigrationStatus/action'
-  'Microsoft.Network/applicationGateways/effectiveNetworkSecurityGroups/action'
-  'Microsoft.Network/applicationGateways/effectiveRouteTable/action'
-  'Microsoft.Network/applicationGateways/backendAddressPools/join/action'
-  'Microsoft.Network/applicationGateways/providers/Microsoft.Insights/metricDefinitions/read'
-  'Microsoft.Network/applicationGateways/providers/Microsoft.Insights/logDefinitions/read'
-  'Microsoft.Network/applicationGateways/privateLinkResources/read'
-  'Microsoft.Network/applicationGateways/privateLinkConfigurations/read'
-  'Microsoft.Network/applicationGateways/privateEndpointConnections/write'
-  'Microsoft.Network/applicationGateways/privateEndpointConnections/read'
-  'Microsoft.Network/applicationGateways/restart/action'
-  'Microsoft.Network/applicationGateways/stop/action'
-  'Microsoft.Network/applicationGateways/start/action'
-  'Microsoft.Network/applicationGateways/resolvePrivateLinkServiceId/action'
-  'Microsoft.Network/applicationGateways/getBackendHealthOnDemand/action'
-  'Microsoft.Network/applicationGateways/backendhealth/action'
-]
-
-var appGatewayAdminRoleName = 'Application Gateway Administrator'
-
-resource appGatewayAdminRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
-  name: guid(resourceGroup().id, aksCluster.id, appGatewayAdminRoleName)
-  properties: {
-    roleName: appGatewayAdminRoleName
-    description: 'View and edit properties of an Application Gateway.'
-    type: 'customRole'
-    permissions: [
-      {
-        actions: appGatewayAdminActions
-        notActions: []
-      }
-    ]
-    assignableScopes: [
-      resourceGroup().id
-    ]
-  }
-}
-
 // ==================================== Role Assignments ====================================
 
 @description('Role Definition IDs for AKS to ACR communication.')
@@ -369,6 +329,49 @@ resource aksAppGatewayRoleAssignments2 'Microsoft.Authorization/roleAssignments@
     principalType: 'ServicePrincipal'
   }
 }]
+
+// ==================================== Custom Role Definitions ====================================
+
+var appGatewayAdminActions = [
+  'Microsoft.Network/applicationGateways/read'
+  'Microsoft.Network/applicationGateways/write'
+  'Microsoft.Network/applicationGateways/getMigrationStatus/action'
+  'Microsoft.Network/applicationGateways/effectiveNetworkSecurityGroups/action'
+  'Microsoft.Network/applicationGateways/effectiveRouteTable/action'
+  'Microsoft.Network/applicationGateways/backendAddressPools/join/action'
+  'Microsoft.Network/applicationGateways/providers/Microsoft.Insights/metricDefinitions/read'
+  'Microsoft.Network/applicationGateways/providers/Microsoft.Insights/logDefinitions/read'
+  'Microsoft.Network/applicationGateways/privateLinkResources/read'
+  'Microsoft.Network/applicationGateways/privateLinkConfigurations/read'
+  'Microsoft.Network/applicationGateways/privateEndpointConnections/write'
+  'Microsoft.Network/applicationGateways/privateEndpointConnections/read'
+  'Microsoft.Network/applicationGateways/restart/action'
+  'Microsoft.Network/applicationGateways/stop/action'
+  'Microsoft.Network/applicationGateways/start/action'
+  'Microsoft.Network/applicationGateways/resolvePrivateLinkServiceId/action'
+  'Microsoft.Network/applicationGateways/getBackendHealthOnDemand/action'
+  'Microsoft.Network/applicationGateways/backendhealth/action'
+]
+
+var appGatewayAdminRoleName = 'Application Gateway Administrator'
+
+resource appGatewayAdminRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
+  name: guid(tenantId, resourceGroup().id, aksCluster.id, appGatewayAdminRoleName)
+  properties: {
+    roleName: appGatewayAdminRoleName
+    description: 'View and edit properties of an Application Gateway.'
+    type: 'customRole'
+    permissions: [
+      {
+        actions: appGatewayAdminActions
+        notActions: []
+      }
+    ]
+    assignableScopes: [
+      resourceGroup().id
+    ]
+  }
+}
 
 // ==================================== Apps Managed Identities ====================================
 

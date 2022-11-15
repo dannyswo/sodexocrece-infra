@@ -7,6 +7,9 @@
     },
     "env": {
       "value": "SWO"
+    },
+    "createNetwork": {
+      "value": true
     }
   }
 }

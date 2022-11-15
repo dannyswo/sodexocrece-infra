@@ -1,7 +1,7 @@
 /**
  * Module: infrakeyvault-policies
- * Depends on: infrakeyvault
- * Used by: shared/main
+ * Depends on: infrakeyvault, inframanagedids, infrausers
+ * Used by: shared/mainShared
  * Common resources: N/A
  */
 
@@ -9,8 +9,8 @@
 
 // ==================================== Resource properties ====================================
 
-@description('Name of the Key Vault.')
-param keyVaultName string
+@description('Name of the infrastructure Key Vault.')
+param infraKeyVaultName string
 
 @description('ID of the AAD Tenant of the Principal IDs.')
 param tenantId string = subscription().tenantId
@@ -141,7 +141,7 @@ resource appsKeyVaultAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@20
 // ==================================== Key Vault ====================================
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
-  name: keyVaultName
+  name: infraKeyVaultName
 }
 
 // ==================================== Outputs ====================================

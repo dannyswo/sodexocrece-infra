@@ -1,7 +1,7 @@
 /**
  * Module: monitoringdatastorage
  * Depends on: N/A
- * Used by: shared/main
+ * Used by: shared/mainShared
  * Common resources: RL01
  */
 
@@ -56,10 +56,10 @@ param bypassAzureServices bool
   vnetName: 'Name of VNet.'
   subnetName: 'Name of the Subnet.'
 })
-param allowedSubnets array = []
+param allowedSubnets array
 
 @description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
-param allowedIPsOrCIDRs array = []
+param allowedIPsOrCIDRs array
 
 // ==================================== Resources ====================================
 

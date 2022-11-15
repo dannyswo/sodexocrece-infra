@@ -8,40 +8,37 @@
     "env": {
       "value": "SWO"
     },
-    "enableNetwork": {
-      "value": true
-    },
     "gatewayVNetName": {
-      "value": "BRS-GLB-USE2-APPLICSHR-DEV-VN02"
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN01"
     },
     "gatewaySubnetName": {
-      "value": "BRS-GLB-USE2-APGW-DEV-SN01"
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN01"
     },
     "appsVNetName": {
-      "value": "BRS-GLB-USE2-APPLICFRONT-DEV-VN01"
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN02"
     },
     "appsSubnetName": {
-      "value": "BRS-MEX-USE2-PVTPNT-DEV-SN01"
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN02"
     },
     "endpointsVNetName": {
-      "value": "BRS-GLB-USE2-PVTPNTBRS-DEV-VN02"
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN02"
     },
     "endpointsSubnetName": {
-      "value": "BRS-MEX-USE2-PVTPNT-DEV-SN01"
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN03"
     },
     "jumpServersVNetName": {
-      "value": "{NULL jumpServersVNetName}"
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN04"
     },
     "devopsAgentsVNetName": {
-      "value": "{NULL devopsAgentsVNetName}"
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN05"
     },
     "appsNSGName": {
-      "value": "BRS-MEX-USE2-CRECESDX-DEV-NS01"
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-NS02"
     },
     "enablePrivateEndpoints": {
       "value": true
     },
-    "keyVaultPEPrivateIPAddress": {
+    "appsKeyVaultPEPrivateIPAddress": {
       "value": "10.169.88.70"
     },
     "appsDataStoragePEPrivateIPAddress": {
@@ -56,56 +53,83 @@
         "10.169.88.72"
       ]
     },
-    "monitoringDataStorageNameSuffix": {
-      "value": "msv830"
+    "monitoringDataStorageAccountName": {
+      "value": "azmxst1zzs259"
     },
-    "monitoringDataStorageSkuName": {
-      "value": "Standard_LRS"
+    "monitoringWorkspaceName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
     },
-    "workspaceSkuName": {
-      "value": "PerGB2018"
+    "administratorPrincipalId": {
+      "value": "40c2e922-9fb6-4186-a53f-44439c85a9df"
     },
-    "workspaceLogRetentionDays": {
-      "value": 30
+    "appGatewayManageIdentityName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-AD01"
     },
-    "workspaceCapacityReservation": {
-      "value": 0
+    "appsDataStorageManagedIdentityName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-AD02"
     },
-    "flowLogsEnableFlowLogs": {
+    "aksManagedIdentityName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"
+    },
+    "infraKeyVaultUri": {
+      "value": "https://azmxkv1ady351.vault.azure.net/"
+    },
+    "appGatewayPublicCertificateId": {
+      "value": "https://azmxkv1ady351.vault.azure.net/secrets/crececonsdx-appgateway-cert-public"
+    },
+    "appGatewayPrivateCertificateId": {
+      "value": "https://azmxkv1ady351.vault.azure.net/secrets/crececonsdx-appgateway-cert-private"
+    },
+    "appsDataStorageEncryptionKeyName": {
+      "value": "crececonsdx-appsdatastorage-key"
+    },
+    "sqlDatabaseSqlAdminLoginName": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1ady351"
+        },
+        "secretName": "crececonsdx-sqldatabase-sqladminloginname"
+      }
+    },
+    "sqlDatabaseSqlAdminLoginPass": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1ady351"
+        },
+        "secretName": "crececonsdx-sqldatabase-sqladminloginpass"
+      }
+    },
+    "sqlDatabaseAADAdminLoginName": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1ady351"
+        },
+        "secretName": "crececonsdx-sqldatabase-aadadminloginname"
+      }
+    },
+    "enableFlowLogs": {
       "value": false
     },
     "flowLogsRetentionDays": {
       "value": 7
     },
-    "keyVaultNameSuffix": {
-      "value": "mat350"
+    "appsKeyVaultNameSuffix": {
+      "value": "vjf297"
     },
-    "keyVaultEnablePurgeProtection": {
+    "appsKeyVaultEnablePurgeProtection": {
       "value": true
     },
-    "keyVaultSoftDeleteRetentionDays": {
+    "appsKeyVaultSoftDeleteRetentionDays": {
       "value": 7
     },
-    "keyVaultEnableArmAccess": {
-      "value": true
-    },
-    "keyVaultEnableRbacAuthorization": {
+    "appsKeyVaultEnableArmAccess": {
       "value": false
     },
-    "keyVaultEncryptionKeysIssueDateTime": {
-      "value": "11/5/2023 11:30:00 PM"
-    },
-    "keyVaultSecrtsIssueDateTime": {
-      "value": "11/5/2023 11:30:00 PM"
-    },
-    "keyVaultAppGatewayPublicCertificatePath": {
-      "value": "../../certificates/cert-public.pfx"
-    },
-    "keyVaultAppGatewayPrivateCertificatePath": {
-      "value": "../../certificates/cert-private.pfx"
+    "appsKeyVaultEnableRbacAuthorization": {
+      "value": false
     },
     "appGatewayNameSuffix": {
-      "value": "gtc248"
+      "value": "eae511"
     },
     "appGatewaySkuTier": {
       "value": "WAF_v2"
@@ -131,32 +155,17 @@
     "appGatewayEnableHttpsPort": {
       "value": true
     },
-    "appGatewayPublicCertificateId": {
-      "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-appgateway-cert-public2"
-    },
-    "appGatewayPrivateCertificateId": {
-      "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-appgateway-cert-private7"
-    },
     "appGatewayWafPoliciesMode": {
       "value": "Detection"
     },
     "appsDataStorageNameSuffix": {
-      "value": "ifv710"
+      "value": "deh711"
     },
     "appsDataStorageSkuName": {
       "value": "Standard_LRS"
     },
     "sqlServerNameSuffix": {
-      "value": "mjx900"
-    },
-    "sqlDatabaseSQLAdminLoginName": {
-      "value": "svr123"
-    },
-    "sqlDatabaseSQLAdminLoginPass": {
-      "value": "svr101102S"
-    },
-    "sqlDatabaseAADAdminLoginName": {
-      "value": "danny.zamorano"
+      "value": "nkt895"
     },
     "sqlDatabaseSkuType": {
       "value": "Standard"
@@ -177,7 +186,7 @@
       "value": "Local"
     },
     "acrNameSuffix": {
-      "value": "hle650"
+      "value": "hym659"
     },
     "acrSku": {
       "value": "Premium"
@@ -195,7 +204,7 @@
       "value": "Free"
     },
     "aksDnsSuffix": {
-      "value": "vnq208"
+      "value": "ibf656"
     },
     "aksKubernetesVersion": {
       "value": "1.23.12"
@@ -233,10 +242,10 @@
     "aksEnableOMSAgentAddon": {
       "value": true
     },
-    "keyVaultEnableDiagnostics": {
+    "appsKeyVaultEnableDiagnostics": {
       "value": true
     },
-    "keyVaultLogsRetentionDays": {
+    "appsKeyVaultLogsRetentionDays": {
       "value": 7
     },
     "appGatewayEnableDiagnostics": {
@@ -269,16 +278,10 @@
     "acrLogsRetentionDays": {
       "value": 7
     },
-    "monitoringDataStorageEnableLock": {
-      "value": true
-    },
-    "workspaceEnableLock": {
-      "value": true
-    },
     "networkWatcherEnableLock": {
       "value": true
     },
-    "keyVaultEnableLock": {
+    "appsKeyVaultEnableLock": {
       "value": true
     },
     "appGatewayEnableLock": {
@@ -296,28 +299,16 @@
     "aksEnableLock": {
       "value": true
     },
-    "monitoringDataStorageEnablePublicAccess": {
+    "appsKeyVaultEnablePublicAccess": {
       "value": false
     },
-    "monitoringDataStorageBypassAzureServices": {
-      "value": true
+    "appsKeyVaultBypassAzureServices": {
+      "value": false
     },
-    "monitoringDataStorageAllowedSubnets": {
+    "appsKeyVaultAllowedSubnets": {
       "value": []
     },
-    "monitoringDataStorageAllowedIPsOrCIDRs": {
-      "value": []
-    },
-    "keyVaultEnablePublicAccess": {
-      "value": true
-    },
-    "keyVaultBypassAzureServices": {
-      "value": true
-    },
-    "keyVaultAllowedSubnets": {
-      "value": []
-    },
-    "keyVaultAllowedIPsOrCIDRs": {
+    "appsKeyVaultAllowedIPsOrCIDRs": {
       "value": []
     },
     "appsDataStorageEnablePublicAccess": {
@@ -352,20 +343,6 @@
     },
     "aksEnablePublicAccess": {
       "value": false
-    },
-    "standardTags": {
-      "value": {
-        "ApplicationName": "",
-        "ApplicationOwner": "",
-        "ApplicationSponsor": "",
-        "TechnicalContact": "",
-        "Billing": "",
-        "Maintenance": "",
-        "EnvironmentType": "",
-        "Security": "",
-        "DeploymentDate": "",
-        "dd_organization": ""
-      }
     }
   }
 }

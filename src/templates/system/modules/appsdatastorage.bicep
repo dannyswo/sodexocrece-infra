@@ -1,7 +1,7 @@
 /**
  * Module: appsdatastorage
- * Depends on: inframanagedids, infrakeyvault, loganalytics
- * Used by: system/main
+ * Depends on: inframanagedids, infrakeyvault, monitoringworkspace
+ * Used by: system/mainSystem
  * Common resources: RL06, MM06, AD02
  */
 
@@ -78,10 +78,10 @@ param bypassAzureServices bool
   vnetName: 'Name of VNet.'
   subnetName: 'Name of the Subnet.'
 })
-param allowedSubnets array = []
+param allowedSubnets array
 
 @description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
-param allowedIPsOrCIDRs array = []
+param allowedIPsOrCIDRs array
 
 // ==================================== Resources ====================================
 

@@ -1,5 +1,5 @@
 /**
- * Template: shared/group
+ * Template: landingzone/group
  * Modules: N/A
  */
 
@@ -22,18 +22,21 @@ param location string = 'eastus2'
 param env string
 
 @description('Standard tags applied to all resources.')
-param standardTags object = {
-  ApplicationName: ''
-  ApplicationOwner: ''
-  ApplicationSponsor: ''
-  TechnicalContact: ''
-  Billing: ''
-  Maintenance: ''
-  EnvironmentType: ''
-  Security: ''
-  DeploymentDate: ''
-  dd_organization: ''
-}
+@metadata({
+  ApplicationName: 'ApplicationName'
+  ApplicationOwner: 'ApplicationOwner'
+  ApplicationSponsor: 'ApplicationSponsor'
+  TechnicalContact: 'TechnicalContact'
+  Maintenance: '{ ... } (maintenance standard JSON)'
+  EnvironmentType: 'DEV | UAT | PRD'
+  Security: '{ ... } (security standard JSON generated in Palantir)'
+  DeploymentDate: 'YYY-MM-DDTHHMM UTC (autogenatered)'
+  AllowShutdown: 'True (for non-prod environments), False (for prod environments)'
+  dd_organization: 'MX (only for prod environments)'
+  Env: 'dev | uat | prd'
+  stack: 'Crececonsdx'
+})
+param standardTags object
 
 // ==================================== Resources ====================================
 

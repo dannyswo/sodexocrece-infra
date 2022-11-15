@@ -1,7 +1,7 @@
 /**
  * Module: networkwatcher
  * Depends on: monitoringdatastorage
- * Used by: shared/main
+ * Used by: system/mainSystem
  * Common resources: RL01, MM03
  */
 
@@ -61,6 +61,7 @@ resource networkWatcher 'Microsoft.Network/networkWatchers@2022-05-01' = {
 
 // resource networkWatcher 'Microsoft.Network/networkWatchers@2022-05-01' existing = {
 //   name: 'NetworkWatcher_${location}'
+//   scope: resourceGroup(networkWatcherRGName)
 // }
 
 // ==================================== Network Watcher Flow Logs ====================================

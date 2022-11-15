@@ -1,7 +1,7 @@
 /**
  * Module: infrausers
  * Depends on: N/A
- * Used by: shared/main
+ * Used by: shared/mainShared
  * Common resources: N/A
  */
 

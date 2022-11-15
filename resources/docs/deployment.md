@@ -7,15 +7,18 @@ Deploy main templates in Javier's Subscription:
 
 ```
 az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\main.bicep -p .\src\config\main.swo2.json
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\shared\sharedmain.bicep -p .\src\config\sharedmain.swo.json
 ```
 
 Deploy main templates in Danny's Subscription:
 
 ```
-az deployment sub create -l eastus2 -f .\src\templates\group.bicep -p .\src\config\group.swo.json
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\system\main.bicep -p .\src\config\main.swo2.json
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\shared\sharedmain.bicep -p .\src\config\sharedmain.swo.json
+az deployment sub create -l eastus2 -f .\src\templates\landingzone\groupProject.bicep -p .\src\config\group-project.swo.json
+
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\landingzone\mainLandingZone.bicep -p .\src\config\main-landingzone.swo.json
+
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\shared\mainShared.bicep -p .\src\config\main-shared.swo.json -p secrtsSqlDatabaseSqlAdminLoginName=svr123 -p secrtsSqlDatabaseSqlAdminLoginPass=svr101102S -p secrtsVaultSqlDatabaseAADAdminLoginName=danny.zamorano
+
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\system\mainSystem.bicep -p .\src\config\main.swo-system.swo.json
 ```
 
 Deploy individual modules:

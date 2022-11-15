@@ -1,13 +1,13 @@
 /**
- * Module: appskeyvault
+ * Module: infrakeyvault
  * Depends on: monitoringworkspace
- * Used by: system/mainSystem
+ * Used by: shared/mainShared
  * Common resources: RL04, MM04
  */
 
- // ==================================== Parameters ====================================
+// ==================================== Parameters ====================================
 
- // ==================================== Common parameters ====================================
+// ==================================== Common parameters ====================================
 
 @description('Azure region to deploy the Key Vault.')
 param location string = resourceGroup().location

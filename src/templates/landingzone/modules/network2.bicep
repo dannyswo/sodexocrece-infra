@@ -1,7 +1,7 @@
 /**
  * Module: network2
  * Depends on: N/A
- * Used by: system/main
+ * Used by: landingzone/mainLandingZone
  * Common resources: N/A
  */
 

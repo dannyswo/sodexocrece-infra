@@ -1,7 +1,7 @@
 /**
  * Module: privateendpoint
  * Depends on: network1 (optional)
- * Used by: system/main
+ * Used by: system/mainSystem
  * Resources: RL01, MM03
  */
 
@@ -119,7 +119,7 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 }
 
 resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetName, index) in linkedVNetNames: {
-  name: '${privateEndpointName}-networkLink${index}'
+  name: '${privateEndpointName}-NetworkLink${index}'
   parent: privateDnsZone
   location: 'global'
   properties: {
@@ -131,7 +131,7 @@ resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLi
 }]
 
 resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-05-01' = {
-  name: '${privateEndpointName}-dnsZoneGroup'
+  name: '${privateEndpointName}-DnsZoneGroup'
   parent: privateEndpoint
   properties: {
     privateDnsZoneConfigs: [

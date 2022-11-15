@@ -1,7 +1,7 @@
 /**
  * Module: acr
- * Depends on: loganalytics
- * Used by: system/main
+ * Depends on: monitoringworkspace
+ * Used by: system/mainSystem
  * Common resources: RL08, MM08
  */
 
@@ -83,7 +83,7 @@ param enablePublicAccess bool
 param bypassAzureServices bool
 
 @description('List of IPs or CIDRs allowed to access the Container Registry in the PaaS firewall.')
-param allowedIPsOrCIDRs array = []
+param allowedIPsOrCIDRs array
 
 // ==================================== Resources ====================================
 

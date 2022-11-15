@@ -1,13 +1,16 @@
 /**
  * Module: infrarg-rbac
  * Depends on: N/A
- * Used by: shared/main
+ * Used by: shared/mainShared
  * Common resources: N/A
  */
 
 // ==================================== Parameters ====================================
 
 // ==================================== Resource properties ====================================
+
+@description('ID of the AAD Tenant used to register new custom Role Definitions.')
+param tenantId string = subscription().tenantId
 
 @description('Principal ID of the system administrator.')
 param administratorPrincipalId string
@@ -38,6 +41,12 @@ var administratorRoleDefinitions = [
     roleName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
     roleDescription: 'Storage Blob Data Contributor | Allows for read, write and delete access to Azure Storage blob containers and data'
     roleAssignmentDescription: 'System administrator can access Storage Account Blob data.'
+    scope: 'ResourceGroup'
+  }
+  {
+    roleName: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+    roleDescription: 'Owner | Grants full access to manage all resources, including the ability to assign roles in Azure RBAC.'
+    roleAssignmentDescription: 'System administrator can modify resources in the Resource Group and assign roles.'
     scope: 'ResourceGroup'
   }
 ]
@@ -89,10 +98,10 @@ var azureFeatureManagerActions = [
   'Microsoft.Features/providers/features/register/action'
 ]
 
-var azureFeaturesManagerRoleName = 'Azure Features Manager'
+var azureFeaturesManagerRoleName = 'Azure Features Manager 2'
 
 resource azureFeatureManagerRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
-  name: guid(resourceGroup().id, administratorPrincipalId, azureFeaturesManagerRoleName)
+  name: guid(tenantId, resourceGroup().id, administratorPrincipalId, azureFeaturesManagerRoleName)
   properties: {
     roleName: azureFeaturesManagerRoleName
     description: 'Read and register Azure Features and Feature Providers.'
@@ -118,10 +127,10 @@ var routeTablesAdminActions = [
   'Microsoft.Network/routeTables/routes/delete'
 ]
 
-var routeTableAdminRoleName = 'Route Table Administrator'
+var routeTableAdminRoleName = 'Route Table Administrator 2'
 
 resource routeTableAdminRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
-  name: guid(resourceGroup().id, aksManagedIdentity.id, routeTableAdminRoleName)
+  name: guid(tenantId, resourceGroup().id, aksManagedIdentity.id, routeTableAdminRoleName)
   properties: {
     roleName: routeTableAdminRoleName
     description: 'View and edit properties of Route Tables.'
@@ -147,4 +156,4 @@ resource aksManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@20
 // ==================================== Outputs ====================================
 
 @description('ACK of Role Assignments.')
-output administratorRoleAssignmentsAck string = 'assigned'
+output roleAssignmentsAck string = 'assigned'

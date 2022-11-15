@@ -1,7 +1,7 @@
 /**
  * Module: network1
  * Depends on: N/A
- * Used by: system/main
+ * Used by: landingzone/mainLandingZone
  * Common resources: N/A
  */
 
@@ -152,6 +152,16 @@ var appsSubnetServiceEndpoints1 = (enableStorageAccountServiceEndpoint) ? concat
 var appsSubnetServiceEndpoints2 = (enableSqlDatabaseServiceEndpoint) ? concat(appsSubnetServiceEndpoints1, [ serviceEndpointDefinitions.sql ]) : appsSubnetServiceEndpoints1
 var appsSubnetServiceEndpoints = (enableContainerRegistryServiceEndpoint) ? concat(appsSubnetServiceEndpoints2, [ serviceEndpointDefinitions.containerRegistry ]) : appsSubnetServiceEndpoints2
 
+var jumpServersSubnetServiceEndpoints0 = (enableKeyVaultServiceEndpoint) ? [ serviceEndpointDefinitions.keyVault ] : []
+var jumpServersSubnetServiceEndpoints1 = (enableStorageAccountServiceEndpoint) ? concat(jumpServersSubnetServiceEndpoints0, [ serviceEndpointDefinitions.storageAccount ]) : jumpServersSubnetServiceEndpoints0
+var jumpServersSubnetServiceEndpoints2 = (enableSqlDatabaseServiceEndpoint) ? concat(jumpServersSubnetServiceEndpoints1, [ serviceEndpointDefinitions.sql ]) : jumpServersSubnetServiceEndpoints1
+var jumpServersSubnetServiceEndpoints = (enableContainerRegistryServiceEndpoint) ? concat(jumpServersSubnetServiceEndpoints2, [ serviceEndpointDefinitions.containerRegistry ]) : jumpServersSubnetServiceEndpoints2
+
+var devopsAgentsSubnetServiceEndpoints0 = (enableKeyVaultServiceEndpoint) ? [ serviceEndpointDefinitions.keyVault ] : []
+var devopsAgentsSubnetServiceEndpoints1 = (enableStorageAccountServiceEndpoint) ? concat(devopsAgentsSubnetServiceEndpoints0, [ serviceEndpointDefinitions.storageAccount ]) : devopsAgentsSubnetServiceEndpoints0
+var devopsAgentsSubnetServiceEndpoints2 = (enableSqlDatabaseServiceEndpoint) ? concat(devopsAgentsSubnetServiceEndpoints1, [ serviceEndpointDefinitions.sql ]) : devopsAgentsSubnetServiceEndpoints1
+var devopsAgentsSubnetServiceEndpoints = (enableContainerRegistryServiceEndpoint) ? concat(devopsAgentsSubnetServiceEndpoints2, [ serviceEndpointDefinitions.containerRegistry ]) : devopsAgentsSubnetServiceEndpoints2
+
 resource gatewayVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewayVNetNameSuffix}'
   location: location
@@ -255,6 +265,7 @@ resource jumpServersVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
           networkSecurityGroup: {
             id: jumpServersNSG.id
           }
+          serviceEndpoints: jumpServersSubnetServiceEndpoints
         }
       }
     ]
@@ -281,6 +292,7 @@ resource devopsAgentsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
           networkSecurityGroup: {
             id: devopsAgentsNSG.id
           }
+          serviceEndpoints: devopsAgentsSubnetServiceEndpoints
         }
       }
     ]
@@ -751,7 +763,7 @@ resource devopsAgentsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = 
   tags: standardTags
 }
 
-// ==================================== Route Tables ====================================
+// ==================================== Custom Route Tables ====================================
 
 resource aksCustomRouteTable 'Microsoft.Network/routeTables@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-UD01'

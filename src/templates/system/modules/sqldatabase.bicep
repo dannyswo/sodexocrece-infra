@@ -1,7 +1,7 @@
 /**
  * Module: sqldatabase
- * Depends on: loganalytics
- * Used by: system/main
+ * Depends on: infrausers, monitoringworkspace
+ * Used by: system/mainSystem
  * Common resources: RL07, MM07
  */
 
@@ -112,14 +112,14 @@ param enablePublicAccess bool
   vnetName: 'Name of VNet.'
   subnetName: 'Name of the Subnet.'
 })
-param allowedSubnets array = []
+param allowedSubnets array
 
 @description('List of IPs ranges (start and end IP addresss) allowed to access the Azure SQL Server in the firewall.')
 @metadata({
   startIPAddress: 'First IP in the IP range.'
   endIPAddress: 'Last IP in the IP range.'
 })
-param allowedIPRanges array = []
+param allowedIPRanges array
 
 // ==================================== Resources ====================================
 
