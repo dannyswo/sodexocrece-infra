@@ -1,0 +1,84 @@
+{
+  "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/brs-mex-use2-crecesdx-swo-rg01/providers/Microsoft.Resources/deployments/OMSAuditingDashboard_83544d2a34fe455a9efb7c479a230271",
+  "name": "OMSAuditingDashboard_83544d2a34fe455a9efb7c479a230271",
+  "type": "Microsoft.Resources/deployments",
+  "tags": {
+    "primaryResourceId": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourcegroups/brs-mex-use2-crecesdx-swo-rg01/providers/microsoft.operationalinsights/workspaces/brs-mex-use2-crecesdx-swo-mm01"
+  },
+  "properties": {
+    "templateHash": "9365594404711816682",
+    "parameters": {
+      "workspaceName": {
+        "type": "String",
+        "value": "brs-mex-use2-crecesdx-swo-mm01"
+      },
+      "workspaceRegionId": {
+        "type": "String",
+        "value": "eastus2"
+      }
+    },
+    "mode": "Incremental",
+    "debugSetting": {
+      "detailLevel": "None"
+    },
+    "provisioningState": "Succeeded",
+    "timestamp": "2022-11-16T04:35:41.4208197Z",
+    "duration": "PT6.7018262S",
+    "correlationId": "bd418fc4-cc32-44d2-950e-e74dfb4bbb5b",
+    "providers": [
+      {
+        "namespace": "Microsoft.OperationsManagement",
+        "resourceTypes": [
+          {
+            "resourceType": "solutions",
+            "locations": [
+              "eastus2"
+            ]
+          }
+        ]
+      },
+      {
+        "namespace": "Microsoft.OperationalInsights",
+        "resourceTypes": [
+          {
+            "resourceType": "workspaces/views",
+            "locations": [
+              "eastus2"
+            ]
+          }
+        ]
+      }
+    ],
+    "dependencies": [
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.OperationalInsights/workspaces/brs-mex-use2-crecesdx-swo-mm01/views/SQLSecurityInsights",
+            "resourceType": "Microsoft.OperationalInsights/workspaces/views",
+            "resourceName": "brs-mex-use2-crecesdx-swo-mm01/SQLSecurityInsights"
+          },
+          {
+            "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.OperationalInsights/workspaces/brs-mex-use2-crecesdx-swo-mm01/views/SQLAccessToSensitiveData",
+            "resourceType": "Microsoft.OperationalInsights/workspaces/views",
+            "resourceName": "brs-mex-use2-crecesdx-swo-mm01/SQLAccessToSensitiveData"
+          }
+        ],
+        "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/brs-mex-use2-crecesdx-swo-rg01/providers/Microsoft.OperationsManagement/solutions/SQLAuditing[brs-mex-use2-crecesdx-swo-mm01]",
+        "resourceType": "Microsoft.OperationsManagement/solutions",
+        "resourceName": "SQLAuditing[brs-mex-use2-crecesdx-swo-mm01]"
+      }
+    ],
+    "outputResources": [
+      {
+        "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/brs-mex-use2-crecesdx-swo-rg01/providers/Microsoft.OperationalInsights/workspaces/brs-mex-use2-crecesdx-swo-mm01/views/SQLAccessToSensitiveData"
+      },
+      {
+        "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/brs-mex-use2-crecesdx-swo-rg01/providers/Microsoft.OperationalInsights/workspaces/brs-mex-use2-crecesdx-swo-mm01/views/SQLSecurityInsights"
+      },
+      {
+        "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/brs-mex-use2-crecesdx-swo-rg01/providers/Microsoft.OperationsManagement/solutions/SQLAuditing[brs-mex-use2-crecesdx-swo-mm01]"
+      }
+    ],
+    "validationLevel": "Template"
+  }
+}

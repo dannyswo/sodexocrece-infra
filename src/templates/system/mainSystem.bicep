@@ -245,20 +245,6 @@ param aksEnableEncryptionAtHost bool
 param aksEnablePrivateCluster bool
 @description('Enable Pod-Managed Identity feature on the AKS Managed Cluster.')
 param aksEnablePodManagedIdentity bool
-@description('List of Pod Identities spec with name, namespace and Managed Identity name.')
-@metadata({
-  podIdentityName: 'Name of the Pod Identity.'
-  podIdentityNamespace: 'Name where the Pod can use the Pod Identity.'
-  managedIdentityName: 'Name of the application Managed Identity.'
-  example: [
-    {
-      podIdentityName: 'merchant-view-podid'
-      podIdentityNamespace: 'merchant-ns'
-      managedIdentityName: 'BRS-MEX-USE2-CRECESDX-SWO-AD04'
-    }
-  ]
-})
-param aksPodIdentities array
 @description('Enable Workload Identity feature on the AKS Managed Cluster.')
 param aksEnableWorkloadIdentity bool
 @description('Enable AKS Application Gateway Ingress Controller Add-on.')
@@ -567,6 +553,14 @@ module acrPrivateEndpointModule 'modules/privateEndpoint.bicep' = if (enablePriv
   }
 }
 
+var podIdentities = [
+  {
+    podIdentityName: 'merchant-api-podid'
+    podIdentityNamespace: 'crecesdx'
+    managedIdentityName: appsManagedIdsModule.outputs.app1ManagedIdentityName
+  }
+]
+
 module aksModule 'modules/aks.bicep' = {
   name: 'aksModule'
   params: {
@@ -587,7 +581,7 @@ module aksModule 'modules/aks.bicep' = {
     enablePrivateCluster: aksEnablePrivateCluster
     privateDnsZoneLinkedVNetNames: selectedAksPrivateDnsZoneLinkedVNetNames
     enablePodManagedIdentity: aksEnablePodManagedIdentity
-    podIdentities: aksPodIdentities
+    podIdentities: podIdentities
     enableWorkloadIdentity: aksEnableWorkloadIdentity
     enableAGICAddon: aksEnableAGICAddon
     appGatewayName: appGatewayModule.outputs.applicationGatewayName
@@ -595,5 +589,25 @@ module aksModule 'modules/aks.bicep' = {
     workspaceName: monitoringWorkspaceName
     enableLock: aksEnableLock
     enablePublicAccess: aksEnablePublicAccess
+  }
+}
+
+module aksRbacModule 'modules/aksRbac.bicep' = {
+  name: 'aksRbacModule'
+  params: {
+    aksClusterId: aksModule.outputs.aksClusterId
+    aksKubeletPrincipalId: aksModule.outputs.aksKubeletPrincipalId
+    aksAGICPrincipalId: aksModule.outputs.aksAGICPrincipalId
+    appGatewayName: appGatewayModule.outputs.applicationGatewayName
+    app1ManageIdentityId: appsManagedIdsModule.outputs.app1ManagedIdentityId
+  }
+}
+
+module aksNodeGroupRbacModule 'modules/aksNodeGroupRbac.bicep' = {
+  name: 'aksNodeGroupRbacModule'
+  scope: resourceGroup('MC_BRS-MEX-USE2-CRECESDX-${env}-RG01_BRS-MEX-USE2-CRECESDX-${env}-KU01_${location}')
+  params: {
+    aksClusterId: aksModule.outputs.aksClusterId
+    app1ManageIdentityId: appsManagedIdsModule.outputs.app1ManagedIdentityId
   }
 }

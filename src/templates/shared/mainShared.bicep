@@ -318,6 +318,16 @@ module infraKeyVaultPoliciesModule 'modules/infraKeyVaultPolicies.bicep' = {
   }
 }
 
+module infraKeyVaultRbacModule 'modules/infraKeyVaultRbac.bicep' = {
+  name: 'infraKeyVaultRbacModule'
+  params: {
+    infraKeyVaultName: infraKeyVaultModule.outputs.keyVaultName
+    administratorPrincipalId: infraUsersModule.outputs.administratorPrincipalId
+    appGatewayManagedIdentityName: infraManagedIdsModule.outputs.appGatewayManagedIdentityName
+    appsDataStorageManagedIdentityName: infraManagedIdsModule.outputs.appsDataStorageManagedIdentityName
+  }
+}
+
 module serviceEndpointPoliciesModule 'modules/serviceEndpointPolicies.bicep' = if (createServiceEndpointPolicies) {
   name: 'serviceEndpointPoliciesModule'
   params: {

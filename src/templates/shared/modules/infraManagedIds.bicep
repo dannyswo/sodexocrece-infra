@@ -26,7 +26,7 @@ param standardTags object
 
 // ==================================== Resources ====================================
 
-// ==================================== User-Assigned Managed Identities ====================================
+// ==================================== User-Assigned Managed Identities: Infrastructure Services ====================================
 
 resource appGatewayManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-AD01'

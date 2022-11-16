@@ -212,9 +212,6 @@
     "aksEnablePodManagedIdentity": {
       "value": false
     },
-    "aksPodIdentities": {
-      "value": []
-    },
     "aksEnableWorkloadIdentity": {
       "value": false
     },
