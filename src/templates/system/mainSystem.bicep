@@ -553,14 +553,6 @@ module acrPrivateEndpointModule 'modules/privateEndpoint.bicep' = if (enablePriv
   }
 }
 
-var podIdentities = [
-  {
-    podIdentityName: 'merchant-api-podid'
-    podIdentityNamespace: 'crecesdx'
-    managedIdentityName: appsManagedIdsModule.outputs.app1ManagedIdentityName
-  }
-]
-
 module aksModule 'modules/aks.bicep' = {
   name: 'aksModule'
   params: {
@@ -581,7 +573,7 @@ module aksModule 'modules/aks.bicep' = {
     enablePrivateCluster: aksEnablePrivateCluster
     privateDnsZoneLinkedVNetNames: selectedAksPrivateDnsZoneLinkedVNetNames
     enablePodManagedIdentity: aksEnablePodManagedIdentity
-    podIdentities: podIdentities
+    podIdentities: []
     enableWorkloadIdentity: aksEnableWorkloadIdentity
     enableAGICAddon: aksEnableAGICAddon
     appGatewayName: appGatewayModule.outputs.applicationGatewayName
@@ -599,7 +591,6 @@ module aksRbacModule 'modules/aksRbac.bicep' = {
     aksKubeletPrincipalId: aksModule.outputs.aksKubeletPrincipalId
     aksAGICPrincipalId: aksModule.outputs.aksAGICPrincipalId
     appGatewayName: appGatewayModule.outputs.applicationGatewayName
-    app1ManageIdentityId: appsManagedIdsModule.outputs.app1ManagedIdentityId
   }
 }
 
@@ -608,6 +599,6 @@ module aksNodeGroupRbacModule 'modules/aksNodeGroupRbac.bicep' = {
   scope: resourceGroup('MC_BRS-MEX-USE2-CRECESDX-${env}-RG01_BRS-MEX-USE2-CRECESDX-${env}-KU01_${location}')
   params: {
     aksClusterId: aksModule.outputs.aksClusterId
-    app1ManageIdentityId: appsManagedIdsModule.outputs.app1ManagedIdentityId
+    aksKubeletPrincipalId: aksModule.outputs.aksKubeletPrincipalId
   }
 }

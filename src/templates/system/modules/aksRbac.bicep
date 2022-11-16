@@ -24,9 +24,6 @@ param aksAGICPrincipalId string
 @description('Name of the Application Gateway managed by AGIC add-on.')
 param appGatewayName string
 
-@description('Principal ID of the Managed Identity of App 1.')
-param app1ManageIdentityId string
-
 // ==================================== Role Assignments ====================================
 
 // ==================================== Role Assignments: AKS kubelet to ACR ====================================
@@ -113,16 +110,16 @@ var aksPodIdentityRoleDefinitions = [
   {
     roleName: 'f1a07417-d97a-45cb-824c-7a7467783830'
     roleDescription: 'Managed Identity Operator | Read and Assign User Assigned Identity'
-    roleAssignmentDescription: 'View and assign Managed Identity of App 1.'
+    roleAssignmentDescription: 'View and assign Managed Identities from AKS kubelet process.'
   }
 ]
 
 resource aksPodIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksPodIdentityRoleDefinitions: {
-  name: guid(resourceGroup().id, app1ManageIdentityId, roleDefinition.roleName)
+  name: guid(resourceGroup().id, aksClusterId, aksKubeletPrincipalId, roleDefinition.roleName)
   scope: resourceGroup()
   properties: {
     description: roleDefinition.roleAssignmentDescription
-    principalId: app1ManageIdentityId
+    principalId: aksKubeletPrincipalId
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
     principalType: 'ServicePrincipal'
   }

@@ -253,18 +253,7 @@ resource aksManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@20
 
 // ==================================== Apps Managed Identities ====================================
 
-resource app1ManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
-  name: podIdentities[0].managedIdentityName
-}
-
-var podIdentitiesWithManagedIdentities = [
-  {
-    identity: app1ManagedIdentity
-    name: podIdentities[0].podIdentityName
-    namespace: podIdentities[0].podIdentityNamespace
-    bindingSelector: podIdentities[0].podIdentityName
-  }
-]
+var podIdentitiesWithManagedIdentities = []
 
 // ==================================== Resource Lock ====================================
 

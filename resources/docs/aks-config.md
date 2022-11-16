@@ -102,7 +102,7 @@ helm list --namespace [namespace]
 helm list --namespace crecesdx
 helm status [release]
 
-helm uninstall 
+helm uninstall
 helm upgrade [release] [chart] --version [version-number] --atomic --install
 ```
 
@@ -122,4 +122,16 @@ Enable aks-preview extension for AAD Pod-Managed Identity:
 ```
 az feature register --namespace "Microsoft.ContainerService" --name "EnablePodIdentityPreview"
 az extension add --name aks-preview
+```
+
+## AKS Pod-Managed Identity Helm Chart installation
+
+```
+helm repo add aad-pod-identity https://raw.githubusercontent.com/Azure/aad-pod-identity/master/charts
+helm install aad-pod-identity aad-pod-identity/aad-pod-identity --namespace=crecesdx
+```
+
+```
+kubectl apply -f crecesdx-merchant.k8s.yaml
+kubectl apply -f crecesdx-merchant-view-podidentity.k8s.yaml
 ```

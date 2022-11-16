@@ -12,8 +12,8 @@
 @description('ID of the AKS Managed Cluster.')
 param aksClusterId string
 
-@description('Principal ID of the Managed Identity of App 1.')
-param app1ManageIdentityId string
+@description('Principal ID of the kubelet process in the AKS Managed Cluster.')
+param aksKubeletPrincipalId string
 
 // ==================================== Resources ====================================
 
@@ -25,16 +25,16 @@ var aksPodIdentityRoleDefinitions = [
   {
     roleName: '9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
     roleDescription: 'Virtual Machine Contributor | Lets you manage virtual machines, but not access to them'
-    roleAssignmentDescription: 'View and change Managed Identities from AGIC AKS Add-on.'
+    roleAssignmentDescription: 'View and assign Managed Identities from AKS kubelet process.'
   }
 ]
 
 resource aksPodIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksPodIdentityRoleDefinitions: {
-  name: guid(resourceGroup().id, aksClusterId, app1ManageIdentityId, roleDefinition.roleName)
+  name: guid(resourceGroup().id, aksClusterId, aksKubeletPrincipalId, roleDefinition.roleName)
   scope: resourceGroup()
   properties: {
     description: roleDefinition.roleAssignmentDescription
-    principalId: app1ManageIdentityId
+    principalId: aksKubeletPrincipalId
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
     principalType: 'ServicePrincipal'
   }
