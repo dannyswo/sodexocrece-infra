@@ -76,7 +76,7 @@ resource app1ManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignm
 
 // ==================================== Custom Role Definitions ====================================
 
-var routeTableAdminRoleName = 'Route Table Administrator 3'
+var routeTableAdminRoleName = 'Route Table Administrator'
 
 resource routeTableAdminRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
   name: guid(tenantId, resourceGroup().id, aksManagedIdentityPrincipalId, routeTableAdminRoleName)

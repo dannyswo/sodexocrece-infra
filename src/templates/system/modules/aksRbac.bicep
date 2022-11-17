@@ -127,7 +127,7 @@ resource aksPodIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@
 
 // ==================================== Custom Role Definitions ====================================
 
-var appGatewayAdminRoleName = 'Application Gateway Administrator 3'
+var appGatewayAdminRoleName = 'Application Gateway Administrator'
 
 resource appGatewayAdminRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
   name: guid(tenantId, resourceGroup().id, aksClusterId, appGatewayAdminRoleName)
