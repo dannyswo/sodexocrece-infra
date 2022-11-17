@@ -573,7 +573,7 @@ module aksModule 'modules/aks.bicep' = if (updateAksModules) {
   }
 }
 
-module aksRbacModule 'modules/aksRbac.bicep' = {
+module aksRbacModule 'modules/aksRbac.bicep' = if (updateAksModules) {
   name: 'aksRbacModule'
   params: {
     aksClusterId: aksModule.outputs.aksClusterId
@@ -583,9 +583,9 @@ module aksRbacModule 'modules/aksRbac.bicep' = {
   }
 }
 
-module aksNodeGroupRbacModule 'modules/aksNodeGroupRbac.bicep' = {
+module aksNodeGroupRbacModule 'modules/aksNodeGroupRbac.bicep' = if (updateAksModules) {
   name: 'aksNodeGroupRbacModule'
-  scope: resourceGroup('MC_BRS-MEX-USE2-CRECESDX-${env}-RG01_BRS-MEX-USE2-CRECESDX-${env}-KU01_${location}')
+  scope: resourceGroup('MC_${resourceGroup().name}_BRS-MEX-USE2-CRECESDX-${env}-KU01_${location}')
   params: {
     aksClusterId: aksModule.outputs.aksClusterId
     aksKubeletPrincipalId: aksModule.outputs.aksKubeletPrincipalId

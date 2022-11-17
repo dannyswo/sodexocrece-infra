@@ -74,7 +74,7 @@
     "sqlDatabaseSqlAdminLoginName": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta775"
+          "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta775"
         },
         "secretName": "crececonsdx-sqldatabase-sqladminloginname"
       }
@@ -82,7 +82,7 @@
     "sqlDatabaseSqlAdminLoginPass": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta775"
+          "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta775"
         },
         "secretName": "crececonsdx-sqldatabase-sqladminloginpass"
       }
@@ -251,9 +251,6 @@
     },
     "acrLogsRetentionDays": {
       "value": 7
-    },
-    "networkWatcherEnableLock": {
-      "value": true
     },
     "appGatewayEnableLock": {
       "value": true
