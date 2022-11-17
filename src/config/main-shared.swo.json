@@ -26,6 +26,9 @@
     "devopsAgentsVNetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-VN05"
     },
+    "appsNSGName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-NS02"
+    },
     "infraKeyVaultPEPrivateIPAddress": {
       "value": "10.169.88.70"
     },
@@ -45,7 +48,7 @@
       "value": 30
     },
     "infraKeyVaultNameSuffix": {
-      "value": "qta774"
+      "value": "qta775"
     },
     "infraKeyVaultEnablePurgeProtection": {
       "value": true
@@ -66,15 +69,13 @@
       "value": "11/15/2022 08:00:00 AM"
     },
     "adminUsersPrincipalIds": {
-      "value": [
-        "40c2e922-9fb6-4186-a53f-44439c85a9df"
-      ]
+      "value": []
     },
     "devopsAgentPrincipalId": {
       "value": ""
     },
-    "createServiceEndpointPolicies": {
-      "value": false
+    "flowLogsRetentionDays": {
+      "value": 7
     },
     "infraKeyVaultEnableDiagnostics": {
       "value": true
@@ -89,6 +90,9 @@
       "value": true
     },
     "infraKeyVaultEnableLock": {
+      "value": true
+    },
+    "flowLogsEnableLock": {
       "value": true
     },
     "monitoringDataStorageEnablePublicAccess": {
@@ -131,6 +135,15 @@
     },
     "infraKeyVaultAllowedIPsOrCIDRs": {
       "value": []
+    },
+    "updatePrivateEndpointModules": {
+      "value": true
+    },
+    "updateFlowLogsModule": {
+      "value": false
+    },
+    "updateServiceEndpointPoliciesModule": {
+      "value": false
     }
   }
 }

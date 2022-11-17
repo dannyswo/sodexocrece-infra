@@ -1,6 +1,6 @@
 /**
- * Module: appsKeyVaultRbac
- * Depends on: appsKeyVault, appsManagedIds, teamUsers
+ * Module: systemRgRbac
+ * Depends on: N/A
  * Used by: system/mainSystem
  * Common resources: N/A
  */
@@ -9,18 +9,11 @@
 
 // ==================================== Resource properties ====================================
 
-@description('Name of the applications Key Vault.')
-param appsKeyVaultName string
-
 // ==================================== Resources ====================================
 
 // ==================================== Role Assignments ====================================
 
-// ==================================== Scope ====================================
-
-resource appsKeyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
-  name: appsKeyVaultName
-}
+// ==================================== Custom Role Definitions ====================================
 
 // ==================================== Security Principals ====================================
 

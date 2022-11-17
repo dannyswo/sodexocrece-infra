@@ -106,8 +106,8 @@ param devopsAgentsSubnetNameSuffix string
 @description('IP range or CIDR of the Devops Agents Subnet.')
 param devopsAgentsSubnetAddressPrefix string
 
-@description('Enable custom Route Table for AKS attached to Gateway and Apps VNet.')
-param enableCustomRouteTable bool
+@description('Create custom Route Table for AKS attached to Gateway and Apps VNet.')
+param createCustomRouteTable bool
 
 @description('Enable Key Vault Service Endpoint on Gateway and Apps Subnet.')
 param enableKeyVaultServiceEndpoint bool
@@ -179,7 +179,7 @@ resource gatewayVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
           networkSecurityGroup: {
             id: gatewayNSG.id
           }
-          routeTable: (enableCustomRouteTable) ? {
+          routeTable: (createCustomRouteTable) ? {
             id: aksCustomRouteTable.id
           } : null
           serviceEndpoints: gatewaySubnetServiceEndpoints
@@ -209,7 +209,7 @@ resource appsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
           networkSecurityGroup: {
             id: appsNSG.id
           }
-          routeTable: (enableCustomRouteTable) ? {
+          routeTable: (createCustomRouteTable) ? {
             id: aksCustomRouteTable.id
           } : null
           serviceEndpoints: appsSubnetServiceEndpoints

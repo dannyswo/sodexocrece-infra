@@ -24,65 +24,12 @@ param appsDataStorageAccountPrincipalId string
 @description('List of applications AAD Principal IDs allowed to read Secrets.')
 param applicationsPrincipalIds array = []
 
-@description('List of administrators AAD Principal IDs allowed to manage Key Vault objects.')
+@description('List of administrators Principal IDs allowed to manage Key Vault objects.')
 param adminsPrincipalIds array = []
 
 // ==================================== Resources ====================================
 
 // ==================================== Key Vault Access Policies ====================================
-
-var allCertificatesPermissions = [
-  'backup'
-  'create'
-  'delete'
-  'deleteissuers'
-  'get'
-  'getissuers'
-  'import'
-  'list'
-  'listissuers'
-  'managecontacts'
-  'manageissuers'
-  'purge'
-  'recover'
-  'restore'
-  'setissuers'
-  'update'
-]
-
-var allKeysPermissions = [
-  'backup'
-  'create'
-  'decrypt'
-  'delete'
-  'encrypt'
-  'get'
-  'getrotationpolicy'
-  'import'
-  'list'
-  'purge'
-  'recover'
-  'release'
-  'restore'
-  'rotate'
-  'setrotationpolicy'
-  'sign'
-  'unwrapKey'
-  'update'
-  'verify'
-  'wrapKey'
-]
-
-var allSecretsPermissions = [
-  'backup'
-  'delete'
-  'get'
-  'list'
-  'purge'
-  'recover'
-  'restore'
-  'set'
-]
 
 var appGatewayAccessPolicy = {
   objectId: appGatewayPrincipalId
@@ -137,6 +84,61 @@ resource appsKeyVaultAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@20
     accessPolicies: accessPolicies
   }
 }
+
+// ==================================== Key Vault List of Permissions ====================================
+
+var allCertificatesPermissions = [
+  'backup'
+  'create'
+  'delete'
+  'deleteissuers'
+  'get'
+  'getissuers'
+  'import'
+  'list'
+  'listissuers'
+  'managecontacts'
+  'manageissuers'
+  'purge'
+  'recover'
+  'restore'
+  'setissuers'
+  'update'
+]
+
+var allKeysPermissions = [
+  'backup'
+  'create'
+  'decrypt'
+  'delete'
+  'encrypt'
+  'get'
+  'getrotationpolicy'
+  'import'
+  'list'
+  'purge'
+  'recover'
+  'release'
+  'restore'
+  'rotate'
+  'setrotationpolicy'
+  'sign'
+  'unwrapKey'
+  'update'
+  'verify'
+  'wrapKey'
+]
+
+var allSecretsPermissions = [
+  'backup'
+  'delete'
+  'get'
+  'list'
+  'purge'
+  'recover'
+  'restore'
+  'set'
+]
 
 // ==================================== Key Vault ====================================
 

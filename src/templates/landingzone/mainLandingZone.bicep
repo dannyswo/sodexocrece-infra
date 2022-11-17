@@ -44,6 +44,9 @@ param standardTags object = resourceGroup().tags
 @description('Create VNets, Subnets and NSGs resources.')
 param createNetwork bool
 
+@description('Create custom Route Table for Gateway Subnet managed by AKS (with kubenet network plugin).')
+param createCustomRouteTable bool
+
 @description('Create VM in the Jump Servers Subnet.')
 param createJumpServer bool
 
@@ -75,7 +78,7 @@ module networkModule 'modules/network1.bicep' = if (createNetwork) {
     devopsAgentsVNetAddressPrefix: '10.169.60.0/24'
     devopsAgentsSubnetNameSuffix: 'SN05'
     devopsAgentsSubnetAddressPrefix: '10.169.60.64/26'
-    enableCustomRouteTable: true
+    createCustomRouteTable: createCustomRouteTable
     enableKeyVaultServiceEndpoint: true
     enableStorageAccountServiceEndpoint: true
     enableSqlDatabaseServiceEndpoint: false

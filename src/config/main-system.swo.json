@@ -32,12 +32,6 @@
     "devopsAgentsVNetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-VN05"
     },
-    "appsNSGName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-NS02"
-    },
-    "enablePrivateEndpoints": {
-      "value": true
-    },
     "appsDataStoragePEPrivateIPAddress": {
       "value": "10.169.88.73"
     },
@@ -66,13 +60,13 @@
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"
     },
     "infraKeyVaultUri": {
-      "value": "https://azmxkv1qta774.vault.azure.net/"
+      "value": "https://azmxkv1qta775.vault.azure.net/"
     },
     "appGatewayPublicCertificateId": {
-      "value": "https://azmxkv1qta774.vault.azure.net/secrets/crececonsdx-appgateway-cert-public"
+      "value": "https://azmxkv1qta775.vault.azure.net/secrets/crececonsdx-appgateway-cert-public"
     },
     "appGatewayPrivateCertificateId": {
-      "value": "https://azmxkv1qta774.vault.azure.net/secrets/crececonsdx-appgateway-cert-private"
+      "value": "https://azmxkv1qta775.vault.azure.net/secrets/crececonsdx-appgateway-cert-private"
     },
     "appsDataStorageEncryptionKeyName": {
       "value": "crececonsdx-appsdatastorage-key"
@@ -80,7 +74,7 @@
     "sqlDatabaseSqlAdminLoginName": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1qta774"
+          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta775"
         },
         "secretName": "crececonsdx-sqldatabase-sqladminloginname"
       }
@@ -88,7 +82,7 @@
     "sqlDatabaseSqlAdminLoginPass": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1qta774"
+          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta775"
         },
         "secretName": "crececonsdx-sqldatabase-sqladminloginpass"
       }
@@ -101,12 +95,6 @@
     },
     "sqlDatabaseAADAdminPrincipalId": {
       "value": "40c2e922-9fb6-4186-a53f-44439c85a9df"
-    },
-    "enableFlowLogs": {
-      "value": false
-    },
-    "flowLogsRetentionDays": {
-      "value": 7
     },
     "appGatewayNameSuffix": {
       "value": "eae512"
@@ -219,7 +207,7 @@
     "aksEnablePrivateCluster": {
       "value": true
     },
-    "aksEnablePodManagedIdentity": {
+    "aksEnablePodManagedIdentities": {
       "value": false
     },
     "aksEnableWorkloadIdentity": {
@@ -227,6 +215,9 @@
     },
     "aksEnableAGICAddon": {
       "value": true
+    },
+    "aksCreateCustomRouteTable": {
+      "value": false
     },
     "aksEnableOMSAgentAddon": {
       "value": true
@@ -310,6 +301,18 @@
       "value": []
     },
     "aksEnablePublicAccess": {
+      "value": false
+    },
+    "updatePrivateEndpointModules": {
+      "value": false
+    },
+    "updateAgwModule": {
+      "value": false
+    },
+    "updateSqlDatabaseModule": {
+      "value": false
+    },
+    "updateAksModules": {
       "value": false
     }
   }

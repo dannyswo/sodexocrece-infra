@@ -46,11 +46,11 @@ openssl pkcs12 -export \
 ## Import SSL certificate into Key Vault via Azure CLI
 
 ```
-az keyvault certificate import --vault-name azmxkv1mat350 --name crececonsdx-appgateway-cert-public --file cert-public.pfx
-az keyvault certificate import --vault-name azmxkv1mat350 --name crececonsdx-appgateway-cert-private --file cert-private.pfx
+az keyvault certificate import --vault-name azmxkv1qta775 --name crececonsdx-appgateway-cert-public --file cert-public.pfx
+az keyvault certificate import --vault-name azmxkv1qta775 --name crececonsdx-appgateway-cert-private --file cert-private.pfx
 ```
 
 ```
-./src/scripts/import-keyvault-certificate.sh "azmxkv1mat350" "crececonsdx-appgateway-cert-private" "certificates/cert-private.pfx"
-.\src\scripts\import-keyvault-certificate.cmd "azmxkv1mat350" "crececonsdx-appgateway-cert-private" "certificates\cert-private.pfx"
+./src/scripts/import-keyvault-certificate.sh "azmxkv1qta775" "crececonsdx-appgateway-cert-private" "certificates/cert-private.pfx"
+.\src\scripts\import-keyvault-certificate.cmd "azmxkv1qta775" "crececonsdx-appgateway-cert-private" "certificates\cert-private.pfx"
 ```

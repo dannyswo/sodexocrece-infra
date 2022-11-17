@@ -1,11 +1,11 @@
 /**
  * Template: shared/mainShared
  * Modules:
- * - IAM: adminUserRgRbacModule (adminUserRgRbac), infraManagedIdsModule (infraManagedIds), infraManagedIdsRgRbacModule (infraManagedIdsRgRbac), infraKeyVaultRbacModule (infraKeyVaultRbac)
+ * - IAM: sharedUsersModule (sharedUsers), adminUsersRgRbacModule (adminUsersRgRbac), managedIdsModule (managedIds), managedIdsRgRbacModule (managedIdsRgRbac), infraKeyVaultRbacModule (infraKeyVaultRbac)
  * - Network: serviceEndpointPoliciesModule (serviceEndpointPolicies)
  * - Security: infraKeyVaultModule (infraKeyVault), infraKeyVaultObjectsModule (infraKeyVaultObjects), infraKeyVaultPoliciesModule (infraKeyVaultPolicies)
  * - Storage: monitoringDataStorageModule (monitoringDataStorage), monitoringDataStorageContainersModule (monitoringDataStorageContainers)
- * - Monitoring: monitoringWorkspaceModule (monitoringWorkspace)
+ * - Monitoring: monitoringWorkspaceModule (monitoringWorkspace), flowLogsModule (flowLogs)
  */
 
 // ==================================== Parameters ====================================
@@ -60,6 +60,9 @@ param jumpServersVNetName string
 
 @description('Name of the DevOps Agents VNet.')
 param devopsAgentsVNetName string
+
+@description('Name of the NSG attached to Applications Subnet.')
+param appsNSGName string
 
 // ==================================== Private Endpoints settings ====================================
 
@@ -117,8 +120,8 @@ param adminUsersPrincipalIds array
 @description('Principal ID of the DevOps Agent AD Identity.')
 param devopsAgentPrincipalId string
 
-@description('Create Service Endpoints Policies for infrastructure services.')
-param createServiceEndpointPolicies bool
+@description('Retention days of flow logs captured by the Network Watcher.')
+param flowLogsRetentionDays int
 
 // ==================================== Diagnostics options ====================================
 
@@ -129,6 +132,8 @@ param infraKeyVaultLogsRetentionDays int
 
 // ==================================== Resource Locks switches ====================================
 
+@description('Enable Resource Lock on Flow Logs resources.')
+param flowLogsEnableLock bool
 @description('Enable Resource Lock on monitoring data Storage Account.')
 param monitoringDataStorageEnableLock bool
 @description('Enable Resource Lock on monitoring Workspace.')
@@ -164,23 +169,34 @@ param infraKeyVaultAllowedSubnets array
 @description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
 param infraKeyVaultAllowedIPsOrCIDRs array
 
+// ==================================== Module switches ====================================
+
+@description('Create or update Private Endpoint modules.')
+param updatePrivateEndpointModules bool
+
+@description('Create or update Flow Logs module.')
+param updateFlowLogsModule bool
+
+@description('Create or update Service Endpoints Policies module.')
+param updateServiceEndpointPoliciesModule bool
+
 // ==================================== Resources ====================================
 
-module infraUsersModule 'modules/infraUsers.bicep' = {
-  name: 'infraUsersModule'
+module sharedUsersModule 'modules/sharedUsers.bicep' = {
+  name: 'sharedUsersModule'
   params: {
   }
 }
 
-module adminUserRgRbacModule 'modules/adminUserRgRbac.bicep' = [for (adminUserPrincipalId, index) in adminUsersPrincipalIds: {
-  name: 'adminUserRgRbacModule-${index}'
+module adminUsersRgRbacModule 'modules/adminUsersRgRbac.bicep' = {
+  name: 'adminUsersRgRbacModule'
   params: {
-    adminUserPrincipalId: adminUserPrincipalId
+    adminUsersPrincipalIds: adminUsersPrincipalIds
   }
-}]
+}
 
-module infraManagedIdsModule 'modules/infraManagedIds.bicep' = {
-  name: 'infraManagedIdsModule'
+module managedIdsModule 'modules/managedIds.bicep' = {
+  name: 'managedIdsModule'
   params: {
     location: location
     env: env
@@ -188,14 +204,15 @@ module infraManagedIdsModule 'modules/infraManagedIds.bicep' = {
   }
 }
 
-module infraManagedIdsRgRbacModule 'modules/infraManagedIdsRgRbac.bicep' = {
-  name: 'infraManagedIdsRgRbacModule'
+module managedIdsRgRbacModule 'modules/managedIdsRgRbac.bicep' = {
+  name: 'managedIdsRgRbacModule'
   params: {
-    aksManagedIdentityName: infraManagedIdsModule.outputs.aksManagedIdentityName
+    aksManagedIdentityPrincipalId: managedIdsModule.outputs.aksManagedIdentityPrincipalId
+    app1ManagedIdentityPrincipalId: managedIdsModule.outputs.appsDataStorageManagedIdentityPrincipalId
   }
 }
 
-var selectedLinkedVNetNames = [
+var linkedVNetNamesForPrivateEndpoints = [
   gatewayVNetName
   appsVNetName
   endpointsVNetName
@@ -262,7 +279,7 @@ module infraKeyVaultModule 'modules/infraKeyVault.bicep' = {
   }
 }
 
-module infraKeyVaultPrivateEndpointModule 'modules/privateEndpoint.bicep' = {
+module infraKeyVaultPrivateEndpointModule 'modules/privateEndpoint.bicep' = if (updatePrivateEndpointModules) {
   name: 'infraKeyVaultPrivateEndpointModule'
   params: {
     location: location
@@ -274,7 +291,7 @@ module infraKeyVaultPrivateEndpointModule 'modules/privateEndpoint.bicep' = {
     privateIPAddresses: [ infraKeyVaultPEPrivateIPAddress ]
     serviceId: infraKeyVaultModule.outputs.keyVaultId
     groupId: 'vault'
-    linkedVNetNames: selectedLinkedVNetNames
+    linkedVNetNames: linkedVNetNamesForPrivateEndpoints
   }
 }
 
@@ -296,13 +313,17 @@ module infraKeyVaultObjectsModule 'modules/infraKeyVaultObjects.bicep' = {
   }
 }
 
+var adminsPrincipalIds = concat(adminUsersPrincipalIds, [ managedIdsModule.outputs.app1ManagedIdentityPrincipalId ])
+var devopsAgentPrincipalIdList = (devopsAgentPrincipalId == '') ? [] : [ devopsAgentPrincipalId ]
+var infraKeyVaultAdminsPrincipalIds = concat(adminsPrincipalIds, devopsAgentPrincipalIdList)
+
 module infraKeyVaultPoliciesModule 'modules/infraKeyVaultPolicies.bicep' = {
   name: 'infraKeyVaultPoliciesModule'
   params: {
     infraKeyVaultName: infraKeyVaultModule.outputs.keyVaultName
-    appGatewayPrincipalId: infraManagedIdsModule.outputs.appGatewayManagedIdentityId
-    appsDataStorageAccountPrincipalId: infraManagedIdsModule.outputs.appsDataStorageManagedIdentityId
-    adminsPrincipalIds: concat(adminUsersPrincipalIds, (devopsAgentPrincipalId == '') ? [] : [ devopsAgentPrincipalId ])
+    appGatewayPrincipalId: managedIdsModule.outputs.appGatewayManagedIdentityPrincipalId
+    appsDataStorageAccountPrincipalId: managedIdsModule.outputs.appsDataStorageManagedIdentityPrincipalId
+    adminsPrincipalIds: infraKeyVaultAdminsPrincipalIds
   }
 }
 
@@ -310,12 +331,26 @@ module infraKeyVaultRbacModule 'modules/infraKeyVaultRbac.bicep' = {
   name: 'infraKeyVaultRbacModule'
   params: {
     infraKeyVaultName: infraKeyVaultModule.outputs.keyVaultName
-    appGatewayManagedIdentityName: infraManagedIdsModule.outputs.appGatewayManagedIdentityName
-    appsDataStorageManagedIdentityName: infraManagedIdsModule.outputs.appsDataStorageManagedIdentityName
+    appGatewayManagedIdentityPrincipalId: managedIdsModule.outputs.appGatewayManagedIdentityPrincipalId
+    appsDataStorageManagedIdentityPrincipalId: managedIdsModule.outputs.appsDataStorageManagedIdentityPrincipalId
   }
 }
 
-module serviceEndpointPoliciesModule 'modules/serviceEndpointPolicies.bicep' = if (createServiceEndpointPolicies) {
+module flowLogsModule 'modules/flowLogs.bicep' = if (updateFlowLogsModule) {
+  name: 'flowLogsModule'
+  params: {
+    location: location
+    env: env
+    standardTags: standardTags
+    flowLogsTargetNSGName: appsNSGName
+    flowLogsStorageAccountName: monitoringDataStorageModule.outputs.storageAccountName
+    flowAnalyticsWorkspaceName: monitoringWorkspaceModule.outputs.workspaceName
+    flowLogsRetentionDays: flowLogsRetentionDays
+    enableLock: flowLogsEnableLock
+  }
+}
+
+module serviceEndpointPoliciesModule 'modules/serviceEndpointPolicies.bicep' = if (updateServiceEndpointPoliciesModule) {
   name: 'serviceEndpointPoliciesModule'
   params: {
     location: location

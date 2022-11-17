@@ -1,9 +1,8 @@
 /**
  * Template: system/mainSystem
  * Modules:
- * - IAM: teamUsersModule (teamUsers), appsManagedIdsModule (appsManagedIds), teamRgRbacModule (teamRgRbac), aksRbacModule (aksRbac), aksNodeGroupRbacModule (aksNodeGroupRbac)
+ * - IAM: systemUsersModule (systemUsers), systemRgRbacModule (systemRgRbac), aksRbacModule (aksRbac), aksNodeGroupRbacModule (aksNodeGroupRbac)
  * - Network: appGatewayModule (agw), appsDataStoragePrivateEndpointModule (privateEndpoint), sqlDatabasePrivateEndpointModule (privateEndpoint), acrPrivateEndpointModule (privateEndpoint)
- * - Monitoring: networkWatcherModule (networkWatcher)
  * - Storage: appsDataStorageModule (appsDataStorage), appsDataStorageContainersModule (appsDataStorageContainers)
  * - Databases: sqlDatabaseModule (sqlDatabase)
  * - Frontend: acrModule (acr), aksModule (aks)
@@ -68,13 +67,7 @@ param jumpServersVNetName string
 @description('Name of the DevOps Agents VNet.')
 param devopsAgentsVNetName string
 
-@description('Name of the NSG attached to Applications Subnet.')
-param appsNSGName string
-
 // ==================================== Private Endpoints settings ====================================
-
-@description('Create Private Endpoints for the required modules like appskeyvault, appsdatastorage, sqldatabase and acr.')
-param enablePrivateEndpoints bool = true
 
 @description('Private IP address of Private Endpoint used by applications data Storage Account.')
 param appsDataStoragePEPrivateIPAddress string
@@ -129,11 +122,6 @@ param sqlDatabaseAADAdminLoginName string
 param sqlDatabaseAADAdminPrincipalId string
 
 // ==================================== Resource properties ====================================
-
-@description('Enable Flow Logs and create Network Watcher.')
-param enableFlowLogs bool
-@description('Retention days of flow logs captured by the Network Watcher.')
-param flowLogsRetentionDays int
 
 @description('Suffix used in the name of the Application Gateway.')
 @minLength(6)
@@ -261,11 +249,13 @@ param aksEnableEncryptionAtHost bool
 @description('Create the AKS Managed Cluster as private cluster.')
 param aksEnablePrivateCluster bool
 @description('Enable Pod-Managed Identity feature on the AKS Managed Cluster.')
-param aksEnablePodManagedIdentity bool
+param aksEnablePodManagedIdentities bool
 @description('Enable Workload Identity feature on the AKS Managed Cluster.')
 param aksEnableWorkloadIdentity bool
-@description('Enable AKS Application Gateway Ingress Controller Add-on.')
+@description('Enable AKS Application Gateway Ingress Controller (AGIC) add-on.')
 param aksEnableAGICAddon bool
+@description('Create custom Route Table for Gateway Subnet managed by AKS (with kubenet network plugin).')
+param aksCreateCustomRouteTable bool
 
 // ==================================== Diagnostics options ====================================
 
@@ -293,13 +283,11 @@ param acrEnableDiagnostics bool
 @description('Retention days of the Container Registry audit logs. Must be defined if enableDiagnostics is true.')
 param acrLogsRetentionDays int
 
-@description('Enable AKS OMS Agent Add-on.')
+@description('Enable AKS OMS Agent add-on.')
 param aksEnableOMSAgentAddon bool
 
 // ==================================== Resource Locks switches ====================================
 
-@description('Enable Resource Lock on Network Watcher.')
-param networkWatcherEnableLock bool
 @description('Enable Resource Lock on Application Gateway.')
 param appGatewayEnableLock bool
 @description('Enable Resource Lock on applications data Storage Account.')
@@ -351,39 +339,35 @@ param acrAllowedIPsOrCIDRs array
 @description('Enable public access to the AKS Management Plane.')
 param aksEnablePublicAccess bool
 
+// ==================================== Module switches ====================================
+
+@description('Create or update Private Endpoint modules.')
+param updatePrivateEndpointModules bool
+
+@description('Create or update Application Gateway module.')
+param updateAgwModule bool
+
+@description('Create or update Azure SQL Database module.')
+param updateSqlDatabaseModule bool
+
+@description('Create or update AKS related modules.')
+param updateAksModules bool
+
 // ==================================== Modules ====================================
 
-module teamUsersModule 'modules/teamUsers.bicep' = {
-  name: 'teamUsersModule'
+module systemUsersModule 'modules/systemUsers.bicep' = {
+  name: 'systemUsersModule'
   params: {
   }
 }
 
-module appsManagedIdsModule 'modules/appsManagedIds.bicep' = {
-  name: 'appsManagedIdsModule'
-  params: {
-    location: location
-    env: env
-    standardTags: standardTags
-  }
-}
-
-module teamRgRbacModule 'modules/teamRgRbac.bicep' = {
-  name: 'teamRgRbacModule'
+module systemRgRbacModule 'modules/systemRgRbac.bicep' = {
+  name: 'systemRgRbacModule'
   params: {
   }
 }
 
-var selectedNetworkNames = {
-  gatewayVNetName: gatewayVNetName
-  gatewaySubnetName: gatewaySubnetName
-  appsVNetName: appsVNetName
-  appsSubnetName: appsSubnetName
-  endpointsVNetName: endpointsVNetName
-  endpointsSubnetName: endpointsSubnetName
-}
-
-var selectedLinkedVNetNames = [
+var linkedVNetNamesForPrivateEndpoints = [
   gatewayVNetName
   appsVNetName
   endpointsVNetName
@@ -391,31 +375,13 @@ var selectedLinkedVNetNames = [
   devopsAgentsVNetName
 ]
 
-var selectedAksPrivateDnsZoneLinkedVNetNames = [
+var linkedVNetNamesForAksPrivateEndpoint = [
   appsVNetName
   jumpServersVNetName
   devopsAgentsVNetName
 ]
 
-var selectedNSGNames = {
-  appsNSGName: appsNSGName
-}
-
-module networkWatcherModule 'modules/networkWatcher.bicep' = if (enableFlowLogs) {
-  name: 'networkWatcherModule'
-  params: {
-    location: location
-    env: env
-    standardTags: standardTags
-    targetNSGName: selectedNSGNames.appsNSGName
-    flowLogsStorageAccountName: monitoringDataStorageAccountName
-    flowAnalyticsWorkspaceName: monitoringWorkspaceName
-    flowLogsRetentionDays: flowLogsRetentionDays
-    enableLock: networkWatcherEnableLock
-  }
-}
-
-module appGatewayModule 'modules/agw.bicep' = {
+module appGatewayModule 'modules/agw.bicep' = if (updateAgwModule) {
   name: 'appGatewayModule'
   params: {
     location: location
@@ -425,8 +391,8 @@ module appGatewayModule 'modules/agw.bicep' = {
     appGatewayNameSuffix: appGatewayNameSuffix
     appGatewaySkuTier: appGatewaySkuTier
     appGatewaySkuName: appGatewaySkuName
-    gatewayVNetName: selectedNetworkNames.gatewayVNetName
-    gatewaySubnetName: selectedNetworkNames.gatewaySubnetName
+    gatewayVNetName: gatewayVNetName
+    gatewaySubnetName: gatewaySubnetName
     frontendPrivateIPAddress: appGatewayFrontendPrivateIPAddress
     enablePublicFrontendIP: appGatewayEnablePublicFrontendIP
     autoScaleMinCapacity: appGatewayAutoScaleMinCapacity
@@ -472,23 +438,23 @@ module appsDataStorageContainersModule 'modules/appsDataStorageContainers.bicep'
   }
 }
 
-module appsDataStoragePrivateEndpointModule 'modules/privateEndpoint.bicep' = if (enablePrivateEndpoints) {
+module appsDataStoragePrivateEndpointModule 'modules/privateEndpoint.bicep' = if (updatePrivateEndpointModules) {
   name: 'appsDataStoragePrivateEndpointModule'
   params: {
     location: location
     env: env
     standardTags: standardTags
     privateEndpointName: 'PE04'
-    vnetName: selectedNetworkNames.endpointsVNetName
-    subnetName: selectedNetworkNames.endpointsSubnetName
+    vnetName: endpointsVNetName
+    subnetName: endpointsSubnetName
     privateIPAddresses: [ appsDataStoragePEPrivateIPAddress ]
     serviceId: appsDataStorageModule.outputs.storageAccountId
     groupId: 'blob'
-    linkedVNetNames: selectedLinkedVNetNames
+    linkedVNetNames: linkedVNetNamesForPrivateEndpoints
   }
 }
 
-module sqlDatabaseModule 'modules/sqlDatabase.bicep' = {
+module sqlDatabaseModule 'modules/sqlDatabase.bicep' = if (updateSqlDatabaseModule) {
   name: 'sqlDatabaseModule'
   params: {
     location: location
@@ -522,19 +488,19 @@ module sqlDatabaseModule 'modules/sqlDatabase.bicep' = {
   }
 }
 
-module sqlDatabasePrivateEndpointModule 'modules/privateEndpoint.bicep' = if (enablePrivateEndpoints) {
+module sqlDatabasePrivateEndpointModule 'modules/privateEndpoint.bicep' = if (updateSqlDatabaseModule && updatePrivateEndpointModules) {
   name: 'sqlDatabasePrivateEndpointModule'
   params: {
     location: location
     env: env
     standardTags: standardTags
     privateEndpointName: 'PE01'
-    vnetName: selectedNetworkNames.endpointsVNetName
-    subnetName: selectedNetworkNames.endpointsSubnetName
+    vnetName: endpointsVNetName
+    subnetName: endpointsSubnetName
     privateIPAddresses: [ sqlDatabasePEPrivateIPAddress ]
     serviceId: sqlDatabaseModule.outputs.sqlServerId
     groupId: 'sqlServer'
-    linkedVNetNames: selectedLinkedVNetNames
+    linkedVNetNames: linkedVNetNamesForPrivateEndpoints
   }
 }
 
@@ -559,23 +525,23 @@ module acrModule 'modules/acr.bicep' = {
   }
 }
 
-module acrPrivateEndpointModule 'modules/privateEndpoint.bicep' = if (enablePrivateEndpoints) {
+module acrPrivateEndpointModule 'modules/privateEndpoint.bicep' = if (updatePrivateEndpointModules) {
   name: 'acrPrivateEndpointModule'
   params: {
     location: location
     env: env
     standardTags: standardTags
     privateEndpointName: 'PE03'
-    vnetName: selectedNetworkNames.endpointsVNetName
-    subnetName: selectedNetworkNames.endpointsSubnetName
+    vnetName: endpointsVNetName
+    subnetName: endpointsSubnetName
     privateIPAddresses: acrPEPrivateIPAddresses
     serviceId: acrModule.outputs.registryId
     groupId: 'registry'
-    linkedVNetNames: selectedLinkedVNetNames
+    linkedVNetNames: linkedVNetNamesForPrivateEndpoints
   }
 }
 
-module aksModule 'modules/aks.bicep' = {
+module aksModule 'modules/aks.bicep' = if (updateAksModules) {
   name: 'aksModule'
   params: {
     location: location
@@ -585,20 +551,21 @@ module aksModule 'modules/aks.bicep' = {
     aksSkuTier: aksSkuTier
     aksDnsSuffix: aksDnsSuffix
     kubernetesVersion: aksKubernetesVersion
-    vnetName: selectedNetworkNames.appsVNetName
-    subnetName: selectedNetworkNames.appsSubnetName
+    vnetName: appsVNetName
+    subnetName: appsSubnetName
     enableAutoScaling: aksEnableAutoScaling
     nodePoolMinCount: aksNodePoolMinCount
     nodePoolMaxCount: aksNodePoolMaxCount
     nodePoolVmSize: aksNodePoolVmSize
     enableEncryptionAtHost: aksEnableEncryptionAtHost
     enablePrivateCluster: aksEnablePrivateCluster
-    privateDnsZoneLinkedVNetNames: selectedAksPrivateDnsZoneLinkedVNetNames
-    enablePodManagedIdentity: aksEnablePodManagedIdentity
+    privateDnsZoneLinkedVNetNames: linkedVNetNamesForAksPrivateEndpoint
+    enablePodManagedIdentities: aksEnablePodManagedIdentities
     podIdentities: []
     enableWorkloadIdentity: aksEnableWorkloadIdentity
     enableAGICAddon: aksEnableAGICAddon
     appGatewayName: appGatewayModule.outputs.applicationGatewayName
+    createCustomRouteTable: aksCreateCustomRouteTable
     enableOMSAgentAddon: aksEnableOMSAgentAddon
     workspaceName: monitoringWorkspaceName
     enableLock: aksEnableLock

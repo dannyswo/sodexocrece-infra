@@ -8,13 +8,19 @@
     "env": {
       "value": "SWO"
     },
-    "createNetwork": {
+    "appsKeyVaultNameSuffix": {
+      "value": "vjf297"
+    },
+    "appsKeyVaultEnablePurgeProtection": {
       "value": true
     },
-    "createCustomRouteTable": {
-      "value": true
+    "appsKeyVaultSoftDeleteRetentionDays": {
+      "value": 7
     },
-    "createJumpServer": {
+    "appsKeyVaultEnableArmAccess": {
+      "value": false
+    },
+    "appsKeyVaultEnableRbacAuthorization": {
       "value": false
     }
   }

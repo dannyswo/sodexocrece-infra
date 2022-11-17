@@ -12,11 +12,11 @@
 @description('Name of the infrastructure Key Vault.')
 param infraKeyVaultName string
 
-@description('ID of the Managed Identity of Application Gateway.')
-param appGatewayManagedIdentityName string
+@description('Principal ID of the Managed Identity of Application Gateway.')
+param appGatewayManagedIdentityPrincipalId string
 
-@description('ID of the Managed Identity of applications data Storage Account.')
-param appsDataStorageManagedIdentityName string
+@description('Principal ID of the Managed Identity of applications data Storage Account.')
+param appsDataStorageManagedIdentityPrincipalId string
 
 // ==================================== Resources ====================================
 
@@ -38,11 +38,11 @@ var appGatewayManagedIdentityRoleDefinitions = [
 ]
 
 resource appGatewayManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in appGatewayManagedIdentityRoleDefinitions: {
-  name: guid(infraKeyVault.id, appGatewayManagedIdentity.id, roleDefinition.roleName)
+  name: guid(infraKeyVault.id, appGatewayManagedIdentityPrincipalId, roleDefinition.roleName)
   scope: infraKeyVault
   properties: {
     description: roleDefinition.roleAssignmentDescription
-    principalId: appGatewayManagedIdentity.properties.principalId
+    principalId: appGatewayManagedIdentityPrincipalId
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
     principalType: 'ServicePrincipal'
   }
@@ -59,11 +59,11 @@ var appsDataStorageManagedIdentityRoleDefinitions = [
 ]
 
 resource appsDataStorageManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in appsDataStorageManagedIdentityRoleDefinitions: {
-  name: guid(infraKeyVault.id, appsDataStorageManagedIdentity.id, roleDefinition.roleName)
+  name: guid(infraKeyVault.id, appsDataStorageManagedIdentityPrincipalId, roleDefinition.roleName)
   scope: infraKeyVault
   properties: {
     description: roleDefinition.roleAssignmentDescription
-    principalId: appsDataStorageManagedIdentity.properties.principalId
+    principalId: appsDataStorageManagedIdentityPrincipalId
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
     principalType: 'ServicePrincipal'
   }
@@ -73,16 +73,6 @@ resource appsDataStorageManagedIdentityRoleAssignments 'Microsoft.Authorization/
 
 resource infraKeyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: infraKeyVaultName
-}
-
-// ==================================== Security Principals ====================================
-
-resource appGatewayManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
-  name: appGatewayManagedIdentityName
-}
-
-resource appsDataStorageManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
-  name: appsDataStorageManagedIdentityName
 }
 
 // ==================================== Outputs ====================================

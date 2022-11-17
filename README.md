@@ -11,33 +11,36 @@ landingzone/mainLandingZone (optional, only for SWO environments)
 
 shared/mainShared
 
-1. **infraUsersModules** (infraUsers): Principals IDs of administrator Users / Groups.
-2. **infraManagedIdsModule** (infraManagedIds): Managed Identities of infrastructure services.
-3. **infraRgRbacModule** (infraRbRbac): Role Assignments for administrators / infrastructure services under Resource Group scope.
-4. **monitoringDataStorageModule** (monitoringDataStorage): Storage Account for monitoring data, used by networkWatcher and monitoringWorkspace. \[RL01\]
-5. **monitoringDataStorageContainersModule** (monitoringDataStorageContainers): Containers of the monitoring data Storage Account. \[RL01, MM03\]
-6. **monitoringWorkspaceModule** (monitoringWorkspace): Workspace for logs and metrics collection and analysis, used by keyvault, agw, appsdatastorage, sqldatabase, acr, aks. \[RL02, MM01\]
-7. **infraKeyVaultModule** (infraKeyVault): Key Vault for applications. \[RL04, MM04\]
-8. **infraKeyVaultPrivateEndpointModule** (privateEndpoint): Private Endpoints, Private DNS Zone and VNet Links.
-9. **infraKeyVaultObjectsModule** (infraKeyVaultObjects): creation of Encryption Keys or Secrets for applications.
-10. **infraKeyVaultPoliciesModule** (infraKeyVaultPolicies): configures Key Vault Access Policies for Managed Identities and Users / Groups.
-11. **infraKeyVaultRbac** (infraKeyVaultRbac): Role Assignments for applications / teams under applications Key Vault scope.
+1. **sharedUsersModule** (sharedUsers): Principals IDs of administrator Users / Groups (if necessary).
+2. **adminUsersRgRbacModule** (adminUsersRgRbac): Role Assignments for administrators under Resource Group scope.
+3. **managedIdsModule** (managedIds): Managed Identities of infrastructure services and applications.
+4. **managedIdsRgRbacModule** (managedIdsRgRbac): Role Assignments for infrastructure services and applications under Resource Group scope.
+5. **monitoringDataStorageModule** (monitoringDataStorage): Storage Account for monitoring data, used by networkWatcher and monitoringWorkspace. \[RL01\]
+6. **monitoringDataStorageContainersModule** (monitoringDataStorageContainers): Containers of the monitoring data Storage Account. \[RL01\]
+7. **monitoringWorkspaceModule** (monitoringWorkspace): Workspace for logs and metrics collection and analysis, used by keyvault, agw, appsdatastorage, sqldatabase, acr, aks. \[RL02, MM01\]
+8. **infraKeyVaultModule** (infraKeyVault): Key Vault for infrastructure services and applications. \[RL04, MM04\]
+9. **infraKeyVaultPrivateEndpointModule** (privateEndpoint): Private Endpoint, Private DNS Zone and VNet Links.
+10. **infraKeyVaultObjectsModule** (infraKeyVaultObjects): creates Encryption Keys and Secrets for infrastructure services.
+11. **infraKeyVaultPoliciesModule** (infraKeyVaultPolicies): configures Key Vault Access Policies for applications or users.
+12. **infraKeyVaultRbac** (infraKeyVaultRbac): Role Assignments for users, infrastructure services and applications under Key Vault scope.
+13. **flowLogsModule** (flowLogs): exports flow logs caputred for the Apps NSG in the monitoring data Storage Account. \[RL03, MM02, MM03\]
+14. **serviceEndpointPoliciesModule** (serviceEndpointPolicies): creates Service Endpoint Policies for infrastructure Key Vault and monitoring data Storage Account (if necessary).
 
 system/mainSystem
 
-1. **teamUsersModules** (teamUsers): Principals IDs of project team Users / Groups.
-2. **appsManagedIdsModule** (appsManagedIds): Managed Identities of applications.
-3. **teamRgRbacModule** (teamRgRbac): Role Assignments for applications / team under Resource Group scope.
-4. **networkWatcherModule** (networkWatcher): exports Flow Logs to monitoringdatastorage. \[RL03, MM02\]
-5. **appGatewayModule** (agw): Application Gateway, WAF Policies. \[RL05, MM05, AD01\]
-6. **appsDataStorageModule** (appsDataStorage): Storage Account for applications data, Blob Container. [RL06, MM06, AD02\]
-7. **appsDataStorageContainersModule** (appsDataStorageContainers): Containers of the applications data Storage Account.
-8. **appsDataStoragePrivateEndpointModule** (privateEndpoint): Private Endpoints, Private DNS Zone and VNet Links.
-9. **sqlDatabaseModule** (sqlDatabase): Azure SQL Server, SQL Database. \[RL07, MM07\]
-10. **sqlDatabasePrivateEndpointModule** (privateEndpoint): Private Endpoints, Private DNS Zone and VNet Links.
-11. **acrModule** (acr): Container Registry required by aks. \[RL08, MM08\]
-12. **acrPrivateEndpointModule** (privateEndpoint): Private Endpoints, Private DNS Zone and VNet Links.
-13. **aksModule** (aks): AKS Managed Cluster, custom Private DNS Zone and required Role Assignments. Depends on loganalytics, agw. \[RL09, AD03\]
+1. **systemUsersModule** (systemUsers): Principals IDs of project team Users / Groups (if neccessary).
+3. **systemRgRbacModule** (systemRgRbac): Role Assignments for team Users / Groups under Resource Group scope (if necessary).
+3. **appGatewayModule** (agw): Application Gateway, WAF Policies. \[RL05, MM05, AD01\]
+4. **appsDataStorageModule** (appsDataStorage): Storage Account for applications data, Blob Container. [RL06, MM06, AD02\]
+5. **appsDataStorageContainersModule** (appsDataStorageContainers): Containers of the applications data Storage Account.
+6. **appsDataStoragePrivateEndpointModule** (privateEndpoint): Private Endpoint, Private DNS Zone and VNet Links.
+7. **sqlDatabaseModule** (sqlDatabase): Azure SQL Server, SQL Database. \[RL07, MM07\]
+8. **sqlDatabasePrivateEndpointModule** (privateEndpoint): Private Endpoint, Private DNS Zone and VNet Links.
+9. **acrModule** (acr): Container Registry required by aks. \[RL08, MM08\]
+10. **acrPrivateEndpointModule** (privateEndpoint): Private Endpoint, Private DNS Zone and VNet Links.
+11. **aksModule** (aks): AKS Managed Cluster, custom Private DNS Zone. Depends on loganalytics, agw. \[RL09, AD03\]
+12. **aksRbacModule** (aksRbac): Role Assignments for AKS under main Resource Group scope.
+13. **aksNodeGroupRbacModule** (aksNodeGroupRbac): Role Assignments for AKS under AKS-managed Resource Group scope.
 
 Environments:
 

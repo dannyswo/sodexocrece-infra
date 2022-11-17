@@ -72,7 +72,7 @@ param enablePrivateCluster bool
 param privateDnsZoneLinkedVNetNames array
 
 @description('Enable Pod-Managed Identity feature on the AKS Managed Cluster.')
-param enablePodManagedIdentity bool
+param enablePodManagedIdentities bool
 
 @description('List of Pod Identities spec with name, namespace and Managed Identity name.')
 @metadata({
@@ -92,15 +92,18 @@ param podIdentities array
 @description('Enable Workload Identity feature on the AKS Managed Cluster.')
 param enableWorkloadIdentity bool
 
-@description('Enable AKS Application Gateway Ingress Controller Add-on.')
+@description('Enable AKS Application Gateway Ingress Controller (AGIC) add-on.')
 param enableAGICAddon bool
 
 @description('Name of the Application Gateway managed by AGIC add-on.')
 param appGatewayName string
 
+@description('Create custom Route Table for Gateway Subnet managed by AKS (with kubenet network plugin).')
+param createCustomRouteTable bool
+
 // ==================================== Diagnostics options ====================================
 
-@description('Enable AKS OMS Agent Add-on.')
+@description('Enable AKS OMS Agent add-on.')
 param enableOMSAgentAddon bool
 
 @description('Name of the Log Analytics Workspace managed by OMSAgent add-on.')
@@ -195,12 +198,12 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
     }
     disableLocalAccounts: true
     podIdentityProfile: {
-      enabled: enablePodManagedIdentity
+      enabled: enablePodManagedIdentities
       userAssignedIdentities: podIdentitiesWithManagedIdentities
     }
     securityProfile: {
       workloadIdentity: {
-        enabled: (enablePodManagedIdentity) ? false : enableWorkloadIdentity
+        enabled: (enablePodManagedIdentities) ? false : enableWorkloadIdentity
       }
     }
     addonProfiles: {
@@ -244,6 +247,17 @@ resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLi
   }
   tags: standardTags
 }]
+
+// ==================================== Custom Route Table ====================================
+
+resource aksCustomRouteTable 'Microsoft.Network/routeTables@2022-05-01' = if (createCustomRouteTable) {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-UD01'
+  location: location
+  properties: {
+    routes: []
+  }
+  tags: standardTags
+}
 
 // ==================================== AKS Managed Identity ====================================
 

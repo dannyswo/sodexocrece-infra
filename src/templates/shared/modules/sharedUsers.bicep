@@ -1,5 +1,5 @@
 /**
- * Module: infraUsers
+ * Module: sharedUsers
  * Depends on: N/A
  * Used by: shared/mainShared
  * Common resources: N/A

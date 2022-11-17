@@ -1,0 +1,47 @@
+{
+  "gatewayVNetName": {
+    "value": "BRS-GLB-USE2-APPLICSHR-DEV-VN02"
+  },
+  "gatewaySubnetName": {
+    "value": "BRS-GLB-USE2-APGW-DEV-SN01"
+  },
+  "appsVNetName": {
+    "value": "BRS-GLB-USE2-APPLICFRONT-DEV-VN01"
+  },
+  "appsSubnetName": {
+    "value": "BRS-MEX-USE2-PVTPNT-DEV-SN01"
+  },
+  "endpointsVNetName": {
+    "value": "BRS-GLB-USE2-PVTPNTBRS-DEV-VN02"
+  },
+  "endpointsSubnetName": {
+    "value": "BRS-MEX-USE2-PVTPNT-DEV-SN01"
+  },
+  "jumpServersVNetName": {
+    "value": "{NULL jumpServersVNetName}"
+  },
+  "devopsAgentsVNetName": {
+    "value": "{NULL devopsAgentsVNetName}"
+  },
+  "appsNSGName": {
+    "value": "BRS-MEX-USE2-CRECESDX-DEV-NS01"
+  },
+  "enablePrivateEndpoints": {
+    "value": true
+  },
+  "keyVaultPEPrivateIPAddress": {
+    "value": "10.169.88.70"
+  },
+  "appsDataStoragePEPrivateIPAddress": {
+    "value": "10.169.88.73"
+  },
+  "sqlDatabasePEPrivateIPAddress": {
+    "value": "10.169.88.69"
+  },
+  "acrPEPrivateIPAddresses": {
+    "value": [
+      "10.169.88.71",
+      "10.169.88.72"
+    ]
+  }
+}
