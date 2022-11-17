@@ -381,7 +381,7 @@ var linkedVNetNamesForAksPrivateEndpoint = [
   devopsAgentsVNetName
 ]
 
-module appGatewayModule 'modules/agw.bicep' = if (updateAgwModule) {
+module appGatewayModule 'modules/agw.bicep' = {
   name: 'appGatewayModule'
   params: {
     location: location
@@ -454,7 +454,7 @@ module appsDataStoragePrivateEndpointModule 'modules/privateEndpoint.bicep' = if
   }
 }
 
-module sqlDatabaseModule 'modules/sqlDatabase.bicep' = if (updateSqlDatabaseModule) {
+module sqlDatabaseModule 'modules/sqlDatabase.bicep' = {
   name: 'sqlDatabaseModule'
   params: {
     location: location
@@ -488,7 +488,7 @@ module sqlDatabaseModule 'modules/sqlDatabase.bicep' = if (updateSqlDatabaseModu
   }
 }
 
-module sqlDatabasePrivateEndpointModule 'modules/privateEndpoint.bicep' = if (updateSqlDatabaseModule && updatePrivateEndpointModules) {
+module sqlDatabasePrivateEndpointModule 'modules/privateEndpoint.bicep' = if (updatePrivateEndpointModules) {
   name: 'sqlDatabasePrivateEndpointModule'
   params: {
     location: location
@@ -541,7 +541,7 @@ module acrPrivateEndpointModule 'modules/privateEndpoint.bicep' = if (updatePriv
   }
 }
 
-module aksModule 'modules/aks.bicep' = if (updateAksModules) {
+module aksModule 'modules/aks.bicep' = {
   name: 'aksModule'
   params: {
     location: location
@@ -573,7 +573,7 @@ module aksModule 'modules/aks.bicep' = if (updateAksModules) {
   }
 }
 
-module aksRbacModule 'modules/aksRbac.bicep' = if (updateAksModules) {
+module aksRbacModule 'modules/aksRbac.bicep' = {
   name: 'aksRbacModule'
   params: {
     aksClusterId: aksModule.outputs.aksClusterId
@@ -583,7 +583,7 @@ module aksRbacModule 'modules/aksRbac.bicep' = if (updateAksModules) {
   }
 }
 
-module aksNodeGroupRbacModule 'modules/aksNodeGroupRbac.bicep' = if (updateAksModules) {
+module aksNodeGroupRbacModule 'modules/aksNodeGroupRbac.bicep' = {
   name: 'aksNodeGroupRbacModule'
   scope: resourceGroup('MC_${resourceGroup().name}_BRS-MEX-USE2-CRECESDX-${env}-KU01_${location}')
   params: {
