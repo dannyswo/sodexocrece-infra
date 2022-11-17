@@ -1,7 +1,7 @@
 /**
  * Template: system/mainSystem
  * Modules:
- * - IAM: teamUsersModule (teamUsers), appsManagedIdsModule (appsManagedIds), teamRgRbacModule (teamRgRbac)
+ * - IAM: teamUsersModule (teamUsers), appsManagedIdsModule (appsManagedIds), teamRgRbacModule (teamRgRbac), aksRbacModule (aksRbac), aksNodeGroupRbacModule (aksNodeGroupRbac)
  * - Network: appGatewayModule (agw), appsDataStoragePrivateEndpointModule (privateEndpoint), sqlDatabasePrivateEndpointModule (privateEndpoint), acrPrivateEndpointModule (privateEndpoint)
  * - Monitoring: networkWatcherModule (networkWatcher)
  * - Storage: appsDataStorageModule (appsDataStorage), appsDataStorageContainersModule (appsDataStorageContainers)
@@ -95,9 +95,6 @@ param monitoringWorkspaceName string
 
 // ==================================== Security dependencies ====================================
 
-@secure()
-param administratorPrincipalId string
-
 @description('Name of the Managed Identity used by the Application Gateway.')
 param appGatewayManageIdentityName string
 @description('Name of the Managed Identity used by applications data Storage Account.')
@@ -116,12 +113,20 @@ param appGatewayPrivateCertificateId string
 @description('Name of the Encryption Key used by applications data Storage Account.')
 param appsDataStorageEncryptionKeyName string
 
+@description('Login name of the SQL Server administrator.')
 @secure()
 param sqlDatabaseSqlAdminLoginName string
+@description('Password of the SQL Server administrator.')
 @secure()
 param sqlDatabaseSqlAdminLoginPass string
+@description('Register Azure AD administrator for SQL Server.')
+param sqlDatabaseEnableAADAdminUser bool
+@description('Login name of the Azure AD administrator for SQL Server.')
 @secure()
 param sqlDatabaseAADAdminLoginName string
+@description('Principal ID of the Azure AD administrator for SQL Server.')
+@secure()
+param sqlDatabaseAADAdminPrincipalId string
 
 // ==================================== Resource properties ====================================
 
@@ -194,8 +199,20 @@ param sqlDatabaseMinCapacity int
 param sqlDatabaseMaxSizeGB int
 @description('Enable zone redundancy for the Azure SQL Database.')
 param sqlDatabaseZoneRedundant bool
+@description('Number of replicas for the Azure SQL Database.')
+param sqlDatabaseReplicaCount int
+@description('Route read-only connections to secondary read-only replicas.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param sqlDatabaseReadScaleOut string
 @description('Storage redundancy used by the backups of the Azure SQL Database.')
 param sqlDatabaseBackupRedundancy string
+@description('Type of license for Azure SQL Database instance.')
+param sqlDatabaseLicenseType string
+@description('Collation of the Azure SQL Database instance.')
+param sqlDatabaseCollation string
 
 @description('Suffix used in the Container Registry name.')
 @minLength(6)
@@ -480,14 +497,19 @@ module sqlDatabaseModule 'modules/sqlDatabase.bicep' = {
     sqlServerNameSuffix: sqlServerNameSuffix
     sqlAdminLoginName: sqlDatabaseSqlAdminLoginName
     sqlAdminLoginPass: sqlDatabaseSqlAdminLoginPass
-    aadAdminPrincipalId: administratorPrincipalId
+    enableAADAdminUser: sqlDatabaseEnableAADAdminUser
     aadAdminLoginName: sqlDatabaseAADAdminLoginName
+    aadAdminPrincipalId: sqlDatabaseAADAdminPrincipalId
     skuType: sqlDatabaseSkuType
     skuSize: sqlDatabaseSkuSize
     minCapacity: sqlDatabaseMinCapacity
     maxSizeGB: sqlDatabaseMaxSizeGB
     zoneRedundant: sqlDatabaseZoneRedundant
+    replicaCount: sqlDatabaseReplicaCount
+    readScaleOut: sqlDatabaseReadScaleOut
     backupRedundancy: sqlDatabaseBackupRedundancy
+    licenseType: sqlDatabaseLicenseType
+    collation: sqlDatabaseCollation
     enableAuditing: sqlDatabaseEnableAuditing
     diagnosticsWorkspaceName: monitoringWorkspaceName
     logsRetentionDays: sqlDatabaseAuditLogsRetentionDays

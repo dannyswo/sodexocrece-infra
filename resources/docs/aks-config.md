@@ -129,9 +129,19 @@ az extension add --name aks-preview
 ```
 helm repo add aad-pod-identity https://raw.githubusercontent.com/Azure/aad-pod-identity/master/charts
 helm install aad-pod-identity aad-pod-identity/aad-pod-identity --namespace=crecesdx
+
+kubectl apply -f aad.k8s.yaml
+kubectl apply -f aad-binding.k8s.yaml
+kubectl apply -f demo.k8s.yaml
 ```
 
+## AKS initial setup
+
 ```
+kubectl create namespace crecesdx
+
+helm repo add aad-pod-identity https://raw.githubusercontent.com/Azure/aad-pod-identity/master/charts
+helm install aad-pod-identity aad-pod-identity/aad-pod-identity --namespace=crecesdx
+
 kubectl apply -f crecesdx-merchant.k8s.yaml
-kubectl apply -f crecesdx-merchant-view-podidentity.k8s.yaml
 ```

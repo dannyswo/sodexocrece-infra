@@ -12,9 +12,6 @@
 @description('Name of the infrastructure Key Vault.')
 param infraKeyVaultName string
 
-@description('Principal ID of the system administrator.')
-param administratorPrincipalId string
-
 @description('ID of the Managed Identity of Application Gateway.')
 param appGatewayManagedIdentityName string
 
@@ -24,34 +21,6 @@ param appsDataStorageManagedIdentityName string
 // ==================================== Resources ====================================
 
 // ==================================== Role Assignments ====================================
-
-// ==================================== Role Assignments: Administrator ====================================
-
-var administratorRoleDefinitions = [
-  {
-    roleName: 'f25e0fa2-a7c8-4377-a976-54943a77a395'
-    roleDescription: 'Key Vault Contributor | Lets you manage key vaults'
-    roleAssignmentDescription: 'System administrator can execute management operations on Key Vault.'
-    scope: 'KeyVault'
-  }
-  {
-    roleName: '0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8'
-    roleDescription: 'Azure Kubernetes Service Cluster Admin Role | List cluster admin credential action'
-    roleAssignmentDescription: 'System administrator can obtain admin credentials on AKS Managed Cluster.'
-    scope: 'KeyVault'
-  }
-]
-
-resource administratorRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in administratorRoleDefinitions: {
-  name: guid(infraKeyVault.id, administratorPrincipalId, roleDefinition.roleName)
-  scope: infraKeyVault
-  properties: {
-    description: roleDefinition.roleAssignmentDescription
-    principalId: administratorPrincipalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
-    principalType: 'User'
-  }
-}]
 
 // ==================================== Role Assignments: Application Gateway Managed Identity ====================================
 

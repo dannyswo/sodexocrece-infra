@@ -11,14 +11,8 @@
     "gatewayVNetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-VN01"
     },
-    "gatewaySubnetName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN01"
-    },
     "appsVNetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-VN02"
-    },
-    "appsSubnetName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN02"
     },
     "endpointsVNetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-VN03"
@@ -70,6 +64,14 @@
     },
     "secrtsIssueDateTime": {
       "value": "11/15/2022 08:00:00 AM"
+    },
+    "adminUsersPrincipalIds": {
+      "value": [
+        "40c2e922-9fb6-4186-a53f-44439c85a9df"
+      ]
+    },
+    "devopsAgentPrincipalId": {
+      "value": ""
     },
     "createServiceEndpointPolicies": {
       "value": false

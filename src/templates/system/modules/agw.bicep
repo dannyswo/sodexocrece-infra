@@ -314,7 +314,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
 }
 
 resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-IP02'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-IP01'
   location: location
   sku: {
     name: 'Standard'

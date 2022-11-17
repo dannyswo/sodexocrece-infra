@@ -56,9 +56,6 @@
     "monitoringWorkspaceName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
     },
-    "administratorPrincipalId": {
-      "value": "40c2e922-9fb6-4186-a53f-44439c85a9df"
-    },
     "appGatewayManageIdentityName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD01"
     },
@@ -96,13 +93,14 @@
         "secretName": "crececonsdx-sqldatabase-sqladminloginpass"
       }
     },
+    "sqlDatabaseEnableAADAdminUser": {
+      "value": true
+    },
     "sqlDatabaseAADAdminLoginName": {
-      "reference": {
-        "keyVault": {
-          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1qta774"
-        },
-        "secretName": "crececonsdx-sqldatabase-aadadminloginname"
-      }
+      "value": "danny.zamorano@softwareone.com"
+    },
+    "sqlDatabaseAADAdminPrincipalId": {
+      "value": "40c2e922-9fb6-4186-a53f-44439c85a9df"
     },
     "enableFlowLogs": {
       "value": false
@@ -164,8 +162,20 @@
     "sqlDatabaseZoneRedundant": {
       "value": true
     },
+    "sqlDatabaseReplicaCount": {
+      "value": 0
+    },
+    "sqlDatabaseReadScaleOut": {
+      "value": "Disabled"
+    },
     "sqlDatabaseBackupRedundancy": {
       "value": "Local"
+    },
+    "sqlDatabaseLicenseType": {
+      "value": "LicenseIncluded"
+    },
+    "sqlDatabaseCollation": {
+      "value": "SQL_Latin1_General_CP1_CI_AS"
     },
     "acrNameSuffix": {
       "value": "hym659"

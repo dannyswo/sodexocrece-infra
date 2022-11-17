@@ -31,6 +31,9 @@ param standardTags object
 @maxLength(6)
 param sqlServerNameSuffix string
 
+@description('ID of the AAD Tenant where admin user is registered.')
+param tenantId string = subscription().tenantId
+
 @description('Login name of the SQL Server administrator.')
 @secure()
 param sqlAdminLoginName string
@@ -39,11 +42,14 @@ param sqlAdminLoginName string
 @secure()
 param sqlAdminLoginPass string
 
-@description('Principal ID of the Azure AD administrator.')
-param aadAdminPrincipalId string
+@description('Register Azure AD administrator for SQL Server.')
+param enableAADAdminUser bool
 
-@description('Login name of the Azure AD administrator.')
+@description('Login name of the Azure AD administrator for SQL Server.')
 param aadAdminLoginName string
+
+@description('Principal ID of the Azure AD administrator for SQL Server.')
+param aadAdminPrincipalId string
 
 @description('SKU type for the Azure SQL Database. Use GeneralPurpose for zone redudant database.')
 @allowed([
@@ -70,6 +76,16 @@ param maxSizeGB int
 @description('Enable zone redundancy for the Azure SQL Database.')
 param zoneRedundant bool
 
+@description('Number of replicas for the Azure SQL Database.')
+param replicaCount int
+
+@description('Route read-only connections to secondary read-only replicas.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param readScaleOut string
+
 @description('Storage redundancy used by the backups of the Azure SQL Database.')
 @allowed([
   'Local'
@@ -77,6 +93,16 @@ param zoneRedundant bool
   'Geo'
 ])
 param backupRedundancy string
+
+@description('Type of license for Azure SQL Database instance.')
+@allowed([
+  'BasePrice'
+  'LicenseIncluded'
+])
+param licenseType string
+
+@description('Collation of the Azure SQL Database instance.')
+param collation string
 
 // ==================================== Diagnostics options ====================================
 
@@ -135,12 +161,14 @@ resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
     version: '12.0'
     administratorLogin: (sqlAdminLoginName != '') ? sqlAdminLoginName : null
     administratorLoginPassword: (sqlAdminLoginPass != '') ? sqlAdminLoginPass : null
-    administrators: {
+    administrators: (enableAADAdminUser) ? {
       administratorType: 'ActiveDirectory'
       principalType: 'User'
-      sid: aadAdminPrincipalId
       login: aadAdminLoginName
-    }
+      sid: aadAdminPrincipalId
+      tenantId: tenantId
+      azureADOnlyAuthentication: false
+    } : null
     publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
     restrictOutboundNetworkAccess: 'Disabled'
     minimalTlsVersion: '1.2'
@@ -277,11 +305,11 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
     minCapacity: minCapacity
     maxSizeBytes: validMaxSizeBytes
     zoneRedundant: isZoneRedundant
-    highAvailabilityReplicaCount: 0
+    highAvailabilityReplicaCount: replicaCount
+    readScale: readScaleOut
     requestedBackupStorageRedundancy: backupRedundancy
-    autoPauseDelay: -1
-    licenseType: 'LicenseIncluded'
-    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    licenseType: licenseType
+    collation: collation
   }
   tags: standardTags
 }

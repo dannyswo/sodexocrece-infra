@@ -44,13 +44,6 @@ param sqlDatabaseSqlAdminPassSecretName string
 @secure()
 param sqlDatabaseSqlAdminPassSecretValue string
 
-@description('Name of the aadAdminLoginName Secret, used by Azure SQL Database.')
-param sqlDatabaseAADAdminNameSecretName string
-
-@description('Value of the aadAdminLoginName Secret, used by Azure SQL Database.')
-@secure()
-param sqlDatabaseAADAdminNameSecretValue string
-
 @description('Issue datetime of the generated Secrets.')
 param secrtsIssueDateTime string
 
@@ -146,19 +139,6 @@ resource sqlDatabaseSqlAdminPassSecret 'Microsoft.KeyVault/vaults/secrets@2022-0
   }
 }
 
-resource sqlDatabaseAADAdminNameSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = if (createSecrets) {
-  name: sqlDatabaseAADAdminNameSecretName
-  parent: keyVault
-  properties: {
-    value: sqlDatabaseAADAdminNameSecretValue
-    contentType: 'text/plain'
-    attributes: {
-      enabled: true
-      exp: secretsExpiryDateTimeSinceEpoch
-    }
-  }
-}
-
 // ==================================== Key Vault ====================================
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
@@ -167,8 +147,14 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
 
 // ==================================== Outputs ====================================
 
-@description('ID of the applications data Storage Account Encryption Key.')
-output appsDataStorageEncryptionKeyId string = (createEncryptionKeys) ? appsDataStorageEncryptionKey.id : ''
+@description('URI of the applications data Storage Account Encryption Key.')
+output appsDataStorageEncryptionKeyUri string = (createEncryptionKeys) ? appsDataStorageEncryptionKey.properties.keyUri : ''
 
 @description('Name of the applications data Storage Account Encryption Key.')
 output appsDataStorageEncryptionKeyName string = (createEncryptionKeys) ? appsDataStorageEncryptionKey.name : ''
+
+@description('URI of the SQL Database SQL admin name Secret.')
+output sqlDatabaseSqlAdminNameSecretUri string = sqlDatabaseSqlAdminNameSecret.properties.secretUri
+
+@description('URI of the SQL Database SQL admin password Secret.')
+output sqlDatabaseSqlAdminPassSecretUri string = sqlDatabaseSqlAdminPassSecret.properties.secretUri

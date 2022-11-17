@@ -16,9 +16,9 @@ az deployment sub create -l eastus2 -f .\src\templates\landingzone\groupProject.
 
 az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\landingzone\mainLandingZone.bicep -p .\src\config\main-landingzone.swo.json
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\shared\mainShared.bicep -p .\src\config\main-shared.swo.json -p secrtsSqlDatabaseSqlAdminLoginName=svr123 -p secrtsSqlDatabaseSqlAdminLoginPass=svr101102S -p secrtsVaultSqlDatabaseAADAdminLoginName=danny.zamorano
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\shared\mainShared.bicep -p .\src\config\main-shared.swo.json -p secrtsSqlDatabaseSqlAdminLoginName=svr123 -p secrtsSqlDatabaseSqlAdminLoginPass=svr101102S -p devopsAgentPrincipalId=
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\system\mainSystem.bicep -p .\src\config\main-system.swo.json -p administratorPrincipalId=40c2e922-9fb6-4186-a53f-44439c85a9df
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\system\mainSystem.bicep -p .\src\config\main-system.swo.json
 ```
 
 ## Deployment of individual modules (for testing)
