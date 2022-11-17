@@ -344,6 +344,9 @@ param aksEnablePublicAccess bool
 @description('Create or update Private Endpoint modules.')
 param updatePrivateEndpointModules bool
 
+@description('Create or udpate AKS Node Group RBAC module.')
+param updateAksNodeGroupRbacModule bool
+
 // ==================================== Modules ====================================
 
 module systemUsersModule 'modules/systemUsers.bicep' = {
@@ -574,7 +577,7 @@ module aksRbacModule 'modules/aksRbac.bicep' = {
   }
 }
 
-module aksNodeGroupRbacModule 'modules/aksNodeGroupRbac.bicep' = {
+module aksNodeGroupRbacModule 'modules/aksNodeGroupRbac.bicep' = if (updateAksNodeGroupRbacModule) {
   name: 'aksNodeGroupRbacModule'
   scope: resourceGroup('MC_${resourceGroup().name}_BRS-MEX-USE2-CRECESDX-${env}-KU01_${location}')
   params: {

@@ -302,6 +302,9 @@
     },
     "updatePrivateEndpointModules": {
       "value": false
+    },
+    "updateAksNodeGroupRbacModule": {
+      "value": false
     }
   }
 }
