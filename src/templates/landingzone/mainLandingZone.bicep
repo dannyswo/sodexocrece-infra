@@ -50,6 +50,14 @@ param createCustomRouteTable bool
 @description('Create VM in the Jump Servers Subnet.')
 param createJumpServer bool
 
+@description('Username of the Jump Server admin')
+@secure()
+param jumpServerAdminUsername string
+
+@description('Password of the Jump Server admin')
+@secure()
+param jumpServerAdminPassword string
+
 // ==================================== Modules ====================================
 
 module networkModule 'modules/network1.bicep' = if (createNetwork) {
@@ -92,8 +100,8 @@ module jumpServerModule 'modules/jumpServer.bicep' = if (createNetwork && create
     location: location
     env: env
     standardTags: standardTags
-    adminUsername: 'danny.zamorano'
-    adminPassword: 'l$##IYRdst84y%'
+    adminUsername: jumpServerAdminUsername
+    adminPassword: jumpServerAdminPassword
     jumpServersVNetName: networkModule.outputs.vnets[3].name
     jumpServersSubnetName: networkModule.outputs.subnets[3].name
     jumpServersNSGName: networkModule.outputs.networkSecurityGroups[3].name

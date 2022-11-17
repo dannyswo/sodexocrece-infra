@@ -16,6 +16,12 @@
     },
     "createJumpServer": {
       "value": false
+    },
+    "jumpServerAdminUsername": {
+      "value": "danny.zamorano"
+    },
+    "jumpServerAdminPassword": {
+      "value": "l$##IYRdst84y%"
     }
   }
 }
