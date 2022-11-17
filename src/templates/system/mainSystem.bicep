@@ -344,15 +344,6 @@ param aksEnablePublicAccess bool
 @description('Create or update Private Endpoint modules.')
 param updatePrivateEndpointModules bool
 
-@description('Create or update Application Gateway module.')
-param updateAgwModule bool
-
-@description('Create or update Azure SQL Database module.')
-param updateSqlDatabaseModule bool
-
-@description('Create or update AKS related modules.')
-param updateAksModules bool
-
 // ==================================== Modules ====================================
 
 module systemUsersModule 'modules/systemUsers.bicep' = {

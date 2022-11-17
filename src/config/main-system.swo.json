@@ -302,15 +302,6 @@
     },
     "updatePrivateEndpointModules": {
       "value": false
-    },
-    "updateAgwModule": {
-      "value": false
-    },
-    "updateSqlDatabaseModule": {
-      "value": false
-    },
-    "updateAksModules": {
-      "value": false
     }
   }
 }
