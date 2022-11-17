@@ -62,8 +62,17 @@
     "infraKeyVaultEnableRbacAuthorization": {
       "value": false
     },
+    "createEncryptionKeysInKeyVault": {
+      "value": true
+    },
     "encryptionKeysIssueDateTime": {
       "value": "11/15/2022 08:00:00 AM"
+    },
+    "createSecretsInKeyVault": {
+      "value": true
+    },
+    "enableRandomPasswordGenerationForSecrets": {
+      "value": false
     },
     "secrtsIssueDateTime": {
       "value": "11/15/2022 08:00:00 AM"

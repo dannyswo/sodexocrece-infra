@@ -171,6 +171,15 @@ param infraKeyVaultAllowedIPsOrCIDRs array
 
 // ==================================== Module switches ====================================
 
+@description('Create Encryption Keys in infrastructure Key Vault.')
+param createEncryptionKeysInKeyVault bool
+
+@description('Create Secrets in infrastructure Key Vault.')
+param createSecretsInKeyVault bool
+
+@description('Enable random password generation for Secrets.')
+param enableRandomPasswordGenerationForSecrets bool
+
 @description('Create or update Private Endpoint modules.')
 param updatePrivateEndpointModules bool
 
@@ -300,11 +309,11 @@ module infraKeyVaultObjectsModule 'modules/infraKeyVaultObjects.bicep' = {
   params: {
     location: location
     keyVaultName: infraKeyVaultModule.outputs.keyVaultName
-    createEncryptionKeys: true
+    createEncryptionKeys: createEncryptionKeysInKeyVault
     appsDataStorageEncryptionKeyName: 'crececonsdx-appsdatastorage-key'
     encryptionKeysIssueDateTime: encryptionKeysIssueDateTime
-    createSecrets: true
-    enableRandomPasswordsGeneration: false
+    createSecrets: createSecretsInKeyVault
+    enableRandomPasswordsGeneration: enableRandomPasswordGenerationForSecrets
     sqlDatabaseSqlAdminNameSecretName: 'crececonsdx-sqldatabase-sqladminloginname'
     sqlDatabaseSqlAdminNameSecretValue: secrtsSqlDatabaseSqlAdminLoginName
     sqlDatabaseSqlAdminPassSecretName: 'crececonsdx-sqldatabase-sqladminloginpass'
