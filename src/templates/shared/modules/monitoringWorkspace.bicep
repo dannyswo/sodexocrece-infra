@@ -94,8 +94,28 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
 
 var linkedStorageAccountId = resourceId('Microsoft.Storage/storageAccounts', linkedStorageAccountName)
 
-resource linkedStorageAccounts 'Microsoft.OperationalInsights/workspaces/linkedStorageAccounts@2020-08-01' = {
+resource linkedStorageAccountsCustomLogs 'Microsoft.OperationalInsights/workspaces/linkedStorageAccounts@2020-08-01' = {
   name: 'CustomLogs'
+  parent: logAnalyticsWorkspace
+  properties: {
+    storageAccountIds: [
+      linkedStorageAccountId
+    ]
+  }
+}
+
+resource linkedStorageAccountsQuery 'Microsoft.OperationalInsights/workspaces/linkedStorageAccounts@2020-08-01' = {
+  name: 'Query'
+  parent: logAnalyticsWorkspace
+  properties: {
+    storageAccountIds: [
+      linkedStorageAccountId
+    ]
+  }
+}
+
+resource linkedStorageAccountsAlerts 'Microsoft.OperationalInsights/workspaces/linkedStorageAccounts@2020-08-01' = {
+  name: 'Alerts'
   parent: logAnalyticsWorkspace
   properties: {
     storageAccountIds: [

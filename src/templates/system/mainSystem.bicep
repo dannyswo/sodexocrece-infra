@@ -80,8 +80,8 @@ param acrPEPrivateIPAddresses array
 
 // ==================================== Monitoring dependencies ====================================
 
-@description('Name of the monitoring data Storage Account.')
-param monitoringDataStorageAccountName string
+@description('URI of the monitoring data Storage Account Blob Service.')
+param monitoringDataStorageBlobServiceUri string
 
 @description('Name of the monitoring Workspace.')
 param monitoringWorkspaceName string
@@ -277,6 +277,8 @@ param sqlDatabaseAuditLogsRetentionDays int
 param sqlDatabaseEnableThreatProtection bool
 @description('Enable Vulnerability Assessments on Azure SQL Server.')
 param sqlDatabaseEnableVulnerabilityAssessments bool
+@description('List of destination emails of vulnerability assessments reports.')
+param sqlDatabaseVulnerabilityAssessmentsEmails array
 
 @description('Enable diagnostics to store Container Registry audit logs.')
 param acrEnableDiagnostics bool
@@ -342,10 +344,10 @@ param aksEnablePublicAccess bool
 // ==================================== Module switches ====================================
 
 @description('Create or update Private Endpoint modules.')
-param updatePrivateEndpointModules bool
+param enablePrivateEndpointModules bool
 
 @description('Create or udpate AKS Node Group RBAC module.')
-param updateAksNodeGroupRbacModule bool
+param enableAksNodeGroupRbacModule bool
 
 // ==================================== Modules ====================================
 
@@ -432,7 +434,7 @@ module appsDataStorageContainersModule 'modules/appsDataStorageContainers.bicep'
   }
 }
 
-module appsDataStoragePrivateEndpointModule 'modules/privateEndpoint.bicep' = if (updatePrivateEndpointModules) {
+module appsDataStoragePrivateEndpointModule 'modules/privateEndpoint.bicep' = if (enablePrivateEndpointModules) {
   name: 'appsDataStoragePrivateEndpointModule'
   params: {
     location: location
@@ -475,6 +477,8 @@ module sqlDatabaseModule 'modules/sqlDatabase.bicep' = {
     logsRetentionDays: sqlDatabaseAuditLogsRetentionDays
     enableThreatProtection: sqlDatabaseEnableThreatProtection
     enableVulnerabilityAssessments: sqlDatabaseEnableVulnerabilityAssessments
+    monitoringDataStorageBlobServiceUri: monitoringDataStorageBlobServiceUri
+    vulnerabilityAssessmentsEmails: sqlDatabaseVulnerabilityAssessmentsEmails
     enableLock: sqlDatabaseEnableLock
     enablePublicAccess: sqlDatabaseEnablePublicAccess
     allowedSubnets: sqlDatabaseAllowedSubnets
@@ -482,7 +486,7 @@ module sqlDatabaseModule 'modules/sqlDatabase.bicep' = {
   }
 }
 
-module sqlDatabasePrivateEndpointModule 'modules/privateEndpoint.bicep' = if (updatePrivateEndpointModules) {
+module sqlDatabasePrivateEndpointModule 'modules/privateEndpoint.bicep' = if (enablePrivateEndpointModules) {
   name: 'sqlDatabasePrivateEndpointModule'
   params: {
     location: location
@@ -519,7 +523,7 @@ module acrModule 'modules/acr.bicep' = {
   }
 }
 
-module acrPrivateEndpointModule 'modules/privateEndpoint.bicep' = if (updatePrivateEndpointModules) {
+module acrPrivateEndpointModule 'modules/privateEndpoint.bicep' = if (enablePrivateEndpointModules) {
   name: 'acrPrivateEndpointModule'
   params: {
     location: location
@@ -577,7 +581,7 @@ module aksRbacModule 'modules/aksRbac.bicep' = {
   }
 }
 
-module aksNodeGroupRbacModule 'modules/aksNodeGroupRbac.bicep' = if (updateAksNodeGroupRbacModule) {
+module aksNodeGroupRbacModule 'modules/aksNodeGroupRbac.bicep' = if (enableAksNodeGroupRbacModule) {
   name: 'aksNodeGroupRbacModule'
   scope: resourceGroup('MC_${resourceGroup().name}_BRS-MEX-USE2-CRECESDX-${env}-KU01_${location}')
   params: {

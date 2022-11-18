@@ -17,7 +17,7 @@ param appsDataStorageAccountName string
 // ==================================== Containers ====================================
 
 resource merchantFilesContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
-  name: 'merchantfiles'
+  name: 'merchant-files'
   parent: blobServices
   properties: {
     publicAccess: 'None'
@@ -39,4 +39,4 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01
 // ==================================== Outputs ====================================
 
 @description('URI of the merchant files Container.')
-output merchantFilesContainerUri string = '${appsDataStorageAccount.properties.primaryEndpoints.blob}/${merchantFilesContainer.name}'
+output merchantFilesContainerUri string = '${appsDataStorageAccount.properties.primaryEndpoints.blob}${merchantFilesContainer.name}'

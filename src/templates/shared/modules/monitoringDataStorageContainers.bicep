@@ -16,8 +16,8 @@ param monitoringDataStorageAccountName string
 
 // ==================================== Containers ====================================
 
-resource sqlServerAssessmentsContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
-  name: 'sqlserverassessments'
+resource vulnerabilityAssessmentContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
+  name: 'vulnerability-assessment'
   parent: blobServices
   properties: {
     publicAccess: 'None'
@@ -38,5 +38,5 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01
 
 // ==================================== Outputs ====================================
 
-@description('URI of the SQL Server assessments Container.')
-output sqlServerAssessmentsContainerUri string = '${monitoringDataStorageAccount.properties.primaryEndpoints.blob}/${sqlServerAssessmentsContainer.name}'
+@description('URI of the Container for SQL Server vulnerability assessments.')
+output vulnerabilityAssessmentContainerUri string = '${monitoringDataStorageAccount.properties.primaryEndpoints.blob}${vulnerabilityAssessmentContainer.name}'

@@ -1,0 +1,65 @@
+[
+  {
+    "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/rg-demo-sodexo-crece/providers/Microsoft.Resources/deployments/OMSAuditingDashboard_fe8b001ebc89475d986552fb8da37af0/operations/BD6FB3130D2D85B6",
+    "operationId": "BD6FB3130D2D85B6",
+    "properties": {
+      "provisioningOperation": "Create",
+      "provisioningState": "Succeeded",
+      "timestamp": "2022-11-18T04:54:37.1818889Z",
+      "duration": "PT1.2675999S",
+      "trackingId": "db0d9235-5983-4751-a222-c57898aefc0c",
+      "statusCode": "OK",
+      "targetResource": {
+        "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/rg-demo-sodexo-crece/providers/Microsoft.OperationsManagement/solutions/SQLAuditing[brs-mex-use2-crecesdx-swo-mm01]",
+        "resourceType": "Microsoft.OperationsManagement/solutions",
+        "resourceName": "SQLAuditing[brs-mex-use2-crecesdx-swo-mm01]"
+      }
+    }
+  },
+  {
+    "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/rg-demo-sodexo-crece/providers/Microsoft.Resources/deployments/OMSAuditingDashboard_fe8b001ebc89475d986552fb8da37af0/operations/B0709A013657FAB7",
+    "operationId": "B0709A013657FAB7",
+    "properties": {
+      "provisioningOperation": "Create",
+      "provisioningState": "Succeeded",
+      "timestamp": "2022-11-18T04:54:35.6912802Z",
+      "duration": "PT0.7080092S",
+      "trackingId": "3abdcf0e-6d7d-4864-8f28-b7de7415d949",
+      "statusCode": "OK",
+      "targetResource": {
+        "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/rg-demo-sodexo-crece/providers/Microsoft.OperationalInsights/workspaces/brs-mex-use2-crecesdx-swo-mm01/views/SQLSecurityInsights",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/views",
+        "resourceName": "brs-mex-use2-crecesdx-swo-mm01/SQLSecurityInsights"
+      }
+    }
+  },
+  {
+    "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/rg-demo-sodexo-crece/providers/Microsoft.Resources/deployments/OMSAuditingDashboard_fe8b001ebc89475d986552fb8da37af0/operations/A11849EBAA22EFCE",
+    "operationId": "A11849EBAA22EFCE",
+    "properties": {
+      "provisioningOperation": "Create",
+      "provisioningState": "Succeeded",
+      "timestamp": "2022-11-18T04:54:35.4798602Z",
+      "duration": "PT0.4965892S",
+      "trackingId": "6922fa66-c1a6-4bdc-86bf-2d67111e2af9",
+      "statusCode": "OK",
+      "targetResource": {
+        "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/rg-demo-sodexo-crece/providers/Microsoft.OperationalInsights/workspaces/brs-mex-use2-crecesdx-swo-mm01/views/SQLAccessToSensitiveData",
+        "resourceType": "Microsoft.OperationalInsights/workspaces/views",
+        "resourceName": "brs-mex-use2-crecesdx-swo-mm01/SQLAccessToSensitiveData"
+      }
+    }
+  },
+  {
+    "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/rg-demo-sodexo-crece/providers/Microsoft.Resources/deployments/OMSAuditingDashboard_fe8b001ebc89475d986552fb8da37af0/operations/08585328596115594895",
+    "operationId": "08585328596115594895",
+    "properties": {
+      "provisioningOperation": "EvaluateDeploymentOutput",
+      "provisioningState": "Succeeded",
+      "timestamp": "2022-11-18T04:54:37.3516971Z",
+      "duration": "PT1.4374081S",
+      "trackingId": "2761a728-5f14-4129-a057-52c34fea4a8e",
+      "statusCode": "OK"
+    }
+  }
+]

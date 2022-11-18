@@ -72,6 +72,6 @@ az account set --subscription df6b3a66-4927-452d-bd5f-9abc9db8a9c0
 
 ```
 az login
-az storage blob download --account-name azmxst1deh711 -c merchantfiles -n crecesdx-namespace.k8s.yaml --auth-mode login
+az storage blob download --account-name azmxst1deh711 -c merchant-files -n crecesdx-namespace.k8s.yaml --auth-mode login
 
 ```

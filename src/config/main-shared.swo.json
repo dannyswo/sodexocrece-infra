@@ -78,7 +78,9 @@
       "value": "11/15/2022 08:00:00 AM"
     },
     "adminUsersPrincipalIds": {
-      "value": []
+      "value": [
+        "40c2e922-9fb6-4186-a53f-44439c85a9df"
+      ]
     },
     "devopsAgentPrincipalId": {
       "value": ""
@@ -105,7 +107,7 @@
       "value": true
     },
     "monitoringDataStorageEnablePublicAccess": {
-      "value": false
+      "value": true
     },
     "monitoringDataStorageBypassAzureServices": {
       "value": true
@@ -145,13 +147,13 @@
     "infraKeyVaultAllowedIPsOrCIDRs": {
       "value": []
     },
-    "updatePrivateEndpointModules": {
+    "enablePrivateEndpointModules": {
       "value": true
     },
-    "updateFlowLogsModule": {
-      "value": false
+    "enableFlowLogsModule": {
+      "value": true
     },
-    "updateServiceEndpointPoliciesModule": {
+    "enableServiceEndpointPoliciesModule": {
       "value": false
     }
   }

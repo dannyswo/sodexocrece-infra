@@ -123,6 +123,12 @@ param enableThreatProtection bool
 @description('Enable Vulnerability Assessments on Azure SQL Server.')
 param enableVulnerabilityAssessments bool
 
+@description('URI of the monitoring data Storage Account Blob Service.')
+param monitoringDataStorageBlobServiceUri string
+
+@description('List of destination emails of vulnerability assessments reports.')
+param vulnerabilityAssessmentsEmails array
+
 // ==================================== Resource Lock switch ====================================
 
 @description('Enable Resource Lock on Azure SQL Server.')
@@ -342,12 +348,13 @@ resource firewallRules 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' 
   }
 }]
 
-// ==================================== Diagnostics / Auditing ====================================
+// ==================================== Diagnostics: Auditing ====================================
 
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableAuditing) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-MM07'
   scope: sqlDatabase
   properties: {
+    logAnalyticsDestinationType: 'AzureDiagnostics'
     workspaceId: resourceId('Microsoft.OperationalInsights/workspaces', diagnosticsWorkspaceName)
     logs: [
       {
@@ -388,6 +395,29 @@ resource devOpsAuditingSettings 'Microsoft.Sql/servers/devOpsAuditingSettings@20
   }
 }
 
+// resource sqlSecurityInsightsView 'Microsoft.OperationalInsights/workspaces/view' SQLSecurityInsights
+// resource sqlAccessToSensitiveData 'Microsoft.OperationalInsights/workspaces/view' SQLAccessToSensitiveData
+
+resource sqlAuditingSolution 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = {
+  name: 'SQLAuditing(${diagnosticsWorkspaceName})'
+  location: location
+  plan: {
+    name: 'SQLAuditing(${diagnosticsWorkspaceName})'
+    product: 'SQLAuditing'
+    publisher: 'Microsoft'
+    promotionCode: ''
+  }
+  properties: {
+    workspaceResourceId: monitoringWorkspace.id
+  }
+}
+
+resource monitoringWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
+  name: diagnosticsWorkspaceName
+}
+
+// ==================================== Diagnostics: Vulnerability Assessments and Advanced Threat Protection ====================================
+
 resource advancedThreatProtectionSettings 'Microsoft.Sql/servers/advancedThreatProtectionSettings@2022-05-01-preview' = if (enableThreatProtection) {
   name: 'default'
   parent: sqlServer
@@ -396,13 +426,53 @@ resource advancedThreatProtectionSettings 'Microsoft.Sql/servers/advancedThreatP
   }
 }
 
+var enableStoragelessVunerabilityAssessments = false
+
 resource sqlVulnerabilityAssessments 'Microsoft.Sql/servers/sqlVulnerabilityAssessments@2022-05-01-preview' = if (enableVulnerabilityAssessments) {
   name: 'default'
   parent: sqlServer
   properties: {
-    state: 'Enabled'
+    state: (enableStoragelessVunerabilityAssessments) ? 'Enabled' : 'Disabled'
   }
 }
+
+resource vulnerabilityAssessments 'Microsoft.Sql/servers/vulnerabilityAssessments@2022-05-01-preview' = if (enableVulnerabilityAssessments) {
+  name: 'default'
+  parent: sqlServer
+  dependsOn: [
+    advancedThreatProtectionSettings
+  ]
+  properties: {
+    storageContainerPath: '${monitoringDataStorageBlobServiceUri}vulnerability-assessment'
+    recurringScans: {
+      isEnabled: !enableStoragelessVunerabilityAssessments
+      emails: vulnerabilityAssessmentsEmails
+      emailSubscriptionAdmins: false
+    }
+  }
+}
+
+// ==================================== Role Assignments ====================================
+
+@description('Role Definition IDs for AKS to ACR communication.')
+var sqlDatabaseRoleDefinitions = [
+  {
+    roleName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+    roleDescription: 'Storage Blob Data Contributor | Allows for read, write and delete access to Azure Storage blob containers and data.'
+    roleAssignmentDescription: 'Pull container images from ACR in AKS.'
+  }
+]
+
+resource aksAcrRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in sqlDatabaseRoleDefinitions: {
+  name: guid(resourceGroup().id, sqlServer.id, roleDefinition.roleName)
+  scope: resourceGroup()
+  properties: {
+    description: roleDefinition.roleAssignmentDescription
+    principalId: sqlServer.identity.principalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
+    principalType: 'ServicePrincipal'
+  }
+}]
 
 // ==================================== Resource Lock ====================================
 

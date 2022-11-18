@@ -44,8 +44,8 @@
         "10.169.88.72"
       ]
     },
-    "monitoringDataStorageAccountName": {
-      "value": "azmxst1zzs259"
+    "monitoringDataStorageBlobServiceUri": {
+      "value": "https://azmxst1zzs259.blob.core.windows.net/"
     },
     "monitoringWorkspaceName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
@@ -246,6 +246,11 @@
     "sqlDatabaseEnableVulnerabilityAssessments": {
       "value": true
     },
+    "sqlDatabaseVulnerabilityAssessmentsEmails": {
+      "value": [
+        "danny.zamorano@softwareone.com"
+      ]
+    },
     "acrEnableDiagnostics": {
       "value": true
     },
@@ -300,10 +305,10 @@
     "aksEnablePublicAccess": {
       "value": false
     },
-    "updatePrivateEndpointModules": {
-      "value": false
+    "enablePrivateEndpointModules": {
+      "value": true
     },
-    "updateAksNodeGroupRbacModule": {
+    "enableAksNodeGroupRbacModule": {
       "value": false
     }
   }
