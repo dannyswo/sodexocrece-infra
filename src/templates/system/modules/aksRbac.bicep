@@ -64,7 +64,7 @@ var aksAppGatewayRoleDefinitions1 = [
   }
 ]
 
-resource aksAppGatewayRoleAssignments1 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksAppGatewayRoleDefinitions1: {
+resource aksAppGatewayRoleAssignments1 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksAppGatewayRoleDefinitions1: if (aksAGICPrincipalId != '') {
   name: guid(resourceGroup().id, aksClusterId, aksAGICPrincipalId, roleDefinition.roleName)
   scope: resourceGroup()
   properties: {
@@ -82,14 +82,14 @@ var aksAppGatewayRoleDefinitions2 = [
     roleDescription: 'Contributor | Grants full access to manage all resources'
     roleAssignmentDescription: 'Manage Application Gateway from AGIC AKS Add-on.'
   }
-  {
-    roleName: appGatewayAdminRoleDefinition.name
-    roleDescription: 'Application Gateway Administrator | View and edit properties of an Application Gateway.'
-    roleAssignmentDescription: 'Manage Application Gateway from AGIC AKS Add-on.'
-  }
+  // {
+  //   roleName: appGatewayAdminRoleDefinition.name
+  //   roleDescription: 'Application Gateway Administrator | View and edit properties of an Application Gateway.'
+  //   roleAssignmentDescription: 'Manage Application Gateway from AGIC AKS Add-on.'
+  // }
 ]
 
-resource aksAppGatewayRoleAssignments2 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksAppGatewayRoleDefinitions2: {
+resource aksAppGatewayRoleAssignments2 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksAppGatewayRoleDefinitions2: if (aksAGICPrincipalId != '') {
   name: guid(resourceGroup().id, aksClusterId, aksAGICPrincipalId, roleDefinition.roleName)
   scope: appGateway
   properties: {

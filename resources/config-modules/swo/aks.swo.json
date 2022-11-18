@@ -8,11 +8,14 @@
     "env": {
       "value": "SWO"
     },
+    "standardTags": {
+      "value": {}
+    },
     "aksSkuTier": {
       "value": "Free"
     },
     "aksDnsSuffix": {
-      "value": "xeo464"
+      "value": "ibf656"
     },
     "kubernetesVersion": {
       "value": "1.23.12"
@@ -48,7 +51,10 @@
       "value": true
     },
     "appGatewayName": {
-      "value": "azmxwa1gtc248"
+      "value": "azmxwa1eae514"
+    },
+    "createCustomRouteTable": {
+      "value": false
     },
     "enableOMSAgentAddon": {
       "value": true
@@ -57,21 +63,7 @@
       "value": true
     },
     "enablePublicAccess": {
-      "value": true
-    },
-    "standardTags": {
-      "value": {
-        "ApplicationName": "",
-        "ApplicationOwner": "",
-        "ApplicationSponsor": "",
-        "TechnicalContact": "",
-        "Billing": "",
-        "Maintenance": "",
-        "EnvironmentType": "",
-        "Security": "",
-        "DeploymentDate": "",
-        "dd_organization": ""
-      }
+      "value": false
     },
     "managedIdentityName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"

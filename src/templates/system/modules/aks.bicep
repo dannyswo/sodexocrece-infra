@@ -72,7 +72,7 @@ param enablePrivateCluster bool
 param privateDnsZoneLinkedVNetNames array
 
 @description('Enable Pod-Managed Identity feature on the AKS Managed Cluster.')
-param enablePodManagedIdentities bool
+param enablePodManagedIdentity bool
 
 @description('List of Pod Identities spec with name, namespace and Managed Identity name.')
 @metadata({
@@ -198,12 +198,12 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
     }
     disableLocalAccounts: true
     podIdentityProfile: {
-      enabled: enablePodManagedIdentities
+      enabled: enablePodManagedIdentity
       userAssignedIdentities: podIdentitiesWithManagedIdentities
     }
     securityProfile: {
       workloadIdentity: {
-        enabled: (enablePodManagedIdentities) ? false : enableWorkloadIdentity
+        enabled: (enablePodManagedIdentity) ? false : enableWorkloadIdentity
       }
     }
     addonProfiles: {
@@ -236,7 +236,7 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 }
 
 resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetName, index) in privateDnsZoneLinkedVNetNames: {
-  name: '${aksDnsPrefix}-NetworkLink${index}'
+  name: 'apiserver-NetworkLink${index}'
   parent: privateDnsZone
   location: 'global'
   properties: {
@@ -298,7 +298,7 @@ output aksNodeResourceGroupName string = aksCluster.properties.nodeResourceGroup
 output aksKubeletPrincipalId string = aksCluster.properties.identityProfile.kubeletidentity.objectId
 
 @description('Principal ID of the AGIC add-on in the AKS Managed Cluster.')
-output aksAGICPrincipalId string = aksCluster.properties.addonProfiles.ingressApplicationGateway.identity.objectId
+output aksAGICPrincipalId string = (enableAGICAddon) ? aksCluster.properties.addonProfiles.ingressApplicationGateway.identity.objectId : ''
 
 @description('Principal ID of the OMSAgent add-on in the AKS Managed Cluster.')
-output aksOMSAgentPrincipalId string = aksCluster.properties.addonProfiles.omsagent.identity.objectId
+output aksOMSAgentPrincipalId string = (enableOMSAgentAddon) ? aksCluster.properties.addonProfiles.omsagent.identity.objectId : ''

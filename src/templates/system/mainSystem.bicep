@@ -249,7 +249,7 @@ param aksEnableEncryptionAtHost bool
 @description('Create the AKS Managed Cluster as private cluster.')
 param aksEnablePrivateCluster bool
 @description('Enable Pod-Managed Identity feature on the AKS Managed Cluster.')
-param aksEnablePodManagedIdentities bool
+param aksEnablePodManagedIdentity bool
 @description('Enable Workload Identity feature on the AKS Managed Cluster.')
 param aksEnableWorkloadIdentity bool
 @description('Enable AKS Application Gateway Ingress Controller (AGIC) add-on.')
@@ -561,7 +561,7 @@ module aksModule 'modules/aks.bicep' = {
     enableEncryptionAtHost: aksEnableEncryptionAtHost
     enablePrivateCluster: aksEnablePrivateCluster
     privateDnsZoneLinkedVNetNames: linkedVNetNamesForAksPrivateEndpoint
-    enablePodManagedIdentities: aksEnablePodManagedIdentities
+    enablePodManagedIdentity: aksEnablePodManagedIdentity
     podIdentities: []
     enableWorkloadIdentity: aksEnableWorkloadIdentity
     enableAGICAddon: aksEnableAGICAddon

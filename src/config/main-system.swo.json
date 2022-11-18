@@ -207,14 +207,14 @@
     "aksEnablePrivateCluster": {
       "value": true
     },
-    "aksEnablePodManagedIdentities": {
+    "aksEnablePodManagedIdentity": {
       "value": false
     },
     "aksEnableWorkloadIdentity": {
       "value": false
     },
     "aksEnableAGICAddon": {
-      "value": false
+      "value": true
     },
     "aksCreateCustomRouteTable": {
       "value": false

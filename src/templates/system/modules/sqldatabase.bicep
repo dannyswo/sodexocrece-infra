@@ -173,8 +173,8 @@ resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
     administrators: (enableAADAdminUser) ? {
       administratorType: 'ActiveDirectory'
       principalType: 'User'
-      login: aadAdminLoginName
-      sid: aadAdminPrincipalId
+      login: (aadAdminLoginName != '') ? aadAdminLoginName : null
+      sid: (aadAdminPrincipalId != '') ? aadAdminPrincipalId : null
       tenantId: tenantId
       azureADOnlyAuthentication: false
     } : null

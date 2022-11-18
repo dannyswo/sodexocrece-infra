@@ -318,7 +318,7 @@ var dummyRoutingRuleListenerName = (enableHttpPort) ? '${appGatewayName}-Listene
 // ==================================== Public IP Address ====================================
 
 resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-IP01'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-IP01-${appGatewayName}'
   location: location
   sku: {
     name: 'Standard'
