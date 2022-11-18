@@ -9,8 +9,7 @@
       "value": "SWO"
     },
     "standardTags": {
-      "value": {
-      }
+      "value": {}
     },
     "appGatewayNameSuffix": {
       "value": "gtc248"
@@ -40,10 +39,10 @@
       "value": true
     },
     "publicCertificateId": {
-      "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-appgateway-cert-public2"
+      "value": "https://azmxkv1qta775.vault.azure.net/secrets/crececonsdx-appgateway-cert-public"
     },
     "privateCertificateId": {
-      "value": "https://azmxkv1mat350.vault.azure.net/secrets/crececonsdx-appgateway-cert-private7"
+      "value": "https://azmxkv1qta775.vault.azure.net/secrets/crececonsdx-appgateway-cert-private"
     },
     "wafPoliciesMode": {
       "value": "Detection"
