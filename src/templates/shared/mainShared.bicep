@@ -346,8 +346,8 @@ module infraKeyVaultRbacModule 'modules/infraKeyVaultRbac.bicep' = {
   }
 }
 
-module flowLogsAdapterModule 'modules/flowLogsAdapter.bicep' = {
-  name: 'flowLogsAdapterModule'
+module flowLogsNsgModule 'modules/flowLogsNsg.bicep' = {
+  name: 'flowLogsNsgModule'
   params: {
     flowLogsTargetNSGName: appsNSGName
   }
@@ -360,7 +360,7 @@ module flowLogsModule 'modules/flowLogs.bicep' = if (enableFlowLogsModule) {
     location: location
     env: env
     standardTags: standardTags
-    flowLogsTargetNSGId: flowLogsAdapterModule.outputs.targetNSGId
+    flowLogsTargetNSGId: flowLogsNsgModule.outputs.flowLogsTargetNSGId
     flowLogsStorageAccountId: monitoringDataStorageModule.outputs.storageAccountId
     enableNetworkWatcherFlowAnalytics: flowLogsEnableNetworkWatcherFlowAnalytics
     flowAnalyticsWorkspaceId: monitoringWorkspaceModule.outputs.workspaceId

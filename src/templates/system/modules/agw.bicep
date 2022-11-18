@@ -113,65 +113,6 @@ var zones = [ '1', '2', '3' ]
 
 var gatewaySubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', gatewayVNetName, gatewaySubnetName)
 
-var frontendPort80 = {
-  name: '${appGatewayName}-Port-80'
-  properties: {
-    port: 80
-  }
-}
-
-var frontendPort443 = {
-  name: '${appGatewayName}-Port-443'
-  properties: {
-    port: 443
-  }
-}
-
-var frontendPortsList0 = (enableHttpPort) ? [ frontendPort80 ] : []
-var frontendPortsList = (enableHttpsPort) ? concat(frontendPortsList0, [ frontendPort443 ]) : frontendPortsList0
-
-var publicOrPrivateFrontendIPName = (enablePublicFrontendIP) ? '${appGatewayName}-FrontIP-Public' : '${appGatewayName}-FrontIP-Private'
-
-var httpListener80 = (enableHttpPort) ? {
-  name: '${appGatewayName}-Listener-80'
-  properties: {
-    protocol: 'Http'
-    frontendIPConfiguration: {
-      id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', appGatewayName, publicOrPrivateFrontendIPName)
-    }
-    frontendPort: {
-      id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', appGatewayName, '${appGatewayName}-Port-80')
-    }
-  }
-} : {}
-
-var httpListener443 = (enableHttpsPort) ? {
-  name: '${appGatewayName}-Listener-443'
-  properties: {
-    protocol: 'Https'
-    frontendIPConfiguration: {
-      id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', appGatewayName, publicOrPrivateFrontendIPName)
-    }
-    frontendPort: {
-      id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', appGatewayName, '${appGatewayName}-Port-443')
-    }
-    sslCertificate: {
-      id: resourceId('Microsoft.Network/applicationGateways/sslCertificates', appGatewayName, '${appGatewayName}-SSLCertificate-Public')
-    }
-    sslProfile: {
-      id: resourceId('Microsoft.Network/applicationGateways/sslProfiles', appGatewayName, '${appGatewayName}-SSLProfile-Sodexo')
-    }
-    firewallPolicy: {
-      id: wafPolicies.id
-    }
-  }
-} : {}
-
-var httpListenersList0 = (enableHttpPort) ? [ httpListener80 ] : []
-var httpListenersList = (enableHttpsPort) ? concat(httpListenersList0, [ httpListener443 ]) : httpListenersList0
-
-var dummyRoutingRuleListenerName = (enableHttpPort) ? '${appGatewayName}-Listener-80' : (enableHttpsPort) ? '${appGatewayName}-Listener-443' : 'NotConfigured'
-
 resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
   name: appGatewayName
   location: location
@@ -312,6 +253,69 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
   }
   tags: standardTags
 }
+
+// ==================================== Frontend Ports, HTTP Listeners and Routing Rules ====================================
+
+var frontendPort80 = {
+  name: '${appGatewayName}-Port-80'
+  properties: {
+    port: 80
+  }
+}
+
+var frontendPort443 = {
+  name: '${appGatewayName}-Port-443'
+  properties: {
+    port: 443
+  }
+}
+
+var frontendPortsList0 = (enableHttpPort) ? [ frontendPort80 ] : []
+var frontendPortsList = (enableHttpsPort) ? concat(frontendPortsList0, [ frontendPort443 ]) : frontendPortsList0
+
+var publicOrPrivateFrontendIPName = (enablePublicFrontendIP) ? '${appGatewayName}-FrontIP-Public' : '${appGatewayName}-FrontIP-Private'
+
+var httpListener80 = (enableHttpPort) ? {
+  name: '${appGatewayName}-Listener-80'
+  properties: {
+    protocol: 'Http'
+    frontendIPConfiguration: {
+      id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', appGatewayName, publicOrPrivateFrontendIPName)
+    }
+    frontendPort: {
+      id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', appGatewayName, '${appGatewayName}-Port-80')
+    }
+  }
+} : {}
+
+var httpListener443 = (enableHttpsPort) ? {
+  name: '${appGatewayName}-Listener-443'
+  properties: {
+    protocol: 'Https'
+    frontendIPConfiguration: {
+      id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', appGatewayName, publicOrPrivateFrontendIPName)
+    }
+    frontendPort: {
+      id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', appGatewayName, '${appGatewayName}-Port-443')
+    }
+    sslCertificate: {
+      id: resourceId('Microsoft.Network/applicationGateways/sslCertificates', appGatewayName, '${appGatewayName}-SSLCertificate-Public')
+    }
+    sslProfile: {
+      id: resourceId('Microsoft.Network/applicationGateways/sslProfiles', appGatewayName, '${appGatewayName}-SSLProfile-Sodexo')
+    }
+    firewallPolicy: {
+      id: wafPolicies.id
+    }
+  }
+} : {}
+
+var httpListenersList0 = (enableHttpPort) ? [ httpListener80 ] : []
+var httpListenersList = (enableHttpsPort) ? concat(httpListenersList0, [ httpListener443 ]) : httpListenersList0
+
+var dummyRoutingRuleListenerName = (enableHttpPort) ? '${appGatewayName}-Listener-80' : (enableHttpsPort) ? '${appGatewayName}-Listener-443' : 'NotConfigured'
+
+// ==================================== Public IP Address ====================================
 
 resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-IP01'

@@ -8,6 +8,10 @@
     "env": {
       "value": "SWO"
     },
+    "standardTags": {
+      "value": {
+      }
+    },
     "appGatewayNameSuffix": {
       "value": "gtc248"
     },
@@ -52,20 +56,6 @@
     },
     "enableLock": {
       "value": true
-    },
-    "standardTags": {
-      "value": {
-        "ApplicationName": "",
-        "ApplicationOwner": "",
-        "ApplicationSponsor": "",
-        "TechnicalContact": "",
-        "Billing": "",
-        "Maintenance": "",
-        "EnvironmentType": "",
-        "Security": "",
-        "DeploymentDate": "",
-        "dd_organization": ""
-      }
     },
     "managedIdentityName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD01"

@@ -85,7 +85,7 @@
     "enableVulnerabilityAssessments": {
       "value": true
     },
-    "sqlDatabaseEnableStoragelessVunerabilityAssessments": {
+    "enableStoragelessVunerabilityAssessments": {
       "value": false
     },
     "monitoringDataStorageBlobServiceUri": {
