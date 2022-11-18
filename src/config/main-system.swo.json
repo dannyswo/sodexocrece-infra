@@ -214,7 +214,7 @@
       "value": false
     },
     "aksEnableAGICAddon": {
-      "value": true
+      "value": false
     },
     "aksCreateCustomRouteTable": {
       "value": false

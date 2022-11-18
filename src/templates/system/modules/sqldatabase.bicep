@@ -395,14 +395,11 @@ resource devOpsAuditingSettings 'Microsoft.Sql/servers/devOpsAuditingSettings@20
   }
 }
 
-// resource sqlSecurityInsightsView 'Microsoft.OperationalInsights/workspaces/view' SQLSecurityInsights
-// resource sqlAccessToSensitiveData 'Microsoft.OperationalInsights/workspaces/view' SQLAccessToSensitiveData
-
-resource sqlAuditingSolution 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = {
-  name: 'SQLAuditing(${diagnosticsWorkspaceName})'
+resource sqlAuditingSolution 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = if (enableAuditing) {
+  name: 'SQLAuditing[${diagnosticsWorkspaceName}]'
   location: location
   plan: {
-    name: 'SQLAuditing(${diagnosticsWorkspaceName})'
+    name: 'SQLAuditing[${diagnosticsWorkspaceName}]'
     product: 'SQLAuditing'
     publisher: 'Microsoft'
     promotionCode: ''

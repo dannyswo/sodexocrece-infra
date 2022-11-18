@@ -85,6 +85,9 @@
     "devopsAgentPrincipalId": {
       "value": ""
     },
+    "flowLogsEnableNetworkWatcherFlowAnalytics": {
+      "value": false
+    },
     "flowLogsRetentionDays": {
       "value": 7
     },

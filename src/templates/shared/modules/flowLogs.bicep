@@ -32,6 +32,9 @@ param flowLogsTargetNSGId string
 @description('ID of the Storage Account where flow logs will be stored.')
 param flowLogsStorageAccountId string
 
+@description('Enable Network Watcher Flow Analytics feature. Must be enabled in the Subscription.')
+param enableNetworkWatcherFlowAnalytics bool
+
 @description('ID of the Log Analytics Workspace used in Flow Analytics configuration.')
 param flowAnalyticsWorkspaceId string
 
@@ -73,7 +76,7 @@ resource flowLogs 'Microsoft.Network/networkWatchers/flowLogs@2022-05-01' = {
     storageId: flowLogsStorageAccountId
     flowAnalyticsConfiguration: {
       networkWatcherFlowAnalyticsConfiguration: {
-        enabled: false
+        enabled: enableNetworkWatcherFlowAnalytics
         workspaceResourceId: flowAnalyticsWorkspaceId
         workspaceRegion: location
         trafficAnalyticsInterval: 60
@@ -98,7 +101,7 @@ resource flowLogsLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLoc
   scope: flowLogs
   properties: {
     level: 'CanNotDelete'
-    notes: 'Network Watcher should not be deleted.'
+    notes: 'Flow Logs resource should not be deleted.'
   }
 }
 

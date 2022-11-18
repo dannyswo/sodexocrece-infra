@@ -126,6 +126,8 @@ param adminUsersPrincipalIds array
 @description('Principal ID of the DevOps Agent AD Identity.')
 param devopsAgentPrincipalId string
 
+@description('Enable Network Watcher Flow Analytics feature. Must be enabled in the Subscription.')
+param flowLogsEnableNetworkWatcherFlowAnalytics bool
 @description('Retention days of flow logs captured by the Network Watcher.')
 param flowLogsRetentionDays int
 
@@ -358,6 +360,7 @@ module flowLogsModule 'modules/flowLogs.bicep' = if (enableFlowLogsModule) {
     standardTags: standardTags
     flowLogsTargetNSGId: flowLogsAdapterModule.outputs.targetNSGId
     flowLogsStorageAccountId: monitoringDataStorageModule.outputs.storageAccountId
+    enableNetworkWatcherFlowAnalytics: flowLogsEnableNetworkWatcherFlowAnalytics
     flowAnalyticsWorkspaceId: monitoringWorkspaceModule.outputs.workspaceId
     flowLogsRetentionDays: flowLogsRetentionDays
     enableLock: flowLogsEnableLock
