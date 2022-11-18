@@ -67,7 +67,7 @@ var workspaceSku = (workspaceSkuName == 'CapacityReservation') ? {
   name: workspaceSkuName
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+resource monitoringWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-MM01'
   location: location
   identity: {
@@ -92,11 +92,13 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
   tags: standardTags
 }
 
+// ==================================== Workspace Linked Storage Accounts ====================================
+
 var linkedStorageAccountId = resourceId('Microsoft.Storage/storageAccounts', linkedStorageAccountName)
 
 resource linkedStorageAccountsCustomLogs 'Microsoft.OperationalInsights/workspaces/linkedStorageAccounts@2020-08-01' = {
   name: 'CustomLogs'
-  parent: logAnalyticsWorkspace
+  parent: monitoringWorkspace
   properties: {
     storageAccountIds: [
       linkedStorageAccountId
@@ -106,7 +108,7 @@ resource linkedStorageAccountsCustomLogs 'Microsoft.OperationalInsights/workspac
 
 resource linkedStorageAccountsQuery 'Microsoft.OperationalInsights/workspaces/linkedStorageAccounts@2020-08-01' = {
   name: 'Query'
-  parent: logAnalyticsWorkspace
+  parent: monitoringWorkspace
   properties: {
     storageAccountIds: [
       linkedStorageAccountId
@@ -116,7 +118,7 @@ resource linkedStorageAccountsQuery 'Microsoft.OperationalInsights/workspaces/li
 
 resource linkedStorageAccountsAlerts 'Microsoft.OperationalInsights/workspaces/linkedStorageAccounts@2020-08-01' = {
   name: 'Alerts'
-  parent: logAnalyticsWorkspace
+  parent: monitoringWorkspace
   properties: {
     storageAccountIds: [
       linkedStorageAccountId
@@ -124,21 +126,59 @@ resource linkedStorageAccountsAlerts 'Microsoft.OperationalInsights/workspaces/l
   }
 }
 
+// ==================================== Workspace Solutions ====================================
+
+resource sqlAuditingSolution 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = {
+  name: 'SQLAuditing[${monitoringWorkspace.name}]'
+  location: location
+  plan: {
+    name: 'SQLAuditing[${monitoringWorkspace.name}]'
+    product: 'SQLAuditing'
+    publisher: 'Microsoft'
+    promotionCode: ''
+  }
+  properties: {
+    workspaceResourceId: monitoringWorkspace.id
+  }
+}
+
+// ==================================== Role Assignments ====================================
+
+@description('Role Definition IDs for Workspace to monitoring data Storage Account communication.')
+var monitoringWorkspaceRoleDefinitions = [
+  {
+    roleName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+    roleDescription: 'Storage Blob Data Contributor | Allows for read, write and delete access to Azure Storage blob containers and data.'
+    roleAssignmentDescription: 'Workspace can write to monitoring data Storage Account.'
+  }
+]
+
+resource monitoringWorkspaceRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in monitoringWorkspaceRoleDefinitions: {
+  name: guid(resourceGroup().id, monitoringWorkspace.id, roleDefinition.roleName)
+  scope: resourceGroup()
+  properties: {
+    description: roleDefinition.roleAssignmentDescription
+    principalId: monitoringWorkspace.identity.principalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
+    principalType: 'ServicePrincipal'
+  }
+}]
+
 // ==================================== Resource Lock ====================================
 
 resource logAnalyticsWorkspaceLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RL02'
-  scope: logAnalyticsWorkspace
+  scope: monitoringWorkspace
   properties: {
     level: 'CanNotDelete'
-    notes: 'Log Analytics Workspace should not be deleted.'
+    notes: 'Workspace for monitoring should not be deleted.'
   }
 }
 
 // ==================================== Outputs ====================================
 
-@description('ID of the Log Analytics Workspace.')
-output workspaceId string = logAnalyticsWorkspace.id
+@description('ID of the monitoring Workspace.')
+output workspaceId string = monitoringWorkspace.id
 
-@description('Name of the Log Analytics Workspace.')
-output workspaceName string = logAnalyticsWorkspace.name
+@description('Name of the monitoring Workspace.')
+output workspaceName string = monitoringWorkspace.name

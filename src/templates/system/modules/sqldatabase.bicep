@@ -31,9 +31,6 @@ param standardTags object
 @maxLength(6)
 param sqlServerNameSuffix string
 
-@description('ID of the AAD Tenant where admin user is registered.')
-param tenantId string = subscription().tenantId
-
 @description('Login name of the SQL Server administrator.')
 @secure()
 param sqlAdminLoginName string
@@ -44,6 +41,9 @@ param sqlAdminLoginPass string
 
 @description('Register Azure AD administrator for SQL Server.')
 param enableAADAdminUser bool
+
+@description('ID of the AAD Tenant where admin user is registered.')
+param tenantId string = subscription().tenantId
 
 @description('Login name of the Azure AD administrator for SQL Server.')
 param aadAdminLoginName string
@@ -56,12 +56,12 @@ param aadAdminPrincipalId string
   'Standard'
   'GeneralPurpose'
 ])
-param skuType string
+param sqlDatabaseSkuType string
 
 @description('SKU size for the Azure SQL Database.')
 @minValue(0)
 @maxValue(4)
-param skuSize int
+param sqlDatabaseSkuSize int
 
 @description('Minimum capacity of the Azure SQL Database.')
 @minValue(1)
@@ -123,7 +123,10 @@ param enableThreatProtection bool
 @description('Enable Vulnerability Assessments on Azure SQL Server.')
 param enableVulnerabilityAssessments bool
 
-@description('URI of the monitoring data Storage Account Blob Service.')
+@description('Enable storageless Vulnerability Assessments on Azure SQL Server.')
+param enableStoragelessVunerabilityAssessments bool
+
+@description('URI of the monitoring data Storage Account Blob Service. Required if storageless VA is enabled.')
 param monitoringDataStorageBlobServiceUri string
 
 @description('List of destination emails of vulnerability assessments reports.')
@@ -183,6 +186,45 @@ resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
 }
 
 // ==================================== SQL Database ====================================
+
+var selectedSku = (sqlDatabaseSkuType == 'GeneralPurpose') ? generalPurposeSkus[sqlDatabaseSkuSize] : standardSkus[sqlDatabaseSkuSize]
+
+var selectedSkuLimits = (sqlDatabaseSkuType == 'GeneralPurpose') ? generalPurposeSkuLimits[sqlDatabaseSkuSize] : standardSkuLimits[sqlDatabaseSkuSize]
+
+var maxSizeBytes = maxSizeGB * 1073741824 // 1024 * 1024 * 1024 B
+
+var validMaxSizeBytes = (maxSizeBytes <= selectedSkuLimits.storageMaxSizeGB) ? maxSizeBytes : selectedSkuLimits.storageMaxSizeGB
+
+var isZoneRedundant = (sqlDatabaseSkuType == 'GeneralPurpose') ? zoneRedundant : false
+
+resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-DB01'
+  parent: sqlServer
+  location: location
+  sku: selectedSku
+  properties: {
+    createMode: 'Default'
+    minCapacity: minCapacity
+    maxSizeBytes: validMaxSizeBytes
+    zoneRedundant: isZoneRedundant
+    highAvailabilityReplicaCount: replicaCount
+    readScale: readScaleOut
+    requestedBackupStorageRedundancy: backupRedundancy
+    licenseType: licenseType
+    collation: collation
+  }
+  tags: standardTags
+}
+
+resource connectionPolicies 'Microsoft.Sql/servers/connectionPolicies@2022-05-01-preview' = {
+  name: 'default'
+  parent: sqlServer
+  properties: {
+    connectionType: 'Default'
+  }
+}
+
+// ==================================== Azure SQL Server SKUs ====================================
 
 var standardSkus = [
   {
@@ -255,7 +297,7 @@ var generalPurposeSkus = [
   }
 ]
 
-var selectedSku = (skuType == 'GeneralPurpose') ? generalPurposeSkus[skuSize] : standardSkus[skuSize]
+// ==================================== Azure SQL Server SKU Limits ====================================
 
 var standardSkuLimits = [
   {
@@ -292,41 +334,6 @@ var generalPurposeSkuLimits = [
     storageMaxSizeGB: 3072 * 1073741824 // 3072 GB
   }
 ]
-
-var selectedSkuLimits = (skuType == 'GeneralPurpose') ? generalPurposeSkuLimits[skuSize] : standardSkuLimits[skuSize]
-
-var maxSizeBytes = maxSizeGB * 1073741824 // 1024 * 1024 * 1024 B
-
-var validMaxSizeBytes = (maxSizeBytes <= selectedSkuLimits.storageMaxSizeGB) ? maxSizeBytes : selectedSkuLimits.storageMaxSizeGB
-
-var isZoneRedundant = (skuType == 'GeneralPurpose') ? zoneRedundant : false
-
-resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-DB01'
-  parent: sqlServer
-  location: location
-  sku: selectedSku
-  properties: {
-    createMode: 'Default'
-    minCapacity: minCapacity
-    maxSizeBytes: validMaxSizeBytes
-    zoneRedundant: isZoneRedundant
-    highAvailabilityReplicaCount: replicaCount
-    readScale: readScaleOut
-    requestedBackupStorageRedundancy: backupRedundancy
-    licenseType: licenseType
-    collation: collation
-  }
-  tags: standardTags
-}
-
-resource connectionPolicies 'Microsoft.Sql/servers/connectionPolicies@2022-05-01-preview' = {
-  name: 'default'
-  parent: sqlServer
-  properties: {
-    connectionType: 'Default'
-  }
-}
 
 // ==================================== PaaS Firewall ====================================
 
@@ -377,63 +384,46 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
   }
 }
 
-resource auditingSettings 'Microsoft.Sql/servers/auditingSettings@2022-05-01-preview' = if (enableAuditing) {
+resource auditingSettings 'Microsoft.Sql/servers/auditingSettings@2022-05-01-preview' = {
   name: 'default'
   parent: sqlServer
   properties: {
-    state: 'Enabled'
+    state: (enableAuditing) ? 'Enabled' : 'Disabled'
     isAzureMonitorTargetEnabled: true
   }
 }
 
-resource devOpsAuditingSettings 'Microsoft.Sql/servers/devOpsAuditingSettings@2022-05-01-preview' = if (enableAuditing) {
+resource devOpsAuditingSettings 'Microsoft.Sql/servers/devOpsAuditingSettings@2022-05-01-preview' = {
   name: 'default'
   parent: sqlServer
   properties: {
-    state: 'Enabled'
+    state: (enableAuditing) ? 'Enabled' : 'Disabled'
     isAzureMonitorTargetEnabled: true
   }
-}
-
-resource sqlAuditingSolution 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = if (enableAuditing) {
-  name: 'SQLAuditing[${diagnosticsWorkspaceName}]'
-  location: location
-  plan: {
-    name: 'SQLAuditing[${diagnosticsWorkspaceName}]'
-    product: 'SQLAuditing'
-    publisher: 'Microsoft'
-    promotionCode: ''
-  }
-  properties: {
-    workspaceResourceId: monitoringWorkspace.id
-  }
-}
-
-resource monitoringWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
-  name: diagnosticsWorkspaceName
 }
 
 // ==================================== Diagnostics: Vulnerability Assessments and Advanced Threat Protection ====================================
 
-resource advancedThreatProtectionSettings 'Microsoft.Sql/servers/advancedThreatProtectionSettings@2022-05-01-preview' = if (enableThreatProtection) {
+resource advancedThreatProtectionSettings 'Microsoft.Sql/servers/advancedThreatProtectionSettings@2022-05-01-preview' = {
   name: 'default'
   parent: sqlServer
   properties: {
-    state: 'Enabled'
+    state: (enableThreatProtection) ? 'Enabled' : 'Disabled'
   }
 }
 
-var enableStoragelessVunerabilityAssessments = false
-
-resource sqlVulnerabilityAssessments 'Microsoft.Sql/servers/sqlVulnerabilityAssessments@2022-05-01-preview' = if (enableVulnerabilityAssessments) {
+resource sqlVulnerabilityAssessments 'Microsoft.Sql/servers/sqlVulnerabilityAssessments@2022-05-01-preview' = {
   name: 'default'
   parent: sqlServer
+  dependsOn: [
+    advancedThreatProtectionSettings
+  ]
   properties: {
-    state: (enableStoragelessVunerabilityAssessments) ? 'Enabled' : 'Disabled'
+    state: (enableStoragelessVunerabilityAssessments) ? ((enableVulnerabilityAssessments) ? 'Enabled' : 'Disabled') : 'Disabled'
   }
 }
 
-resource vulnerabilityAssessments 'Microsoft.Sql/servers/vulnerabilityAssessments@2022-05-01-preview' = if (enableVulnerabilityAssessments) {
+resource vulnerabilityAssessments 'Microsoft.Sql/servers/vulnerabilityAssessments@2022-05-01-preview' = {
   name: 'default'
   parent: sqlServer
   dependsOn: [
@@ -442,7 +432,7 @@ resource vulnerabilityAssessments 'Microsoft.Sql/servers/vulnerabilityAssessment
   properties: {
     storageContainerPath: '${monitoringDataStorageBlobServiceUri}vulnerability-assessment'
     recurringScans: {
-      isEnabled: !enableStoragelessVunerabilityAssessments
+      isEnabled: (!enableStoragelessVunerabilityAssessments) ? enableVulnerabilityAssessments : false
       emails: vulnerabilityAssessmentsEmails
       emailSubscriptionAdmins: false
     }
@@ -451,16 +441,16 @@ resource vulnerabilityAssessments 'Microsoft.Sql/servers/vulnerabilityAssessment
 
 // ==================================== Role Assignments ====================================
 
-@description('Role Definition IDs for AKS to ACR communication.')
+@description('Role Definition IDs for Azure SQL to monitoring data Storage Account communication.')
 var sqlDatabaseRoleDefinitions = [
   {
     roleName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
     roleDescription: 'Storage Blob Data Contributor | Allows for read, write and delete access to Azure Storage blob containers and data.'
-    roleAssignmentDescription: 'Pull container images from ACR in AKS.'
+    roleAssignmentDescription: 'Azure SQL Server can write to monitoring data Storage Account.'
   }
 ]
 
-resource aksAcrRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in sqlDatabaseRoleDefinitions: {
+resource sqlDatabaseRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in sqlDatabaseRoleDefinitions: {
   name: guid(resourceGroup().id, sqlServer.id, roleDefinition.roleName)
   scope: resourceGroup()
   properties: {

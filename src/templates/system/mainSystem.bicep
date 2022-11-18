@@ -272,11 +272,13 @@ param appsDataStorageLogsRetentionDays int
 @description('Enable Auditing feature on Azure SQL Server.')
 param sqlDatabaseEnableAuditing bool
 @description('Retention days of the Azure SQL Database audit logs. Must be defined if enableAuditing is true.')
-param sqlDatabaseAuditLogsRetentionDays int
+param sqlDatabaseLogsRetentionDays int
 @description('Enable Advanced Threat Protection on Azure SQL Server.')
 param sqlDatabaseEnableThreatProtection bool
 @description('Enable Vulnerability Assessments on Azure SQL Server.')
 param sqlDatabaseEnableVulnerabilityAssessments bool
+@description('Enable storageless Vulnerability Assessments on Azure SQL Server.')
+param sqlDatabaseEnableStoragelessVunerabilityAssessments bool
 @description('List of destination emails of vulnerability assessments reports.')
 param sqlDatabaseVulnerabilityAssessmentsEmails array
 
@@ -462,8 +464,8 @@ module sqlDatabaseModule 'modules/sqlDatabase.bicep' = {
     enableAADAdminUser: sqlDatabaseEnableAADAdminUser
     aadAdminLoginName: sqlDatabaseAADAdminLoginName
     aadAdminPrincipalId: sqlDatabaseAADAdminPrincipalId
-    skuType: sqlDatabaseSkuType
-    skuSize: sqlDatabaseSkuSize
+    sqlDatabaseSkuType: sqlDatabaseSkuType
+    sqlDatabaseSkuSize: sqlDatabaseSkuSize
     minCapacity: sqlDatabaseMinCapacity
     maxSizeGB: sqlDatabaseMaxSizeGB
     zoneRedundant: sqlDatabaseZoneRedundant
@@ -474,9 +476,10 @@ module sqlDatabaseModule 'modules/sqlDatabase.bicep' = {
     collation: sqlDatabaseCollation
     enableAuditing: sqlDatabaseEnableAuditing
     diagnosticsWorkspaceName: monitoringWorkspaceName
-    logsRetentionDays: sqlDatabaseAuditLogsRetentionDays
+    logsRetentionDays: sqlDatabaseLogsRetentionDays
     enableThreatProtection: sqlDatabaseEnableThreatProtection
     enableVulnerabilityAssessments: sqlDatabaseEnableVulnerabilityAssessments
+    enableStoragelessVunerabilityAssessments: sqlDatabaseEnableStoragelessVunerabilityAssessments
     monitoringDataStorageBlobServiceUri: monitoringDataStorageBlobServiceUri
     vulnerabilityAssessmentsEmails: sqlDatabaseVulnerabilityAssessmentsEmails
     enableLock: sqlDatabaseEnableLock

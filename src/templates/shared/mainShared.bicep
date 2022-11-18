@@ -216,7 +216,7 @@ module managedIdsRgRbacModule 'modules/managedIdsRgRbac.bicep' = {
   name: 'managedIdsRgRbacModule'
   params: {
     aksManagedIdentityPrincipalId: managedIdsModule.outputs.aksManagedIdentityPrincipalId
-    app1ManagedIdentityPrincipalId: managedIdsModule.outputs.appsDataStorageManagedIdentityPrincipalId
+    app1ManagedIdentityPrincipalId: managedIdsModule.outputs.app1ManagedIdentityPrincipalId
   }
 }
 
@@ -321,9 +321,8 @@ module infraKeyVaultObjectsModule 'modules/infraKeyVaultObjects.bicep' = {
   }
 }
 
-var adminsPrincipalIds = concat(adminUsersPrincipalIds, [ managedIdsModule.outputs.app1ManagedIdentityPrincipalId ])
 var devopsAgentPrincipalIdList = (devopsAgentPrincipalId == '') ? [] : [ devopsAgentPrincipalId ]
-var infraKeyVaultAdminsPrincipalIds = concat(adminsPrincipalIds, devopsAgentPrincipalIdList)
+var infraKeyVaultAdminsPrincipalIds = concat(adminUsersPrincipalIds, devopsAgentPrincipalIdList)
 
 module infraKeyVaultPoliciesModule 'modules/infraKeyVaultPolicies.bicep' = {
   name: 'infraKeyVaultPoliciesModule'
@@ -332,6 +331,9 @@ module infraKeyVaultPoliciesModule 'modules/infraKeyVaultPolicies.bicep' = {
     appGatewayPrincipalId: managedIdsModule.outputs.appGatewayManagedIdentityPrincipalId
     appsDataStorageAccountPrincipalId: managedIdsModule.outputs.appsDataStorageManagedIdentityPrincipalId
     adminsPrincipalIds: infraKeyVaultAdminsPrincipalIds
+    applicationsPrincipalIds: [
+      managedIdsModule.outputs.app1ManagedIdentityPrincipalId
+    ]
   }
 }
 

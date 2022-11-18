@@ -237,7 +237,7 @@
     "sqlDatabaseEnableAuditing": {
       "value": true
     },
-    "sqlDatabaseAuditLogsRetentionDays": {
+    "sqlDatabaseLogsRetentionDays": {
       "value": 7
     },
     "sqlDatabaseEnableThreatProtection": {
@@ -245,6 +245,9 @@
     },
     "sqlDatabaseEnableVulnerabilityAssessments": {
       "value": true
+    },
+    "sqlDatabaseEnableStoragelessVunerabilityAssessments": {
+      "value": false
     },
     "sqlDatabaseVulnerabilityAssessmentsEmails": {
       "value": [

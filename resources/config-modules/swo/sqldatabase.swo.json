@@ -8,46 +8,75 @@
     "env": {
       "value": "SWO"
     },
-    "sqlServerNameSuffix": {
-      "value": "mjx885"
+    "standardTags": {
+      "value": {
+      }
     },
     "sqlAdminLoginName": {
-      "value": "svr123"
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta775"
+        },
+        "secretName": "crececonsdx-sqldatabase-sqladminloginname"
+      }
     },
     "sqlAdminLoginPass": {
-      "value": "svr101102S"
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta775"
+        },
+        "secretName": "crececonsdx-sqldatabase-sqladminloginpass"
+      }
+    },
+    "enableAADAdminUser": {
+      "value": true
     },
     "aadAdminLoginName": {
-      "value": "danny.zamorano"
+      "value": "danny.zamorano@softwareone.com"
     },
-    "adminPrincipalId": {
+    "aadAdminPrincipalId": {
       "value": "40c2e922-9fb6-4186-a53f-44439c85a9df"
     },
-    "skuType": {
+    "sqlServerNameSuffix": {
+      "value": "nkt895"
+    },
+    "sqlDatabaseSkuType": {
       "value": "Standard"
     },
-    "skuSize": {
+    "sqlDatabaseSkuSize": {
       "value": 0
     },
     "minCapacity": {
       "value": 1
     },
     "maxSizeGB": {
-      "value": 10
+      "value": 2
     },
     "zoneRedundant": {
       "value": true
     },
+    "replicaCount": {
+      "value": 0
+    },
+    "readScaleOut": {
+      "value": "Disabled"
+    },
     "backupRedundancy": {
       "value": "Local"
+    },
+    "licenseType": {
+      "value": "LicenseIncluded"
+    },
+    "collation": {
+      "value": "SQL_Latin1_General_CP1_CI_AS"
     },
     "enableAuditing": {
       "value": true
     },
     "diagnosticsWorkspaceName": {
-      "value": "{NULL diagnosticsWorkspaceName}"
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
     },
-    "auditLogsRetentionDays": {
+    "logsRetentionDays": {
       "value": 7
     },
     "enableThreatProtection": {
@@ -56,8 +85,25 @@
     "enableVulnerabilityAssessments": {
       "value": true
     },
+    "sqlDatabaseEnableStoragelessVunerabilityAssessments": {
+      "value": false
+    },
+    "monitoringDataStorageBlobServiceUri": {
+      "value": "https://azmxst1zzs259.blob.core.windows.net/"
+    },
+    "vulnerabilityAssessmentsEmails": {
+      "value": [
+        "danny.zamorano@softwareone.com"
+      ]
+    },
     "enableLock": {
       "value": true
+    },
+    "enablePublicAccess": {
+      "value": false
+    },
+    "allowedSubnets": {
+      "value": []
     },
     "allowedIPRanges": {
       "value": []

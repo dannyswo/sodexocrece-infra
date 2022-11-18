@@ -21,11 +21,11 @@ param appGatewayPrincipalId string
 @description('ID of the Managed Identity used by appsDataStorage.')
 param appsDataStorageAccountPrincipalId string
 
-@description('List of applications AAD Principal IDs allowed to read Secrets.')
-param applicationsPrincipalIds array = []
-
 @description('List of administrators Principal IDs allowed to manage Key Vault objects.')
-param adminsPrincipalIds array = []
+param adminsPrincipalIds array
+
+@description('List of applications AAD Principal IDs allowed to read Secrets.')
+param applicationsPrincipalIds array
 
 // ==================================== Resources ====================================
 

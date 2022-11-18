@@ -37,7 +37,7 @@ param infraKeyVaultId string
 // ==================================== Service Endpoint Policies ====================================
 
 resource monitoringDataStorageServiceEndpointPolicies 'Microsoft.Network/serviceEndpointPolicies@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-SE02'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-SE01'
   location: location
   properties: {
     serviceEndpointPolicyDefinitions: [
@@ -45,7 +45,7 @@ resource monitoringDataStorageServiceEndpointPolicies 'Microsoft.Network/service
         name: 'SE02-Definition1'
         properties: {
           service: 'Microsoft.Storage'
-          description: 'Access to monitoring data Storage Account via Service Endpoint.'
+          description: 'Allow access to monitoring data Storage Account via Service Endpoint.'
           serviceResources: [
             monitoringDataStorageAccountId
           ]
@@ -57,7 +57,7 @@ resource monitoringDataStorageServiceEndpointPolicies 'Microsoft.Network/service
 }
 
 resource infraKeyVaultServiceEndpointPolicies 'Microsoft.Network/serviceEndpointPolicies@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-SE01'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-SE02'
   location: location
   properties: {
     serviceEndpointPolicyDefinitions: [
