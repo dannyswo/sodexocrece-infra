@@ -28,12 +28,12 @@ var aksManagedIdentityRoleDefinitions = [
   {
     roleName: 'b12aa53e-6015-4669-85d0-8515ebb3ae7f'
     roleDescription: 'Private DNS Zone Contributor | Lets you manage private DNS zone resources.'
-    roleAssignmentDescription: 'AKS Managed Cluster can manage custom Private DNS Zone.'
+    roleAssignmentDescription: 'Allow AKS Managed Cluster to manage custom Private DNS Zone.'
   }
   {
-    roleName: routeTableAdminRoleDefinition.name
-    roleDescription: 'Route Table Administrator | View and edit properties of Route Tables.'
-    roleAssignmentDescription: 'AKS Managed Cluster can manage custom Rouble Table.'
+    roleName: '4d97b98b-1d4f-4787-a291-c67834d212e7'
+    roleDescription: 'Network Contributor | Lets you manage networks, but not access to them.'
+    roleAssignmentDescription: 'Allow AKS Managed Cluster to manage custom Rouble Table.'
   }
 ]
 
@@ -54,12 +54,12 @@ var app1ManagedIdentityRoleDefinitions = [
   {
     roleName: '4633458b-17de-408a-b874-0445c86b69e6'
     roleDescription: 'Key Vault Secrets User | Read secret contents'
-    roleAssignmentDescription: 'Application 1 can read secrets in infrastructure Key Vault.'
+    roleAssignmentDescription: 'Allow Application 1 to read secrets in infrastructure Key Vault.'
   }
   {
     roleName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
     roleDescription: 'Storage Blob Data Contributor | Allows for read, write and delete access to Azure Storage blob containers and data'
-    roleAssignmentDescription: 'Application 1 can read and update files in Storage Account Blob Containers.'
+    roleAssignmentDescription: 'Allow Application 1 to read and update files in Storage Account Blob Containers.'
   }
 ]
 
@@ -73,35 +73,6 @@ resource app1ManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignm
     principalType: 'ServicePrincipal'
   }
 }]
-
-// ==================================== Custom Role Definitions ====================================
-
-var routeTableAdminRoleName = 'Route Table Administrator'
-
-resource routeTableAdminRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
-  name: guid(tenantId, resourceGroup().id, aksManagedIdentityPrincipalId, routeTableAdminRoleName)
-  properties: {
-    roleName: routeTableAdminRoleName
-    description: 'View and edit properties of Route Tables.'
-    type: 'customRole'
-    permissions: [
-      {
-        actions: [
-          'Microsoft.Network/routeTables/read'
-          'Microsoft.Network/routeTables/write'
-          'Microsoft.Network/routeTables/join/action'
-          'Microsoft.Network/routeTables/routes/read'
-          'Microsoft.Network/routeTables/routes/write'
-          'Microsoft.Network/routeTables/routes/delete'
-        ]
-        notActions: []
-      }
-    ]
-    assignableScopes: [
-      resourceGroup().id
-    ]
-  }
-}
 
 // ==================================== Outputs ====================================
 

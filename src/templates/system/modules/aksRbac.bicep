@@ -30,7 +30,7 @@ var aksAcrRoleDefinitions = [
   {
     roleName: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
     roleDescription: 'AcrPull | acr pull'
-    roleAssignmentDescription: 'Pull container images from ACR in AKS.'
+    roleAssignmentDescription: 'Allow AKS to pull container images from ACR.'
   }
 ]
 
@@ -52,12 +52,12 @@ var aksAppGatewayRoleDefinitions1 = [
   {
     roleName: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
     roleDescription: 'Reader | View all resources, but does not allow you to make any changes'
-    roleAssignmentDescription: 'View and list resources from Resource Group where AKS Managed Cluster is deployed.'
+    roleAssignmentDescription: 'Allow AKS AGIC to view and list resources from Resource Group where AKS Managed Cluster is deployed.'
   }
   {
     roleName: 'f1a07417-d97a-45cb-824c-7a7467783830'
     roleDescription: 'Managed Identity Operator | Read and Assign User Assigned Identity'
-    roleAssignmentDescription: 'View and change Managed Identities from AGIC AKS Add-on.'
+    roleAssignmentDescription: 'Allow AKS AGIC to view and assign Managed Identities.'
   }
 ]
 
@@ -77,7 +77,7 @@ var aksAppGatewayRoleDefinitions2 = [
   {
     roleName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
     roleDescription: 'Contributor | Grants full access to manage all resources'
-    roleAssignmentDescription: 'Manage Application Gateway from AGIC AKS Add-on.'
+    roleAssignmentDescription: 'Allow AGIC AKS to view and update Application Gateway configuration.'
   }
 ]
 
@@ -102,7 +102,7 @@ var aksPodIdentityRoleDefinitions = [
   {
     roleName: 'f1a07417-d97a-45cb-824c-7a7467783830'
     roleDescription: 'Managed Identity Operator | Read and Assign User Assigned Identity'
-    roleAssignmentDescription: 'View and assign Managed Identities from AKS kubelet process.'
+    roleAssignmentDescription: 'Allow AKS kubelet process to view and assign Managed Identities.'
   }
 ]
 

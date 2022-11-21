@@ -25,7 +25,7 @@ var aksPodIdentityRoleDefinitions = [
   {
     roleName: '9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
     roleDescription: 'Virtual Machine Contributor | Lets you manage virtual machines, but not access to them'
-    roleAssignmentDescription: 'View and assign Managed Identities from AKS kubelet process.'
+    roleAssignmentDescription: 'Allow AKS kubelet process to view and assign Managed Identities.'
   }
 ]
 
