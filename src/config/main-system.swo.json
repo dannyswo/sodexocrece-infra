@@ -261,7 +261,7 @@
       "value": 7
     },
     "appGatewayEnableLock": {
-      "value": true
+      "value": false
     },
     "appsDataStorageEnableLock": {
       "value": true
