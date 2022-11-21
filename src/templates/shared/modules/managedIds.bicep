@@ -1,5 +1,5 @@
 /**
- * Module: infraManagedIds
+ * Module: managedIds
  * Depends on: N/A
  * Used by: shared/mainShared
  * Common resources: AD01 (agw), AD02 (appsDataStorage), AD03 (aks)

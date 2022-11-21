@@ -90,7 +90,7 @@ var aksAppGatewayRoleDefinitions2 = [
 ]
 
 resource aksAppGatewayRoleAssignments2 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksAppGatewayRoleDefinitions2: if (aksAGICPrincipalId != '') {
-  name: guid(resourceGroup().id, aksClusterId, aksAGICPrincipalId, roleDefinition.roleName)
+  name: guid(appGateway.id, aksClusterId, aksAGICPrincipalId, roleDefinition.roleName)
   scope: appGateway
   properties: {
     description: roleDefinition.roleAssignmentDescription

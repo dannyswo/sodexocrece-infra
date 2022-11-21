@@ -5,7 +5,7 @@
  * - Network: serviceEndpointPoliciesModule (serviceEndpointPolicies)
  * - Security: infraKeyVaultModule (infraKeyVault), infraKeyVaultObjectsModule (infraKeyVaultObjects), infraKeyVaultPoliciesModule (infraKeyVaultPolicies)
  * - Storage: monitoringDataStorageModule (monitoringDataStorage), monitoringDataStorageContainersModule (monitoringDataStorageContainers)
- * - Monitoring: monitoringWorkspaceModule (monitoringWorkspace), flowLogsModule (flowLogs)
+ * - Monitoring: monitoringWorkspaceModule (monitoringWorkspace), flowLogsModule (flowLogs), flowLogsNsgModule (flowLogsNsg)
  */
 
 // ==================================== Parameters ====================================

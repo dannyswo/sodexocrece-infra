@@ -1,6 +1,6 @@
 /**
- * Module: loganalytics
- * Depends on: monitoringdatastorage
+ * Module: monitoringWorkspace
+ * Depends on: monitoringDataStorage
  * Used by: shared/mainShared
  * Common resources: RL02
  */

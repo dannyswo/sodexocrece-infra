@@ -1,6 +1,6 @@
 /**
  * Module: flowLogsNsg
- * Depends on: managedIds
+ * Depends on: network1 (optional)
  * Used by: shared/mainShared
  * Common resources: N/A
  */
