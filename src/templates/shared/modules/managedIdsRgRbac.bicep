@@ -9,9 +9,6 @@
 
 // ==================================== Resource properties ====================================
 
-@description('ID of the AAD Tenant used to register new custom Role Definitions.')
-param tenantId string = subscription().tenantId
-
 @description('Principal ID of the Managed Identity of AKS Managed Cluster.')
 param aksManagedIdentityPrincipalId string
 
