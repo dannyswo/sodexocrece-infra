@@ -1,0 +1,57 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool: SSO LATAM CL Agent Pool Non Production
+
+stages:
+- stage: Dev
+  jobs:
+    - job: Build
+      steps:
+      - task: PowerShell@2
+        displayName: Build Template
+        inputs:
+          targetType: 'inline'
+          script: 'az bicep build --file main.bicep --parameters main.parameters.json'
+    - deployment: DeploymentIaC
+      displayName: deploy Infrastructure as Code
+      environment: 'Dev'
+      strategy:
+        runOnce:  
+          deploy:
+            steps:
+              - task: AzureCLI@2
+                inputs:
+                  azureSubscription: 'BRS Non production Service Connection Alicanto'
+                  scriptType: 'ps'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az deployment group create --resource-group $(rg) --template-file main.bicep'
+
+- stage: Uat
+  jobs:
+    - job: Build
+      steps:
+      - task: PowerShell@2
+        displayName: Build Template
+        inputs:
+          targetType: 'inline'
+          script: 'az bicep build --file main.bicep --parameters main.parameters.json'
+    - deployment: DeploymentIaC
+      displayName: deploy Infrastructure as Code
+      environment: 'Uat'
+      strategy:
+        runOnce:  
+          deploy:
+            steps:
+              - task: AzureCLI@2
+                inputs:
+                  azureSubscription: 'BRS Production Service Connection Alicanto'
+                  scriptType: 'ps'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az deployment group create --resource-group $(rg) --template-file main.bicep'
+
