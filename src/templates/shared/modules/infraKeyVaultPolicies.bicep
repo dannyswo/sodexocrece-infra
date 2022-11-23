@@ -58,6 +58,10 @@ var applicationsAccessPolicies = [for applicationPrincipalId in applicationsPrin
   objectId: applicationPrincipalId
   tenantId: tenantId
   permissions: {
+    certificates: [
+      'get'
+      'list'
+    ]
     secrets: [
       'get'
       'list'
