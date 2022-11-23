@@ -23,13 +23,14 @@ shared/mainShared
 10. **infraKeyVaultObjectsModule** (infraKeyVaultObjects): creates Encryption Keys and Secrets for infrastructure services.
 11. **infraKeyVaultPoliciesModule** (infraKeyVaultPolicies): configures Key Vault Access Policies for applications or users.
 12. **infraKeyVaultRbac** (infraKeyVaultRbac): Role Assignments for users, infrastructure services and applications under Key Vault scope.
-13. **flowLogsModule** (flowLogs): exports flow logs caputred for the Apps NSG in the monitoring data Storage Account. \[RL03, MM02, MM03\]
-14. **serviceEndpointPoliciesModule** (serviceEndpointPolicies): creates Service Endpoint Policies for infrastructure Key Vault and monitoring data Storage Account (if necessary).
+13. **flowLogsNsgModule**.
+14. **flowLogsModule** (flowLogs): exports flow logs caputred for the Apps NSG in the monitoring data Storage Account. \[RL03, MM02, MM03\]
+15. **serviceEndpointPoliciesModule** (serviceEndpointPolicies): creates Service Endpoint Policies for infrastructure Key Vault and monitoring data Storage Account (if necessary).
 
 system/mainSystem
 
 1. **systemUsersModule** (systemUsers): Principals IDs of project team Users / Groups (if neccessary).
-3. **systemRgRbacModule** (systemRgRbac): Role Assignments for team Users / Groups under Resource Group scope (if necessary).
+2. **systemRgRbacModule** (systemRgRbac): Role Assignments for team Users / Groups under Resource Group scope (if necessary).
 3. **appGatewayModule** (agw): Application Gateway, WAF Policies. \[RL05, MM05, AD01\]
 4. **appsDataStorageModule** (appsDataStorage): Storage Account for applications data, Blob Container. [RL06, MM06, AD02\]
 5. **appsDataStorageContainersModule** (appsDataStorageContainers): Containers of the applications data Storage Account.
