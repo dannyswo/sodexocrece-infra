@@ -27,6 +27,7 @@ var aksKeyVaultSecretsProviderAccessPolicy = {
   tenantId: tenantId
   permissions: {
     certificates: allCertificatesPermissions
+    keys: allKeysPermissions
     secrets: allSecretsPermissions
   }
 }
@@ -60,6 +61,29 @@ var allCertificatesPermissions = [
   'restore'
   'setissuers'
   'update'
+]
+
+var allKeysPermissions = [
+  'backup'
+  'create'
+  'decrypt'
+  'delete'
+  'encrypt'
+  'get'
+  'getrotationpolicy'
+  'import'
+  'list'
+  'purge'
+  'recover'
+  'release'
+  'restore'
+  'rotate'
+  'setrotationpolicy'
+  'sign'
+  'unwrapKey'
+  'update'
+  'verify'
+  'wrapKey'
 ]
 
 var allSecretsPermissions = [

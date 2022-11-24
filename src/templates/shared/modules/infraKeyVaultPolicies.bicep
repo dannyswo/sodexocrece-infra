@@ -21,11 +21,11 @@ param appGatewayPrincipalId string
 @description('ID of the Managed Identity used by applications data Storage Account.')
 param appsDataStorageAccountPrincipalId string
 
-@description('List of administrators Principal IDs allowed to manage Key Vault objects.')
+@description('List of administrators Principal IDs allowed to fully manage Key Vault objects.')
 param adminsPrincipalIds array
 
-@description('List of applications AAD Principal IDs allowed to read Secrets and Certificates.')
-param applicationsPrincipalIds array
+@description('List of readers AAD Principal IDs allowed to only read Key Vault objects.')
+param readersPrincipalIds array
 
 // ==================================== Resources ====================================
 
@@ -54,11 +54,15 @@ var azureServicesAccessPolicies = [
   appsDataStorageAccountAccessPolicy
 ]
 
-var applicationsAccessPolicies = [for applicationPrincipalId in applicationsPrincipalIds: {
-  objectId: applicationPrincipalId
+var readersAccessPolicies = [for readerPrincipalId in readersPrincipalIds: {
+  objectId: readerPrincipalId
   tenantId: tenantId
   permissions: {
     certificates: [
+      'get'
+      'list'
+    ]
+    keys: [
       'get'
       'list'
     ]
@@ -79,7 +83,7 @@ var adminsAccessPolicies = [for adminPrincipalId in adminsPrincipalIds: {
   }
 }]
 
-var accessPolicies = concat(azureServicesAccessPolicies, applicationsAccessPolicies, adminsAccessPolicies)
+var accessPolicies = concat(azureServicesAccessPolicies, readersAccessPolicies, adminsAccessPolicies)
 
 resource appsKeyVaultAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2022-07-01' = {
   name: 'add'

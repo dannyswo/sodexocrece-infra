@@ -123,6 +123,8 @@ param secrtsSqlDatabaseSqlAdminLoginPass string
 param secrtsIssueDateTime string
 @description('Principal IDs of the system administrator users.')
 param adminUsersPrincipalIds array
+@description('Principal IDs of Azure services with Key Vault access.')
+param azureServicesPrincipalIds array
 @description('Principal ID of the DevOps Agent AD Identity.')
 param devopsAgentPrincipalId string
 
@@ -322,7 +324,7 @@ module infraKeyVaultObjectsModule 'modules/infraKeyVaultObjects.bicep' = {
 }
 
 var devopsAgentPrincipalIdList = (devopsAgentPrincipalId == '') ? [] : [ devopsAgentPrincipalId ]
-var infraKeyVaultAdminsPrincipalIds = concat(adminUsersPrincipalIds, devopsAgentPrincipalIdList)
+var infraKeyVaultAdminsPrincipalIds = concat(adminUsersPrincipalIds, azureServicesPrincipalIds, devopsAgentPrincipalIdList)
 
 module infraKeyVaultPoliciesModule 'modules/infraKeyVaultPolicies.bicep' = {
   name: 'infraKeyVaultPoliciesModule'
@@ -331,7 +333,7 @@ module infraKeyVaultPoliciesModule 'modules/infraKeyVaultPolicies.bicep' = {
     appGatewayPrincipalId: managedIdsModule.outputs.appGatewayManagedIdentityPrincipalId
     appsDataStorageAccountPrincipalId: managedIdsModule.outputs.appsDataStorageManagedIdentityPrincipalId
     adminsPrincipalIds: infraKeyVaultAdminsPrincipalIds
-    applicationsPrincipalIds: [
+    readersPrincipalIds: [
       managedIdsModule.outputs.app1ManagedIdentityPrincipalId
     ]
   }
