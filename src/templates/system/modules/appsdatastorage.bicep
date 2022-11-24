@@ -41,8 +41,8 @@ param storageAccountNameSuffix string
 ])
 param storageAccountSkuName string
 
-@description('URI of the Key Vault where encryption key of the Storage Account is stored.')
-param keyVaultUri string
+@description('Name of the Key Vault where Encryption Key of the Storage Account is stored.')
+param keyVaultName string
 
 @description('Name of the CMK used by Storage Account to encrypt blobs.')
 param encryptionKeyName string
@@ -124,7 +124,7 @@ resource appsDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' =
       keySource: 'Microsoft.Keyvault'
       keyvaultproperties: {
         keyname: encryptionKeyName
-        keyvaulturi: keyVaultUri
+        keyvaulturi: 'https://${keyVaultName}${environment().suffixes.keyvaultDns}/'
       }
       services: {
         blob: {

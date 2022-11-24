@@ -59,14 +59,14 @@
     "aksManagedIdentityName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"
     },
-    "infraKeyVaultUri": {
-      "value": "https://azmxkv1qta775.vault.azure.net/"
+    "infraKeyVaultName": {
+      "value": "azmxkv1qta775"
     },
-    "appGatewayPublicCertificateId": {
-      "value": "https://azmxkv1qta775.vault.azure.net/secrets/crececonsdx-appgateway-cert-public"
+    "appGatewayFrontendCertificateName": {
+      "value": "crececonsdx-appgateway-cert-public"
     },
-    "appGatewayPrivateCertificateId": {
-      "value": "https://azmxkv1qta775.vault.azure.net/secrets/crececonsdx-appgateway-cert-private"
+    "appGatewayBackendCertificateName": {
+      "value": "crececonsdx-appgateway-cert-private"
     },
     "appsDataStorageEncryptionKeyName": {
       "value": "crececonsdx-appsdatastorage-key"
@@ -218,6 +218,15 @@
     },
     "aksCreateCustomRouteTable": {
       "value": false
+    },
+    "aksEnableKeyVaultSecretsProviderAddon": {
+      "value": true
+    },
+    "aksEnableSecretsRotation": {
+      "value": true
+    },
+    "aksSecrtsRotationPollInterval": {
+      "value": "2m"
     },
     "aksEnableOMSAgentAddon": {
       "value": true

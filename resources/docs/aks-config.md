@@ -69,7 +69,8 @@ az aks command invoke --resource-group RG-demo-sodexo-crece --name BRS-MEX-USE2-
 ```
 az acr login -n azmxcr1hym659
 az acr repository list --name azmxcr1hym659
-az acr repository show --name azmxcr1hym659 --repository merchat-view
+az acr repository show --name azmxcr1hym659 --repository merchant-view
+az acr repository show --name azmxcr1hym659 --repository helm/demoapp1
 ```
 
 ```
@@ -145,8 +146,8 @@ az extension add --name aks-preview
 helm repo add aad-pod-identity https://raw.githubusercontent.com/Azure/aad-pod-identity/master/charts
 helm install aad-pod-identity aad-pod-identity/aad-pod-identity --namespace=crecesdx
 
-kubectl apply -f aad.k8s.yaml
-kubectl apply -f aad-binding.k8s.yaml
+kubectl apply -f azure-identity.k8s.yaml
+kubectl apply -f azure-identity-binding.k8s.yaml
 kubectl apply -f demo.k8s.yaml
 ```
 

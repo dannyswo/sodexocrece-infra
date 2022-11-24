@@ -95,13 +95,13 @@ param appsDataStorageManagedIdentityName string
 @description('Name of the Managed Identity used by the AKS Managed Cluster.')
 param aksManagedIdentityName string
 
-@description('URI of the infrastructure Key Vault.')
-param infraKeyVaultUri string
+@description('Name of the infrastructure Key Vault.')
+param infraKeyVaultName string
 
-@description('ID of the public SSL certificate stored in infrastructure Key Vault.')
-param appGatewayPublicCertificateId string
-@description('ID of the private SSL certificate stored in infrastructure Key Vault.')
-param appGatewayPrivateCertificateId string
+@description('Name of the public / frontend SSL certificate stored in Key Vault.')
+param appGatewayFrontendCertificateName string
+@description('Name of the private / backend SSL certificate stored in Key Vault.')
+param appGatewayBackendCertificateName string
 
 @description('Name of the Encryption Key used by applications data Storage Account.')
 param appsDataStorageEncryptionKeyName string
@@ -256,6 +256,12 @@ param aksEnableWorkloadIdentity bool
 param aksEnableAGICAddon bool
 @description('Create custom Route Table for Gateway Subnet managed by AKS (with kubenet network plugin).')
 param aksCreateCustomRouteTable bool
+@description('Enable Key Vault Secrets Provider add-on.')
+param aksEnableKeyVaultSecretsProviderAddon bool
+@description('Enable rotation of Secrets by Key Vault Secrets Provider add-on.')
+param aksEnableSecretsRotation bool
+@description('Poll interval for Secrets rotation by Key Vault Secrets Provider add-on.')
+param aksSecrtsRotationPollInterval string
 
 // ==================================== Diagnostics options ====================================
 
@@ -397,8 +403,9 @@ module appGatewayModule 'modules/agw.bicep' = {
     autoScaleMaxCapacity: appGatewayAutoScaleMaxCapacity
     enableHttpPort: appGatewayEnableHttpPort
     enableHttpsPort: appGatewayEnableHttpsPort
-    publicCertificateId: appGatewayPublicCertificateId
-    privateCertificateId: appGatewayPrivateCertificateId
+    keyVaultName: infraKeyVaultName
+    frontendCertificateName: appGatewayFrontendCertificateName
+    backendCertificateName: appGatewayBackendCertificateName
     wafPoliciesMode: appGatewayWafPoliciesMode
     enableDiagnostics: appGatewayEnableDiagnostics
     diagnosticsWorkspaceName: monitoringWorkspaceName
@@ -416,7 +423,7 @@ module appsDataStorageModule 'modules/appsDataStorage.bicep' = {
     managedIdentityName: appsDataStorageManagedIdentityName
     storageAccountNameSuffix: appsDataStorageNameSuffix
     storageAccountSkuName: appsDataStorageSkuName
-    keyVaultUri: infraKeyVaultUri
+    keyVaultName: infraKeyVaultName
     encryptionKeyName: appsDataStorageEncryptionKeyName
     enableDiagnostics: appsDataStorageEnableDiagnostics
     diagnosticsWorkspaceName: monitoringWorkspaceName
@@ -567,10 +574,21 @@ module aksModule 'modules/aks.bicep' = {
     enableAGICAddon: aksEnableAGICAddon
     appGatewayName: appGatewayModule.outputs.applicationGatewayName
     createCustomRouteTable: aksCreateCustomRouteTable
+    enableKeyVaultSecretsProviderAddon: aksEnableKeyVaultSecretsProviderAddon
+    enableSecretsRotation: aksEnableSecretsRotation
+    secrtsRotationPollInterval: aksSecrtsRotationPollInterval
     enableOMSAgentAddon: aksEnableOMSAgentAddon
     workspaceName: monitoringWorkspaceName
     enableLock: aksEnableLock
     enablePublicAccess: aksEnablePublicAccess
+  }
+}
+
+module aksKeyVaultPoliciesModule 'modules/aksKeyVaultPolicies.bicep' = {
+  name: 'aksKeyVaultPolicies'
+  params: {
+    infraKeyVaultName: infraKeyVaultName
+    aksKeyVaultSecrtsProviderPrincipalId: aksModule.outputs.aksKeyVaultSecretsProviderPrincipalId
   }
 }
 

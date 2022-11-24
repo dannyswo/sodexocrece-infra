@@ -15,16 +15,16 @@ param infraKeyVaultName string
 @description('ID of the AAD Tenant of the Principal IDs.')
 param tenantId string = subscription().tenantId
 
-@description('ID of the Managed Identity used by appGateway.')
+@description('ID of the Managed Identity used by Application Gateway.')
 param appGatewayPrincipalId string
 
-@description('ID of the Managed Identity used by appsDataStorage.')
+@description('ID of the Managed Identity used by applications data Storage Account.')
 param appsDataStorageAccountPrincipalId string
 
 @description('List of administrators Principal IDs allowed to manage Key Vault objects.')
 param adminsPrincipalIds array
 
-@description('List of applications AAD Principal IDs allowed to read Secrets.')
+@description('List of applications AAD Principal IDs allowed to read Secrets and Certificates.')
 param applicationsPrincipalIds array
 
 // ==================================== Resources ====================================
@@ -152,4 +152,4 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
 
 // ==================================== Outputs ====================================
 
-output appsKeyVaultAccessPoliciesAdded string = 'added'
+output infraKeyVaultAccessPoliciesAdded string = 'added'

@@ -77,3 +77,6 @@ output app1ManagedIdentityPrincipalId string = app1ManagedIdentity.properties.pr
 
 @description('Name of the Managed Identity of App 1.')
 output app1ManagedIdentityName string = app1ManagedIdentity.name
+
+@description('Client ID of the Managed Identity of App 1.')
+output app1ManagedIdentityClientId string = app1ManagedIdentity.properties.clientId

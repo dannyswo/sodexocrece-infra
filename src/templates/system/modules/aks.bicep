@@ -101,6 +101,16 @@ param appGatewayName string
 @description('Create custom Route Table for Gateway Subnet managed by AKS (with kubenet network plugin).')
 param createCustomRouteTable bool
 
+@description('Enable Key Vault Secrets Provider add-on.')
+param enableKeyVaultSecretsProviderAddon bool
+
+@description('Enable rotation of Secrets by Key Vault Secrets Provider add-on.')
+param enableSecretsRotation bool
+
+@description('Poll interval for Secrets rotation by Key Vault Secrets Provider add-on.')
+@allowed([ '2m', '5m', '10m', '30m' ])
+param secrtsRotationPollInterval string
+
 // ==================================== Diagnostics options ====================================
 
 @description('Enable AKS OMS Agent add-on.')
@@ -219,6 +229,13 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
           logAnalyticsWorkspaceResourceID: resourceId('Microsoft.OperationalInsights/workspaces', workspaceName)
         }
       }
+      azureKeyvaultSecretsProvider: {
+        enabled: enableKeyVaultSecretsProviderAddon
+        config: {
+          enableSecretRotation: (enableSecretsRotation) ? 'true' : 'false'
+          rotationPollInterval: secrtsRotationPollInterval
+        }
+      }
     }
     publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
   }
@@ -299,6 +316,12 @@ output aksKubeletPrincipalId string = aksCluster.properties.identityProfile.kube
 
 @description('Principal ID of the AGIC add-on in the AKS Managed Cluster.')
 output aksAGICPrincipalId string = (enableAGICAddon) ? aksCluster.properties.addonProfiles.ingressApplicationGateway.identity.objectId : ''
+
+@description('Principal ID of the Key Vault Secrets Provider add-on in the AKS Managed Cluster.')
+output aksKeyVaultSecretsProviderPrincipalId string = (enableKeyVaultSecretsProviderAddon) ? aksCluster.properties.addonProfiles.azureKeyvaultSecretsProvider.identity.objectId : ''
+
+@description('Client ID of the Key Vault Secrets Provider add-on in the AKS Managed Cluster.')
+output aksKeyVaultSecretsProviderClientId string = (enableKeyVaultSecretsProviderAddon) ? aksCluster.properties.addonProfiles.azureKeyvaultSecretsProvider.identity.clientId : ''
 
 @description('Principal ID of the OMSAgent add-on in the AKS Managed Cluster.')
 output aksOMSAgentPrincipalId string = (enableOMSAgentAddon) ? aksCluster.properties.addonProfiles.omsagent.identity.objectId : ''

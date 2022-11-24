@@ -72,11 +72,14 @@ param enableHttpPort bool
 @description('Enable Listener on port 443 and setup the public SSL certificate.')
 param enableHttpsPort bool
 
-@description('ID of the public SSL certificate stored in Key Vault.')
-param publicCertificateId string
+@description('Name of the Key Vault where Certificates used by the Application Gateway are stored.')
+param keyVaultName string
 
-@description('ID of the private SSL certificate stored in Key Vault.')
-param privateCertificateId string
+@description('Name of the public / frontend SSL certificate stored in Key Vault.')
+param frontendCertificateName string
+
+@description('Name of the private / backend SSL certificate stored in Key Vault.')
+param backendCertificateName string
 
 @description('Application Gateway WAF Policies mode.')
 @allowed([
@@ -112,6 +115,8 @@ var appGatewayName = 'azmxwa1${appGatewayNameSuffix}'
 var zones = [ '1', '2', '3' ]
 
 var gatewaySubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', gatewayVNetName, gatewaySubnetName)
+
+var keyVaultSecretsEndpointUri = 'https://${keyVaultName}${environment().suffixes.keyvaultDns}/secrets/'
 
 resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
   name: appGatewayName
@@ -200,13 +205,13 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
       {
         name: '${appGatewayName}-SSLCertificate-Public'
         properties: {
-          keyVaultSecretId: publicCertificateId
+          keyVaultSecretId: '${keyVaultSecretsEndpointUri}${frontendCertificateName}'
         }
       }
       {
         name: '${appGatewayName}-SSLCertificate-Private'
         properties: {
-          keyVaultSecretId: privateCertificateId
+          keyVaultSecretId: '${keyVaultSecretsEndpointUri}${backendCertificateName}'
         }
       }
     ] : []
