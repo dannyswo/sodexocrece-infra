@@ -54,3 +54,10 @@ az keyvault certificate import --vault-name azmxkv1qta775 --name crececonsdx-app
 ./src/scripts/import-keyvault-certificate.sh "azmxkv1qta775" "crececonsdx-appgateway-cert-private" "certificates/cert-private.pfx"
 .\src\scripts\import-keyvault-certificate.cmd "azmxkv1qta775" "crececonsdx-appgateway-cert-private" "certificates\cert-private.pfx"
 ```
+
+## Verify certificates are loaded in the Application Gateway
+
+```
+az network application-gateway root-cert list --resource-group RG-demo-sodexo-crece --gateway-name azmxwa1eae513
+az network application-gateway ssl-cert list --resource-group RG-demo-sodexo-crece --gateway-name azmxwa1eae513
+```

@@ -208,6 +208,8 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
           keyVaultSecretId: '${keyVaultSecretsEndpointUri}${frontendCertificateName}'
         }
       }
+    ] : []
+    trustedRootCertificates: (enableHttpsPort) ? [
       {
         name: '${appGatewayName}-SSLCertificate-Private'
         properties: {
