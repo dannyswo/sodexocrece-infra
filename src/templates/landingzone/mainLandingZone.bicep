@@ -94,8 +94,8 @@ module networkModule 'modules/network1.bicep' = if (createNetwork) {
   }
 }
 
-module jumpServerModule 'modules/jumpServer.bicep' = if (createNetwork && createJumpServer) {
-  name: 'jumpServerModule'
+module jumpServer1Module 'modules/jumpServer.bicep' = if (createNetwork && createJumpServer) {
+  name: 'jumpServer1Module'
   params: {
     location: location
     env: env
@@ -105,6 +105,8 @@ module jumpServerModule 'modules/jumpServer.bicep' = if (createNetwork && create
     jumpServersVNetName: networkModule.outputs.vnets[3].name
     jumpServersSubnetName: networkModule.outputs.subnets[3].name
     jumpServersNSGName: networkModule.outputs.networkSecurityGroups[3].name
+    jumpServerNameSuffix: 'VM01'
+    jumpServerComputerNameSuffix: '2P'
   }
 }
 

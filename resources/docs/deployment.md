@@ -7,8 +7,9 @@ Deploy main templates in Javier's Subscription:
 
 ```
 az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\landingzone\mainLandingZone.bicep -p .\src\config\main-landingzone.swo.json
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\landingzone\mainLandingZone.bicep -p .\src\config\main-landingzone.swo.json -p jumpServerAdminUsername= -p jumpServerAdminPassword=
 
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\shared\mainShared.bicep -p .\src\config\main-shared.swo.json -p secrtsSqlDatabaseSqlAdminLoginName=svr123 -p secrtsSqlDatabaseSqlAdminLoginPass=svr101102S -p devopsAgentPrincipalId=
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\shared\mainShared.bicep -p .\src\config\main-shared.swo.json -p secrtsSqlDatabaseSqlAdminLoginName= -p secrtsSqlDatabaseSqlAdminLoginPass= -p devopsAgentPrincipalId=
 
 az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\mainSystem.bicep -p .\src\config\main-system.swo.json
 ```

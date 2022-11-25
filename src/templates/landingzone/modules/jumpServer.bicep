@@ -38,14 +38,24 @@ param jumpServersSubnetName string
 
 param jumpServersNSGName string
 
+@minLength(4)
+@maxLength(4)
+param jumpServerNameSuffix string
+
+@minLength(4)
+@maxLength(4)
+param jumpServerComputerNameSuffix string
+
 // ==================================== Resources ====================================
 
 // ==================================== VMs, NICs and Public IP Addresses ====================================
 
-var jumpServer1Name = 'BRS-MEX-USE2-CRECESDX-${env}-VM01'
-var jumpServer1ComputerName = 'RSUSAZ-SOOJMP2P'
-var jumpServer1NICName = 'brs-mex-use2-crec592'
-var jumpServer1DiskName = 'BRS-MEX-USE2-CRECESDX-${env}-ST01'
+var jumpServer1Name = 'BRS-MEX-USE2-CRECESDX-${env}-${jumpServerNameSuffix}'
+var jumpServer1ComputerName = 'RSUSAZ-SOOJMP${jumpServerComputerNameSuffix}'
+var jumpServer1NICName = '${toLower(jumpServer1Name)}-nic'
+var jumpServer1DiskName = '${jumpServer1Name}-Disk1'
+var jumpServer1PublicIPName = '${jumpServer1Name}-IP1'
+var jumpServer1ShutdownScheduleName = '${jumpServer1Name}-Shutdown1'
 
 resource jumpServer1 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   name: jumpServer1Name
@@ -132,7 +142,7 @@ resource jumpServer1NIC 'Microsoft.Network/networkInterfaces@2022-05-01' = {
 }
 
 resource jumpServer1PublicIPAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-IP30'
+  name: jumpServer1PublicIPName
   location: location
   sku: {
     name: 'Standard'
@@ -140,6 +150,10 @@ resource jumpServer1PublicIPAddress 'Microsoft.Network/publicIPAddresses@2022-05
   }
   properties: {
     publicIPAllocationMethod: 'Static'
+    deleteOption: 'Delete'
+    dnsSettings: {
+      domainNameLabel: 'jmp01'
+    }
   }
   tags: standardTags
 }
@@ -147,7 +161,7 @@ resource jumpServer1PublicIPAddress 'Microsoft.Network/publicIPAddresses@2022-05
 // ==================================== DevTestLab Schedules ====================================
 
 resource jumpServer1Schedule 'Microsoft.DevTestLab/schedules@2018-09-15' = {
-  name: '${jumpServer1Name}-Shutdown-1'
+  name: jumpServer1ShutdownScheduleName
   location: location
   properties: {
     status: 'Enabled'

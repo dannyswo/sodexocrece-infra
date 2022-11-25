@@ -203,7 +203,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
     ]
     sslCertificates: (enableHttpsPort) ? [
       {
-        name: '${appGatewayName}-SSLCertificate-Public'
+        name: '${appGatewayName}-SSLCertificate-Frontend'
         properties: {
           keyVaultSecretId: '${keyVaultSecretsEndpointUri}${frontendCertificateName}'
         }
@@ -211,7 +211,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
     ] : []
     trustedRootCertificates: (enableHttpsPort) ? [
       {
-        name: '${appGatewayName}-SSLCertificate-Private'
+        name: '${appGatewayName}-TrustedRootCertificate-Backend'
         properties: {
           keyVaultSecretId: '${keyVaultSecretsEndpointUri}${backendCertificateName}'
         }
@@ -306,7 +306,7 @@ var httpListener443 = (enableHttpsPort) ? {
       id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', appGatewayName, '${appGatewayName}-Port-443')
     }
     sslCertificate: {
-      id: resourceId('Microsoft.Network/applicationGateways/sslCertificates', appGatewayName, '${appGatewayName}-SSLCertificate-Public')
+      id: resourceId('Microsoft.Network/applicationGateways/sslCertificates', appGatewayName, '${appGatewayName}-SSLCertificate-Frontend')
     }
     sslProfile: {
       id: resourceId('Microsoft.Network/applicationGateways/sslProfiles', appGatewayName, '${appGatewayName}-SSLProfile-Sodexo')
@@ -335,6 +335,9 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = {
   properties: {
     publicIPAllocationMethod: 'Static'
     deleteOption: 'Delete'
+    dnsSettings: {
+      domainNameLabel: 'crecesdx'
+    }
   }
   tags: standardTags
 }

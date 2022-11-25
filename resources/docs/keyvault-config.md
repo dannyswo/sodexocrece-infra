@@ -22,37 +22,42 @@ Certificates:
 
 ```
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-  -out cert-private.crt \
-  -keyout cert-private.key \
-  -subj "//CN=test"
+  -out cert-backend.crt \
+  -keyout cert-backend.key \
+  -subj "//CN=app.sodexo.com"
 
 openssl pkcs12 -export \
-  -in cert-private.crt \
-  -inkey cert-private.key \
-  -out cert-private.pfx
+  -in cert-backend.crt \
+  -inkey cert-backend.key \
+  -out cert-backend.pfx
 
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-  -out cert-public.crt \
-  -keyout cert-public.key \
-  -subj "//CN=test"
+  -out cert-frontend.crt \
+  -keyout cert-frontend.key \
+  -subj "//CN=app.sodexo.com"
 
 openssl pkcs12 -export \
-  -in cert-public.crt \
-  -inkey cert-public.key \
+  -in cert-frontend.crt \
+  -inkey cert-frontend.key \
   -passout pass:test \
-  -out cert-public.pfx
+  -out cert-frontend.pfx
+
+openssl pkcs12 -export \
+  -in cert-frontend.crt \
+  -inkey cert-frontend.key \
+  -out cert-frontend.pfx
 ```
 
 ## Import SSL certificate into Key Vault via Azure CLI
 
 ```
-az keyvault certificate import --vault-name azmxkv1qta775 --name crececonsdx-appgateway-cert-public --file cert-public.pfx
-az keyvault certificate import --vault-name azmxkv1qta775 --name crececonsdx-appgateway-cert-private --file cert-private.pfx
+az keyvault certificate import --vault-name azmxkv1qta775 --name crececonsdx-appgateway-cert-frontend --file cert-frontend.pfx
+az keyvault certificate import --vault-name azmxkv1qta775 --name crececonsdx-appgateway-cert-backend --file cert-backend.pfx
 ```
 
 ```
-./src/scripts/import-keyvault-certificate.sh "azmxkv1qta775" "crececonsdx-appgateway-cert-private" "certificates/cert-private.pfx"
-.\src\scripts\import-keyvault-certificate.cmd "azmxkv1qta775" "crececonsdx-appgateway-cert-private" "certificates\cert-private.pfx"
+./src/scripts/import-keyvault-certificate.sh "azmxkv1qta775" "crececonsdx-appgateway-cert-backend" "certificates/cert-backend.pfx"
+.\src\scripts\import-keyvault-certificate.cmd "azmxkv1qta775" "crececonsdx-appgateway-cert-backend" "certificates\cert-backend.pfx"
 ```
 
 ## Verify certificates are loaded in the Application Gateway

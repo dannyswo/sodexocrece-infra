@@ -63,10 +63,10 @@
       "value": "azmxkv1qta775"
     },
     "appGatewayFrontendCertificateName": {
-      "value": "crececonsdx-appgateway-cert-public"
+      "value": "crececonsdx-appgateway-cert-frontend"
     },
     "appGatewayBackendCertificateName": {
-      "value": "crececonsdx-appgateway-cert-private"
+      "value": "crececonsdx-appgateway-cert-backend"
     },
     "appsDataStorageEncryptionKeyName": {
       "value": "crececonsdx-appsdatastorage-key"
