@@ -5,43 +5,41 @@ Infrastructure Repository for Sodexo Crece Project
 
 Templates and Modules:
 
-landingzone/mainLandingZone (optional, only for SWO environments)
+landing-zone/main-landing-zone (optional, only for SWO environments)
 
-1. **networkModule** (network1): VNets and Subnets, Peerings, NSGs, custom Route Table for AKS, only for SWO environment.
+1. **network-module** (network): VNets and Subnets, Peerings, NSGs, custom Route Table for AKS, only for SWO environment.
 
-shared/mainShared
+shared/main-shared
 
-1. **sharedUsersModule** (sharedUsers): Principals IDs of administrator Users / Groups (if necessary).
-2. **adminUsersRgRbacModule** (adminUsersRgRbac): Role Assignments for administrators under Resource Group scope.
-3. **managedIdsModule** (managedIds): Managed Identities of infrastructure services and applications.
-4. **managedIdsRgRbacModule** (managedIdsRgRbac): Role Assignments for infrastructure services and applications under Resource Group scope.
-5. **monitoringDataStorageModule** (monitoringDataStorage): Storage Account for monitoring data, used by networkWatcher and monitoringWorkspace. \[RL01\]
-6. **monitoringDataStorageContainersModule** (monitoringDataStorageContainers): Containers of the monitoring data Storage Account. \[RL01\]
-7. **monitoringWorkspaceModule** (monitoringWorkspace): Workspace for logs and metrics collection and analysis, used by keyvault, agw, appsdatastorage, sqldatabase, acr, aks. \[RL02, MM01\]
-8. **infraKeyVaultModule** (infraKeyVault): Key Vault for infrastructure services and applications. \[RL04, MM04\]
-9. **infraKeyVaultPrivateEndpointModule** (privateEndpoint): Private Endpoint, Private DNS Zone and VNet Links.
-10. **infraKeyVaultObjectsModule** (infraKeyVaultObjects): creates Encryption Keys and Secrets for infrastructure services.
-11. **infraKeyVaultPoliciesModule** (infraKeyVaultPolicies): configures Key Vault Access Policies for applications or users.
-12. **infraKeyVaultRbac** (infraKeyVaultRbac): Role Assignments for users, infrastructure services and applications under Key Vault scope.
-13. **flowLogsNsgModule**.
-14. **flowLogsModule** (flowLogs): exports flow logs caputred for the Apps NSG in the monitoring data Storage Account. \[RL03, MM02, MM03\]
-15. **serviceEndpointPoliciesModule** (serviceEndpointPolicies): creates Service Endpoint Policies for infrastructure Key Vault and monitoring data Storage Account (if necessary).
+1. **users-rbac-module** (users-rbac): Role Assignments for administrators under Resource Group scope.
+2. **managed-identities-module** (managed-identities): Managed Identities of infrastructure services and applications.
+3. **managed-identities-rbac-module** (managed-identities-rbac): Role Assignments for infrastructure services and applications under Resource Group scope.
+4. **monitoring-storage-account-module** (monitoring-storage-account): Storage Account for monitoring data, used by networkWatcher and monitoringWorkspace. \[RL01\]
+5. **monitoring-storage-account-containers-module** (monitoring-storage-account-containers): Containers of the monitoring Storage Account. \[RL01\]
+6. **monitoring-loganalytics-workspace-module** (monitoring-loganalytics-workspace): Workspace for logs and metrics collection and analysis, used by keyvault, agw, appsdatastorage, sqldatabase, acr, aks. \[RL02, MM01\]
+7. **keyvault-module** (keyvault): Key Vault for infrastructure services and applications. \[RL04, MM04\]
+8. **keyvault-private-endpoint-module** (private-endpoint): Private Endpoint, Private DNS Zone and VNet Links.
+9. **keyvault-objects-module** (keyvault-objects): creates Encryption Keys and Secrets for infrastructure services.
+10. **keyvault-policies-module** (keyvault-policies): configures Key Vault Access Policies for applications or users.
+11. **keyvault-rbac-module** (keyvault-rbac): Role Assignments for users, infrastructure services and applications under Key Vault scope.
+12. **flowlogs-nsg-module** (flowlogs-nsg): Obtains reference of existing Network Security Group used to capture flow logs.
+13. **flowlogs-module** (flowlogs): exports flow logs caputred for the Apps NSG in the monitoring Storage Account. \[RL03, MM02, MM03\]
+14. **service-endpoint-policies-module** (service-endpoint-policies): creates Service Endpoint Policies for Key Vault and monitoring Storage Account (if necessary).
 
-system/mainSystem
+system/main-system
 
-1. **systemUsersModule** (systemUsers): Principals IDs of project team Users / Groups (if neccessary).
-2. **systemRgRbacModule** (systemRgRbac): Role Assignments for team Users / Groups under Resource Group scope (if necessary).
-3. **appGatewayModule** (agw): Application Gateway, WAF Policies. \[RL05, MM05, AD01\]
-4. **appsDataStorageModule** (appsDataStorage): Storage Account for applications data, Blob Container. [RL06, MM06, AD02\]
-5. **appsDataStorageContainersModule** (appsDataStorageContainers): Containers of the applications data Storage Account.
-6. **appsDataStoragePrivateEndpointModule** (privateEndpoint): Private Endpoint, Private DNS Zone and VNet Links.
-7. **sqlDatabaseModule** (sqlDatabase): Azure SQL Server, SQL Database. \[RL07, MM07\]
-8. **sqlDatabasePrivateEndpointModule** (privateEndpoint): Private Endpoint, Private DNS Zone and VNet Links.
-9. **acrModule** (acr): Container Registry required by aks. \[RL08, MM08\]
-10. **acrPrivateEndpointModule** (privateEndpoint): Private Endpoint, Private DNS Zone and VNet Links.
-11. **aksModule** (aks): AKS Managed Cluster, custom Private DNS Zone. Depends on loganalytics, agw. \[RL09, AD03\]
-12. **aksRbacModule** (aksRbac): Role Assignments for AKS under main Resource Group scope.
-13. **aksNodeGroupRbacModule** (aksNodeGroupRbac): Role Assignments for AKS under AKS-managed Resource Group scope.
+1. **app-gateway-module** (app-gateway): Application Gateway, WAF Policies. \[RL05, MM05, AD01\]
+2. **apps-storage-account-module** (apps-storage-account): Storage Account for applications data, Blob Container. [RL06, MM06, AD02\]
+3. **apps-storage-account-containers-module** (apps-storage-account-containers): Containers of the applications data Storage Account.
+4. **apps-storage-account-private-endpoint-module** (private-endpoint): Private Endpoint, Private DNS Zone and VNet Links.
+5. **sql-database-module** (sql-database): Azure SQL Server, SQL Database. \[RL07, MM07\]
+6. **sql-database-private-endpoint-module** (private-endpoint): Private Endpoint, Private DNS Zone and VNet Links.
+7. **acr-module** (acr): Container Registry required by aks. \[RL08, MM08\]
+8. **acr-private-endpoint-module** (private-endpoint): Private Endpoint, Private DNS Zone and VNet Links.
+9. **aks-module** (aks): AKS Managed Cluster, custom Private DNS Zone. Depends on loganalytics, agw. \[RL09, AD03\]
+10. **aks-keyvault-rbac-module** (aks-keyvault-rbac): Access Policies setup for AKS Managed Identities.
+11. **aks-rbac-module** (aks-rbac): Role Assignments for AKS Managed Identities under project Resource Group scope.
+12. **aks-nodegroup-rbac-module** (aks-nodegroup-rbac): Role Assignments for AKS Managed Identities under AKS-managed Resource Group scope.
 
 Environments:
 

@@ -48,7 +48,7 @@
       "value": 30
     },
     "infraKeyVaultNameSuffix": {
-      "value": "qta775"
+      "value": "qta776"
     },
     "infraKeyVaultEnablePurgeProtection": {
       "value": true
@@ -82,10 +82,11 @@
         "40c2e922-9fb6-4186-a53f-44439c85a9df"
       ]
     },
+    "devUsersPrincipalIds": {
+      "value": []
+    },
     "azureServicesPrincipalIds": {
-      "value": [
-        
-      ]
+      "value": []
     },
     "devopsAgentPrincipalId": {
       "value": ""

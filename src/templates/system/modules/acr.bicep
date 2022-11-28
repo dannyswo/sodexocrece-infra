@@ -1,7 +1,7 @@
 /**
  * Module: acr
- * Depends on: monitoringWorkspace
- * Used by: system/mainSystem
+ * Depends on: monitoring-loganalytics-workspace
+ * Used by: system/main-system
  * Common resources: RL08, MM08
  */
 

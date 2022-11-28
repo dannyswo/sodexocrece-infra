@@ -1,7 +1,7 @@
 /**
  * Module: aks
- * Depends on: inframanagedids, network1 (optional), agw, monitoringworkspace
- * Used by: system/mainSystem
+ * Depends on: managed-identities, network (optional), app-gateway, monitoring-loganalytics-workspace
+ * Used by: system/main-system
  * Common resources: RL09, AD03
  */
 
@@ -87,7 +87,7 @@ param enablePodManagedIdentity bool
     }
   ]
 })
-param podIdentities array
+param podIdentities array = []
 
 @description('Enable Workload Identity feature on the AKS Managed Cluster.')
 param enableWorkloadIdentity bool
@@ -284,7 +284,7 @@ resource aksManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@20
 
 // ==================================== Apps Managed Identities ====================================
 
-var podIdentitiesWithManagedIdentities = []
+var podIdentitiesWithManagedIdentities = podIdentities
 
 // ==================================== Resource Lock ====================================
 

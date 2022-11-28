@@ -1,7 +1,7 @@
 /**
- * Module: flowLogs
- * Depends on: monitoringDataStorage, monitoringWorkspace, flowLogsNsg
- * Used by: system/mainSystem
+ * Module: flowlogs
+ * Depends on: monitoring-storage-account, monitoring-loganalytics-workspace, flowlogs-nsg
+ * Used by: system/main-system
  * Common resources: RL01, MM02, MM03
  */
 

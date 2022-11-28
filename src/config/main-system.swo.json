@@ -44,8 +44,8 @@
         "10.169.88.72"
       ]
     },
-    "monitoringDataStorageBlobServiceUri": {
-      "value": "https://azmxst1zzs259.blob.core.windows.net/"
+    "monitoringStorageAccountName": {
+      "value": "azmxst1zzs259"
     },
     "monitoringWorkspaceName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
@@ -60,7 +60,7 @@
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"
     },
     "infraKeyVaultName": {
-      "value": "azmxkv1qta775"
+      "value": "azmxkv1qta776"
     },
     "appGatewayFrontendCertificateName": {
       "value": "crececonsdx-appgateway-cert-frontend"
@@ -74,7 +74,7 @@
     "sqlDatabaseSqlAdminLoginName": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta775"
+          "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta776"
         },
         "secretName": "crececonsdx-sqldatabase-sqladminloginname"
       }
@@ -82,7 +82,7 @@
     "sqlDatabaseSqlAdminLoginPass": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta775"
+          "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta776"
         },
         "secretName": "crececonsdx-sqldatabase-sqladminloginpass"
       }
