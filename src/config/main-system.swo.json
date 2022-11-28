@@ -32,7 +32,7 @@
     "devopsAgentsVNetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-VN05"
     },
-    "appsDataStoragePEPrivateIPAddress": {
+    "appsStorageAccountPEPrivateIPAddress": {
       "value": "10.169.88.73"
     },
     "sqlDatabasePEPrivateIPAddress": {
@@ -53,13 +53,13 @@
     "appGatewayManageIdentityName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD01"
     },
-    "appsDataStorageManagedIdentityName": {
+    "appsStorageAccountManagedIdentityName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD02"
     },
     "aksManagedIdentityName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"
     },
-    "infraKeyVaultName": {
+    "keyVaultName": {
       "value": "azmxkv1qta776"
     },
     "appGatewayFrontendCertificateName": {
@@ -68,8 +68,8 @@
     "appGatewayBackendCertificateName": {
       "value": "crececonsdx-appgateway-cert-backend"
     },
-    "appsDataStorageEncryptionKeyName": {
-      "value": "crececonsdx-appsdatastorage-key"
+    "appsStorageAccountEncryptionKeyName": {
+      "value": "crececonsdx-appsstorageaccount-key"
     },
     "sqlDatabaseSqlAdminLoginName": {
       "reference": {
@@ -126,10 +126,10 @@
     "appGatewayWafPoliciesMode": {
       "value": "Detection"
     },
-    "appsDataStorageNameSuffix": {
+    "appsStorageAccountNameSuffix": {
       "value": "deh711"
     },
-    "appsDataStorageSkuName": {
+    "appsStorageAccountSkuName": {
       "value": "Standard_LRS"
     },
     "sqlServerNameSuffix": {
@@ -237,10 +237,10 @@
     "appGatewayLogsRetentionDays": {
       "value": 7
     },
-    "appsDataStorageEnableDiagnostics": {
+    "appsStorageAccountEnableDiagnostics": {
       "value": true
     },
-    "appsDataStorageLogsRetentionDays": {
+    "appsStorageAccountLogsRetentionDays": {
       "value": 7
     },
     "sqlDatabaseEnableAuditing": {
@@ -272,7 +272,7 @@
     "appGatewayEnableLock": {
       "value": false
     },
-    "appsDataStorageEnableLock": {
+    "appsStorageAccountEnableLock": {
       "value": true
     },
     "sqlDatabaseEnableLock": {
@@ -284,16 +284,16 @@
     "aksEnableLock": {
       "value": true
     },
-    "appsDataStorageEnablePublicAccess": {
+    "appsStorageAccountEnablePublicAccess": {
       "value": false
     },
-    "appsDataStorageBypassAzureServices": {
+    "appsStorageAccountBypassAzureServices": {
       "value": false
     },
-    "appsDataStorageAllowedSubnets": {
+    "appsStorageAccountAllowedSubnets": {
       "value": []
     },
-    "appsDataStorageAllowedIPsOrCIDRs": {
+    "appsStorageAccountAllowedIPsOrCIDRs": {
       "value": []
     },
     "sqlDatabaseEnablePublicAccess": {

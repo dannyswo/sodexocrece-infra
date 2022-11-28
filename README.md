@@ -16,7 +16,7 @@ shared/main-shared
 3. **managed-identities-rbac-module** (managed-identities-rbac): Role Assignments for infrastructure services and applications under Resource Group scope.
 4. **monitoring-storage-account-module** (monitoring-storage-account): Storage Account for monitoring data, used by networkWatcher and monitoringWorkspace. \[RL01\]
 5. **monitoring-storage-account-containers-module** (monitoring-storage-account-containers): Containers of the monitoring Storage Account. \[RL01\]
-6. **monitoring-loganalytics-workspace-module** (monitoring-loganalytics-workspace): Workspace for logs and metrics collection and analysis, used by keyvault, agw, appsdatastorage, sqldatabase, acr, aks. \[RL02, MM01\]
+6. **monitoring-loganalytics-workspace-module** (monitoring-loganalytics-workspace): Workspace for logs and metrics collection and analysis, used by keyvault, app-gateway, apps-storage-account, sql-database, acr, aks. \[RL02, MM01\]
 7. **keyvault-module** (keyvault): Key Vault for infrastructure services and applications. \[RL04, MM04\]
 8. **keyvault-private-endpoint-module** (private-endpoint): Private Endpoint, Private DNS Zone and VNet Links.
 9. **keyvault-objects-module** (keyvault-objects): creates Encryption Keys and Secrets for infrastructure services.
@@ -30,7 +30,7 @@ system/main-system
 
 1. **app-gateway-module** (app-gateway): Application Gateway, WAF Policies. \[RL05, MM05, AD01\]
 2. **apps-storage-account-module** (apps-storage-account): Storage Account for applications data, Blob Container. [RL06, MM06, AD02\]
-3. **apps-storage-account-containers-module** (apps-storage-account-containers): Containers of the applications data Storage Account.
+3. **apps-storage-account-containers-module** (apps-storage-account-containers): Containers of the applications Storage Account.
 4. **apps-storage-account-private-endpoint-module** (private-endpoint): Private Endpoint, Private DNS Zone and VNet Links.
 5. **sql-database-module** (sql-database): Azure SQL Server, SQL Database. \[RL07, MM07\]
 6. **sql-database-private-endpoint-module** (private-endpoint): Private Endpoint, Private DNS Zone and VNet Links.

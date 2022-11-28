@@ -66,21 +66,21 @@ param appsNSGName string
 
 // ==================================== Private Endpoints settings ====================================
 
-@description('Private IP address of Private Endpoint used by infrastructure Key Vault.')
-param infraKeyVaultPEPrivateIPAddress string
+@description('Private IP address of Private Endpoint used by Key Vault.')
+param keyVaultPEPrivateIPAddress string
 
 // ==================================== Resource properties ====================================
 
-@description('Suffix used in the monitoring data Storage Account name.')
+@description('Suffix used in the monitoring Storage Account name.')
 @minLength(6)
 @maxLength(6)
-param monitoringDataStorageNameSuffix string
-@description('SKU name of the monitoring data Storage Account.')
+param monitoringStorageAccountNameSuffix string
+@description('SKU name of the monitoring Storage Account.')
 @allowed([
   'Standard_LRS'
   'Standard_ZRS'
 ])
-param monitoringDataStorageSkuName string
+param monitoringStorageAccountSkuName string
 
 @description('SKU name of the monitoring Workspace.')
 @allowed([
@@ -96,21 +96,21 @@ param monitoringWorkspaceLogRetentionDays int
 @description('Suffix used in the infastructure Key Vault name.')
 @minLength(6)
 @maxLength(6)
-param infraKeyVaultNameSuffix string
-@description('Enable purge protection feature of the infrastructure Key Vault.')
-param infraKeyVaultEnablePurgeProtection bool
-@description('Retention days of soft-deleted objects in the infrastructure Key Vault.')
-param infraKeyVaultSoftDeleteRetentionDays int
-@description('Enable ARM to access objects in the infrastructure Key Vault.')
-param infraKeyVaultEnableArmAccess bool
-@description('Enable RBAC authorization in infrastructure Key Vault and ignore access policies.')
-param infraKeyVaultEnableRbacAuthorization bool
+param keyVaultNameSuffix string
+@description('Enable purge protection feature of the Key Vault.')
+param keyVaultEnablePurgeProtection bool
+@description('Retention days of soft-deleted objects in the Key Vault.')
+param keyVaultSoftDeleteRetentionDays int
+@description('Enable ARM to access objects in the Key Vault.')
+param keyVaultEnableArmAccess bool
+@description('Enable RBAC authorization in Key Vault and ignore access policies.')
+param keyVaultEnableRbacAuthorization bool
 
-@description('Create Encryption Keys in infrastructure Key Vault.')
+@description('Create Encryption Keys in Key Vault.')
 param createEncryptionKeysInKeyVault bool
 @description('Issue datetime of the generated Encryption Keys.')
 param encryptionKeysIssueDateTime string
-@description('Create Secrets in infrastructure Key Vault.')
+@description('Create Secrets in Key Vault.')
 param createSecretsInKeyVault bool
 @description('Enable random password generation for Secrets.')
 param enableRandomPasswordGenerationForSecrets bool
@@ -137,49 +137,49 @@ param flowLogsRetentionDays int
 
 // ==================================== Diagnostics options ====================================
 
-@description('Enable diagnostics to store infrastructure Key Vault audit logs.')
-param infraKeyVaultEnableDiagnostics bool
-@description('Retention days of the infrastructure Key Vault audit logs. Must be defined if enableDiagnostics is true.')
-param infraKeyVaultLogsRetentionDays int
+@description('Enable diagnostics to store Key Vault audit logs.')
+param keyVaultEnableDiagnostics bool
+@description('Retention days of the Key Vault audit logs. Must be defined if enableDiagnostics is true.')
+param keyVaultLogsRetentionDays int
 
 // ==================================== Resource Locks switches ====================================
 
 @description('Enable Resource Lock on Flow Logs resources.')
 param flowLogsEnableLock bool
-@description('Enable Resource Lock on monitoring data Storage Account.')
-param monitoringDataStorageEnableLock bool
+@description('Enable Resource Lock on monitoring Storage Account.')
+param monitoringStorageAccountEnableLock bool
 @description('Enable Resource Lock on monitoring Workspace.')
 param monitoringWorkspaceEnableLock bool
-@description('Enable Resource Lock on infrastructure Key Vault.')
-param infraKeyVaultEnableLock bool
+@description('Enable Resource Lock on Key Vault.')
+param keyVaultEnableLock bool
 
 // ==================================== PaaS Firewall settings ====================================
 
 @description('Enable public access in the PaaS firewall.')
-param monitoringDataStorageEnablePublicAccess bool
+param monitoringStorageAccountEnablePublicAccess bool
 @description('Allow bypass of PaaS firewall rules to Azure Services.')
-param monitoringDataStorageBypassAzureServices bool
+param monitoringStorageAccountBypassAzureServices bool
 @description('List of Subnets allowed to access the Storage Account in the PaaS firewall.')
 @metadata({
   vnetName: 'Name of VNet.'
   subnetName: 'Name of the Subnet.'
 })
-param monitoringDataStorageAllowedSubnets array
+param monitoringStorageAccountAllowedSubnets array
 @description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
-param monitoringDataStorageAllowedIPsOrCIDRs array
+param monitoringStorageAccountAllowedIPsOrCIDRs array
 
 @description('Enable public access in the PaaS firewall.')
-param infraKeyVaultEnablePublicAccess bool
+param keyVaultEnablePublicAccess bool
 @description('Allow bypass of PaaS firewall rules to Azure Services.')
-param infraKeyVaultBypassAzureServices bool
+param keyVaultBypassAzureServices bool
 @description('List of Subnets allowed to access the Storage Account in the PaaS firewall.')
 @metadata({
   vnetName: 'Name of VNet.'
   subnetName: 'Name of the Subnet.'
 })
-param infraKeyVaultAllowedSubnets array
+param keyVaultAllowedSubnets array
 @description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
-param infraKeyVaultAllowedIPsOrCIDRs array
+param keyVaultAllowedIPsOrCIDRs array
 
 // ==================================== Module switches ====================================
 
@@ -233,20 +233,20 @@ module monitoringStorageAccountModule 'modules/monitoring-storage-account.bicep'
     location: location
     env: env
     standardTags: standardTags
-    storageAccountNameSuffix: monitoringDataStorageNameSuffix
-    storageAccountSkuName: monitoringDataStorageSkuName
-    enableLock: monitoringDataStorageEnableLock
-    enablePublicAccess: monitoringDataStorageEnablePublicAccess
-    bypassAzureServices: monitoringDataStorageBypassAzureServices
-    allowedSubnets: monitoringDataStorageAllowedSubnets
-    allowedIPsOrCIDRs: monitoringDataStorageAllowedIPsOrCIDRs
+    storageAccountNameSuffix: monitoringStorageAccountNameSuffix
+    storageAccountSkuName: monitoringStorageAccountSkuName
+    enableLock: monitoringStorageAccountEnableLock
+    enablePublicAccess: monitoringStorageAccountEnablePublicAccess
+    bypassAzureServices: monitoringStorageAccountBypassAzureServices
+    allowedSubnets: monitoringStorageAccountAllowedSubnets
+    allowedIPsOrCIDRs: monitoringStorageAccountAllowedIPsOrCIDRs
   }
 }
 
 module monitoringStorageAccountContainersModule 'modules/monitoring-storage-account-containers.bicep' = {
   name: 'monitoring-storage-account-containers-module'
   params: {
-    monitoringDataStorageAccountName: monitoringStorageAccountModule.outputs.storageAccountName
+    monitoringStorageAccountName: monitoringStorageAccountModule.outputs.storageAccountName
   }
 }
 
@@ -270,19 +270,19 @@ module keyVaultModule 'modules/keyvault.bicep' = {
     location: location
     env: env
     standardTags: standardTags
-    keyVaultNameSuffix: infraKeyVaultNameSuffix
-    enablePurgeProtection: infraKeyVaultEnablePurgeProtection
-    softDeleteRetentionDays: infraKeyVaultSoftDeleteRetentionDays
-    enableArmAccess: infraKeyVaultEnableArmAccess
-    enableRbacAuthorization: infraKeyVaultEnableRbacAuthorization
-    enableDiagnostics: infraKeyVaultEnableDiagnostics
+    keyVaultNameSuffix: keyVaultNameSuffix
+    enablePurgeProtection: keyVaultEnablePurgeProtection
+    softDeleteRetentionDays: keyVaultSoftDeleteRetentionDays
+    enableArmAccess: keyVaultEnableArmAccess
+    enableRbacAuthorization: keyVaultEnableRbacAuthorization
+    enableDiagnostics: keyVaultEnableDiagnostics
     diagnosticsWorkspaceName: monitoringLogAnalyticsWorkspaceModule.outputs.workspaceName
-    logsRetentionDays: infraKeyVaultLogsRetentionDays
-    enableLock: infraKeyVaultEnableLock
-    enablePublicAccess: infraKeyVaultEnablePublicAccess
-    bypassAzureServices: infraKeyVaultBypassAzureServices
-    allowedSubnets: infraKeyVaultAllowedSubnets
-    allowedIPsOrCIDRs: infraKeyVaultAllowedIPsOrCIDRs
+    logsRetentionDays: keyVaultLogsRetentionDays
+    enableLock: keyVaultEnableLock
+    enablePublicAccess: keyVaultEnablePublicAccess
+    bypassAzureServices: keyVaultBypassAzureServices
+    allowedSubnets: keyVaultAllowedSubnets
+    allowedIPsOrCIDRs: keyVaultAllowedIPsOrCIDRs
   }
 }
 
@@ -295,7 +295,7 @@ module keyVaultPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enab
     privateEndpointName: 'PE02'
     vnetName: endpointsVNetName
     subnetName: endpointsSubnetName
-    privateIPAddresses: [ infraKeyVaultPEPrivateIPAddress ]
+    privateIPAddresses: [ keyVaultPEPrivateIPAddress ]
     serviceId: keyVaultModule.outputs.keyVaultId
     groupId: 'vault'
     linkedVNetNames: linkedVNetNamesForPrivateEndpoints
@@ -308,7 +308,7 @@ module keyVaultObjectsModule 'modules/keyvault-objects.bicep' = {
     location: location
     keyVaultName: keyVaultModule.outputs.keyVaultName
     createEncryptionKeys: createEncryptionKeysInKeyVault
-    appsDataStorageEncryptionKeyName: 'crececonsdx-appsdatastorage-key'
+    appsStorageAccountEncryptionKeyName: 'crececonsdx-appsstorageaccount-key'
     encryptionKeysIssueDateTime: encryptionKeysIssueDateTime
     createSecrets: createSecretsInKeyVault
     enableRandomPasswordsGeneration: enableRandomPasswordGenerationForSecrets
@@ -321,15 +321,15 @@ module keyVaultObjectsModule 'modules/keyvault-objects.bicep' = {
 }
 
 var devopsAgentPrincipalIdList = (devopsAgentPrincipalId == '') ? [] : [ devopsAgentPrincipalId ]
-var infraKeyVaultAdminsPrincipalIds = concat(adminUsersPrincipalIds, azureServicesPrincipalIds, devopsAgentPrincipalIdList)
+var keyVaultAdminsPrincipalIds = concat(adminUsersPrincipalIds, azureServicesPrincipalIds, devopsAgentPrincipalIdList)
 
 module keyVaultPoliciesModule 'modules/keyvault-policies.bicep' = {
   name: 'keyvault-policies-module'
   params: {
-    infraKeyVaultName: keyVaultModule.outputs.keyVaultName
+    keyVaultName: keyVaultModule.outputs.keyVaultName
     appGatewayPrincipalId: managedIdentitiesModule.outputs.appGatewayManagedIdentityPrincipalId
-    appsDataStorageAccountPrincipalId: managedIdentitiesModule.outputs.appsDataStorageManagedIdentityPrincipalId
-    adminsPrincipalIds: infraKeyVaultAdminsPrincipalIds
+    appsStorageAccountPrincipalId: managedIdentitiesModule.outputs.appsStorageAccountManagedIdentityPrincipalId
+    adminsPrincipalIds: keyVaultAdminsPrincipalIds
     readersPrincipalIds: [
       managedIdentitiesModule.outputs.app1ManagedIdentityPrincipalId
     ]
@@ -339,9 +339,9 @@ module keyVaultPoliciesModule 'modules/keyvault-policies.bicep' = {
 module keyVaultRbacModule 'modules/keyvault-rbac.bicep' = {
   name: 'keyvault-rbac-module'
   params: {
-    infraKeyVaultName: keyVaultModule.outputs.keyVaultName
+    keyVaultName: keyVaultModule.outputs.keyVaultName
     appGatewayManagedIdentityPrincipalId: managedIdentitiesModule.outputs.appGatewayManagedIdentityPrincipalId
-    appsDataStorageManagedIdentityPrincipalId: managedIdentitiesModule.outputs.appsDataStorageManagedIdentityPrincipalId
+    appsStorageAccountManagedIdentityPrincipalId: managedIdentitiesModule.outputs.appsStorageAccountManagedIdentityPrincipalId
   }
 }
 
@@ -374,7 +374,7 @@ module serviceEndpointPoliciesModule 'modules/service-endpoint-policies.bicep' =
     location: location
     env: env
     standardTags: standardTags
-    infraKeyVaultId: keyVaultModule.outputs.keyVaultId
-    monitoringDataStorageAccountId: monitoringStorageAccountModule.outputs.storageAccountId
+    keyVaultId: keyVaultModule.outputs.keyVaultId
+    monitoringStorageAccountId: monitoringStorageAccountModule.outputs.storageAccountId
   }
 }

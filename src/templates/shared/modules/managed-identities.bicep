@@ -34,7 +34,7 @@ resource appGatewayManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdenti
   tags: standardTags
 }
 
-resource appsDataStorageManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
+resource appsStorageAccountManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-AD02'
   location: location
   tags: standardTags
@@ -60,11 +60,11 @@ output appGatewayManagedIdentityPrincipalId string = appGatewayManagedIdentity.p
 @description('Name of the Managed Identity of Application Gateway.')
 output appGatewayManagedIdentityName string = appGatewayManagedIdentity.name
 
-@description('Principal ID of the Managed Identity of applications data Storage Account.')
-output appsDataStorageManagedIdentityPrincipalId string = appsDataStorageManagedIdentity.properties.principalId
+@description('Principal ID of the Managed Identity of applications Storage Account.')
+output appsStorageAccountManagedIdentityPrincipalId string = appsStorageAccountManagedIdentity.properties.principalId
 
-@description('Name of the Managed Identity of applications data Storage Account.')
-output appsDataStorageManagedIdentityName string = appsDataStorageManagedIdentity.name
+@description('Name of the Managed Identity of applications Storage Account.')
+output appsStorageAccountManagedIdentityName string = appsStorageAccountManagedIdentity.name
 
 @description('Principal ID of the Managed Identity of AKS Managed Cluster.')
 output aksManagedIdentityPrincipalId string = aksManagedIdentity.properties.principalId

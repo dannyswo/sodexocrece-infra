@@ -26,17 +26,17 @@ param standardTags object
 
 // ==================================== Resource properties ====================================
 
-@description('ID of the monitoring data Storage Account.')
-param monitoringDataStorageAccountId string
+@description('ID of the monitoring Storage Account.')
+param monitoringStorageAccountId string
 
-@description('ID of the infrastructure Key Vault.')
-param infraKeyVaultId string
+@description('ID of the Key Vault.')
+param keyVaultId string
 
 // ==================================== Resources ====================================
 
 // ==================================== Service Endpoint Policies ====================================
 
-resource monitoringDataStorageServiceEndpointPolicies 'Microsoft.Network/serviceEndpointPolicies@2022-05-01' = {
+resource monitoringStorageAccountServiceEndpointPolicies 'Microsoft.Network/serviceEndpointPolicies@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-SE01'
   location: location
   properties: {
@@ -45,9 +45,9 @@ resource monitoringDataStorageServiceEndpointPolicies 'Microsoft.Network/service
         name: 'SE02-Definition1'
         properties: {
           service: 'Microsoft.Storage'
-          description: 'Allow access to monitoring data Storage Account via Service Endpoint.'
+          description: 'Allow access to monitoring Storage Account via Service Endpoint.'
           serviceResources: [
-            monitoringDataStorageAccountId
+            monitoringStorageAccountId
           ]
         }
       }
@@ -56,7 +56,7 @@ resource monitoringDataStorageServiceEndpointPolicies 'Microsoft.Network/service
   tags: standardTags
 }
 
-resource infraKeyVaultServiceEndpointPolicies 'Microsoft.Network/serviceEndpointPolicies@2022-05-01' = {
+resource keyVaultServiceEndpointPolicies 'Microsoft.Network/serviceEndpointPolicies@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-SE02'
   location: location
   properties: {
@@ -65,9 +65,9 @@ resource infraKeyVaultServiceEndpointPolicies 'Microsoft.Network/serviceEndpoint
         name: 'SE01-Definition1'
         properties: {
           service: 'Microsoft.KeyVault'
-          description: 'Allow access to infrastructure Key Vault via Service Endpoint.'
+          description: 'Allow access to Key Vault via Service Endpoint.'
           serviceResources: [
-            infraKeyVaultId
+            keyVaultId
           ]
         }
       }
@@ -78,8 +78,8 @@ resource infraKeyVaultServiceEndpointPolicies 'Microsoft.Network/serviceEndpoint
 
 // ==================================== Outputs ====================================
 
-@description('ID of the Service Endpoint Policies to access infrastructure Key Vault.')
-output infraKeyVaultServiceEndpointPoliciesId string = infraKeyVaultServiceEndpointPolicies.id
+@description('ID of the Service Endpoint Policies to access Key Vault.')
+output keyVaultServiceEndpointPoliciesId string = keyVaultServiceEndpointPolicies.id
 
-@description('ID of the Service Endpoint Policies to access monitoring data Storage Account.')
-output monitoringDataStorageServiceEndpointPoliciesId string = monitoringDataStorageServiceEndpointPolicies.id
+@description('ID of the Service Endpoint Policies to access monitoring Storage Account.')
+output monitoringStorageAccountServiceEndpointPoliciesId string = monitoringStorageAccountServiceEndpointPolicies.id

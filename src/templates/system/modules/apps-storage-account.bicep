@@ -26,7 +26,7 @@ param standardTags object
 
 // ==================================== Resource properties ====================================
 
-@description('Name of the Managed Identity used by applications data Storage Account.')
+@description('Name of the Managed Identity used by applications Storage Account.')
 param managedIdentityName string
 
 @description('Suffix used in the Storage Account name.')
@@ -62,7 +62,7 @@ param logsRetentionDays int
 
 // ==================================== Resource Lock switch ====================================
 
-@description('Enable Resource Lock on applications data Storage Account.')
+@description('Enable Resource Lock on applications Storage Account.')
 param enableLock bool
 
 // ==================================== PaaS Firewall settings ====================================
@@ -98,7 +98,7 @@ var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
   value: allowedIPOrCIDR
 }]
 
-resource appsDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
+resource appsStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   name: storageAccountName
   location: location
   identity: {
@@ -154,7 +154,7 @@ resource appsDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' =
 
 resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01' = {
   name: 'default'
-  parent: appsDataStorageAccount
+  parent: appsStorageAccount
   properties: {
     isVersioningEnabled: false
     restorePolicy: {
@@ -213,9 +213,9 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 
 // ==================================== Resource Lock ====================================
 
-resource apsDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
+resource appsStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RL06'
-  scope: appsDataStorageAccount
+  scope: appsStorageAccount
   properties: {
     level: 'CanNotDelete'
     notes: 'Storage Account for application data should not be deleted.'
@@ -225,10 +225,10 @@ resource apsDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = 
 // ==================================== Outputs ====================================
 
 @description('ID of the Storage Account.')
-output storageAccountId string = appsDataStorageAccount.id
+output storageAccountId string = appsStorageAccount.id
 
 @description('Name of the Storage Account.')
-output storageAccountName string = appsDataStorageAccount.name
+output storageAccountName string = appsStorageAccount.name
 
 @description('URI of the Blob Service of the Storage Account.')
-output storageAccountBlobServiceUri string = appsDataStorageAccount.properties.primaryEndpoints.blob
+output storageAccountBlobServiceUri string = appsStorageAccount.properties.primaryEndpoints.blob

@@ -40,7 +40,7 @@ param storageAccountSkuName string
 
 // ==================================== Resource Lock switch ====================================
 
-@description('Enable Resource Lock on monitoring data Storage Account.')
+@description('Enable Resource Lock on monitoring Storage Account.')
 param enableLock bool
 
 // ==================================== PaaS Firewall settings ====================================
@@ -72,7 +72,7 @@ var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
   value: allowedIPOrCIDR
 }]
 
-resource monitoringDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
+resource monitoringStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   name: 'azmxst1${storageAccountNameSuffix}'
   location: location
   kind: 'StorageV2'
@@ -105,7 +105,7 @@ resource monitoringDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05
 
 resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01' = {
   name: 'default'
-  parent: monitoringDataStorageAccount
+  parent: monitoringStorageAccount
   properties: {
     isVersioningEnabled: false
     restorePolicy: {
@@ -122,9 +122,9 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01
 
 // ==================================== Resource Lock ====================================
 
-resource monitoringDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
+resource monitoringStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-RL01'
-  scope: monitoringDataStorageAccount
+  scope: monitoringStorageAccount
   properties: {
     level: 'CanNotDelete'
     notes: 'Storage Account for monitoring data should not be deleted.'
@@ -134,10 +134,10 @@ resource monitoringDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04
 // ==================================== Outputs ====================================
 
 @description('ID of the Storage Account.')
-output storageAccountId string = monitoringDataStorageAccount.id
+output storageAccountId string = monitoringStorageAccount.id
 
 @description('Name of the Storage Account.')
-output storageAccountName string = monitoringDataStorageAccount.name
+output storageAccountName string = monitoringStorageAccount.name
 
 @description('URI of the Blob Service of the Storage Account.')
-output storageAccountBlobServiceUri string = monitoringDataStorageAccount.properties.primaryEndpoints.blob
+output storageAccountBlobServiceUri string = monitoringStorageAccount.properties.primaryEndpoints.blob

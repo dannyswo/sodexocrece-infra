@@ -9,8 +9,8 @@
 
 // ==================================== Resource properties ====================================
 
-@description('Name of the infrastructure Key Vault.')
-param infraKeyVaultName string
+@description('Name of the Key Vault.')
+param keyVaultName string
 
 @description('ID of the AAD Tenant of the Principal IDs.')
 param tenantId string = subscription().tenantId
@@ -18,8 +18,8 @@ param tenantId string = subscription().tenantId
 @description('ID of the Managed Identity used by Application Gateway.')
 param appGatewayPrincipalId string
 
-@description('ID of the Managed Identity used by applications data Storage Account.')
-param appsDataStorageAccountPrincipalId string
+@description('ID of the Managed Identity used by applications Storage Account.')
+param appsStorageAccountPrincipalId string
 
 @description('List of administrators Principal IDs allowed to fully manage Key Vault objects.')
 param adminsPrincipalIds array
@@ -41,8 +41,8 @@ var appGatewayAccessPolicy = {
   }
 }
 
-var appsDataStorageAccountAccessPolicy = {
-  objectId: appsDataStorageAccountPrincipalId
+var appsStorageAccountAccessPolicy = {
+  objectId: appsStorageAccountPrincipalId
   tenantId: tenantId
   permissions: {
     keys: allKeysPermissions
@@ -51,7 +51,7 @@ var appsDataStorageAccountAccessPolicy = {
 
 var azureServicesAccessPolicies = [
   appGatewayAccessPolicy
-  appsDataStorageAccountAccessPolicy
+  appsStorageAccountAccessPolicy
 ]
 
 var readersAccessPolicies = [for readerPrincipalId in readersPrincipalIds: {
@@ -151,9 +151,9 @@ var allSecretsPermissions = [
 // ==================================== Key Vault ====================================
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
-  name: infraKeyVaultName
+  name: keyVaultName
 }
 
 // ==================================== Outputs ====================================
 
-output infraKeyVaultAccessPoliciesAdded string = 'added'
+output keyVaultAccessPoliciesAdded string = 'added'

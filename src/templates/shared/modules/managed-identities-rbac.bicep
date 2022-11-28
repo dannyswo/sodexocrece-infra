@@ -51,7 +51,7 @@ var app1ManagedIdentityRoleDefinitions = [
   {
     roleName: '4633458b-17de-408a-b874-0445c86b69e6'
     roleDescription: 'Key Vault Secrets User | Read secret contents'
-    roleAssignmentDescription: 'Allow Application 1 to read secrets in infrastructure Key Vault.'
+    roleAssignmentDescription: 'Allow Application 1 to read secrets in Key Vault.'
   }
   {
     roleName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'

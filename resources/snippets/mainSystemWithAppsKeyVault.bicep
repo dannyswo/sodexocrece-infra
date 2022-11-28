@@ -2,10 +2,10 @@
  * Template: system/mainSystem
  * Modules:
  * - IAM: teamUsersModule (teamusers), appsManagedIdsModule (appsmanagedids), teamRgRbacModule (teamrg-rbac), appsKeyVaultRbacModule (appskeyvault-rbac)
- * - Network: appGatewayModule (agw), appsKeyVaultPrivateEndpointModule (privateendpoint), appsDataStoragePrivateEndpointModule (privateendpoint), sqlDatabasePrivateEndpointModule (privateendpoint), acrPrivateEndpointModule (privateendpoint)
+ * - Network: appGatewayModule (agw), appsKeyVaultPrivateEndpointModule (privateendpoint), appsStorageAccountPrivateEndpointModule (privateendpoint), sqlDatabasePrivateEndpointModule (privateendpoint), acrPrivateEndpointModule (privateendpoint)
  * - Monitoring: networkWatcherModule (networkwatcher)
  * - Security: appsKeyVaultModule (appskeyvault), appsKeyVaultObjectsModule (appskeyvaultobjects), appsKeyVaultPoliciesModule (appskeyvaultpolicies), appsKeyVaultRbacModule (appskeyvault-rbac)
- * - Storage: appsDataStorageModule (appsdatastorage)
+ * - Storage: appsStorageAccountModule (appsStorageAccount)
  * - Databases: sqlDatabaseModule (sqldatabase)
  * - Frontend: acrModule (acr), aksModule (aks)
  */
@@ -74,14 +74,14 @@ param appsNSGName string
 
 // ==================================== Private Endpoints settings ====================================
 
-@description('Create Private Endpoints for the required modules like appskeyvault, appsdatastorage, sqldatabase and acr.')
+@description('Create Private Endpoints for the required modules like appskeyvault, appsStorageAccount, sqldatabase and acr.')
 param enablePrivateEndpoints bool = true
 
 @description('Private IP address of Private Endpoint used by Key Vault for applications.')
 param appsKeyVaultPEPrivateIPAddress string
 
-@description('Private IP address of Private Endpoint used by applications data Storage Account.')
-param appsDataStoragePEPrivateIPAddress string
+@description('Private IP address of Private Endpoint used by applications Storage Account.')
+param appsStorageAccountPEPrivateIPAddress string
 
 @description('Private IP address of Private Endpoint used by Azure SQL Database.')
 param sqlDatabasePEPrivateIPAddress string
@@ -91,7 +91,7 @@ param acrPEPrivateIPAddresses array
 
 // ==================================== Monitoring dependencies ====================================
 
-param monitoringDataStorageAccountName string
+param monitoringStorageAccountName string
 
 param monitoringWorkspaceName string
 
@@ -101,15 +101,15 @@ param monitoringWorkspaceName string
 param administratorPrincipalId string
 
 param appGatewayManageIdentityName string
-param appsDataStorageManagedIdentityName string
+param appsStorageAccountManagedIdentityName string
 param aksManagedIdentityName string
 
-param infraKeyVaultUri string
+param keyVaultUri string
 
 param appGatewayPublicCertificateId string
 param appGatewayPrivateCertificateId string
 
-param appsDataStorageEncryptionKeyName string
+param appsStorageAccountEncryptionKeyName string
 
 @secure()
 param sqlDatabaseSqlAdminLoginName string
@@ -140,8 +140,8 @@ param appGatewayEnableHttpPort bool
 param appGatewayEnableHttpsPort bool
 param appGatewayWafPoliciesMode string
 
-param appsDataStorageNameSuffix string
-param appsDataStorageSkuName string
+param appsStorageAccountNameSuffix string
+param appsStorageAccountSkuName string
 
 param sqlServerNameSuffix string
 param sqlDatabaseSkuType string
@@ -180,8 +180,8 @@ param appsKeyVaultLogsRetentionDays int
 param appGatewayEnableDiagnostics bool
 param appGatewayLogsRetentionDays int
 
-param appsDataStorageEnableDiagnostics bool
-param appsDataStorageLogsRetentionDays int
+param appsStorageAccountEnableDiagnostics bool
+param appsStorageAccountLogsRetentionDays int
 
 param sqlDatabaseEnableAuditing bool
 param sqlDatabaseAuditLogsRetentionDays int
@@ -196,7 +196,7 @@ param acrLogsRetentionDays int
 param networkWatcherEnableLock bool
 param appsKeyVaultEnableLock bool
 param appGatewayEnableLock bool
-param appsDataStorageEnableLock bool
+param appsStorageAccountEnableLock bool
 param sqlDatabaseEnableLock bool
 param acrEnableLock bool
 param aksEnableLock bool
@@ -208,10 +208,10 @@ param appsKeyVaultBypassAzureServices bool
 param appsKeyVaultAllowedSubnets array
 param appsKeyVaultAllowedIPsOrCIDRs array
 
-param appsDataStorageEnablePublicAccess bool
-param appsDataStorageBypassAzureServices bool
-param appsDataStorageAllowedSubnets array
-param appsDataStorageAllowedIPsOrCIDRs array
+param appsStorageAccountEnablePublicAccess bool
+param appsStorageAccountBypassAzureServices bool
+param appsStorageAccountAllowedSubnets array
+param appsStorageAccountAllowedIPsOrCIDRs array
 
 param sqlDatabaseEnablePublicAccess bool
 param sqlDatabaseAllowedSubnets array

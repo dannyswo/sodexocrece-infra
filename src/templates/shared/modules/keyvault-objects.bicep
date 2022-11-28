@@ -18,8 +18,8 @@ param keyVaultName string
 @description('If Encryption Keys for Azure Services will be created or not.')
 param createEncryptionKeys bool
 
-@description('Name of the appsDataStorage Encryption Key.')
-param appsDataStorageEncryptionKeyName string
+@description('Name of the applications Storage Account Encryption Key.')
+param appsStorageAccountEncryptionKeyName string
 
 @description('Issue datetime of the generated Encryption Keys.')
 param encryptionKeysIssueDateTime string
@@ -58,8 +58,8 @@ var timeBeforeExpiry = 'P2M'
 var expiryDateTime = dateTimeAdd(encryptionKeysIssueDateTime, expiryTime)
 var expiryDateTimeSinceEpoch = dateTimeToEpoch(expiryDateTime)
 
-resource appsDataStorageEncryptionKey 'Microsoft.KeyVault/vaults/keys@2022-07-01' = if (createEncryptionKeys) {
-  name: appsDataStorageEncryptionKeyName
+resource appsStorageAccountEncryptionKey 'Microsoft.KeyVault/vaults/keys@2022-07-01' = if (createEncryptionKeys) {
+  name: appsStorageAccountEncryptionKeyName
   parent: keyVault
   properties: {
     kty: 'RSA'
@@ -147,11 +147,11 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
 
 // ==================================== Outputs ====================================
 
-@description('URI of the applications data Storage Account Encryption Key.')
-output appsDataStorageEncryptionKeyUri string = (createEncryptionKeys) ? appsDataStorageEncryptionKey.properties.keyUri : ''
+@description('URI of the applications Storage Account Encryption Key.')
+output appsStorageAccountEncryptionKeyUri string = (createEncryptionKeys) ? appsStorageAccountEncryptionKey.properties.keyUri : ''
 
-@description('Name of the applications data Storage Account Encryption Key.')
-output appsDataStorageEncryptionKeyName string = (createEncryptionKeys) ? appsDataStorageEncryptionKey.name : ''
+@description('Name of the applications Storage Account Encryption Key.')
+output appsStorageAccountEncryptionKeyName string = (createEncryptionKeys) ? appsStorageAccountEncryptionKey.name : ''
 
 @description('URI of the SQL Database SQL admin name Secret.')
 output sqlDatabaseSqlAdminNameSecretUri string = sqlDatabaseSqlAdminNameSecret.properties.secretUri

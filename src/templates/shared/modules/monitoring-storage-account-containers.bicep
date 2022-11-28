@@ -9,8 +9,8 @@
 
 // ==================================== Resource properties ====================================
 
-@description('Name of the monitoring data Storage Account.')
-param monitoringDataStorageAccountName string
+@description('Name of the monitoring Storage Account.')
+param monitoringStorageAccountName string
 
 // ==================================== Resources ====================================
 
@@ -27,16 +27,16 @@ resource vulnerabilityAssessmentContainer 'Microsoft.Storage/storageAccounts/blo
 
 // ==================================== Storage Account ====================================
 
-resource monitoringDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' existing = {
-  name: monitoringDataStorageAccountName
+resource monitoringStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' existing = {
+  name: monitoringStorageAccountName
 }
 
 resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01' existing = {
   name: 'default'
-  parent: monitoringDataStorageAccount
+  parent: monitoringStorageAccount
 }
 
 // ==================================== Outputs ====================================
 
 @description('URI of the Container for SQL Server vulnerability assessments.')
-output vulnerabilityAssessmentContainerUri string = '${monitoringDataStorageAccount.properties.primaryEndpoints.blob}${vulnerabilityAssessmentContainer.name}'
+output vulnerabilityAssessmentContainerUri string = '${monitoringStorageAccount.properties.primaryEndpoints.blob}${vulnerabilityAssessmentContainer.name}'

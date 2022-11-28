@@ -88,8 +88,8 @@
     "enableStoragelessVunerabilityAssessments": {
       "value": false
     },
-    "monitoringDataStorageBlobServiceUri": {
-      "value": "https://azmxst1zzs259.blob.core.windows.net/"
+    "monitoringStorageAccountName": {
+      "value": "azmxst1zzs259"
     },
     "vulnerabilityAssessmentsEmails": {
       "value": [

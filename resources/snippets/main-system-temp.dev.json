@@ -32,7 +32,7 @@
   "keyVaultPEPrivateIPAddress": {
     "value": "10.169.88.70"
   },
-  "appsDataStoragePEPrivateIPAddress": {
+  "appsStorageAccountPEPrivateIPAddress": {
     "value": "10.169.88.73"
   },
   "sqlDatabasePEPrivateIPAddress": {

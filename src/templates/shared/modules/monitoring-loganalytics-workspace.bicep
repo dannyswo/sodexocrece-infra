@@ -144,12 +144,12 @@ resource sqlAuditingSolution 'Microsoft.OperationsManagement/solutions@2015-11-0
 
 // ==================================== Role Assignments ====================================
 
-@description('Role Definition IDs for Workspace to monitoring data Storage Account communication.')
+@description('Role Definition IDs for Workspace to monitoring Storage Account communication.')
 var monitoringWorkspaceRoleDefinitions = [
   {
     roleName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
     roleDescription: 'Storage Blob Data Contributor | Allows for read, write and delete access to Azure Storage blob containers and data.'
-    roleAssignmentDescription: 'Workspace can write to monitoring data Storage Account.'
+    roleAssignmentDescription: 'Workspace can write to monitoring Storage Account.'
   }
 ]
 

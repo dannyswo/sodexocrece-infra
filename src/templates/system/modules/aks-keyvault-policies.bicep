@@ -9,8 +9,8 @@
 
 // ==================================== Resource properties ====================================
 
-@description('Name of the infrastructure Key Vault.')
-param infraKeyVaultName string
+@description('Name of the Key Vault.')
+param keyVaultName string
 
 @description('ID of the AAD Tenant of the Principal IDs.')
 param tenantId string = subscription().tenantId
@@ -100,9 +100,9 @@ var allSecretsPermissions = [
 // ==================================== Key Vault ====================================
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
-  name: infraKeyVaultName
+  name: keyVaultName
 }
 
 // ==================================== Outputs ====================================
 
-output infraKeyVaultAccessPoliciesAdded string = 'added'
+output keyVaultAccessPoliciesAdded string = 'added'

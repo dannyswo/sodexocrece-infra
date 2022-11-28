@@ -25,22 +25,22 @@ var adminRoleDefinitions = [
   {
     roleName: 'f25e0fa2-a7c8-4377-a976-54943a77a395'
     roleDescription: 'Key Vault Contributor | Lets you manage key vaults.'
-    roleAssignmentDescription: 'Allow system administrator to execute management operations on infrastructure Key Vault.'
+    roleAssignmentDescription: 'Allow system administrator to execute management operations on Key Vault.'
   }
   {
     roleName: '14b46e9e-c2b7-41b4-b07b-48a6ebf60603'
     roleDescription: 'Key Vault Crypto Officer | Perform any action on the keys of a key vault, except manage permissions.'
-    roleAssignmentDescription: 'Allow system administrator to read and update Encryption Keys in infrastructure Key Vault.'
+    roleAssignmentDescription: 'Allow system administrator to read and update Encryption Keys in Key Vault.'
   }
   {
     roleName: 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
     roleDescription: 'Key Vault Secrets Officer | Perform any action on the secrets of a key vault.'
-    roleAssignmentDescription: 'Allow system administrator to read and update Secrets in infrastructure Key Vault.'
+    roleAssignmentDescription: 'Allow system administrator to read and update Secrets in Key Vault.'
   }
   {
     roleName: 'a4417e6f-fecd-4de8-b567-7b0420556985'
     roleDescription: 'Key Vault Certificates Officer | Perform any action on the certificates of a key vault.'
-    roleAssignmentDescription: 'Allow system administrator to read and update Certificates in infrastructure Key Vault.'
+    roleAssignmentDescription: 'Allow system administrator to read and update Certificates in Key Vault.'
   }
   {
     roleName: '17d1049b-9a84-46fb-8f53-869881c3d3ab'

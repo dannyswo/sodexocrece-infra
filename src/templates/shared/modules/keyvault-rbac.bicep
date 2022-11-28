@@ -9,14 +9,14 @@
 
 // ==================================== Resource properties ====================================
 
-@description('Name of the infrastructure Key Vault.')
-param infraKeyVaultName string
+@description('Name of the Key Vault.')
+param keyVaultName string
 
 @description('Principal ID of the Managed Identity of Application Gateway.')
 param appGatewayManagedIdentityPrincipalId string
 
-@description('Principal ID of the Managed Identity of applications data Storage Account.')
-param appsDataStorageManagedIdentityPrincipalId string
+@description('Principal ID of the Managed Identity of applications Storage Account.')
+param appsStorageAccountManagedIdentityPrincipalId string
 
 // ==================================== Resources ====================================
 
@@ -28,18 +28,18 @@ var appGatewayManagedIdentityRoleDefinitions = [
   {
     roleName: 'a4417e6f-fecd-4de8-b567-7b0420556985'
     roleDescription: 'Key Vault Certificates Officer | Perform any action on the certificates of a key vault.'
-    roleAssignmentDescription: 'Application Gateway can access Certificates in the infrastructure Key Vault.'
+    roleAssignmentDescription: 'Application Gateway can access Certificates in the Key Vault.'
   }
   {
     roleName: 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
     roleDescription: 'Key Vault Secrets Officer | Perform any action on the secrets of a key vault'
-    roleAssignmentDescription: 'Application Gateway can access Secrets in the infrastructure Key Vault.'
+    roleAssignmentDescription: 'Application Gateway can access Secrets in the Key Vault.'
   }
 ]
 
 resource appGatewayManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in appGatewayManagedIdentityRoleDefinitions: {
-  name: guid(infraKeyVault.id, appGatewayManagedIdentityPrincipalId, roleDefinition.roleName)
-  scope: infraKeyVault
+  name: guid(keyVault.id, appGatewayManagedIdentityPrincipalId, roleDefinition.roleName)
+  scope: keyVault
   properties: {
     description: roleDefinition.roleAssignmentDescription
     principalId: appGatewayManagedIdentityPrincipalId
@@ -50,20 +50,20 @@ resource appGatewayManagedIdentityRoleAssignments 'Microsoft.Authorization/roleA
 
 // ==================================== Role Assignments: Applications data Storage Account Managed Identity ====================================
 
-var appsDataStorageManagedIdentityRoleDefinitions = [
+var appsStorageAccountManagedIdentityRoleDefinitions = [
   {
     roleName: 'e147488a-f6f5-4113-8e2d-b22465e65bf6'
     roleDescription: 'Key Vault Crypto Service Encryption User | Read metadata of keys and perform wrap/unwrap operations.'
-    roleAssignmentDescription: 'Storage Account for applications data can access Encryption Key in the infrastructure Key Vault.'
+    roleAssignmentDescription: 'Storage Account for applications data can access Encryption Key in the Key Vault.'
   }
 ]
 
-resource appsDataStorageManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in appsDataStorageManagedIdentityRoleDefinitions: {
-  name: guid(infraKeyVault.id, appsDataStorageManagedIdentityPrincipalId, roleDefinition.roleName)
-  scope: infraKeyVault
+resource appsStorageAccountManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in appsStorageAccountManagedIdentityRoleDefinitions: {
+  name: guid(keyVault.id, appsStorageAccountManagedIdentityPrincipalId, roleDefinition.roleName)
+  scope: keyVault
   properties: {
     description: roleDefinition.roleAssignmentDescription
-    principalId: appsDataStorageManagedIdentityPrincipalId
+    principalId: appsStorageAccountManagedIdentityPrincipalId
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
     principalType: 'ServicePrincipal'
   }
@@ -71,8 +71,8 @@ resource appsDataStorageManagedIdentityRoleAssignments 'Microsoft.Authorization/
 
 // ==================================== Scope ====================================
 
-resource infraKeyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
-  name: infraKeyVaultName
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+  name: keyVaultName
 }
 
 // ==================================== Outputs ====================================

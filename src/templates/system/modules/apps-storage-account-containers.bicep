@@ -9,8 +9,8 @@
 
 // ==================================== Resource properties ====================================
 
-@description('Name of the applications data Storage Account.')
-param appsDataStorageAccountName string
+@description('Name of the applications Storage Account.')
+param appsStorageAccountName string
 
 // ==================================== Resources ====================================
 
@@ -27,16 +27,16 @@ resource merchantFilesContainer 'Microsoft.Storage/storageAccounts/blobServices/
 
 // ==================================== Stoarge Account ====================================
 
-resource appsDataStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' existing = {
-  name: appsDataStorageAccountName
+resource appsStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' existing = {
+  name: appsStorageAccountName
 }
 
 resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01' existing = {
   name: 'default'
-  parent: appsDataStorageAccount
+  parent: appsStorageAccount
 }
 
 // ==================================== Outputs ====================================
 
 @description('URI of the merchant files Container.')
-output merchantFilesContainerUri string = '${appsDataStorageAccount.properties.primaryEndpoints.blob}${merchantFilesContainer.name}'
+output merchantFilesContainerUri string = '${appsStorageAccount.properties.primaryEndpoints.blob}${merchantFilesContainer.name}'

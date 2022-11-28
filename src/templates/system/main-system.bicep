@@ -70,8 +70,8 @@ param devopsAgentsVNetName string
 
 // ==================================== Private Endpoints settings ====================================
 
-@description('Private IP address of Private Endpoint used by applications data Storage Account.')
-param appsDataStoragePEPrivateIPAddress string
+@description('Private IP address of Private Endpoint used by applications Storage Account.')
+param appsStorageAccountPEPrivateIPAddress string
 
 @description('Private IP address of Private Endpoint used by Azure SQL Database.')
 param sqlDatabasePEPrivateIPAddress string
@@ -91,21 +91,21 @@ param monitoringWorkspaceName string
 
 @description('Name of the Managed Identity used by the Application Gateway.')
 param appGatewayManageIdentityName string
-@description('Name of the Managed Identity used by applications data Storage Account.')
-param appsDataStorageManagedIdentityName string
+@description('Name of the Managed Identity used by applications Storage Account.')
+param appsStorageAccountManagedIdentityName string
 @description('Name of the Managed Identity used by the AKS Managed Cluster.')
 param aksManagedIdentityName string
 
-@description('Name of the infrastructure Key Vault.')
-param infraKeyVaultName string
+@description('Name of the Key Vault.')
+param keyVaultName string
 
 @description('Name of the public / frontend SSL certificate stored in Key Vault.')
 param appGatewayFrontendCertificateName string
 @description('Name of the private / backend SSL certificate stored in Key Vault.')
 param appGatewayBackendCertificateName string
 
-@description('Name of the Encryption Key used by applications data Storage Account.')
-param appsDataStorageEncryptionKeyName string
+@description('Name of the Encryption Key used by applications Storage Account.')
+param appsStorageAccountEncryptionKeyName string
 
 @description('Login name of the SQL Server administrator.')
 @secure()
@@ -159,16 +159,16 @@ param appGatewayEnableHttpsPort bool
 ])
 param appGatewayWafPoliciesMode string
 
-@description('Suffix used in the applications data Storage Account name.')
+@description('Suffix used in the applications Storage Account name.')
 @minLength(6)
 @maxLength(6)
-param appsDataStorageNameSuffix string
+param appsStorageAccountNameSuffix string
 @description('SKU name of the Storage Account.')
 @allowed([
   'Standard_LRS'
   'Standard_ZRS'
 ])
-param appsDataStorageSkuName string
+param appsStorageAccountSkuName string
 
 @description('Suffix used in the name of the Azure SQL Server.')
 @minLength(6)
@@ -271,10 +271,10 @@ param appGatewayEnableDiagnostics bool
 @description('Retention days of the Application Gateway logs. Must be defined if enableDiagnostics is true.')
 param appGatewayLogsRetentionDays int
 
-@description('Enable diagnostics to store applications data Storage Account access logs.')
-param appsDataStorageEnableDiagnostics bool
-@description('Retention days of the applications data Storage Account access logs. Must be defined if enableDiagnostics is true.')
-param appsDataStorageLogsRetentionDays int
+@description('Enable diagnostics to store applications Storage Account access logs.')
+param appsStorageAccountEnableDiagnostics bool
+@description('Retention days of the applications Storage Account access logs. Must be defined if enableDiagnostics is true.')
+param appsStorageAccountLogsRetentionDays int
 
 @description('Enable Auditing feature on Azure SQL Server.')
 param sqlDatabaseEnableAuditing bool
@@ -301,8 +301,8 @@ param aksEnableOMSAgentAddon bool
 
 @description('Enable Resource Lock on Application Gateway.')
 param appGatewayEnableLock bool
-@description('Enable Resource Lock on applications data Storage Account.')
-param appsDataStorageEnableLock bool
+@description('Enable Resource Lock on applications Storage Account.')
+param appsStorageAccountEnableLock bool
 @description('Enable Resource Lock on Azure SQL Server.')
 param sqlDatabaseEnableLock bool
 @description('Enable Resource Lock on Container Registry.')
@@ -313,17 +313,17 @@ param aksEnableLock bool
 // ==================================== PaaS Firewall settings ====================================
 
 @description('Enable public access in the PaaS firewall.')
-param appsDataStorageEnablePublicAccess bool
+param appsStorageAccountEnablePublicAccess bool
 @description('Allow bypass of PaaS firewall rules to Azure Services.')
-param appsDataStorageBypassAzureServices bool
+param appsStorageAccountBypassAzureServices bool
 @description('List of Subnets allowed to access the Storage Account in the PaaS firewall.')
 @metadata({
   vnetName: 'Name of VNet.'
   subnetName: 'Name of the Subnet.'
 })
-param appsDataStorageAllowedSubnets array
+param appsStorageAccountAllowedSubnets array
 @description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
-param appsDataStorageAllowedIPsOrCIDRs array
+param appsStorageAccountAllowedIPsOrCIDRs array
 
 @description('Enable public access in the PaaS firewall.')
 param sqlDatabaseEnablePublicAccess bool
@@ -392,7 +392,7 @@ module appGatewayModule 'modules/app-gateway.bicep' = {
     autoScaleMaxCapacity: appGatewayAutoScaleMaxCapacity
     enableHttpPort: appGatewayEnableHttpPort
     enableHttpsPort: appGatewayEnableHttpsPort
-    keyVaultName: infraKeyVaultName
+    keyVaultName: keyVaultName
     frontendCertificateName: appGatewayFrontendCertificateName
     backendCertificateName: appGatewayBackendCertificateName
     wafPoliciesMode: appGatewayWafPoliciesMode
@@ -409,26 +409,26 @@ module appsStorageAccountModule 'modules/apps-storage-account.bicep' = {
     location: location
     env: env
     standardTags: standardTags
-    managedIdentityName: appsDataStorageManagedIdentityName
-    storageAccountNameSuffix: appsDataStorageNameSuffix
-    storageAccountSkuName: appsDataStorageSkuName
-    keyVaultName: infraKeyVaultName
-    encryptionKeyName: appsDataStorageEncryptionKeyName
-    enableDiagnostics: appsDataStorageEnableDiagnostics
+    managedIdentityName: appsStorageAccountManagedIdentityName
+    storageAccountNameSuffix: appsStorageAccountNameSuffix
+    storageAccountSkuName: appsStorageAccountSkuName
+    keyVaultName: keyVaultName
+    encryptionKeyName: appsStorageAccountEncryptionKeyName
+    enableDiagnostics: appsStorageAccountEnableDiagnostics
     diagnosticsWorkspaceName: monitoringWorkspaceName
-    logsRetentionDays: appsDataStorageLogsRetentionDays
-    enableLock: appsDataStorageEnableLock
-    enablePublicAccess: appsDataStorageEnablePublicAccess
-    bypassAzureServices: appsDataStorageBypassAzureServices
-    allowedSubnets: appsDataStorageAllowedSubnets
-    allowedIPsOrCIDRs: appsDataStorageAllowedIPsOrCIDRs
+    logsRetentionDays: appsStorageAccountLogsRetentionDays
+    enableLock: appsStorageAccountEnableLock
+    enablePublicAccess: appsStorageAccountEnablePublicAccess
+    bypassAzureServices: appsStorageAccountBypassAzureServices
+    allowedSubnets: appsStorageAccountAllowedSubnets
+    allowedIPsOrCIDRs: appsStorageAccountAllowedIPsOrCIDRs
   }
 }
 
 module appsStorageAccountContainersModule 'modules/apps-storage-account-containers.bicep' = {
   name: 'apps-storage-account-containers-module'
   params: {
-    appsDataStorageAccountName: appsStorageAccountModule.outputs.storageAccountName
+    appsStorageAccountName: appsStorageAccountModule.outputs.storageAccountName
   }
 }
 
@@ -441,7 +441,7 @@ module appsStorageAccountPrivateEndpointModule 'modules/private-endpoint.bicep' 
     privateEndpointName: 'PE04'
     vnetName: endpointsVNetName
     subnetName: endpointsSubnetName
-    privateIPAddresses: [ appsDataStoragePEPrivateIPAddress ]
+    privateIPAddresses: [ appsStorageAccountPEPrivateIPAddress ]
     serviceId: appsStorageAccountModule.outputs.storageAccountId
     groupId: 'blob'
     linkedVNetNames: linkedVNetNamesForPrivateEndpoints
@@ -576,7 +576,7 @@ module aksModule 'modules/aks.bicep' = {
 module aksKeyVaultPoliciesModule 'modules/aks-keyvault-policies.bicep' = {
   name: 'aks-keyvault-policies-module'
   params: {
-    infraKeyVaultName: infraKeyVaultName
+    keyVaultName: keyVaultName
     aksKeyVaultSecrtsProviderPrincipalId: aksModule.outputs.aksKeyVaultSecretsProviderPrincipalId
   }
 }
