@@ -9,9 +9,6 @@
 
 // ==================================== Resource properties ====================================
 
-@description('ID of the AKS Managed Cluster.')
-param aksClusterId string
-
 @description('Principal ID of the kubelet process in the AKS Managed Cluster.')
 param aksKubeletPrincipalId string
 
@@ -35,7 +32,7 @@ var aksAcrRoleDefinitions = [
 ]
 
 resource aksAcrRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksAcrRoleDefinitions: {
-  name: guid(resourceGroup().id, aksClusterId, aksKubeletPrincipalId, roleDefinition.roleName)
+  name: guid(resourceGroup().id, aksKubeletPrincipalId, roleDefinition.roleName)
   scope: resourceGroup()
   properties: {
     description: roleDefinition.roleAssignmentDescription
@@ -62,7 +59,7 @@ var aksAppGatewayRoleDefinitions1 = [
 ]
 
 resource aksAppGatewayRoleAssignments1 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksAppGatewayRoleDefinitions1: if (aksAGICPrincipalId != '') {
-  name: guid(resourceGroup().id, aksClusterId, aksAGICPrincipalId, roleDefinition.roleName)
+  name: guid(resourceGroup().id, aksAGICPrincipalId, roleDefinition.roleName)
   scope: resourceGroup()
   properties: {
     description: roleDefinition.roleAssignmentDescription
@@ -82,7 +79,7 @@ var aksAppGatewayRoleDefinitions2 = [
 ]
 
 resource aksAppGatewayRoleAssignments2 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksAppGatewayRoleDefinitions2: if (aksAGICPrincipalId != '') {
-  name: guid(appGateway.id, aksClusterId, aksAGICPrincipalId, roleDefinition.roleName)
+  name: guid(appGateway.id, aksAGICPrincipalId, roleDefinition.roleName)
   scope: appGateway
   properties: {
     description: roleDefinition.roleAssignmentDescription
@@ -107,7 +104,7 @@ var aksPodIdentityRoleDefinitions = [
 ]
 
 resource aksPodIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksPodIdentityRoleDefinitions: {
-  name: guid(resourceGroup().id, aksClusterId, aksKubeletPrincipalId, roleDefinition.roleName)
+  name: guid(resourceGroup().id, aksKubeletPrincipalId, roleDefinition.roleName)
   scope: resourceGroup()
   properties: {
     description: roleDefinition.roleAssignmentDescription

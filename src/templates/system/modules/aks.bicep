@@ -311,17 +311,17 @@ output managementPlaneAzurePortalFQDN string = aksCluster.properties.azurePortal
 @description('Name of the Node Resource Group where AKS managed resources are located.')
 output aksNodeResourceGroupName string = aksCluster.properties.nodeResourceGroup
 
-@description('Principal ID of the kubelet process in the AKS Managed Cluster.')
+@description('Principal ID of the kubelet process System-Assigned Managed Identity.')
 output aksKubeletPrincipalId string = aksCluster.properties.identityProfile.kubeletidentity.objectId
 
-@description('Principal ID of the AGIC add-on in the AKS Managed Cluster.')
+@description('Principal ID of the AGIC add-on System-Assigned Managed Identity.')
 output aksAGICPrincipalId string = (enableAGICAddon) ? aksCluster.properties.addonProfiles.ingressApplicationGateway.identity.objectId : ''
 
-@description('Principal ID of the Key Vault Secrets Provider add-on in the AKS Managed Cluster.')
+@description('Principal ID of the Key Vault Secrets Provider add-on System-Assigned Managed Identity.')
 output aksKeyVaultSecretsProviderPrincipalId string = (enableKeyVaultSecretsProviderAddon) ? aksCluster.properties.addonProfiles.azureKeyvaultSecretsProvider.identity.objectId : ''
 
-@description('Client ID of the Key Vault Secrets Provider add-on in the AKS Managed Cluster.')
+@description('Client ID of the Key Vault Secrets Provider add-on System-Assigned Managed Identity.')
 output aksKeyVaultSecretsProviderClientId string = (enableKeyVaultSecretsProviderAddon) ? aksCluster.properties.addonProfiles.azureKeyvaultSecretsProvider.identity.clientId : ''
 
-@description('Principal ID of the OMSAgent add-on in the AKS Managed Cluster.')
+@description('Principal ID of the OMSAgent add-on System-Assigned Managed Identity.')
 output aksOMSAgentPrincipalId string = (enableOMSAgentAddon) ? aksCluster.properties.addonProfiles.omsagent.identity.objectId : ''

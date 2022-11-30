@@ -9,9 +9,6 @@
 
 // ==================================== Resource properties ====================================
 
-@description('ID of the AKS Managed Cluster.')
-param aksClusterId string
-
 @description('Principal ID of the kubelet process in the AKS Managed Cluster.')
 param aksKubeletPrincipalId string
 
@@ -30,7 +27,7 @@ var aksPodIdentityRoleDefinitions = [
 ]
 
 resource aksPodIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksPodIdentityRoleDefinitions: {
-  name: guid(resourceGroup().id, aksClusterId, aksKubeletPrincipalId, roleDefinition.roleName)
+  name: guid(resourceGroup().id, aksKubeletPrincipalId, roleDefinition.roleName)
   scope: resourceGroup()
   properties: {
     description: roleDefinition.roleAssignmentDescription

@@ -441,28 +441,6 @@ resource vulnerabilityAssessments 'Microsoft.Sql/servers/vulnerabilityAssessment
   }
 }
 
-// ==================================== Role Assignments ====================================
-
-@description('Role Definition IDs for Azure SQL to monitoring Storage Account communication.')
-var sqlDatabaseRoleDefinitions = [
-  {
-    roleName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-    roleDescription: 'Storage Blob Data Contributor | Allows for read, write and delete access to Azure Storage blob containers and data.'
-    roleAssignmentDescription: 'Azure SQL Server can write to monitoring Storage Account.'
-  }
-]
-
-resource sqlDatabaseRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in sqlDatabaseRoleDefinitions: {
-  name: guid(resourceGroup().id, sqlServer.id, roleDefinition.roleName)
-  scope: resourceGroup()
-  properties: {
-    description: roleDefinition.roleAssignmentDescription
-    principalId: sqlServer.identity.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
-    principalType: 'ServicePrincipal'
-  }
-}]
-
 // ==================================== Resource Lock ====================================
 
 resource storageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
@@ -481,3 +459,6 @@ output sqlServerId string = sqlServer.id
 
 @description('ID of the Azure SQL Database.')
 output sqlDatabaseId string = sqlDatabase.id
+
+@description('Principal ID of the Azure SQL Server System-Assigned Managed Identity.')
+output sqlServerPrincipalId string = sqlServer.identity.principalId

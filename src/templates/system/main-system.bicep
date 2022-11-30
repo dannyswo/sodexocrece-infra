@@ -1,8 +1,8 @@
 /**
  * Template: system/main-system
  * Modules:
- * - IAM: aks-rbac-module, aks-nodegroup-rbac-module
- * - Network: app-gateway-private-endpoint-module, apps-storage-account-private-endpoint-module, sql-database-private-endpoint-module, acr-private-endpoint-module
+ * - IAM: sql-database-rbac-module, aks-rbac-module, aks-nodegroup-rbac-module
+ * - Network: apps-storage-account-private-endpoint-module, sql-database-private-endpoint-module, acr-private-endpoint-module
  * - Security: aks-keyvault-policies-module
  * - Storage: apps-storage-account-module, apps-storage-account-containers-module
  * - Databases: sql-database-module
@@ -501,6 +501,13 @@ module sqlDatabasePrivateEndpointModule 'modules/private-endpoint.bicep' = if (e
   }
 }
 
+module sqlDatabaseRbacModule 'modules/sql-database-rbac.bicep' = {
+  name: 'sql-database-rbac-module'
+  params: {
+    sqlServerPrincipalId: sqlDatabaseModule.outputs.sqlServerPrincipalId
+  }
+}
+
 module acrModule 'modules/acr.bicep' = {
   name: 'acr-module'
   params: {
@@ -584,7 +591,6 @@ module aksKeyVaultPoliciesModule 'modules/aks-keyvault-policies.bicep' = {
 module aksRbacModule 'modules/aks-rbac.bicep' = {
   name: 'aks-rbac-module'
   params: {
-    aksClusterId: aksModule.outputs.aksClusterId
     aksKubeletPrincipalId: aksModule.outputs.aksKubeletPrincipalId
     aksAGICPrincipalId: aksModule.outputs.aksAGICPrincipalId
     appGatewayName: appGatewayModule.outputs.applicationGatewayName
@@ -595,7 +601,6 @@ module aksNodeGroupRbacModule 'modules/aks-nodegroup-rbac.bicep' = if (enableAks
   name: 'aks-nodegroup-rbac-module'
   scope: resourceGroup('MC_${resourceGroup().name}_BRS-MEX-USE2-CRECESDX-${env}-KU01_${location}')
   params: {
-    aksClusterId: aksModule.outputs.aksClusterId
     aksKubeletPrincipalId: aksModule.outputs.aksKubeletPrincipalId
   }
 }

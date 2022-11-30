@@ -35,11 +35,12 @@ system/main-system
 5. **sql-database-module** (sql-database): Azure SQL Server, SQL Database. \[RL07, MM07\]
 6. **sql-database-private-endpoint-module** (private-endpoint): Private Endpoint, Private DNS Zone and VNet Links.
 7. **acr-module** (acr): Container Registry required by aks. \[RL08, MM08\]
-8. **acr-private-endpoint-module** (private-endpoint): Private Endpoint, Private DNS Zone and VNet Links.
-9. **aks-module** (aks): AKS Managed Cluster, custom Private DNS Zone. Depends on loganalytics, agw. \[RL09, AD03\]
-10. **aks-keyvault-rbac-module** (aks-keyvault-rbac): Access Policies setup for AKS Managed Identities.
-11. **aks-rbac-module** (aks-rbac): Role Assignments for AKS Managed Identities under project Resource Group scope.
-12. **aks-nodegroup-rbac-module** (aks-nodegroup-rbac): Role Assignments for AKS Managed Identities under AKS-managed Resource Group scope.
+8. **sql-database-module** (sql-database): Azure SQL Server, SQL Database.
+9. **sql-database-rbac-module** (sql-database-rbac): Role Assignments for Azure SQL Server Managed Identity.
+10. **aks-module** (aks): AKS Managed Cluster, custom Private DNS Zone. Depends on loganalytics, agw. \[RL09, AD03\]
+11. **aks-keyvault-rbac-module** (aks-keyvault-rbac): Access Policies setup for AKS Managed Identities.
+12. **aks-rbac-module** (aks-rbac): Role Assignments for AKS Managed Identities under project Resource Group scope.
+13. **aks-nodegroup-rbac-module** (aks-nodegroup-rbac): Role Assignments for AKS Managed Identities under AKS-managed Resource Group scope.
 
 Environments:
 
