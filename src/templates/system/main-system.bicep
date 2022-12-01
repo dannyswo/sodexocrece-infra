@@ -438,7 +438,7 @@ module appsStorageAccountPrivateEndpointModule 'modules/private-endpoint.bicep' 
     location: location
     env: env
     standardTags: standardTags
-    privateEndpointName: 'PE04'
+    privateEndpointNameSuffix: 'PE04'
     vnetName: endpointsVNetName
     subnetName: endpointsSubnetName
     privateIPAddresses: [ appsStorageAccountPEPrivateIPAddress ]
@@ -491,7 +491,7 @@ module sqlDatabasePrivateEndpointModule 'modules/private-endpoint.bicep' = if (e
     location: location
     env: env
     standardTags: standardTags
-    privateEndpointName: 'PE01'
+    privateEndpointNameSuffix: 'PE01'
     vnetName: endpointsVNetName
     subnetName: endpointsSubnetName
     privateIPAddresses: [ sqlDatabasePEPrivateIPAddress ]
@@ -535,7 +535,7 @@ module acrPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enablePri
     location: location
     env: env
     standardTags: standardTags
-    privateEndpointName: 'PE03'
+    privateEndpointNameSuffix: 'PE03'
     vnetName: endpointsVNetName
     subnetName: endpointsSubnetName
     privateIPAddresses: acrPEPrivateIPAddresses

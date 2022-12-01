@@ -292,7 +292,7 @@ module keyVaultPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enab
     location: location
     env: env
     standardTags: standardTags
-    privateEndpointName: 'PE02'
+    privateEndpointNameSuffix: 'PE02'
     vnetName: endpointsVNetName
     subnetName: endpointsSubnetName
     privateIPAddresses: [ keyVaultPEPrivateIPAddress ]

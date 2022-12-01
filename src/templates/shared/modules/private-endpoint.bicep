@@ -26,10 +26,10 @@ param standardTags object
 
 // ==================================== Resource properties ====================================
 
-@description('Standard name of the Private Endpoint.')
+@description('Name suffix of the Private Endpoint.')
 @minLength(4)
 @maxLength(4)
-param privateEndpointName string
+param privateEndpointNameSuffix string
 
 @description('Name of the VNet where Private Endpoint will be deployed.')
 param vnetName string
@@ -59,8 +59,6 @@ param linkedVNetNames array
 
 // ==================================== Private Endpoint ====================================
 
-var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
-
 var memberNamesDictionary = {
   vault: [ 'default' ]
   registry: [ 'registry', 'registry_data_eastus2' ]
@@ -71,15 +69,15 @@ var memberNamesDictionary = {
 var memberNames = memberNamesDictionary[groupId]
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-${privateEndpointName}'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-${privateEndpointNameSuffix}'
   location: location
   properties: {
     subnet: {
-      id: subnetId
+      id: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
     }
-    customNetworkInterfaceName: 'BRS-MEX-USE2-CRECESDX-${env}-${privateEndpointName}-NIC'
+    customNetworkInterfaceName: 'BRS-MEX-USE2-CRECESDX-${env}-${privateEndpointNameSuffix}-NIC'
     ipConfigurations: [for (memberName, index) in memberNames: {
-      name: '${privateEndpointName}-ipconfig-${memberNames[index]}'
+      name: '${privateEndpointNameSuffix}-IPConfig-${memberNames[index]}'
       properties: {
         groupId: groupId
         memberName: memberName
@@ -88,7 +86,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
     }]
     privateLinkServiceConnections: [
       {
-        name: '${privateEndpointName}-connection-${groupId}'
+        name: '${privateEndpointNameSuffix}-Connection-${groupId}'
         properties: {
           privateLinkServiceId: serviceId
           groupIds: [ groupId ]
@@ -119,7 +117,7 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 }
 
 resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetName, index) in linkedVNetNames: {
-  name: '${privateEndpointName}-NetworkLink${index}'
+  name: '${privateEndpointNameSuffix}-NetworkLink${index}'
   parent: privateDnsZone
   location: 'global'
   properties: {
@@ -131,12 +129,12 @@ resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLi
 }]
 
 resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-05-01' = {
-  name: '${privateEndpointName}-DnsZoneGroup'
+  name: '${privateEndpointNameSuffix}-DnsZoneGroup'
   parent: privateEndpoint
   properties: {
     privateDnsZoneConfigs: [
       {
-        name: '${privateEndpointName}-dnsZoneConfig'
+        name: '${privateEndpointNameSuffix}-DnsZoneConfig'
         properties: {
           privateDnsZoneId: privateDnsZone.id
         }
