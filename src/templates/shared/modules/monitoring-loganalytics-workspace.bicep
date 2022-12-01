@@ -142,28 +142,6 @@ resource sqlAuditingSolution 'Microsoft.OperationsManagement/solutions@2015-11-0
   }
 }
 
-// ==================================== Role Assignments ====================================
-
-@description('Role Definition IDs for Workspace to monitoring Storage Account communication.')
-var monitoringWorkspaceRoleDefinitions = [
-  {
-    roleName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-    roleDescription: 'Storage Blob Data Contributor | Allows for read, write and delete access to Azure Storage blob containers and data.'
-    roleAssignmentDescription: 'Workspace can write to monitoring Storage Account.'
-  }
-]
-
-resource monitoringWorkspaceRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in monitoringWorkspaceRoleDefinitions: {
-  name: guid(resourceGroup().id, monitoringWorkspace.id, roleDefinition.roleName)
-  scope: resourceGroup()
-  properties: {
-    description: roleDefinition.roleAssignmentDescription
-    principalId: monitoringWorkspace.identity.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
-    principalType: 'ServicePrincipal'
-  }
-}]
-
 // ==================================== Resource Lock ====================================
 
 resource logAnalyticsWorkspaceLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
@@ -182,3 +160,6 @@ output workspaceId string = monitoringWorkspace.id
 
 @description('Name of the monitoring Workspace.')
 output workspaceName string = monitoringWorkspace.name
+
+@description('Principal ID of the monitoring Workspace System-Assigned Managed Identity.')
+output workspacePrincipalId string = monitoringWorkspace.identity.principalId

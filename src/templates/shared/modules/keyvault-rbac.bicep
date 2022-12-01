@@ -24,6 +24,7 @@ param appsStorageAccountManagedIdentityPrincipalId string
 
 // ==================================== Role Assignments: Application Gateway Managed Identity ====================================
 
+@description('Role Definition IDs for Application Gateway under Key Vault scope.')
 var appGatewayManagedIdentityRoleDefinitions = [
   {
     roleName: 'a4417e6f-fecd-4de8-b567-7b0420556985'
@@ -50,6 +51,7 @@ resource appGatewayManagedIdentityRoleAssignments 'Microsoft.Authorization/roleA
 
 // ==================================== Role Assignments: Applications data Storage Account Managed Identity ====================================
 
+@description('Role Definition IDs for applications Storage Account under Key Vault scope.')
 var appsStorageAccountManagedIdentityRoleDefinitions = [
   {
     roleName: 'e147488a-f6f5-4113-8e2d-b22465e65bf6'

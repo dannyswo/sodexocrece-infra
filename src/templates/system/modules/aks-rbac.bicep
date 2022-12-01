@@ -95,6 +95,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' existing 
 
 // ==================================== Role Assignments: AKS kubelet AAD Pod-Managed Identities ====================================
 
+@description('Role Definition IDs for AKS Pod-Managed Identity add-on (project RG scope).')
 var aksPodIdentityRoleDefinitions = [
   {
     roleName: 'f1a07417-d97a-45cb-824c-7a7467783830'

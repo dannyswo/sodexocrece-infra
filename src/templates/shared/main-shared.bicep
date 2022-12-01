@@ -1,7 +1,7 @@
 /**
  * Template: shared/main-shared
  * Modules:
- * - IAM: users-rbac-module, managed-identities-module, managed-identities-rbac-module, keyvault-rbac-module
+ * - IAM: users-rbac-module, managed-identities-module, managed-identities-rbac-module, monitoring-loganalytics-workspace-rbac-module, keyvault-rbac-module
  * - Network: keyvault-private-endpoint-module, service-endpoint-policies-module
  * - Security: keyvault-module, keyvault-objects-module, keyvault-policies-module
  * - Storage: monitoring-storage-account-module, monitoring-storage-account-containers-module
@@ -261,6 +261,13 @@ module monitoringLogAnalyticsWorkspaceModule 'modules/monitoring-loganalytics-wo
     logRetentionDays: monitoringWorkspaceLogRetentionDays
     linkedStorageAccountName: monitoringStorageAccountModule.outputs.storageAccountName
     enableLock: monitoringWorkspaceEnableLock
+  }
+}
+
+module monitoringLogAnalyticsWorkspaceRbacModule 'modules/monitoring-loganalytics-workspace-rbac.bicep' = {
+  name: 'monitoring-loganalytics-workspace-rbac-module'
+  params: {
+    monitoringWorkspacePrincipalId: monitoringLogAnalyticsWorkspaceModule.outputs.workspacePrincipalId
   }
 }
 

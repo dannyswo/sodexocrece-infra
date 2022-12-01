@@ -18,6 +18,7 @@ param aksKubeletPrincipalId string
 
 // ==================================== Role Assignments: AKS kubelet AAD Pod-Managed Identities ====================================
 
+@description('Role Definition IDs for AKS Pod-Managed Identity add-on (AKS Node Group RG scope).')
 var aksPodIdentityRoleDefinitions = [
   {
     roleName: '9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
