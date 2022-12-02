@@ -104,10 +104,7 @@
       "value": []
     },
     "devopsAgentsPrincipalIds": {
-      "value": [
-        "c7c10e75-2789-48d2-b98f-4a8802ad5bb4",
-        "a58a6861-288e-438b-8f56-610628ef48f2"
-      ]
+      "value": []
     },
     "flowLogsEnableNetworkWatcherFlowAnalytics": {
       "value": false
