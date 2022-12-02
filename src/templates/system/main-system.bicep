@@ -371,7 +371,6 @@ param enableAksNodeGroupRbacModule bool
 
 module systemNetworkReferencesModule 'modules/system-network-references.bicep' = {
   name: 'system-brs-network-references-module'
-  scope: resourceGroup()
   params: {
     brsSubscriptionId: brsSubscriptionId
     brsNetworkResourceGroupName: brsNetworkResourceGroupName

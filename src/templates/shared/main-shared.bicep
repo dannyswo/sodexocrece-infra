@@ -232,7 +232,6 @@ module managedIdentitiesRbacModule 'modules/managed-identities-rbac.bicep' = {
 
 module sharedNetworkReferencesModule 'modules/shared-network-references.bicep' = {
   name: 'shared-network-references-module'
-  scope: resourceGroup(brsNetworkResourceGroupName)
   params: {
     brsSubscriptionId: brsSubscriptionId
     brsNetworkResourceGroupName: brsNetworkResourceGroupName
