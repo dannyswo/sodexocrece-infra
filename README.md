@@ -24,7 +24,7 @@ shared/main-shared
 11. **`keyvault-objects-module`** (`keyvault-objects`): creates Encryption Keys and Secrets for infrastructure services.
 12. **`keyvault-policies-module`** (`keyvault-policies`): configures Key Vault Access Policies for infrastructure services, users and applications.
 13. **`keyvault-rbac-module`** (`keyvault-rbac`): AD Role Assignments infrastructure services, users and applications under Key Vault scope.
-14. **`flowlogs-module`** (`flowlogs`): exports flow logs caputred in the AKS NSG to the monitoring Storage Account. \[RL03, MM02, MM03\]
+14. **`flowlogs-module`** (`flowlogs`): exports flow logs caputred in the AKS NSG to the monitoring Storage Account (if necessary). \[RL03, MM02, MM03\]
 15. **`service-endpoint-policies-module`** (`service-endpoint-policies`): creates Service Endpoint Policies for Key Vault and monitoring Storage Account (if necessary).
 
 system/main-system
