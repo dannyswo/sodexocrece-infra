@@ -146,8 +146,8 @@ param adminUsersPrincipalIds array
 param devUsersPrincipalIds array
 @description('Principal IDs of Azure services with Key Vault access.')
 param azureServicesPrincipalIds array
-@description('Principal ID of the DevOps Agent AD Identity.')
-param devopsAgentPrincipalId string
+@description('Principal IDs of the DevOps Agents Managed Identity.')
+param devopsAgentsPrincipalIds array
 
 @description('Enable Network Watcher Flow Analytics feature. Must be enabled in the Subscription.')
 param flowLogsEnableNetworkWatcherFlowAnalytics bool
@@ -357,8 +357,7 @@ module keyVaultObjectsModule 'modules/keyvault-objects.bicep' = {
   }
 }
 
-var devopsAgentPrincipalIdList = (devopsAgentPrincipalId == '') ? [] : [ devopsAgentPrincipalId ]
-var keyVaultAdminsPrincipalIds = concat(adminUsersPrincipalIds, azureServicesPrincipalIds, devopsAgentPrincipalIdList)
+var keyVaultAdminsPrincipalIds = concat(adminUsersPrincipalIds, azureServicesPrincipalIds, devopsAgentsPrincipalIds)
 
 module keyVaultPoliciesModule 'modules/keyvault-policies.bicep' = {
   name: 'keyvault-policies-module'

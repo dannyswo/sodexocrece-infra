@@ -103,8 +103,8 @@
     "azureServicesPrincipalIds": {
       "value": []
     },
-    "devopsAgentPrincipalId": {
-      "value": ""
+    "devopsAgentsPrincipalIds": {
+      "value": []
     },
     "flowLogsEnableNetworkWatcherFlowAnalytics": {
       "value": false
