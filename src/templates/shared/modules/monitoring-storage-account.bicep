@@ -51,20 +51,16 @@ param enablePublicAccess bool
 @description('Allow bypass of PaaS firewall rules to Azure Services.')
 param bypassAzureServices bool
 
-@description('List of Subnets allowed to access the Storage Account in the PaaS firewall.')
-@metadata({
-  vnetName: 'Name of VNet.'
-  subnetName: 'Name of the Subnet.'
-})
-param allowedSubnets array
+@description('List of Subnet IDs allowed to access the Storage Account in the PaaS firewall.')
+param allowedSubnetIds array
 
 @description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
 param allowedIPsOrCIDRs array
 
 // ==================================== Resources ====================================
 
-var virtualNetworkRules = [for allowedSubnet in allowedSubnets: {
-  id: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnet.vnetName, allowedSubnet.subnetName)
+var virtualNetworkRules = [for allowedSubnetId in allowedSubnetIds: {
+  id: allowedSubnetId
   action: 'Allow'
 }]
 

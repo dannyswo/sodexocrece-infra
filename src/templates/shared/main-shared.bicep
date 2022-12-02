@@ -2,10 +2,10 @@
  * Template: shared/main-shared
  * Modules:
  * - IAM: users-rbac-module, managed-identities-module, managed-identities-rbac-module, monitoring-loganalytics-workspace-rbac-module, keyvault-rbac-module
- * - Network: keyvault-private-endpoint-module, service-endpoint-policies-module
+ * - Network: shared-network-references-module, keyvault-private-endpoint-module, flowlogs-nsg-reference-module, service-endpoint-policies-module
  * - Security: keyvault-module, keyvault-objects-module, keyvault-policies-module
  * - Storage: monitoring-storage-account-module, monitoring-storage-account-containers-module
- * - Monitoring: monitoring-loganalytics-workspace-module, flowlogs-module, flowlogs-nsg-module
+ * - Monitoring: monitoring-loganalytics-workspace-module, flowlogs-module
  */
 
 // ==================================== Parameters ====================================
@@ -43,26 +43,32 @@ param standardTags object = resourceGroup().tags
 
 // ==================================== Network dependencies ====================================
 
-@description('Name of the Gateway VNet.')
-param gatewayVNetName string
+@description('Name of the Resource Group where BRS VNets and Subnets are located.')
+param brsNetworkResourceGroupName string
 
-@description('Name of the Applications VNet.')
-param appsVNetName string
+@description('Name of the Apps Shared 03 VNet.')
+param appsShared3VNetName string
 
-@description('Name of the Endpoints VNet.')
+@description('Name of the AKS VNet.')
+param aksVNetName string
+
+@description('Name of the BRS Private Endpoints VNet.')
 param endpointsVNetName string
 
-@description('Name of the Endpoints Subnet.')
+@description('Name of the MEX Private Endpoints Subnet.')
 param endpointsSubnetName string
 
-@description('Name of the Jump Servers VNet.')
-param jumpServersVNetName string
+@description('Name of the Apps Shared 02 VNet.')
+param appsShared2VNetName string
 
-@description('Name of the DevOps Agents VNet.')
-param devopsAgentsVNetName string
+@description('Name of the Jump Servers Subnet.')
+param jumpServersSubnetName string
 
-@description('Name of the NSG attached to Applications Subnet.')
-param appsNSGName string
+@description('Name of the DevOps Agents Subnet.')
+param devopsAgentsSubnetName string
+
+@description('Name of the NSG attached to AKS Subnet.')
+param aksNSGName string
 
 // ==================================== Private Endpoints settings ====================================
 
@@ -159,12 +165,8 @@ param keyVaultEnableLock bool
 param monitoringStorageAccountEnablePublicAccess bool
 @description('Allow bypass of PaaS firewall rules to Azure Services.')
 param monitoringStorageAccountBypassAzureServices bool
-@description('List of Subnets allowed to access the Storage Account in the PaaS firewall.')
-@metadata({
-  vnetName: 'Name of VNet.'
-  subnetName: 'Name of the Subnet.'
-})
-param monitoringStorageAccountAllowedSubnets array
+@description('List of Subnet IDs allowed to access the Storage Account in the PaaS firewall.')
+param monitoringStorageAccountAllowedSubnetIds array
 @description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
 param monitoringStorageAccountAllowedIPsOrCIDRs array
 
@@ -172,12 +174,8 @@ param monitoringStorageAccountAllowedIPsOrCIDRs array
 param keyVaultEnablePublicAccess bool
 @description('Allow bypass of PaaS firewall rules to Azure Services.')
 param keyVaultBypassAzureServices bool
-@description('List of Subnets allowed to access the Storage Account in the PaaS firewall.')
-@metadata({
-  vnetName: 'Name of VNet.'
-  subnetName: 'Name of the Subnet.'
-})
-param keyVaultAllowedSubnets array
+@description('List of Subnet IDs allowed to access the Storage Account in the PaaS firewall.')
+param keyVaultAllowedSubnetIds array
 @description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
 param keyVaultAllowedIPsOrCIDRs array
 
@@ -219,12 +217,25 @@ module managedIdentitiesRbacModule 'modules/managed-identities-rbac.bicep' = {
   }
 }
 
-var linkedVNetNamesForPrivateEndpoints = [
-  gatewayVNetName
-  appsVNetName
-  endpointsVNetName
-  jumpServersVNetName
-  devopsAgentsVNetName
+module sharedNetworkReferencesModule 'modules/shared-network-references.bicep' = {
+  name: 'shared-network-references-module'
+  scope: resourceGroup(brsNetworkResourceGroupName)
+  params: {
+    appsShared3VNetName: appsShared3VNetName
+    aksVNetName: aksVNetName
+    endpointsVNetName: endpointsVNetName
+    endpointsSubnetName: endpointsSubnetName
+    appsShared2VNetName: appsShared2VNetName
+    jumpServersSubnetName: jumpServersSubnetName
+    devopsAgentsSubnetName: devopsAgentsSubnetName
+  }
+}
+
+var linkedVNetIdsForPrivateEndpoints = [
+  sharedNetworkReferencesModule.outputs.appsShared3VNetId
+  sharedNetworkReferencesModule.outputs.aksVNetId
+  sharedNetworkReferencesModule.outputs.endpointsVNetId
+  sharedNetworkReferencesModule.outputs.appsShared2VNetId
 ]
 
 module monitoringStorageAccountModule 'modules/monitoring-storage-account.bicep' = {
@@ -238,7 +249,10 @@ module monitoringStorageAccountModule 'modules/monitoring-storage-account.bicep'
     enableLock: monitoringStorageAccountEnableLock
     enablePublicAccess: monitoringStorageAccountEnablePublicAccess
     bypassAzureServices: monitoringStorageAccountBypassAzureServices
-    allowedSubnets: monitoringStorageAccountAllowedSubnets
+    allowedSubnetIds: concat(monitoringStorageAccountAllowedSubnetIds, [
+        sharedNetworkReferencesModule.outputs.jumpServersSubnetId
+        sharedNetworkReferencesModule.outputs.devopsAgentsSubnetId
+      ])
     allowedIPsOrCIDRs: monitoringStorageAccountAllowedIPsOrCIDRs
   }
 }
@@ -288,7 +302,7 @@ module keyVaultModule 'modules/keyvault.bicep' = {
     enableLock: keyVaultEnableLock
     enablePublicAccess: keyVaultEnablePublicAccess
     bypassAzureServices: keyVaultBypassAzureServices
-    allowedSubnets: keyVaultAllowedSubnets
+    allowedSubnetIds: keyVaultAllowedSubnetIds
     allowedIPsOrCIDRs: keyVaultAllowedIPsOrCIDRs
   }
 }
@@ -300,12 +314,11 @@ module keyVaultPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enab
     env: env
     standardTags: standardTags
     privateEndpointNameSuffix: 'PE02'
-    vnetName: endpointsVNetName
-    subnetName: endpointsSubnetName
+    subnetId: sharedNetworkReferencesModule.outputs.endpointsSubnetId
     privateIPAddresses: [ keyVaultPEPrivateIPAddress ]
     serviceId: keyVaultModule.outputs.keyVaultId
     groupId: 'vault'
-    linkedVNetNames: linkedVNetNamesForPrivateEndpoints
+    linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
 
@@ -352,10 +365,11 @@ module keyVaultRbacModule 'modules/keyvault-rbac.bicep' = {
   }
 }
 
-module flowLogsNsgModule 'modules/flowlogs-nsg.bicep' = {
+module flowLogsNsgModule 'modules/flowlogs-nsg-reference.bicep' = if (enableFlowLogsModule) {
   name: 'flowlogs-nsg-module'
+  scope: resourceGroup(brsNetworkResourceGroupName)
   params: {
-    flowLogsTargetNSGName: appsNSGName
+    flowLogsTargetNSGName: aksNSGName
   }
 }
 

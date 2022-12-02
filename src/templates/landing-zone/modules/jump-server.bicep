@@ -55,6 +55,7 @@ var jumpServer1ComputerName = 'RSUSAZ-SOOJMP${jumpServerComputerNameSuffix}'
 var jumpServer1NICName = '${toLower(jumpServer1Name)}-nic'
 var jumpServer1DiskName = '${jumpServer1Name}-Disk1'
 var jumpServer1PublicIPName = '${jumpServer1Name}-IP1'
+var jumpServer1PublicIPDnsLabel = toLower(jumpServer1ComputerName)
 var jumpServer1ShutdownScheduleName = '${jumpServer1Name}-Shutdown1'
 
 resource jumpServer1 'Microsoft.Compute/virtualMachines@2022-08-01' = {
@@ -152,7 +153,7 @@ resource jumpServer1PublicIPAddress 'Microsoft.Network/publicIPAddresses@2022-05
     publicIPAllocationMethod: 'Static'
     deleteOption: 'Delete'
     dnsSettings: {
-      domainNameLabel: 'jmp01'
+      domainNameLabel: jumpServer1PublicIPDnsLabel
     }
   }
   tags: standardTags

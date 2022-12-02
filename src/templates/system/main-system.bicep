@@ -2,7 +2,7 @@
  * Template: system/main-system
  * Modules:
  * - IAM: sql-database-rbac-module, aks-rbac-module, aks-nodegroup-rbac-module
- * - Network: apps-storage-account-private-endpoint-module, sql-database-private-endpoint-module, acr-private-endpoint-module
+ * - Network: system-network-references-module, apps-storage-account-private-endpoint-module, sql-database-private-endpoint-module, acr-private-endpoint-module
  * - Security: aks-keyvault-policies-module
  * - Storage: apps-storage-account-module, apps-storage-account-containers-module
  * - Databases: sql-database-module
@@ -44,29 +44,35 @@ param standardTags object = resourceGroup().tags
 
 // ==================================== Network dependencies ====================================
 
-@description('Name of the Gateway VNet.')
-param gatewayVNetName string
+@description('Name of the Resource Group where BRS VNets and Subnets are located.')
+param brsNetworkResourceGroupName string
 
-@description('Name of the Gateway Subnet.')
+@description('Name of the Apps Shared 03 VNet.')
+param appsShared3VNetName string
+
+@description('Name of the Application Gateway Subnet.')
 param gatewaySubnetName string
 
-@description('Name of the Applications VNet.')
-param appsVNetName string
+@description('Name of the AKS VNet.')
+param aksVNetName string
 
-@description('Name of the Applications Subnet.')
-param appsSubnetName string
+@description('Name of the AKS Subnet.')
+param aksSubnetName string
 
-@description('Name of the Endpoints VNet.')
+@description('Name of the BRS Private Endpoints VNet.')
 param endpointsVNetName string
 
-@description('Name of the Endpoints Subnet.')
+@description('Name of the MEX Private Endpoints Subnet.')
 param endpointsSubnetName string
 
-@description('Name of the Jump Servers VNet.')
-param jumpServersVNetName string
+@description('Name of the Apps Shared 02 VNet.')
+param appsShared2VNetName string
 
-@description('Name of the DevOps Agents VNet.')
-param devopsAgentsVNetName string
+@description('Name of the Jump Servers Subnet.')
+param jumpServersSubnetName string
+
+@description('Name of the DevOps Agents Subnet.')
+param devopsAgentsSubnetName string
 
 // ==================================== Private Endpoints settings ====================================
 
@@ -316,24 +322,16 @@ param aksEnableLock bool
 param appsStorageAccountEnablePublicAccess bool
 @description('Allow bypass of PaaS firewall rules to Azure Services.')
 param appsStorageAccountBypassAzureServices bool
-@description('List of Subnets allowed to access the Storage Account in the PaaS firewall.')
-@metadata({
-  vnetName: 'Name of VNet.'
-  subnetName: 'Name of the Subnet.'
-})
-param appsStorageAccountAllowedSubnets array
+@description('List of Subnet IDs allowed to access the Storage Account in the PaaS firewall.')
+param appsStorageAccountAllowedSubnetIds array
 @description('List of IPs or CIDRs allowed to access the Storage Account in the PaaS firewall.')
 param appsStorageAccountAllowedIPsOrCIDRs array
 
 @description('Enable public access in the PaaS firewall.')
 param sqlDatabaseEnablePublicAccess bool
-@description('List of Subnets allowed to access the Azure SQL Database in the firewall.')
-@metadata({
-  vnetName: 'Name of VNet.'
-  subnetName: 'Name of the Subnet.'
-})
-param sqlDatabaseAllowedSubnets array
-@description('List of IPs ranges (start and end IP addresss) allowed to access the Azure SQL Server in the firewall.')
+@description('List of Subnet IDs allowed to access the Azure SQL Database in the PaaS firewall.')
+param sqlDatabaseAllowedSubnetIds array
+@description('List of IPs ranges (start and end IP addresss) allowed to access the Azure SQL Server in the PaaS firewall.')
 @metadata({
   startIPAddress: 'First IP in the IP range.'
   endIPAddress: 'Last IP in the IP range.'
@@ -360,18 +358,32 @@ param enableAksNodeGroupRbacModule bool
 
 // ==================================== Modules ====================================
 
-var linkedVNetNamesForPrivateEndpoints = [
-  gatewayVNetName
-  appsVNetName
-  endpointsVNetName
-  jumpServersVNetName
-  devopsAgentsVNetName
+module systemNetworkReferencesModule 'modules/system-network-references.bicep' = {
+  name: 'system-network-references-module'
+  scope: resourceGroup(brsNetworkResourceGroupName)
+  params: {
+    appsShared3VNetName: appsShared3VNetName
+    gatewaySubnetName: gatewaySubnetName
+    aksVNetName: aksVNetName
+    aksSubnetName: aksSubnetName
+    endpointsVNetName: endpointsVNetName
+    endpointsSubnetName: endpointsSubnetName
+    appsShared2VNetName: appsShared2VNetName
+    jumpServersSubnetName: jumpServersSubnetName
+    devopsAgentsSubnetName: devopsAgentsSubnetName
+  }
+}
+
+var linkedVNetIdsForPrivateEndpoints = [
+  systemNetworkReferencesModule.outputs.appsShared3VNetId
+  systemNetworkReferencesModule.outputs.aksVNetId
+  systemNetworkReferencesModule.outputs.endpointsVNetId
+  systemNetworkReferencesModule.outputs.appsShared2VNetId
 ]
 
-var linkedVNetNamesForAksPrivateEndpoint = [
-  appsVNetName
-  jumpServersVNetName
-  devopsAgentsVNetName
+var linkedVNetIdsForAksPrivateEndpoint = [
+  systemNetworkReferencesModule.outputs.aksVNetId
+  systemNetworkReferencesModule.outputs.appsShared2VNetId
 ]
 
 module appGatewayModule 'modules/app-gateway.bicep' = {
@@ -384,8 +396,7 @@ module appGatewayModule 'modules/app-gateway.bicep' = {
     appGatewayNameSuffix: appGatewayNameSuffix
     appGatewaySkuTier: appGatewaySkuTier
     appGatewaySkuName: appGatewaySkuName
-    gatewayVNetName: gatewayVNetName
-    gatewaySubnetName: gatewaySubnetName
+    gatewaySubnetId: systemNetworkReferencesModule.outputs.gatewaySubnetId
     frontendPrivateIPAddress: appGatewayFrontendPrivateIPAddress
     enablePublicFrontendIP: appGatewayEnablePublicFrontendIP
     autoScaleMinCapacity: appGatewayAutoScaleMinCapacity
@@ -420,7 +431,7 @@ module appsStorageAccountModule 'modules/apps-storage-account.bicep' = {
     enableLock: appsStorageAccountEnableLock
     enablePublicAccess: appsStorageAccountEnablePublicAccess
     bypassAzureServices: appsStorageAccountBypassAzureServices
-    allowedSubnets: appsStorageAccountAllowedSubnets
+    allowedSubnetIds: appsStorageAccountAllowedSubnetIds
     allowedIPsOrCIDRs: appsStorageAccountAllowedIPsOrCIDRs
   }
 }
@@ -439,12 +450,11 @@ module appsStorageAccountPrivateEndpointModule 'modules/private-endpoint.bicep' 
     env: env
     standardTags: standardTags
     privateEndpointNameSuffix: 'PE04'
-    vnetName: endpointsVNetName
-    subnetName: endpointsSubnetName
+    subnetId: systemNetworkReferencesModule.outputs.endpointsSubnetId
     privateIPAddresses: [ appsStorageAccountPEPrivateIPAddress ]
     serviceId: appsStorageAccountModule.outputs.storageAccountId
     groupId: 'blob'
-    linkedVNetNames: linkedVNetNamesForPrivateEndpoints
+    linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
 
@@ -480,7 +490,7 @@ module sqlDatabaseModule 'modules/sql-database.bicep' = {
     vulnerabilityAssessmentsEmails: sqlDatabaseVulnerabilityAssessmentsEmails
     enableLock: sqlDatabaseEnableLock
     enablePublicAccess: sqlDatabaseEnablePublicAccess
-    allowedSubnets: sqlDatabaseAllowedSubnets
+    allowedSubnetIds: sqlDatabaseAllowedSubnetIds
     allowedIPRanges: sqlDatabaseAllowedIPRanges
   }
 }
@@ -492,12 +502,11 @@ module sqlDatabasePrivateEndpointModule 'modules/private-endpoint.bicep' = if (e
     env: env
     standardTags: standardTags
     privateEndpointNameSuffix: 'PE01'
-    vnetName: endpointsVNetName
-    subnetName: endpointsSubnetName
+    subnetId: systemNetworkReferencesModule.outputs.endpointsSubnetId
     privateIPAddresses: [ sqlDatabasePEPrivateIPAddress ]
     serviceId: sqlDatabaseModule.outputs.sqlServerId
     groupId: 'sqlServer'
-    linkedVNetNames: linkedVNetNamesForPrivateEndpoints
+    linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
 
@@ -536,12 +545,11 @@ module acrPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enablePri
     env: env
     standardTags: standardTags
     privateEndpointNameSuffix: 'PE03'
-    vnetName: endpointsVNetName
-    subnetName: endpointsSubnetName
+    subnetId: systemNetworkReferencesModule.outputs.endpointsSubnetId
     privateIPAddresses: acrPEPrivateIPAddresses
     serviceId: acrModule.outputs.registryId
     groupId: 'registry'
-    linkedVNetNames: linkedVNetNamesForPrivateEndpoints
+    linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
 
@@ -555,15 +563,14 @@ module aksModule 'modules/aks.bicep' = {
     aksSkuTier: aksSkuTier
     aksDnsSuffix: aksDnsSuffix
     kubernetesVersion: aksKubernetesVersion
-    vnetName: appsVNetName
-    subnetName: appsSubnetName
+    subnetId: systemNetworkReferencesModule.outputs.aksSubnetId
     enableAutoScaling: aksEnableAutoScaling
     nodePoolMinCount: aksNodePoolMinCount
     nodePoolMaxCount: aksNodePoolMaxCount
     nodePoolVmSize: aksNodePoolVmSize
     enableEncryptionAtHost: aksEnableEncryptionAtHost
     enablePrivateCluster: aksEnablePrivateCluster
-    privateDnsZoneLinkedVNetNames: linkedVNetNamesForAksPrivateEndpoint
+    privateDnsZoneLinkedVNetIds: linkedVNetIdsForAksPrivateEndpoint
     enablePodManagedIdentity: aksEnablePodManagedIdentity
     podIdentities: []
     enableWorkloadIdentity: aksEnableWorkloadIdentity

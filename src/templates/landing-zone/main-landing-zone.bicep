@@ -66,26 +66,24 @@ module networkModule 'modules/network.bicep' = if (createNetwork) {
     location: location
     env: env
     standardTags: standardTags
-    gatewayVNetNameSuffix: 'VN01'
-    gatewayVNetAddressPrefix: '10.169.90.0/24'
+    appsShared3VNetNameSuffix: 'VN01'
+    appsShared3VNetAddressPrefix: '10.169.90.0/24'
     gatewaySubnetNameSuffix: 'SN01'
     gatewaySubnetAddressPrefix: '10.169.90.128/25'
-    appsVNetNameSuffix: 'VN02'
-    appsVNetAddressPrefix: '10.169.72.0/21'
-    appsSubnetNameSuffix: 'SN02'
-    appsSubnetAddressPrefix: '10.169.72.64/27'
+    aksVNetNameSuffix: 'VN02'
+    aksVNetAddressPrefix: '10.169.72.0/21'
+    aksSubnetNameSuffix: 'SN02'
+    aksSubnetAddressPrefix: '10.169.72.64/27'
     endpointsVNetNameSuffix: 'VN03'
     endpointsVNetAddressPrefix: '10.169.88.0/23'
     endpointsSubnetNameSuffix: 'SN03'
     endpointsSubnetAddressPrefix: '10.169.88.64/26'
-    jumpServersVNetNameSuffix: 'VN04'
-    jumpServersVNetAddressPrefix: '10.169.50.0/24'
+    appsShared2VNetNameSuffix: 'VN04'
+    appsShared2VNetAddressPrefix: '10.169.50.0/24'
     jumpServersSubnetNameSuffix: 'SN04'
     jumpServersSubnetAddressPrefix: '10.169.50.64/26'
-    devopsAgentsVNetNameSuffix: 'VN05'
-    devopsAgentsVNetAddressPrefix: '10.169.60.0/24'
     devopsAgentsSubnetNameSuffix: 'SN05'
-    devopsAgentsSubnetAddressPrefix: '10.169.60.64/26'
+    devopsAgentsSubnetAddressPrefix: '10.169.50.128/26'
     createCustomRouteTable: createCustomRouteTable
     enableKeyVaultServiceEndpoint: true
     enableStorageAccountServiceEndpoint: true
@@ -116,11 +114,11 @@ module networkAttachmentsModule 'modules/network-attachments.bicep' = if (!creat
     location: location
     env: env
     standardTags: standardTags
-    // gatewaySubnetName: gatewaySubnetName
-    // appsSubnetName: appsSubnetName
-    // endpointsSubnetName: endpointsSubnetName
-    // jumpServersSubnetName: jumpServersSubnetName
-    // devopsAgentsSubnetName: devopsAgentsSubnetName
+    // gatewaySubnetId: gatewaySubnetId
+    // aksSubnetId: aksSubnetId
+    // endpointsSubnetId: endpointsSubnetId
+    // jumpServersSubnetId: jumpServersSubnetId
+    // devopsAgentsSubnetId: devopsAgentsSubnetId
     // enableCustomRouteTable: enableCustomRouteTable
     // enableKeyVaultServiceEndpoint: enableKeyVaultServiceEndpoint
     // enableStorageAccountServiceEndpoint: enableStorageAccountServiceEndpoint

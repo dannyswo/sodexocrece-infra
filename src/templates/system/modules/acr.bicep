@@ -186,5 +186,8 @@ resource apsDataStorageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = 
 @description('ID of the Container Registry.')
 output registryId string = registry.id
 
+@description('Name of the Container Registry.')
+output registryName string = registry.name
+
 @description('URL used to log in into the Container Registry.')
 output registryLoginUri string = registry.properties.loginServer

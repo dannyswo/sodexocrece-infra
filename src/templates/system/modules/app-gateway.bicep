@@ -48,11 +48,8 @@ param appGatewaySkuTier string
 ])
 param appGatewaySkuName string
 
-@description('Name of the Gateway VNet where Application Gateway is deployed.')
-param gatewayVNetName string
-
-@description('Name of the Gateway Subnet where Application Gateway is deployed.')
-param gatewaySubnetName string
+@description('ID of the Gateway Subnet where Application Gateway is deployed.')
+param gatewaySubnetId string
 
 @description('Frontend private IP address of Application Gateway.')
 param frontendPrivateIPAddress string
@@ -113,8 +110,6 @@ param enableLock bool
 var appGatewayName = 'azmxwa1${appGatewayNameSuffix}'
 
 var zones = [ '1', '2', '3' ]
-
-var gatewaySubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', gatewayVNetName, gatewaySubnetName)
 
 var keyVaultSecretsEndpointUri = 'https://${keyVaultName}${environment().suffixes.keyvaultDns}/secrets'
 

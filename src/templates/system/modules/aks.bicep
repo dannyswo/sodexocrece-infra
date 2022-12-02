@@ -44,11 +44,8 @@ param aksDnsSuffix string
 @description('Version of the Kubernetes software used by AKS.')
 param kubernetesVersion string
 
-@description('Name of the Apps VNet where the AKS Managed Cluster will be deployed.')
-param vnetName string
-
-@description('Name of the Apps Subnet where the AKS Managed Cluster will be deployed.')
-param subnetName string
+@description('ID of the AKS Subnet where the AKS Managed Cluster will be deployed.')
+param subnetId string
 
 @description('Enable auto scaling for AKS system node pool.')
 param enableAutoScaling bool
@@ -68,8 +65,8 @@ param enableEncryptionAtHost bool
 @description('Create the AKS Managed Cluster as private cluster.')
 param enablePrivateCluster bool
 
-@description('Names of the VNets linked to the DNS Private Zone of AKS.')
-param privateDnsZoneLinkedVNetNames array
+@description('IDs of the VNets linked to the DNS Private Zone of AKS.')
+param privateDnsZoneLinkedVNetIds array
 
 @description('Enable Pod-Managed Identity feature on the AKS Managed Cluster.')
 param enablePodManagedIdentity bool
@@ -134,8 +131,6 @@ param enablePublicAccess bool
 // ==================================== AKS Managed Cluster ====================================
 
 var aksDnsPrefix = 'azmxku1${aksDnsSuffix}'
-
-var subnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
 
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-KU01'
@@ -252,14 +247,14 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   tags: standardTags
 }
 
-resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetName, index) in privateDnsZoneLinkedVNetNames: {
-  name: 'apiserver-NetworkLink${index}'
+resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetId, index) in privateDnsZoneLinkedVNetIds: {
+  name: 'apiserver-NetworkLink-${index}'
   parent: privateDnsZone
   location: 'global'
   properties: {
     registrationEnabled: false
     virtualNetwork: {
-      id: resourceId('Microsoft.Network/virtualNetworks', linkedVNetName)
+      id: linkedVNetId
     }
   }
   tags: standardTags

@@ -8,16 +8,19 @@
     "env": {
       "value": "SWO"
     },
-    "gatewayVNetName": {
+    "brsNetworkResourceGroupName": {
+      "value": "RG-demo-sodexo-crece"
+    },
+    "appsShared3VNetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-VN01"
     },
     "gatewaySubnetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-SN01"
     },
-    "appsVNetName": {
+    "aksVNetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-VN02"
     },
-    "appsSubnetName": {
+    "aksSubnetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-SN02"
     },
     "endpointsVNetName": {
@@ -26,11 +29,14 @@
     "endpointsSubnetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-SN03"
     },
-    "jumpServersVNetName": {
+    "appsShared2VNetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-VN04"
     },
-    "devopsAgentsVNetName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN05"
+    "jumpServersSubnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN04"
+    },
+    "devopsAgentsSubnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN05"
     },
     "appsStorageAccountPEPrivateIPAddress": {
       "value": "10.169.88.73"
@@ -60,7 +66,7 @@
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"
     },
     "keyVaultName": {
-      "value": "azmxkv1qta776"
+      "value": "azmxkv1qta777"
     },
     "appGatewayFrontendCertificateName": {
       "value": "crececonsdx-appgateway-cert-frontend"
@@ -74,7 +80,7 @@
     "sqlDatabaseSqlAdminLoginName": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta776"
+          "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta777"
         },
         "secretName": "crececonsdx-sqldatabase-sqladminloginname"
       }
@@ -82,7 +88,7 @@
     "sqlDatabaseSqlAdminLoginPass": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta776"
+          "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta777"
         },
         "secretName": "crececonsdx-sqldatabase-sqladminloginpass"
       }
@@ -290,7 +296,7 @@
     "appsStorageAccountBypassAzureServices": {
       "value": false
     },
-    "appsStorageAccountAllowedSubnets": {
+    "appsStorageAccountAllowedSubnetIds": {
       "value": []
     },
     "appsStorageAccountAllowedIPsOrCIDRs": {
@@ -299,7 +305,7 @@
     "sqlDatabaseEnablePublicAccess": {
       "value": false
     },
-    "sqlDatabaseAllowedSubnets": {
+    "sqlDatabaseAllowedSubnetIds": {
       "value": []
     },
     "sqlDatabaseAllowedIPRanges": {

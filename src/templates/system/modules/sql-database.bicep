@@ -142,14 +142,10 @@ param enableLock bool
 @description('Enable public access in the PaaS firewall.')
 param enablePublicAccess bool
 
-@description('List of Subnets allowed to access the Azure SQL Database in the firewall.')
-@metadata({
-  vnetName: 'Name of VNet.'
-  subnetName: 'Name of the Subnet.'
-})
-param allowedSubnets array
+@description('List of Subnet IDs allowed to access the Azure SQL Database in the PaaS firewall.')
+param allowedSubnetIds array
 
-@description('List of IPs ranges (start and end IP addresss) allowed to access the Azure SQL Server in the firewall.')
+@description('List of IPs ranges (start and end IP addresss) allowed to access the Azure SQL Server in the PaaS firewall.')
 @metadata({
   startIPAddress: 'First IP in the IP range.'
   endIPAddress: 'Last IP in the IP range.'
@@ -160,8 +156,10 @@ param allowedIPRanges array
 
 // ==================================== SQL Server ====================================
 
+var sqlServerName = 'azmxdb1${sqlServerNameSuffix}'
+
 resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
-  name: 'azmxdb1${sqlServerNameSuffix}'
+  name: sqlServerName
   location: location
   identity: {
     type: 'SystemAssigned'
@@ -337,17 +335,17 @@ var generalPurposeSkuLimits = [
 
 // ==================================== PaaS Firewall ====================================
 
-resource virtualNetworkRules 'Microsoft.Sql/servers/virtualNetworkRules@2022-05-01-preview' = [for (allowedSubnet, index) in allowedSubnets: if (enablePublicAccess) {
-  name: 'virtualNetworkRules-${index}'
+resource virtualNetworkRules 'Microsoft.Sql/servers/virtualNetworkRules@2022-05-01-preview' = [for (allowedSubnetId, index) in allowedSubnetIds: if (enablePublicAccess) {
+  name: '${sqlServerName}-VirtualNetworkRules-${index}'
   parent: sqlServer
   properties: {
-    virtualNetworkSubnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', allowedSubnet.vnetName, allowedSubnet.subnetName)
+    virtualNetworkSubnetId: allowedSubnetId
     ignoreMissingVnetServiceEndpoint: false
   }
 }]
 
 resource firewallRules 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' = [for (allowedIPRange, index) in allowedIPRanges: if (enablePublicAccess) {
-  name: 'firewallRules-${index}'
+  name: '${sqlServerName}-FirewallRules-${index}'
   parent: sqlServer
   properties: {
     startIpAddress: allowedIPRange.startIPAddress
@@ -456,6 +454,9 @@ resource storageAccountLock 'Microsoft.Authorization/locks@2017-04-01' = if (ena
 
 @description('ID of the Azure SQL Server instance.')
 output sqlServerId string = sqlServer.id
+
+@description('Name of the Azure SQL Server instance.')
+output sqlServerName string = sqlServer.name
 
 @description('ID of the Azure SQL Database.')
 output sqlDatabaseId string = sqlDatabase.id

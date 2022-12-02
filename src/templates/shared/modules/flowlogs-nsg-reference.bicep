@@ -13,8 +13,10 @@ param flowLogsTargetNSGName string
 
 // ==================================== Resources ====================================
 
-var targetNSGId = resourceId('Microsoft.Network/networkSecurityGroups', flowLogsTargetNSGName)
+resource targetNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' existing = {
+  name: flowLogsTargetNSGName
+}
 
 // ==================================== Outputs ====================================
 
-output flowLogsTargetNSGId string = targetNSGId
+output flowLogsTargetNSGId string = targetNSG.id

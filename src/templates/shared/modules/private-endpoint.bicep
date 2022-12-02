@@ -1,6 +1,6 @@
 /**
  * Module: private-endpoint
- * Depends on: network (optional)
+ * Depends on: network
  * Used by: shared/main-shared
  * Resources: N/A
  */
@@ -31,16 +31,13 @@ param standardTags object
 @maxLength(4)
 param privateEndpointNameSuffix string
 
-@description('Name of the VNet where Private Endpoint will be deployed.')
-param vnetName string
-
 @description('Name of the Subnet where Private Endpoint will be deployed.')
-param subnetName string
+param subnetId string
 
 @description('Private IP addresses of the Private Endpoint.')
 param privateIPAddresses array
 
-@description('ID of the service connected to the Private Endpoint.')
+@description('ID of the service connected (Azure resources) to the Private Endpoint.')
 param serviceId string
 
 @description('Subresource of the Private Endpoint.')
@@ -52,8 +49,8 @@ param serviceId string
 ])
 param groupId string
 
-@description('Names of the VNets linked to the DNS Private Zone.')
-param linkedVNetNames array
+@description('IDs of the VNets linked to the DNS Private Zone.')
+param linkedVNetIds array
 
 // ==================================== Resources ====================================
 
@@ -73,7 +70,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
   location: location
   properties: {
     subnet: {
-      id: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
+      id: subnetId
     }
     customNetworkInterfaceName: 'BRS-MEX-USE2-CRECESDX-${env}-${privateEndpointNameSuffix}-NIC'
     ipConfigurations: [for (memberName, index) in memberNames: {
@@ -97,6 +94,21 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
   tags: standardTags
 }
 
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-05-01' = {
+  name: '${privateEndpointNameSuffix}-DnsZoneGroup'
+  parent: privateEndpoint
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: '${privateEndpointNameSuffix}-DnsZoneConfig'
+        properties: {
+          privateDnsZoneId: privateDnsZone.id
+        }
+      }
+    ]
+  }
+}
+
 // ==================================== Private DNS Zone ====================================
 
 var privateDnsZoneNamesDictionary = {
@@ -116,32 +128,17 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   tags: standardTags
 }
 
-resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetName, index) in linkedVNetNames: {
-  name: '${privateEndpointNameSuffix}-NetworkLink${index}'
+resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetId, index) in linkedVNetIds: {
+  name: '${groupId}-NetworkLink-${index}'
   parent: privateDnsZone
   location: 'global'
   properties: {
     registrationEnabled: false
     virtualNetwork: {
-      id: resourceId('Microsoft.Network/virtualNetworks', linkedVNetName)
+      id: linkedVNetId
     }
   }
 }]
-
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-05-01' = {
-  name: '${privateEndpointNameSuffix}-DnsZoneGroup'
-  parent: privateEndpoint
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: '${privateEndpointNameSuffix}-DnsZoneConfig'
-        properties: {
-          privateDnsZoneId: privateDnsZone.id
-        }
-      }
-    ]
-  }
-}
 
 // ==================================== Outputs ====================================
 
