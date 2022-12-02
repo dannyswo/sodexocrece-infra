@@ -1,0 +1,51 @@
+[
+  {
+    "environmentName": "AzureCloud",
+    "homeTenantId": "a289d6c2-3b1f-4bc4-8fa0-6866ff300052",
+    "id": "885a11fc-3bb8-4207-b875-6961765a6706",
+    "isDefault": true,
+    "managedByTenants": [],
+    "name": "SDX Tier 0",
+    "state": "Enabled",
+    "tenantId": "a289d6c2-3b1f-4bc4-8fa0-6866ff300052",
+    "user": {
+      "assignedIdentityInfo": "MSI",
+      "name": "systemAssignedIdentity",
+      "type": "servicePrincipal"
+    }
+  },
+  {
+    "environmentName": "AzureCloud",
+    "homeTenantId": "a289d6c2-3b1f-4bc4-8fa0-6866ff300052",
+    "id": "f3888d08-b6b3-4f5d-b4f1-45c1fedec20c",
+    "isDefault": false,
+    "managedByTenants": [
+      {
+        "tenantId": "2f4a9838-26b7-47ee-be60-ccc1fdec5953"
+      }
+    ],
+    "name": "BRS Non production",
+    "state": "Enabled",
+    "tenantId": "a289d6c2-3b1f-4bc4-8fa0-6866ff300052",
+    "user": {
+      "assignedIdentityInfo": "MSI",
+      "name": "systemAssignedIdentity",
+      "type": "servicePrincipal"
+    }
+  },
+  {
+    "environmentName": "AzureCloud",
+    "homeTenantId": "a289d6c2-3b1f-4bc4-8fa0-6866ff300052",
+    "id": "8a646816-3519-4f4e-98af-c4f0f8c0f5e0",
+    "isDefault": false,
+    "managedByTenants": [],
+    "name": "BRS Shared Services",
+    "state": "Enabled",
+    "tenantId": "a289d6c2-3b1f-4bc4-8fa0-6866ff300052",
+    "user": {
+      "assignedIdentityInfo": "MSI",
+      "name": "systemAssignedIdentity",
+      "type": "servicePrincipal"
+    }
+  }
+]

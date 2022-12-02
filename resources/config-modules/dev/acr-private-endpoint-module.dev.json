@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus2"
+    },
+    "env": {
+      "value": "DEV"
+    },
+    "standardTags": {
+      "value": {}
+    },
+    "privateEndpointNameSuffix": {
+      "value": "PE03"
+    },
+    "subnetId": {
+      "value": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-GLB-USE2-NTWRKBRS-DEV-RG01/providers/Microsoft.Network/virtualNetworks/BRS-GLB-USE2-PVTPNTBRS-DEV-VN02/subnets/BRS-MEX-USE2-PVTPNT-DEV-SN01"
+    },
+    "privateIPAddresses": {
+      "value": [
+        "10.169.88.71",
+        "10.169.88.72"
+      ]
+    },
+    "serviceId": {
+      "value": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.ContainerRegistry/registries/azmxcr1hle620"
+    },
+    "groupId": {
+      "value": "registry"
+    },
+    "linkedVNetIds": {
+      "value": [
+        "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-GLB-USE2-NTWRKBRS-DEV-RG01/providers/Microsoft.Network/virtualNetworks/BRS-GLB-USE2-AKS-DEV-VN01/subnets/BRS-MEX-USE2-AKS-DEV-SN02"
+      ]
+    }
+  }
+}

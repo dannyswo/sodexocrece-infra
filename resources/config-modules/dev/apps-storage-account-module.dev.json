@@ -8,14 +8,23 @@
     "env": {
       "value": "DEV"
     },
+    "standardTags": {
+      "value": {}
+    },
+    "managedIdentityName": {
+      "value": "BRS-MEX-USE2-CRECESDX-DEV-AD02"
+    },
     "storageAccountNameSuffix": {
       "value": "ifv691"
     },
     "storageAccountSkuName": {
       "value": "Standard_LRS"
     },
-    "keyVaultUri": {
-      "value": "https://azmxkv1ifv691.vault.azure.net/"
+    "keyVaultName": {
+      "value": "azmxkv1ifv691"
+    },
+    "encryptionKeyName": {
+      "value": "crececonsdx-appsstorageaccount-key"
     },
     "enableDiagnostics": {
       "value": true
@@ -25,6 +34,21 @@
     },
     "logsRetentionDays": {
       "value": 7
+    },
+    "enableLock": {
+      "value": false
+    },
+    "enablePublicAccess": {
+      "value": true
+    },
+    "bypassAzureServices": {
+      "value": false
+    },
+    "allowedSubnets": {
+      "value": []
+    },
+    "allowedIPsOrCIDRs": {
+      "value": []
     }
   }
 }

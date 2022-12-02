@@ -8,8 +8,8 @@
     "env": {
       "value": "SWO"
     },
-    "privateEndpointName": {
-      "value": "P03"
+    "privateEndpointNameSuffix": {
+      "value": "PE03"
     },
     "vnetName": {
       "value": "BRS-GLB-USE2-PVTPNTBRS-DEV-VN02"

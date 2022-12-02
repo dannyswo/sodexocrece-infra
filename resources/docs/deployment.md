@@ -25,7 +25,7 @@ az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\
 az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\system\main-system.bicep -p .\src\config\main-system.swo.json
 ```
 
-## Deployment of individual modules (for testing)
+## Deployment of individual modules (SWO)
 
 ```
 az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\landingzone\modules\network.bicep -p .\resources\config-modules\swo\network1.swo.json
@@ -51,6 +51,20 @@ az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\mod
 az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\system\modules\aks.bicep -p .\resources\config-modules\swo\aks-module.swo.json
 ```
 
+## Deployment of individual modules (Sodexo)
+
+```
+az deployment group create -g BRS-MEX-USE2-CRECESDX-DEV-RG01 -f .\src\templates\system\modules\acr.bicep -p .\resources\config-modules\dev\acr-module.dev.json
+az deployment group create -g BRS-MEX-USE2-CRECESDX-DEV-RG01 -f .\src\templates\system\modules\private-endpoint.bicep -p .\resources\config-modules\dev\acr-private-endpoint-module.dev.json
+
+az deployment group create -g BRS-MEX-USE2-CRECESDX-DEV-RG01 -f .\src\templates\shared\modules\managed-identities.bicep -p .\resources\config-modules\dev\common-params.dev.json
+az deployment group create -g BRS-MEX-USE2-CRECESDX-DEV-RG01 -f .\src\templates\system\modules\aks.bicep -p .\resources\config-modules\dev\aks-module.dev.json
+
+az deployment group create -g BRS-MEX-USE2-CRECESDX-DEV-RG01 -f .\src\templates\system\modules\apps-storage-account.bicep -p .\resources\config-modules\dev\apps-storage-account-module.dev.json
+
+az deployment group create -g BRS-GLB-USE2-NTWRKBRS-DEV-RG01 -f .\src\templates\system\modules\system-network-references.bicep -p .\resources\config-modules\dev\system-network-references-module.dev.json
+```
+
 ## Useful deployment commands
 
 Verify failed deployments:
@@ -68,6 +82,9 @@ az account set --subscription f493167c-c1a8-4a50-9c6b-41b9a478f240
 
 // Danny's Subscription:
 az account set --subscription df6b3a66-4927-452d-bd5f-9abc9db8a9c0
+
+// Sodexo BRS Non production Subscription:
+az account set --subscription f3888d08-b6b3-4f5d-b4f1-45c1fedec20c
 ```
 
 ## Integration testing commands

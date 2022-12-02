@@ -1,0 +1,31 @@
+[
+  {
+    "code": "InvalidTemplateDeployment",
+    "message": "The template deployment failed with error: 'Authorization failed for template resource 'BRS-MEX-USE2-CRECESDX-DEV-UD01' of type 'Microsoft.Network/routeTables'. The client '_Danny.Zamorano.ext.AZ@sodexo.com' with object id '3e503451-7d2b-4868-a645-0cd04a629a4b' does not have permission to perform action 'Microsoft.Network/routeTables/write' at scope '/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.Network/routeTables/BRS-MEX-USE2-CRECESDX-DEV-UD01'.'."
+  },
+  {
+    "code": "SubscriptionNotEnabledEncryptionAtHost",
+    "message": "Provisioning of resource(s) for container service BRS-MEX-USE2-CRECESDX-DEV-KU01 in resource group BRS-MEX-USE2-CRECESDX-DEV-RG01 failed. Message: Subscription does not enable EncryptionAtHost.. Details: "
+  },
+  {
+    "status": "Failed",
+    "error": {
+      "code": "BadRequest",
+      "message": "Virtual network resource not found for '/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.Network/virtualNetworks/BRS-GLB-USE2-APPLICSHR-DEV-VN02'"
+    }
+  },
+  {
+    "status": "Failed",
+    "error": {
+      "code": "BadRequest",
+      "message": "Virtual network resource not found for '/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.Network/virtualNetworks/BRS-GLB-USE2-AKS-DEV-VN01'"
+    }
+  },
+  {
+    "status": "Failed",
+    "error": {
+      "code": "NotFound",
+      "message": "Failed to get a VNet: BRS-GLB-USE2-AKS-DEV-VN01."
+    }
+  }
+]

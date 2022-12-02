@@ -1,0 +1,13 @@
+{
+  "status": "Failed",
+  "error": {
+      "code": "InvalidResourceReference",
+      "message": "Resource /subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.Network/virtualNetworks/BRS-GLB-USE2-PVTPNTBRS-DEV-VN02 referenced by resource /subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.Network/privateEndpoints/BRS-MEX-USE2-CRECESDX-DEV-PE03 was not found. Please make sure that the referenced resource exists, and that both resources are in the same region.",
+      "details": [
+          {
+              "code": "NotFound",
+              "message": "Resource /subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.Network/virtualNetworks/BRS-GLB-USE2-PVTPNTBRS-DEV-VN02 not found."
+          }
+      ]
+  }
+}

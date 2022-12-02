@@ -8,6 +8,12 @@
     "env": {
       "value": "DEV"
     },
+    "standardTags": {
+      "value": {}
+    },
+    "managedIdentityName": {
+      "value": "BRS-MEX-USE2-CRECESDX-DEV-AD03"
+    },
     "aksSkuTier": {
       "value": "Free"
     },
@@ -17,32 +23,71 @@
     "kubernetesVersion": {
       "value": "1.23.12"
     },
-    "nodeResourceGroupName": {
-      "value": "{NULL nodeResourceGroupName}"
+    "vnetName": {
+      "value": "BRS-GLB-USE2-AKS-DEV-VN01"
     },
     "subnetName": {
-      "value": "{NULL subnetName}"
+      "value": "BRS-MEX-USE2-AKS-DEV-SN02"
     },
     "enableAutoScaling": {
       "value": true
     },
-    "minCount": {
+    "nodePoolMinCount": {
       "value": 1
     },
-    "maxCount": {
+    "nodePoolMaxCount": {
       "value": 3
     },
-    "vmSize": {
+    "nodePoolVmSize": {
       "value": "standard_d2s_v3"
     },
     "enableEncryptionAtHost": {
+      "value": false
+    },
+    "enablePrivateCluster": {
+      "value": false
+    },
+    "privateDnsZoneLinkedVNetNames": {
+      "value": [
+        "BRS-GLB-USE2-AKS-DEV-VN01",
+        "BRS-GLB-USE2-APPLICSHR-DEV-VN02"
+      ]
+    },
+    "enablePodManagedIdentity": {
+      "value": false
+    },
+    "enableWorkloadIdentity": {
+      "value": false
+    },
+    "enableAGICAddon": {
+      "value": false
+    },
+    "appGatewayName": {
+      "value": ""
+    },
+    "createCustomRouteTable": {
+      "value": false
+    },
+    "enableKeyVaultSecretsProviderAddon": {
+      "value": false
+    },
+    "enableSecretsRotation": {
+      "value": false
+    },
+    "secrtsRotationPollInterval": {
+      "value": "2m"
+    },
+    "enableOMSAgentAddon": {
+      "value": false
+    },
+    "workspaceName": {
+      "value": ""
+    },
+    "enableLock": {
+      "value": false
+    },
+    "enablePublicAccess": {
       "value": true
-    },
-    "applicationGatewayId": {
-      "value": "{NULL applicationGatewayName}"
-    },
-    "logAnalyticsWorkspaceName": {
-      "value": "{NULL logAnalyticsWorkspaceName}"
     }
   }
 }

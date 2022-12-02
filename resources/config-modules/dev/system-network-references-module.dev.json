@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "brsSubscriptionId": {
+      "value": "f3888d08-b6b3-4f5d-b4f1-45c1fedec20c"
+    },
+    "brsNetworkResourceGroupName": {
+      "value": "BRS-GLB-USE2-NTWRKBRS-DEV-RG01"
+    },
+    "prodSubscriptionId": {
+      "value": "f3888d08-b6b3-4f5d-b4f1-45c1fedec20c"
+    },
+    "prodNetworkResourceGroupName": {
+      "value": "BRS-GLB-USE2-NTWRKBRS-DEV-RG01"
+    },
+    "appsShared3VNetName": {
+      "value": "BRS-GLB-USE2-APPLICSHR-DEV-VN03"
+    },
+    "gatewaySubnetName": {
+      "value": "BRS-MEX-USE2-APGW-DEV-SN01"
+    },
+    "aksVNetName": {
+      "value": "BRS-GLB-USE2-AKS-DEV-VN01"
+    },
+    "aksSubnetName": {
+      "value": "BRS-MEX-USE2-AKS-DEV-SN02"
+    },
+    "endpointsVNetName": {
+      "value": "BRS-GLB-USE2-PVTPNTBRS-DEV-VN02"
+    },
+    "endpointsSubnetName": {
+      "value": "BRS-MEX-USE2-PVTPNT-DEV-SN01"
+    },
+    "appsShared2VNetName": {
+      "value": "BRS-GLB-USE2-APPLICSHR-DEV-VN02"
+    },
+    "jumpServersSubnetName": {
+      "value": "BRS-GLB-USE2-SHRJMP-DEV-SN01"
+    },
+    "devopsAgentsSubnetName": {
+      "value": "BRS-GLB-USE2-AGEDVOPS-DEV-SN01"
+    }
+  }
+}
