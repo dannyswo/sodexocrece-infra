@@ -383,9 +383,10 @@ module keyVaultRbacModule 'modules/keyvault-rbac.bicep' = {
 }
 
 module flowLogsNsgModule 'modules/flowlogs-nsg-reference.bicep' = if (enableFlowLogsModule) {
-  name: 'flowlogs-nsg-module'
-  scope: resourceGroup(brsNetworkResourceGroupName)
+  name: 'flowlogs-nsg-reference-module'
   params: {
+    prodSubscriptionId: prodSubscriptionId
+    prodNetworkResourceGroupName: prodNetworkResourceGroupName
     flowLogsTargetNSGName: aksNSGName
   }
 }
