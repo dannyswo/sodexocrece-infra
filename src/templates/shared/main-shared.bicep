@@ -1,8 +1,12 @@
 /**
  * Template: shared/main-shared
  * Modules:
- * - IAM: users-rbac-module, managed-identities-module, managed-identities-rbac-module, monitoring-loganalytics-workspace-rbac-module, keyvault-rbac-module
- * - Network: shared-network-references-module, keyvault-private-endpoint-module, flowlogs-nsg-reference-module, service-endpoint-policies-module
+ * - IAM:
+ *     users-rbac-module, managed-identities-module, managed-identities-rbac-module,
+ *     monitoring-loganalytics-workspace-rbac-module, keyvault-rbac-module
+ * - Network:
+ *     shared-network-references-module, keyvault-private-endpoint-module,
+ *     flowlogs-nsg-reference-module, service-endpoint-policies-module
  * - Security: keyvault-module, keyvault-objects-module, keyvault-policies-module
  * - Storage: monitoring-storage-account-module, monitoring-storage-account-containers-module
  * - Monitoring: monitoring-loganalytics-workspace-module, flowlogs-module
@@ -43,8 +47,17 @@ param standardTags object = resourceGroup().tags
 
 // ==================================== Network dependencies ====================================
 
-@description('Name of the Resource Group where BRS VNets and Subnets are located.')
+@description('ID of the BRS Shared Services Subscription.')
+param brsSubscriptionId string
+
+@description('Name of the Resource Group for network resources in BRS Shared Services Subscription.')
 param brsNetworkResourceGroupName string
+
+@description('ID of the Prod / Non Prod Subscription.')
+param prodSubscriptionId string
+
+@description('Name of the Resource Group for network resources in Prod / Non Prod Subscription.')
+param prodNetworkResourceGroupName string
 
 @description('Name of the Apps Shared 03 VNet.')
 param appsShared3VNetName string
@@ -221,6 +234,10 @@ module sharedNetworkReferencesModule 'modules/shared-network-references.bicep' =
   name: 'shared-network-references-module'
   scope: resourceGroup(brsNetworkResourceGroupName)
   params: {
+    brsSubscriptionId: brsSubscriptionId
+    brsNetworkResourceGroupName: brsNetworkResourceGroupName
+    prodSubscriptionId: prodSubscriptionId
+    prodNetworkResourceGroupName: prodNetworkResourceGroupName
     appsShared3VNetName: appsShared3VNetName
     aksVNetName: aksVNetName
     endpointsVNetName: endpointsVNetName

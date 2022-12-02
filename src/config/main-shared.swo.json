@@ -8,7 +8,16 @@
     "env": {
       "value": "SWO"
     },
+    "brsSubscriptionId": {
+      "value": "f493167c-c1a8-4a50-9c6b-41b9a478f240"
+    },
     "brsNetworkResourceGroupName": {
+      "value": "RG-demo-sodexo-crece"
+    },
+    "prodSubscriptionId": {
+      "value": "f493167c-c1a8-4a50-9c6b-41b9a478f240"
+    },
+    "prodNetworkResourceGroupName": {
       "value": "RG-demo-sodexo-crece"
     },
     "appsShared3VNetName": {

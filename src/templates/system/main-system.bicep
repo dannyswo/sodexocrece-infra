@@ -2,7 +2,9 @@
  * Template: system/main-system
  * Modules:
  * - IAM: sql-database-rbac-module, aks-rbac-module, aks-nodegroup-rbac-module
- * - Network: system-network-references-module, apps-storage-account-private-endpoint-module, sql-database-private-endpoint-module, acr-private-endpoint-module
+ * - Network:
+ *     system-network-references-module, apps-storage-account-private-endpoint-module,
+ *     sql-database-private-endpoint-module, acr-private-endpoint-module
  * - Security: aks-keyvault-policies-module
  * - Storage: apps-storage-account-module, apps-storage-account-containers-module
  * - Databases: sql-database-module
@@ -44,8 +46,17 @@ param standardTags object = resourceGroup().tags
 
 // ==================================== Network dependencies ====================================
 
-@description('Name of the Resource Group where BRS VNets and Subnets are located.')
+@description('ID of the BRS Shared Services Subscription.')
+param brsSubscriptionId string
+
+@description('Name of the Resource Group for network resources in BRS Shared Services Subscription.')
 param brsNetworkResourceGroupName string
+
+@description('ID of the Prod / Non Prod Subscription.')
+param prodSubscriptionId string
+
+@description('Name of the Resource Group for network resources in Prod / Non Prod Subscription.')
+param prodNetworkResourceGroupName string
 
 @description('Name of the Apps Shared 03 VNet.')
 param appsShared3VNetName string
@@ -359,9 +370,13 @@ param enableAksNodeGroupRbacModule bool
 // ==================================== Modules ====================================
 
 module systemNetworkReferencesModule 'modules/system-network-references.bicep' = {
-  name: 'system-network-references-module'
-  scope: resourceGroup(brsNetworkResourceGroupName)
+  name: 'system-brs-network-references-module'
+  scope: resourceGroup()
   params: {
+    brsSubscriptionId: brsSubscriptionId
+    brsNetworkResourceGroupName: brsNetworkResourceGroupName
+    prodSubscriptionId: prodSubscriptionId
+    prodNetworkResourceGroupName: prodNetworkResourceGroupName
     appsShared3VNetName: appsShared3VNetName
     gatewaySubnetName: gatewaySubnetName
     aksVNetName: aksVNetName

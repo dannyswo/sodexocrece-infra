@@ -9,6 +9,18 @@
 
 // ==================================== Resource properties ====================================
 
+@description('ID of the BRS Shared Services Subscription.')
+param brsSubscriptionId string
+
+@description('Name of the Resource Group for network resources in BRS Shared Services Subscription.')
+param brsNetworkResourceGroupName string
+
+@description('ID of the Prod / Non Prod Subscription.')
+param prodSubscriptionId string
+
+@description('Name of the Resource Group for network resources in Prod / Non Prod Subscription.')
+param prodNetworkResourceGroupName string
+
 @description('Name of the Apps Shared 03 VNet.')
 param appsShared3VNetName string
 
@@ -34,58 +46,41 @@ param devopsAgentsSubnetName string
 
 // ==================================== Existing VNets ====================================
 
-resource appsShared3VNet 'Microsoft.Network/virtualNetworks@2022-05-01' existing = {
-  name: appsShared3VNetName
-}
+var appsShared3VNetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', appsShared3VNetName)
 
-resource aksVNet 'Microsoft.Network/virtualNetworks@2022-05-01' existing = {
-  name: aksVNetName
-}
+var aksVNetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', aksVNetName)
 
-resource endpointsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' existing = {
-  name: endpointsVNetName
-}
+var endpointsVNetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', endpointsVNetName)
 
-resource appsShared2VNet 'Microsoft.Network/virtualNetworks@2022-05-01' existing = {
-  name: appsShared2VNetName
-}
+var appsShared2VNetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', appsShared2VNetName)
 
 // ==================================== Existing Subnets ====================================
 
-resource endpointsSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' existing = {
-  name: endpointsSubnetName
-  parent: endpointsVNet
-}
+var endpointsSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', endpointsVNetName, endpointsSubnetName)
 
-resource jumpServersSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' existing = {
-  name: jumpServersSubnetName
-  parent: appsShared2VNet
-}
+var jumpServersSubnetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', appsShared2VNetName, jumpServersSubnetName)
 
-resource devopsAgentsSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-05-01' existing = {
-  name: devopsAgentsSubnetName
-  parent: appsShared2VNet
-}
+var devopsAgentsSubnetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', appsShared2VNetName, devopsAgentsSubnetName)
 
 // ==================================== Outputs ====================================
 
 @description('ID of the Apps Shared 03 VNet.')
-output appsShared3VNetId string = appsShared3VNet.id
+output appsShared3VNetId string = appsShared3VNetId
 
 @description('ID of the AKS VNet.')
-output aksVNetId string = aksVNet.id
+output aksVNetId string = aksVNetId
 
 @description('ID of the Private Endpoints VNet.')
-output endpointsVNetId string = endpointsVNet.id
+output endpointsVNetId string = endpointsVNetId
 
 @description('ID of the Private Endpoints Subnet.')
-output endpointsSubnetId string = endpointsSubnet.id
+output endpointsSubnetId string = endpointsSubnetId
 
 @description('ID of the Apps Shared 02 VNet.')
-output appsShared2VNetId string = appsShared2VNet.id
+output appsShared2VNetId string = appsShared2VNetId
 
 @description('ID of the Jump Servers Subnet.')
-output jumpServersSubnetId string = jumpServersSubnet.id
+output jumpServersSubnetId string = jumpServersSubnetId
 
 @description('ID of the DevOps Agents Subnet.')
-output devopsAgentsSubnetId string = devopsAgentsSubnet.id
+output devopsAgentsSubnetId string = devopsAgentsSubnetId
