@@ -158,7 +158,7 @@
       "value": true
     },
     "enableFlowLogsModule": {
-      "value": true
+      "value": false
     },
     "enableServiceEndpointPoliciesModule": {
       "value": false

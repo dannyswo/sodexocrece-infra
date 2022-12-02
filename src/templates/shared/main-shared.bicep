@@ -6,7 +6,7 @@
  *     monitoring-loganalytics-workspace-rbac-module, keyvault-rbac-module
  * - Network:
  *     shared-network-references-module, keyvault-private-endpoint-module,
- *     flowlogs-nsg-reference-module, service-endpoint-policies-module
+ *     service-endpoint-policies-module
  * - Security: keyvault-module, keyvault-objects-module, keyvault-policies-module
  * - Storage: monitoring-storage-account-module, monitoring-storage-account-containers-module
  * - Monitoring: monitoring-loganalytics-workspace-module, flowlogs-module
@@ -244,6 +244,7 @@ module sharedNetworkReferencesModule 'modules/shared-network-references.bicep' =
     appsShared2VNetName: appsShared2VNetName
     jumpServersSubnetName: jumpServersSubnetName
     devopsAgentsSubnetName: devopsAgentsSubnetName
+    aksNSGName: aksNSGName
   }
 }
 
@@ -381,15 +382,6 @@ module keyVaultRbacModule 'modules/keyvault-rbac.bicep' = {
   }
 }
 
-module flowLogsNsgModule 'modules/flowlogs-nsg-reference.bicep' = if (enableFlowLogsModule) {
-  name: 'flowlogs-nsg-reference-module'
-  params: {
-    prodSubscriptionId: prodSubscriptionId
-    prodNetworkResourceGroupName: prodNetworkResourceGroupName
-    flowLogsTargetNSGName: aksNSGName
-  }
-}
-
 module flowLogsModule 'modules/flowlogs.bicep' = if (enableFlowLogsModule) {
   name: 'flowlogs-module'
   scope: resourceGroup('NetworkWatcherRG')
@@ -397,7 +389,7 @@ module flowLogsModule 'modules/flowlogs.bicep' = if (enableFlowLogsModule) {
     location: location
     env: env
     standardTags: standardTags
-    flowLogsTargetNSGId: flowLogsNsgModule.outputs.flowLogsTargetNSGId
+    flowLogsTargetNSGId: sharedNetworkReferencesModule.outputs.aksNSGId
     flowLogsStorageAccountId: monitoringStorageAccountModule.outputs.storageAccountId
     enableNetworkWatcherFlowAnalytics: flowLogsEnableNetworkWatcherFlowAnalytics
     flowAnalyticsWorkspaceId: monitoringLogAnalyticsWorkspaceModule.outputs.workspaceId

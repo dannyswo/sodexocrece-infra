@@ -42,6 +42,9 @@ param jumpServersSubnetName string
 @description('Name of the DevOps Agents Subnet.')
 param devopsAgentsSubnetName string
 
+@description('Name of the NSG attached to AKS Subnet.')
+param aksNSGName string
+
 // ==================================== Resources ====================================
 
 // ==================================== Existing VNets ====================================
@@ -61,6 +64,10 @@ var endpointsSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupN
 var jumpServersSubnetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', appsShared2VNetName, jumpServersSubnetName)
 
 var devopsAgentsSubnetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', appsShared2VNetName, devopsAgentsSubnetName)
+
+// ==================================== Existing NSGs ====================================
+
+var aksNSGId = (aksNSGName != '') ? resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/networkSecurityGroups', aksNSGName) : ''
 
 // ==================================== Outputs ====================================
 
@@ -84,3 +91,6 @@ output jumpServersSubnetId string = jumpServersSubnetId
 
 @description('ID of the DevOps Agents Subnet.')
 output devopsAgentsSubnetId string = devopsAgentsSubnetId
+
+@description('ID of the NSG attached to AKS Subnet.')
+output aksNSGId string = aksNSGId
