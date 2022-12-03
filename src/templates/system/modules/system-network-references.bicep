@@ -21,12 +21,6 @@ param prodSubscriptionId string
 @description('Name of the Resource Group for network resources in Prod / Non Prod Subscription.')
 param prodNetworkResourceGroupName string
 
-@description('Name of the Apps Shared 03 VNet.')
-param appsShared3VNetName string
-
-@description('Name of the Gateway Subnet.')
-param gatewaySubnetName string
-
 @description('Name of the AKS VNet.')
 param aksVNetName string
 
@@ -42,6 +36,9 @@ param endpointsSubnetName string
 @description('Name of the Apps Shared 02 VNet.')
 param appsShared2VNetName string
 
+@description('Name of the Gateway Subnet.')
+param gatewaySubnetName string
+
 @description('Name of the Jump Servers Subnet.')
 param jumpServersSubnetName string
 
@@ -52,8 +49,6 @@ param devopsAgentsSubnetName string
 
 // ==================================== Existing VNets ====================================
 
-var appsShared3VNetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', appsShared3VNetName)
-
 var aksVNetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', aksVNetName)
 
 var endpointsVNetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', endpointsVNetName)
@@ -62,23 +57,17 @@ var appsShared2VNetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupNam
 
 // ==================================== Existing Subnets ====================================
 
-var gatewaySubnetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', appsShared3VNetName, gatewaySubnetName)
-
 var aksSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', aksVNetName, aksSubnetName)
 
 var endpointsSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', endpointsVNetName, endpointsSubnetName)
+
+var gatewaySubnetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', appsShared2VNetName, gatewaySubnetName)
 
 var jumpServersSubnetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', appsShared2VNetName, jumpServersSubnetName)
 
 var devopsAgentsSubnetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', appsShared2VNetName, devopsAgentsSubnetName)
 
 // ==================================== Outputs ====================================
-
-@description('ID of the Apps Shared 03 VNet.')
-output appsShared3VNetId string = appsShared3VNetId
-
-@description('ID of the Gateway Subnet.')
-output gatewaySubnetId string = gatewaySubnetId
 
 @description('ID of the AKS VNet.')
 output aksVNetId string = aksVNetId
@@ -94,6 +83,9 @@ output endpointsSubnetId string = endpointsSubnetId
 
 @description('ID of the Apps Shared 02 VNet.')
 output appsShared2VNetId string = appsShared2VNetId
+
+@description('ID of the Gateway Subnet.')
+output gatewaySubnetId string = gatewaySubnetId
 
 @description('ID of the Jump Servers Subnet.')
 output jumpServersSubnetId string = jumpServersSubnetId

@@ -44,8 +44,23 @@ param aksDnsSuffix string
 @description('Version of the Kubernetes software used by AKS.')
 param kubernetesVersion string
 
-@description('ID of the AKS Subnet where the AKS Managed Cluster will be deployed.')
-param subnetId string
+@description('Network plugin of the AKS Managed Cluster.')
+@allowed([
+  'kubenet'
+  'azure'
+])
+param networkPlugin string
+
+@description('ID of the Subnet where nodes of AKS Managed Cluster will be deployed.')
+param nodesSubnetId string
+
+@description('ID of the Subnet where Pods IPs will be taken.')
+param podsSubnetId string
+
+@description('Maximum number of Pods for AKS system node pool.')
+@minValue(30)
+@maxValue(120)
+param maxPods int
 
 @description('Enable auto scaling for AKS system node pool.')
 param enableAutoScaling bool
@@ -153,7 +168,9 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
         name: 'agentpool1'
         mode: 'System'
         type: 'VirtualMachineScaleSets'
-        vnetSubnetID: subnetId
+        vnetSubnetID: nodesSubnetId
+        podSubnetID: (podsSubnetId != '') ? podsSubnetId : null
+        maxPods: maxPods
         availabilityZones: [ '1', '2', '3' ]
         scaleSetPriority: 'Regular'
         enableAutoScaling: enableAutoScaling
@@ -179,7 +196,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
       privateDNSZone: privateDnsZone.id
     }
     networkProfile: {
-      networkPlugin: 'kubenet'
+      networkPlugin: networkPlugin
       networkPolicy: 'calico'
       loadBalancerSku: 'standard'
       loadBalancerProfile: {

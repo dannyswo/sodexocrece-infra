@@ -58,12 +58,6 @@ param prodSubscriptionId string
 @description('Name of the Resource Group for network resources in Prod / Non Prod Subscription.')
 param prodNetworkResourceGroupName string
 
-@description('Name of the Apps Shared 03 VNet.')
-param appsShared3VNetName string
-
-@description('Name of the Application Gateway Subnet.')
-param gatewaySubnetName string
-
 @description('Name of the AKS VNet.')
 param aksVNetName string
 
@@ -78,6 +72,9 @@ param endpointsSubnetName string
 
 @description('Name of the Apps Shared 02 VNet.')
 param appsShared2VNetName string
+
+@description('Name of the Application Gateway Subnet.')
+param gatewaySubnetName string
 
 @description('Name of the Jump Servers Subnet.')
 param jumpServersSubnetName string
@@ -254,6 +251,10 @@ param aksSkuTier string
 param aksDnsSuffix string
 @description('Version of the Kubernetes software used by AKS.')
 param aksKubernetesVersion string
+@description('Network plugin of the AKS Managed Cluster.')
+param aksNetworkPlugin string
+@description('Maximum number of Pods for AKS system node pool.')
+param aksMaxPods int
 @description('Enable auto scaling for AKS system node pool.')
 param aksEnableAutoScaling bool
 @description('Minimum number of nodes in the AKS system node pool.')
@@ -376,20 +377,18 @@ module systemNetworkReferencesModule 'modules/system-network-references.bicep' =
     brsNetworkResourceGroupName: brsNetworkResourceGroupName
     prodSubscriptionId: prodSubscriptionId
     prodNetworkResourceGroupName: prodNetworkResourceGroupName
-    appsShared3VNetName: appsShared3VNetName
-    gatewaySubnetName: gatewaySubnetName
     aksVNetName: aksVNetName
     aksSubnetName: aksSubnetName
     endpointsVNetName: endpointsVNetName
     endpointsSubnetName: endpointsSubnetName
     appsShared2VNetName: appsShared2VNetName
+    gatewaySubnetName: gatewaySubnetName
     jumpServersSubnetName: jumpServersSubnetName
     devopsAgentsSubnetName: devopsAgentsSubnetName
   }
 }
 
 var linkedVNetIdsForPrivateEndpoints = [
-  systemNetworkReferencesModule.outputs.appsShared3VNetId
   systemNetworkReferencesModule.outputs.aksVNetId
   systemNetworkReferencesModule.outputs.endpointsVNetId
   systemNetworkReferencesModule.outputs.appsShared2VNetId
@@ -577,7 +576,10 @@ module aksModule 'modules/aks.bicep' = {
     aksSkuTier: aksSkuTier
     aksDnsSuffix: aksDnsSuffix
     kubernetesVersion: aksKubernetesVersion
-    subnetId: systemNetworkReferencesModule.outputs.aksSubnetId
+    networkPlugin: aksNetworkPlugin
+    nodesSubnetId: systemNetworkReferencesModule.outputs.aksSubnetId
+    podsSubnetId: ''
+    maxPods: aksMaxPods
     enableAutoScaling: aksEnableAutoScaling
     nodePoolMinCount: aksNodePoolMinCount
     nodePoolMaxCount: aksNodePoolMaxCount

@@ -21,9 +21,6 @@ param prodSubscriptionId string
 @description('Name of the Resource Group for network resources in Prod / Non Prod Subscription.')
 param prodNetworkResourceGroupName string
 
-@description('Name of the Apps Shared 03 VNet.')
-param appsShared3VNetName string
-
 @description('Name of the AKS VNet.')
 param aksVNetName string
 
@@ -49,8 +46,6 @@ param aksNSGName string
 
 // ==================================== Existing VNets ====================================
 
-var appsShared3VNetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', appsShared3VNetName)
-
 var aksVNetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', aksVNetName)
 
 var endpointsVNetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', endpointsVNetName)
@@ -70,9 +65,6 @@ var devopsAgentsSubnetId = resourceId(brsSubscriptionId, brsNetworkResourceGroup
 var aksNSGId = (aksNSGName != '') ? resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/networkSecurityGroups', aksNSGName) : ''
 
 // ==================================== Outputs ====================================
-
-@description('ID of the Apps Shared 03 VNet.')
-output appsShared3VNetId string = appsShared3VNetId
 
 @description('ID of the AKS VNet.')
 output aksVNetId string = aksVNetId

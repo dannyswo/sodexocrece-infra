@@ -26,22 +26,6 @@ param standardTags object
 
 // ==================================== Resource properties ====================================
 
-@description('Suffix of the Apps Shared 03 VNet name.')
-@minLength(4)
-@maxLength(4)
-param appsShared3VNetNameSuffix string
-
-@description('IP range or CIDR of the Apps Shared 03 VNet.')
-param appsShared3VNetAddressPrefix string
-
-@description('Suffix of the Gateway Subnet name.')
-@minLength(4)
-@maxLength(4)
-param gatewaySubnetNameSuffix string
-
-@description('IP range or CIDR of the Gateway Subnet.')
-param gatewaySubnetAddressPrefix string
-
 @description('Suffix of the Applications VNet name.')
 @minLength(4)
 @maxLength(4)
@@ -81,6 +65,14 @@ param appsShared2VNetNameSuffix string
 
 @description('IP range or CIDR of the Apps Shared 02 VNet.')
 param appsShared2VNetAddressPrefix string
+
+@description('Suffix of the Gateway Subnet name.')
+@minLength(4)
+@maxLength(4)
+param gatewaySubnetNameSuffix string
+
+@description('IP range or CIDR of the Gateway Subnet.')
+param gatewaySubnetAddressPrefix string
 
 @description('Suffix of the Jump Servers Subnet name.')
 @minLength(4)
@@ -154,36 +146,6 @@ var devopsAgentsSubnetServiceEndpoints1 = (enableStorageAccountServiceEndpoint) 
 var devopsAgentsSubnetServiceEndpoints2 = (enableSqlDatabaseServiceEndpoint) ? concat(devopsAgentsSubnetServiceEndpoints1, [ serviceEndpointDefinitions.sql ]) : devopsAgentsSubnetServiceEndpoints1
 var devopsAgentsSubnetServiceEndpoints = (enableContainerRegistryServiceEndpoint) ? concat(devopsAgentsSubnetServiceEndpoints2, [ serviceEndpointDefinitions.containerRegistry ]) : devopsAgentsSubnetServiceEndpoints2
 
-resource appsShared3VNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-${appsShared3VNetNameSuffix}'
-  location: location
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        appsShared3VNetAddressPrefix
-      ]
-    }
-    subnets: [
-      {
-        name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewaySubnetNameSuffix}'
-        properties: {
-          addressPrefix: gatewaySubnetAddressPrefix
-          networkSecurityGroup: {
-            id: gatewayNSG.id
-          }
-          routeTable: (createCustomRouteTable) ? {
-            id: aksCustomRouteTable.id
-          } : null
-          serviceEndpoints: gatewaySubnetServiceEndpoints
-        }
-      }
-    ]
-    enableDdosProtection: false
-    enableVmProtection: false
-  }
-  tags: standardTags
-}
-
 resource aksVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-${aksVNetNameSuffix}'
   location: location
@@ -251,6 +213,19 @@ resource appsShared2VNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
     }
     subnets: [
       {
+        name: 'BRS-MEX-USE2-CRECESDX-${env}-${gatewaySubnetNameSuffix}'
+        properties: {
+          addressPrefix: gatewaySubnetAddressPrefix
+          networkSecurityGroup: {
+            id: gatewayNSG.id
+          }
+          routeTable: (createCustomRouteTable) ? {
+            id: aksCustomRouteTable.id
+          } : null
+          serviceEndpoints: gatewaySubnetServiceEndpoints
+        }
+      }
+      {
         name: 'BRS-MEX-USE2-CRECESDX-${env}-${jumpServersSubnetNameSuffix}'
         properties: {
           addressPrefix: jumpServersSubnetAddressPrefix
@@ -278,58 +253,6 @@ resource appsShared2VNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 }
 
 // ==================================== VNets Peerings ====================================
-
-resource appsShared3AksVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP01'
-  parent: appsShared3VNet
-  properties: {
-    remoteVirtualNetwork: {
-      id: aksVNet.id
-    }
-    allowVirtualNetworkAccess: true
-    allowForwardedTraffic: true
-    useRemoteGateways: false
-  }
-}
-
-resource aksAppsShared3VNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP03'
-  parent: aksVNet
-  properties: {
-    remoteVirtualNetwork: {
-      id: appsShared3VNet.id
-    }
-    allowVirtualNetworkAccess: true
-    allowForwardedTraffic: true
-    useRemoteGateways: false
-  }
-}
-
-resource appsShared3EndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP03'
-  parent: appsShared3VNet
-  properties: {
-    remoteVirtualNetwork: {
-      id: endpointsVNet.id
-    }
-    allowVirtualNetworkAccess: true
-    allowForwardedTraffic: true
-    useRemoteGateways: false
-  }
-}
-
-resource endpointsAppsShared3VNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-VP04'
-  parent: endpointsVNet
-  properties: {
-    remoteVirtualNetwork: {
-      id: appsShared3VNet.id
-    }
-    allowVirtualNetworkAccess: true
-    allowForwardedTraffic: true
-    useRemoteGateways: false
-  }
-}
 
 resource aksEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-VP05'
@@ -706,10 +629,6 @@ resource aksCustomRouteTable 'Microsoft.Network/routeTables@2022-05-01' = if (cr
 })
 output vnets array = [
   {
-    id: appsShared3VNet.id
-    name: appsShared3VNet.name
-  }
-  {
     id: aksVNet.id
     name: aksVNet.name
   }
@@ -730,10 +649,6 @@ output vnets array = [
 })
 output subnets array = [
   {
-    id: appsShared3VNet.properties.subnets[0].id
-    name: appsShared3VNet.properties.subnets[0].name
-  }
-  {
     id: aksVNet.properties.subnets[0].id
     name: aksVNet.properties.subnets[0].name
   }
@@ -748,6 +663,10 @@ output subnets array = [
   {
     id: appsShared2VNet.properties.subnets[1].id
     name: appsShared2VNet.properties.subnets[1].name
+  }
+  {
+    id: appsShared2VNet.properties.subnets[2].id
+    name: appsShared2VNet.properties.subnets[2].name
   }
 ]
 

@@ -66,20 +66,18 @@ module networkModule 'modules/network.bicep' = if (createNetwork) {
     location: location
     env: env
     standardTags: standardTags
-    appsShared3VNetNameSuffix: 'VN01'
-    appsShared3VNetAddressPrefix: '10.169.90.0/24'
-    gatewaySubnetNameSuffix: 'SN01'
-    gatewaySubnetAddressPrefix: '10.169.90.128/25'
     aksVNetNameSuffix: 'VN02'
     aksVNetAddressPrefix: '10.169.72.0/21'
     aksSubnetNameSuffix: 'SN02'
-    aksSubnetAddressPrefix: '10.169.72.64/27'
+    aksSubnetAddressPrefix: '10.169.72.0/24'
     endpointsVNetNameSuffix: 'VN03'
     endpointsVNetAddressPrefix: '10.169.88.0/23'
     endpointsSubnetNameSuffix: 'SN03'
     endpointsSubnetAddressPrefix: '10.169.88.64/26'
     appsShared2VNetNameSuffix: 'VN04'
     appsShared2VNetAddressPrefix: '10.169.50.0/24'
+    gatewaySubnetNameSuffix: 'SN01'
+    gatewaySubnetAddressPrefix: '10.169.50.0/26'
     jumpServersSubnetNameSuffix: 'SN04'
     jumpServersSubnetAddressPrefix: '10.169.50.64/26'
     devopsAgentsSubnetNameSuffix: 'SN05'
