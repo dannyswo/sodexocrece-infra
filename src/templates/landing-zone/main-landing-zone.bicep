@@ -69,7 +69,7 @@ module networkModule 'modules/network.bicep' = if (createNetwork) {
     aksVNetNameSuffix: 'VN02'
     aksVNetAddressPrefix: '10.169.72.0/21'
     aksSubnetNameSuffix: 'SN02'
-    aksSubnetAddressPrefix: '10.169.72.0/24'
+    aksSubnetAddressPrefix: '10.169.72.0/25'
     endpointsVNetNameSuffix: 'VN03'
     endpointsVNetAddressPrefix: '10.169.88.0/23'
     endpointsSubnetNameSuffix: 'SN03'

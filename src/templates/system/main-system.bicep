@@ -3,7 +3,7 @@
  * Modules:
  * - IAM: sql-database-rbac-module, aks-rbac-module, aks-nodegroup-rbac-module
  * - Network:
- *     system-network-references-module, apps-storage-account-private-endpoint-module,
+ *     network-references-system-module, apps-storage-account-private-endpoint-module,
  *     sql-database-private-endpoint-module, acr-private-endpoint-module
  * - Security: aks-keyvault-policies-module
  * - Storage: apps-storage-account-module, apps-storage-account-containers-module
@@ -370,8 +370,8 @@ param enableAksNodeGroupRbacModule bool
 
 // ==================================== Modules ====================================
 
-module systemNetworkReferencesModule 'modules/system-network-references.bicep' = {
-  name: 'system-brs-network-references-module'
+module networkReferencesSystemModule 'modules/network-references-system.bicep' = {
+  name: 'network-references-system-module'
   params: {
     brsSubscriptionId: brsSubscriptionId
     brsNetworkResourceGroupName: brsNetworkResourceGroupName
@@ -389,14 +389,14 @@ module systemNetworkReferencesModule 'modules/system-network-references.bicep' =
 }
 
 var linkedVNetIdsForPrivateEndpoints = [
-  systemNetworkReferencesModule.outputs.aksVNetId
-  systemNetworkReferencesModule.outputs.endpointsVNetId
-  systemNetworkReferencesModule.outputs.appsShared2VNetId
+  networkReferencesSystemModule.outputs.aksVNetId
+  networkReferencesSystemModule.outputs.endpointsVNetId
+  networkReferencesSystemModule.outputs.appsShared2VNetId
 ]
 
 var linkedVNetIdsForAksPrivateEndpoint = [
-  systemNetworkReferencesModule.outputs.aksVNetId
-  systemNetworkReferencesModule.outputs.appsShared2VNetId
+  networkReferencesSystemModule.outputs.aksVNetId
+  networkReferencesSystemModule.outputs.appsShared2VNetId
 ]
 
 module appGatewayModule 'modules/app-gateway.bicep' = {
@@ -409,7 +409,7 @@ module appGatewayModule 'modules/app-gateway.bicep' = {
     appGatewayNameSuffix: appGatewayNameSuffix
     appGatewaySkuTier: appGatewaySkuTier
     appGatewaySkuName: appGatewaySkuName
-    gatewaySubnetId: systemNetworkReferencesModule.outputs.gatewaySubnetId
+    gatewaySubnetId: networkReferencesSystemModule.outputs.gatewaySubnetId
     frontendPrivateIPAddress: appGatewayFrontendPrivateIPAddress
     enablePublicFrontendIP: appGatewayEnablePublicFrontendIP
     autoScaleMinCapacity: appGatewayAutoScaleMinCapacity
@@ -463,7 +463,7 @@ module appsStorageAccountPrivateEndpointModule 'modules/private-endpoint.bicep' 
     env: env
     standardTags: standardTags
     privateEndpointNameSuffix: 'PE04'
-    subnetId: systemNetworkReferencesModule.outputs.endpointsSubnetId
+    subnetId: networkReferencesSystemModule.outputs.endpointsSubnetId
     privateIPAddresses: [ appsStorageAccountPEPrivateIPAddress ]
     serviceId: appsStorageAccountModule.outputs.storageAccountId
     groupId: 'blob'
@@ -515,7 +515,7 @@ module sqlDatabasePrivateEndpointModule 'modules/private-endpoint.bicep' = if (e
     env: env
     standardTags: standardTags
     privateEndpointNameSuffix: 'PE01'
-    subnetId: systemNetworkReferencesModule.outputs.endpointsSubnetId
+    subnetId: networkReferencesSystemModule.outputs.endpointsSubnetId
     privateIPAddresses: [ sqlDatabasePEPrivateIPAddress ]
     serviceId: sqlDatabaseModule.outputs.sqlServerId
     groupId: 'sqlServer'
@@ -558,7 +558,7 @@ module acrPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enablePri
     env: env
     standardTags: standardTags
     privateEndpointNameSuffix: 'PE03'
-    subnetId: systemNetworkReferencesModule.outputs.endpointsSubnetId
+    subnetId: networkReferencesSystemModule.outputs.endpointsSubnetId
     privateIPAddresses: acrPEPrivateIPAddresses
     serviceId: acrModule.outputs.registryId
     groupId: 'registry'
@@ -577,7 +577,7 @@ module aksModule 'modules/aks.bicep' = {
     aksDnsSuffix: aksDnsSuffix
     kubernetesVersion: aksKubernetesVersion
     networkPlugin: aksNetworkPlugin
-    nodesSubnetId: systemNetworkReferencesModule.outputs.aksSubnetId
+    nodesSubnetId: networkReferencesSystemModule.outputs.aksSubnetId
     podsSubnetId: ''
     maxPods: aksMaxPods
     enableAutoScaling: aksEnableAutoScaling
@@ -591,7 +591,7 @@ module aksModule 'modules/aks.bicep' = {
     podIdentities: []
     enableWorkloadIdentity: aksEnableWorkloadIdentity
     enableAGICAddon: aksEnableAGICAddon
-    appGatewayName: appGatewayModule.outputs.applicationGatewayName
+    appGatewayId: appGatewayModule.outputs.applicationGatewayId
     createCustomRouteTable: aksCreateCustomRouteTable
     enableKeyVaultSecretsProviderAddon: aksEnableKeyVaultSecretsProviderAddon
     enableSecretsRotation: aksEnableSecretsRotation
@@ -603,27 +603,33 @@ module aksModule 'modules/aks.bicep' = {
   }
 }
 
-module aksKeyVaultPoliciesModule 'modules/aks-keyvault-policies.bicep' = {
-  name: 'aks-keyvault-policies-module'
+module aksKubeletRbacModule 'modules/aks-kubelet-rbac.bicep' = {
+  name: 'aks-kubelet-rbac-module'
   params: {
-    keyVaultName: keyVaultName
-    aksKeyVaultSecrtsProviderPrincipalId: aksModule.outputs.aksKeyVaultSecretsProviderPrincipalId
+    aksKubeletPrincipalId: aksModule.outputs.aksKubeletPrincipalId
   }
 }
 
-module aksRbacModule 'modules/aks-rbac.bicep' = {
-  name: 'aks-rbac-module'
+module aksNodeGroupRbacModule 'modules/aks-kubelet-nodegroup-rbac.bicep' = if (enableAksNodeGroupRbacModule) {
+  name: 'aks-kubelet-nodegroup-rbac-module'
+  scope: resourceGroup('MC_${resourceGroup().name}_BRS-MEX-USE2-CRECESDX-${env}-KU01_${location}')
   params: {
     aksKubeletPrincipalId: aksModule.outputs.aksKubeletPrincipalId
+  }
+}
+
+module aksAGICRbacModule 'modules/aks-agic-rbac.bicep' = if (aksEnableAGICAddon) {
+  name: 'aks-agic-rbac-module'
+  params: {
     aksAGICPrincipalId: aksModule.outputs.aksAGICPrincipalId
     appGatewayName: appGatewayModule.outputs.applicationGatewayName
   }
 }
 
-module aksNodeGroupRbacModule 'modules/aks-nodegroup-rbac.bicep' = if (enableAksNodeGroupRbacModule) {
-  name: 'aks-nodegroup-rbac-module'
-  scope: resourceGroup('MC_${resourceGroup().name}_BRS-MEX-USE2-CRECESDX-${env}-KU01_${location}')
+module aksSecretsProviderKeyVaultPoliciesModule 'modules/aks-secretsprovider-keyvault-policies.bicep' = if (aksEnableKeyVaultSecretsProviderAddon) {
+  name: 'aks-secretsprovider-keyvault-policies-module'
   params: {
-    aksKubeletPrincipalId: aksModule.outputs.aksKubeletPrincipalId
+    keyVaultName: keyVaultName
+    aksKeyVaultSecrtsProviderPrincipalId: aksModule.outputs.aksKeyVaultSecretsProviderPrincipalId
   }
 }

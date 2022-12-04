@@ -1,5 +1,5 @@
 /**
- * Module: system-network-references
+ * Module: network-references-system
  * Depends on: network
  * Used by: system/main-system
  * Resources: N/A

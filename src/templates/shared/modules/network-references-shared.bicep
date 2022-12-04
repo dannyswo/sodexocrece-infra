@@ -1,5 +1,5 @@
 /**
- * Module: shared-network-references
+ * Module: network-references-shared
  * Depends on: network
  * Used by: system/main-shared
  * Resources: N/A

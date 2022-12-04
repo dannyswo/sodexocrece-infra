@@ -14,7 +14,7 @@ shared/main-shared
 1. **`users-rbac-module`** (`users-rbac`): AD Role Assignments for admin and dev users.
 2. **`managed-identities-module`** (`managed-identities`): AD Managed Identities of infrastructure services and applications.
 3. **`managed-identities-rbac-module`** (`managed-identities-rbac`): AD Role Assignments for infrastructure services and applications.
-4. **`shared-network-references-module`** (`shared-network-references`): obtains references from existing VNets and Subnets.
+4. **`network-references-shared-module`** (`network-references-shared`): obtains references from existing VNets and Subnets.
 5. **`monitoring-storage-account-module`** (`monitoring-storage-account`): Storage Account for monitoring data, used by flowlogs and monitoring-loganalytics-workspace. \[RL01\]
 6. **`monitoring-storage-account-containers-module`** (`monitoring-storage-account-containers`): Containers of the monitoring Storage Account.
 7. **`monitoring-loganalytics-workspace-module`** (`monitoring-loganalytics-workspace`): Log Analytics Workspace instance for logs and metrics collection and analysis, used as target for diagnostics feature by keyvault, app-gateway, apps-storage-account, sql-database, acr, aks. \[RL02, MM01\]
@@ -29,7 +29,7 @@ shared/main-shared
 
 system/main-system
 
-1. **`system-network-references-module`** (`system-network-references`): obtains references from existing VNets and Subnets.
+1. **`network-references-system-module`** (`network-references-system`): obtains references from existing VNets and Subnets.
 2. **`app-gateway-module`** (`app-gateway`): Application Gateway, WAF Policies. \[RL05, MM05, AD01\]
 3. **`apps-storage-account-module`** (`apps-storage-account`): Storage Account for applications data, Blob Container. [RL06, MM06, AD02\]
 4. **`apps-storage-account-containers-module`** (`apps-storage-account-containers`): Containers of the applications Storage Account.
@@ -40,9 +40,10 @@ system/main-system
 9. **`acr-module`** (`acr`): Container Registry required by aks. \[RL08, MM08\]
 10. **`acr-private-endpoint-module`** (`private-endpoint`): Private Endpoint, Private DNS Zone and VNet Links.
 11. **`aks-module`** (`aks`): AKS Managed Cluster, custom Private DNS Zone. Depends on loganalytics, agw. \[RL09, AD03\]
-12. **`aks-keyvault-rbac-module`** (`aks-keyvault-rbac`): configures additional Key Vault Access Policies for AKS Managed Identities.
-13. **`aks-rbac-module`** (`aks-rbac`): AD Role Assignments for AKS Managed Identities under project Resource Group scope.
-14. **`aks-nodegroup-rbac-module`** (`aks-nodegroup-rbac`): AD Role Assignments for AKS Managed Identities under AKS-managed Resource Group scope.
+12. **`aks-rbac-kubelet-module`** (`aks-kubelet-rbac`): AD Role Assignments for AKS kubelet process Managed Identity under project Resource Group scope.
+13. **`aks-kubelet-nodegroup-rbac-module`** (`aks-kubelet-nodegroup-rbac`): AD Role Assignments for AKS kubelet process Managed Identity under AKS-managed Node Resource Group scope.
+14. **`aks-rbac-agic-module`** (`aks-agic-rbac`): AD Role Assignments for AGIC add-on Managed Identity under project Resource Group scope.
+15. **`aks-secretsprovider-keyvault-policies-module`** (`aks-secretsprovider-keyvault-rbac`): configures additional Key Vault Access Policies for AKS Secrets Provider add-on Managed Identity.
 
 Environments:
 

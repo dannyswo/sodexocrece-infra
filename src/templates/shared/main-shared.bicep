@@ -5,7 +5,7 @@
  *     users-rbac-module, managed-identities-module, managed-identities-rbac-module,
  *     monitoring-loganalytics-workspace-rbac-module, keyvault-rbac-module
  * - Network:
- *     shared-network-references-module, keyvault-private-endpoint-module,
+ *     network-references-shared-module, keyvault-private-endpoint-module,
  *     service-endpoint-policies-module
  * - Security: keyvault-module, keyvault-objects-module, keyvault-policies-module
  * - Storage: monitoring-storage-account-module, monitoring-storage-account-containers-module
@@ -227,8 +227,8 @@ module managedIdentitiesRbacModule 'modules/managed-identities-rbac.bicep' = {
   }
 }
 
-module sharedNetworkReferencesModule 'modules/shared-network-references.bicep' = {
-  name: 'shared-network-references-module'
+module networkReferencesSharedModule 'modules/network-references-shared.bicep' = {
+  name: 'network-references-shared-module'
   params: {
     brsSubscriptionId: brsSubscriptionId
     brsNetworkResourceGroupName: brsNetworkResourceGroupName
@@ -245,9 +245,9 @@ module sharedNetworkReferencesModule 'modules/shared-network-references.bicep' =
 }
 
 var linkedVNetIdsForPrivateEndpoints = [
-  sharedNetworkReferencesModule.outputs.aksVNetId
-  sharedNetworkReferencesModule.outputs.endpointsVNetId
-  sharedNetworkReferencesModule.outputs.appsShared2VNetId
+  networkReferencesSharedModule.outputs.aksVNetId
+  networkReferencesSharedModule.outputs.endpointsVNetId
+  networkReferencesSharedModule.outputs.appsShared2VNetId
 ]
 
 module monitoringStorageAccountModule 'modules/monitoring-storage-account.bicep' = {
@@ -262,8 +262,8 @@ module monitoringStorageAccountModule 'modules/monitoring-storage-account.bicep'
     enablePublicAccess: monitoringStorageAccountEnablePublicAccess
     bypassAzureServices: monitoringStorageAccountBypassAzureServices
     allowedSubnetIds: concat(monitoringStorageAccountAllowedSubnetIds, [
-        sharedNetworkReferencesModule.outputs.jumpServersSubnetId
-        sharedNetworkReferencesModule.outputs.devopsAgentsSubnetId
+        networkReferencesSharedModule.outputs.jumpServersSubnetId
+        networkReferencesSharedModule.outputs.devopsAgentsSubnetId
       ])
     allowedIPsOrCIDRs: monitoringStorageAccountAllowedIPsOrCIDRs
   }
@@ -326,7 +326,7 @@ module keyVaultPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enab
     env: env
     standardTags: standardTags
     privateEndpointNameSuffix: 'PE02'
-    subnetId: sharedNetworkReferencesModule.outputs.endpointsSubnetId
+    subnetId: networkReferencesSharedModule.outputs.endpointsSubnetId
     privateIPAddresses: [ keyVaultPEPrivateIPAddress ]
     serviceId: keyVaultModule.outputs.keyVaultId
     groupId: 'vault'
@@ -383,7 +383,7 @@ module flowLogsModule 'modules/flowlogs.bicep' = if (enableFlowLogsModule) {
     location: location
     env: env
     standardTags: standardTags
-    flowLogsTargetNSGId: sharedNetworkReferencesModule.outputs.aksNSGId
+    flowLogsTargetNSGId: networkReferencesSharedModule.outputs.aksNSGId
     flowLogsStorageAccountId: monitoringStorageAccountModule.outputs.storageAccountId
     enableNetworkWatcherFlowAnalytics: flowLogsEnableNetworkWatcherFlowAnalytics
     flowAnalyticsWorkspaceId: monitoringLogAnalyticsWorkspaceModule.outputs.workspaceId

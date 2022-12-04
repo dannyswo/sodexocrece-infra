@@ -107,8 +107,8 @@ param enableWorkloadIdentity bool
 @description('Enable AKS Application Gateway Ingress Controller (AGIC) add-on.')
 param enableAGICAddon bool
 
-@description('Name of the Application Gateway managed by AGIC add-on.')
-param appGatewayName string
+@description('ID of the Application Gateway managed by AGIC add-on.')
+param appGatewayId string
 
 @description('Create custom Route Table for Gateway Subnet managed by AKS (with kubenet network plugin).')
 param createCustomRouteTable bool
@@ -232,7 +232,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
       ingressApplicationGateway: {
         enabled: enableAGICAddon
         config: {
-          applicationGatewayId: resourceId('Microsoft.Network/applicationGateways', appGatewayName)
+          applicationGatewayId: appGatewayId
         }
       }
       omsagent: {

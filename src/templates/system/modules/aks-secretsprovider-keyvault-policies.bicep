@@ -1,5 +1,5 @@
 /**
- * Module: aks-keyvault-policies
+ * Module: aks-secretsprovider-keyvault-policies
  * Depends on: aks, keyvault
  * Used by: system/main-system
  * Common resources: N/A
