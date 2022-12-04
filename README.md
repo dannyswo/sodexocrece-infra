@@ -40,10 +40,11 @@ system/main-system
 9. **`acr-module`** (`acr`): Container Registry required by aks. \[RL08, MM08\]
 10. **`acr-private-endpoint-module`** (`private-endpoint`): Private Endpoint, Private DNS Zone and VNet Links.
 11. **`aks-module`** (`aks`): AKS Managed Cluster, custom Private DNS Zone. Depends on loganalytics, agw. \[RL09, AD03\]
-12. **`aks-rbac-kubelet-module`** (`aks-kubelet-rbac`): AD Role Assignments for AKS kubelet process Managed Identity under project Resource Group scope.
+12. **`aks-kubelet-rbac-module`** (`aks-kubelet-rbac`): AD Role Assignments for AKS kubelet process Managed Identity under project Resource Group scope.
 13. **`aks-kubelet-nodegroup-rbac-module`** (`aks-kubelet-nodegroup-rbac`): AD Role Assignments for AKS kubelet process Managed Identity under AKS-managed Node Resource Group scope.
-14. **`aks-rbac-agic-module`** (`aks-agic-rbac`): AD Role Assignments for AGIC add-on Managed Identity under project Resource Group scope.
-15. **`aks-secretsprovider-keyvault-policies-module`** (`aks-secretsprovider-keyvault-rbac`): configures additional Key Vault Access Policies for AKS Secrets Provider add-on Managed Identity.
+14. **`aks-agic-rbac-module`** (`aks-agic-rbac`): AD Role Assignments for AGIC add-on Managed Identity under project Resource Group scope.
+15. **`aks-agic-agwgroup-rbac-module`** (`aks-agic-agwgroup-rbac`): AD Role Assignments for AGIC add-on Managed Identity under App Gateway Resource Group scope.
+16. **`aks-secretsprovider-keyvault-policies-module`** (`aks-secretsprovider-keyvault-policies`): configures additional Key Vault Access Policies for AKS Secrets Provider add-on Managed Identity.
 
 Environments:
 

@@ -1,11 +1,13 @@
 /**
  * Template: system/main-system
  * Modules:
- * - IAM: sql-database-rbac-module, aks-rbac-module, aks-nodegroup-rbac-module
+ * - IAM:
+ *     sql-database-rbac-module, aks-kubelet-rbac-module, aks-kubelet-nodegroup-rbac-module,
+ *     aks-agic-rbac-module, aks-agic-agwgroup-rbac-module
  * - Network:
- *     network-references-system-module, apps-storage-account-private-endpoint-module,
+ *     network-references-system-module, app-gateway-module, apps-storage-account-private-endpoint-module,
  *     sql-database-private-endpoint-module, acr-private-endpoint-module
- * - Security: aks-keyvault-policies-module
+ * - Security: aks-secretsprovider-keyvault-policies-module
  * - Storage: apps-storage-account-module, apps-storage-account-containers-module
  * - Databases: sql-database-module
  * - Frontend: acr-module, aks-module
@@ -622,7 +624,13 @@ module aksAGICRbacModule 'modules/aks-agic-rbac.bicep' = if (aksEnableAGICAddon)
   name: 'aks-agic-rbac-module'
   params: {
     aksAGICPrincipalId: aksModule.outputs.aksAGICPrincipalId
-    appGatewayName: appGatewayModule.outputs.applicationGatewayName
+  }
+}
+
+module aksAGICAgwGroupRbacModule 'modules/aks-agic-agwgroup-rbac.bicep' = if (aksEnableAGICAddon) {
+  name: 'aks-agic-agwgroup-rbac-module'
+  params: {
+    aksAGICPrincipalId: aksModule.outputs.aksAGICPrincipalId
   }
 }
 
