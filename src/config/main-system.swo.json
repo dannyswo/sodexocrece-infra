@@ -45,15 +45,15 @@
       "value": "BRS-MEX-USE2-CRECESDX-SWO-SN05"
     },
     "appsStorageAccountPEPrivateIPAddress": {
-      "value": "10.169.88.73"
+      "value": "10.169.88.74"
     },
     "sqlDatabasePEPrivateIPAddress": {
       "value": "10.169.88.69"
     },
     "acrPEPrivateIPAddresses": {
       "value": [
-        "10.169.88.71",
-        "10.169.88.72"
+        "10.169.88.72",
+        "10.169.88.73"
       ]
     },
     "monitoringStorageAccountName": {
