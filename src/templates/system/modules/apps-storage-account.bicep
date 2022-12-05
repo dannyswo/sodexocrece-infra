@@ -144,7 +144,7 @@ resource appsStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   }
   properties: {
     accessTier: 'Hot'
-    isHnsEnabled: true
+    isHnsEnabled: false
     isNfsV3Enabled: false
     isSftpEnabled: false
     largeFileSharesState: 'Disabled'
