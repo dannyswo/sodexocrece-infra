@@ -190,22 +190,22 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01
     automaticSnapshotPolicyEnabled: false
     restorePolicy: {
       enabled: enableBlobRestorePolicy
-      days: blobRestorePolicyDays
+      days: (enableBlobRestorePolicy) ? blobRestorePolicyDays : null
     }
     deleteRetentionPolicy: {
       enabled: enableBlobSoftDelete
       allowPermanentDelete: false
-      days: blobSoftDeleteRetentionDays
+      days: (enableBlobSoftDelete) ? blobSoftDeleteRetentionDays : null
     }
     containerDeleteRetentionPolicy: {
       enabled: enableContainerSoftDelete
       allowPermanentDelete: false
-      days: containerSoftDeleteRetentionDays
+      days: (enableContainerSoftDelete) ? containerSoftDeleteRetentionDays : null
     }
     isVersioningEnabled: enableBlobVersioning
     changeFeed: {
       enabled: enableChangeFeed
-      retentionInDays: changeFeedRetentionDays
+      retentionInDays: (enableChangeFeed) ? changeFeedRetentionDays : null
     }
   }
 }
