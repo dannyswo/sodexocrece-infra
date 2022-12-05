@@ -230,6 +230,14 @@ module managedIdentitiesRbacModule 'modules/managed-identities-rbac.bicep' = {
   }
 }
 
+module managedIdentitiesNetworkGroupRbacModule 'modules/managed-identities-networkgroup-rbac.bicep' = {
+  name: 'managed-identities-networkgroup-rbac-module'
+  scope: resourceGroup(prodSubscriptionId, prodNetworkResourceGroupName)
+  params: {
+    aksManagedIdentityPrincipalId: managedIdentitiesModule.outputs.aksManagedIdentityPrincipalId
+  }
+}
+
 module networkReferencesSharedModule 'modules/network-references-shared.bicep' = {
   name: 'network-references-shared-module'
   params: {
