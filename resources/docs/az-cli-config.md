@@ -7,7 +7,8 @@ Azure CLI Configuration
 az bicep install
 az bicep upgrade
 az bicep version
-az bicep decompile --file .\template.json
+az bicep decompile -f .\template.json
+az bicep build -f .\template.bicep
 
 az login
 az account show

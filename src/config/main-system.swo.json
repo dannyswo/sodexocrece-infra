@@ -147,6 +147,27 @@
     "appsStorageAccountSkuName": {
       "value": "Standard_LRS"
     },
+    "appsStorageAccountEnableBlobRestorePolicy": {
+      "value": false
+    },
+    "appsStorageAccountBlobRestorePolicyDays": {
+      "value": 6
+    },
+    "appsStorageAccountEnableBlobSoftDelete": {
+      "value": false
+    },
+    "appsStorageAccountBlobSoftDeleteRetentionDays": {
+      "value": 7
+    },
+    "appsStorageAccountEnableContainerSoftDelete": {
+      "value": false
+    },
+    "appsStorageAccountContainerSoftDeleteRetentionDays": {
+      "value": 7
+    },
+    "appsStorageAccountEnableBlobVersioning": {
+      "value": true
+    },
     "sqlServerNameSuffix": {
       "value": "nkt895"
     },
@@ -179,6 +200,24 @@
     },
     "sqlDatabaseCollation": {
       "value": "SQL_Latin1_General_CP1_CI_AS"
+    },
+    "sqlDatabaseDiffBackupIntervalHours": {
+      "value": 24
+    },
+    "sqlDatabaseShortTermBackupRetentionDays": {
+      "value": 7
+    },
+    "sqlDatabaseWeeklyRetentionTime": {
+      "value": ""
+    },
+    "sqlDatabaseMonthlyRetentionTime": {
+      "value": "P1M"
+    },
+    "sqlDatabaseYearlyRetentionTime": {
+      "value": "P1Y"
+    },
+    "sqlDatabaseWeekOfYearForYearlyBackup": {
+      "value": 1
     },
     "acrNameSuffix": {
       "value": "hym659"

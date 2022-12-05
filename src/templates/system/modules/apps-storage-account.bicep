@@ -47,6 +47,35 @@ param keyVaultName string
 @description('Name of the CMK used by Storage Account to encrypt blobs.')
 param encryptionKeyName string
 
+// ==================================== Retention options ====================================
+
+@description('Enable restore policy of blobs in Storage Account.')
+param enableBlobRestorePolicy bool
+
+@description('Days allowed to restore a soft-deleted blobs in Storage Account.')
+@minValue(1)
+@maxValue(365)
+param blobRestorePolicyDays int
+
+@description('Enable soft-delete of blobs in Storage Account.')
+param enableBlobSoftDelete bool
+
+@description('Days of retention for soft-deleted blobs in Storage Account.')
+@minValue(1)
+@maxValue(365)
+param blobSoftDeleteRetentionDays int
+
+@description('Enable soft-delete of Containers in Storage Account.')
+param enableContainerSoftDelete bool
+
+@description('Days of retention for soft-deleted Containers in Storage Account.')
+@minValue(1)
+@maxValue(365)
+param containerSoftDeleteRetentionDays int
+
+@description('Enable versioning of blobs.')
+param enableBlobVersioning bool
+
 // ==================================== Diagnostics options ====================================
 
 @description('Enable diagnostics to store Storage Account access logs.')
@@ -152,15 +181,20 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01
   properties: {
     automaticSnapshotPolicyEnabled: false
     restorePolicy: {
-      enabled: false
+      enabled: enableBlobRestorePolicy
+      days: blobRestorePolicyDays
     }
     deleteRetentionPolicy: {
-      enabled: false
+      enabled: enableBlobSoftDelete
+      allowPermanentDelete: false
+      days: blobSoftDeleteRetentionDays
     }
     containerDeleteRetentionPolicy: {
-      enabled: false
+      enabled: enableContainerSoftDelete
+      allowPermanentDelete: false
+      days: containerSoftDeleteRetentionDays
     }
-    isVersioningEnabled: false
+    isVersioningEnabled: enableBlobVersioning
     changeFeed: {
       enabled: false
     }

@@ -84,20 +84,10 @@
       "value": "crececonsdx-appsstorageaccount-key"
     },
     "sqlDatabaseSqlAdminLoginName": {
-      "reference": {
-        "keyVault": {
-          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1qta790"
-        },
-        "secretName": "crececonsdx-sqldatabase-sqladminloginname"
-      }
+      "value": ""
     },
     "sqlDatabaseSqlAdminLoginPass": {
-      "reference": {
-        "keyVault": {
-          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1qta790"
-        },
-        "secretName": "crececonsdx-sqldatabase-sqladminloginpass"
-      }
+      "value": ""
     },
     "sqlDatabaseEnableAADAdminUser": {
       "value": true
@@ -147,6 +137,27 @@
     "appsStorageAccountSkuName": {
       "value": "Standard_LRS"
     },
+    "appsStorageAccountEnableBlobRestorePolicy": {
+      "value": false
+    },
+    "appsStorageAccountBlobRestorePolicyDays": {
+      "value": 6
+    },
+    "appsStorageAccountEnableBlobSoftDelete": {
+      "value": false
+    },
+    "appsStorageAccountBlobSoftDeleteRetentionDays": {
+      "value": 7
+    },
+    "appsStorageAccountEnableContainerSoftDelete": {
+      "value": false
+    },
+    "appsStorageAccountContainerSoftDeleteRetentionDays": {
+      "value": 7
+    },
+    "appsStorageAccountEnableBlobVersioning": {
+      "value": false
+    },
     "sqlServerNameSuffix": {
       "value": "nkt890"
     },
@@ -179,6 +190,24 @@
     },
     "sqlDatabaseCollation": {
       "value": "SQL_Latin1_General_CP1_CI_AS"
+    },
+    "sqlDatabaseDiffBackupIntervalHours": {
+      "value": 24
+    },
+    "sqlDatabaseShortTermBackupRetentionDays": {
+      "value": 7
+    },
+    "sqlDatabaseWeeklyRetentionTime": {
+      "value": ""
+    },
+    "sqlDatabaseMonthlyRetentionTime": {
+      "value": "P1M"
+    },
+    "sqlDatabaseYearlyRetentionTime": {
+      "value": "P1Y"
+    },
+    "sqlDatabaseWeekOfYearForYearlyBackup": {
+      "value": 1
     },
     "acrNameSuffix": {
       "value": "hym690"
@@ -229,7 +258,7 @@
       "value": false
     },
     "aksEnablePrivateCluster": {
-      "value": true
+      "value": false
     },
     "aksEnablePodManagedIdentity": {
       "value": false

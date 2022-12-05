@@ -187,6 +187,20 @@ param appsStorageAccountNameSuffix string
   'Standard_ZRS'
 ])
 param appsStorageAccountSkuName string
+@description('Enable restore policy of blobs in applications Storage Account.')
+param appsStorageAccountEnableBlobRestorePolicy bool
+@description('Days allowed to restore a soft-deleted blobs in applications Storage Account.')
+param appsStorageAccountBlobRestorePolicyDays int
+@description('Enable soft-delete of blobs in applications Storage Account.')
+param appsStorageAccountEnableBlobSoftDelete bool
+@description('Days of retention for soft-deleted blobs in applications Storage Account.')
+param appsStorageAccountBlobSoftDeleteRetentionDays int
+@description('Enable soft-delete of Containers in applications Storage Account.')
+param appsStorageAccountEnableContainerSoftDelete bool
+@description('Days of retention for soft-deleted Containers in applications Storage Account.')
+param appsStorageAccountContainerSoftDeleteRetentionDays int
+@description('Enable versioning of blobs in applications Storage Account.')
+param appsStorageAccountEnableBlobVersioning bool
 
 @description('Suffix used in the name of the Azure SQL Server.')
 @minLength(6)
@@ -220,6 +234,18 @@ param sqlDatabaseBackupRedundancy string
 param sqlDatabaseLicenseType string
 @description('Collation of the Azure SQL Database instance.')
 param sqlDatabaseCollation string
+@description('Interval hours for differential backups (STR).')
+param sqlDatabaseDiffBackupIntervalHours int
+@description('Days of retention of differential backups (STR).')
+param sqlDatabaseShortTermBackupRetentionDays int
+@description('Retention in ISO 8601 formats of weekly backups. Empty means no weekly backup (LTR).')
+param sqlDatabaseWeeklyRetentionTime string
+@description('Retention in ISO 8601 formats of monthly backups. Empty means no monthly backup (LTR).')
+param sqlDatabaseMonthlyRetentionTime string
+@description('Retention in ISO 8601 formats of yearly backups. Empty means no yearly backup (LTR).')
+param sqlDatabaseYearlyRetentionTime string
+@description('Week of year to take yearly backup. Zero means no specific week for yearly backup (LTR).')
+param sqlDatabaseWeekOfYearForYearlyBackup int
 
 @description('Suffix used in the Container Registry name.')
 @minLength(6)
@@ -449,6 +475,13 @@ module appsStorageAccountModule 'modules/apps-storage-account.bicep' = {
     storageAccountSkuName: appsStorageAccountSkuName
     keyVaultName: keyVaultName
     encryptionKeyName: appsStorageAccountEncryptionKeyName
+    enableBlobRestorePolicy: appsStorageAccountEnableBlobRestorePolicy
+    blobRestorePolicyDays: appsStorageAccountBlobRestorePolicyDays
+    enableBlobSoftDelete: appsStorageAccountEnableBlobSoftDelete
+    blobSoftDeleteRetentionDays: appsStorageAccountBlobSoftDeleteRetentionDays
+    enableContainerSoftDelete: appsStorageAccountEnableContainerSoftDelete
+    containerSoftDeleteRetentionDays: appsStorageAccountContainerSoftDeleteRetentionDays
+    enableBlobVersioning: appsStorageAccountEnableBlobVersioning
     enableDiagnostics: appsStorageAccountEnableDiagnostics
     diagnosticsWorkspaceName: monitoringWorkspaceName
     logsRetentionDays: appsStorageAccountLogsRetentionDays
@@ -504,6 +537,12 @@ module sqlDatabaseModule 'modules/sql-database.bicep' = {
     backupRedundancy: sqlDatabaseBackupRedundancy
     licenseType: sqlDatabaseLicenseType
     collation: sqlDatabaseCollation
+    diffBackupIntervalHours: sqlDatabaseDiffBackupIntervalHours
+    diffBackupRetentionDays: sqlDatabaseShortTermBackupRetentionDays
+    weeklyRetentionTime: sqlDatabaseWeeklyRetentionTime
+    monthlyRetentionTime: sqlDatabaseMonthlyRetentionTime
+    yearlyRetentionTime: sqlDatabaseYearlyRetentionTime
+    weekOfYearForYearlyBackup: sqlDatabaseWeekOfYearForYearlyBackup
     enableAuditing: sqlDatabaseEnableAuditing
     diagnosticsWorkspaceName: monitoringWorkspaceName
     logsRetentionDays: sqlDatabaseLogsRetentionDays

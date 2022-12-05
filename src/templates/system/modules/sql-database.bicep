@@ -104,6 +104,28 @@ param licenseType string
 @description('Collation of the Azure SQL Database instance.')
 param collation string
 
+// ==================================== Backup & Retention options ====================================
+
+@description('Interval hours for differential backups (STR).')
+param diffBackupIntervalHours int
+
+@description('Days of retention of differential backups (STR).')
+param diffBackupRetentionDays int
+
+@description('Retention in ISO 8601 formats of weekly backups. Empty means no weekly backup (LTR).')
+param weeklyRetentionTime string
+
+@description('Retention in ISO 8601 formats of monthly backups. Empty means no monthly backup (LTR).')
+param monthlyRetentionTime string
+
+@description('Retention in ISO 8601 formats of yearly backups. Empty means no yearly backup (LTR).')
+param yearlyRetentionTime string
+
+@description('Week of year to take yearly backup. Zero means no specific week for yearly backup (LTR).')
+@minValue(1)
+@maxValue(52)
+param weekOfYearForYearlyBackup int
+
 // ==================================== Diagnostics options ====================================
 
 @description('Enable Auditing feature on Azure SQL Server.')
@@ -333,25 +355,27 @@ var generalPurposeSkuLimits = [
   }
 ]
 
-// ==================================== PaaS Firewall ====================================
+// ==================================== Backup & Retention ====================================
 
-resource virtualNetworkRules 'Microsoft.Sql/servers/virtualNetworkRules@2022-05-01-preview' = [for (allowedSubnetId, index) in allowedSubnetIds: if (enablePublicAccess) {
-  name: '${sqlServerName}-VirtualNetworkRules-${index}'
-  parent: sqlServer
+resource backupSTRPolicies 'Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies@2022-05-01-preview' = {
+  name: 'default'
+  parent: sqlDatabase
   properties: {
-    virtualNetworkSubnetId: allowedSubnetId
-    ignoreMissingVnetServiceEndpoint: false
+    diffBackupIntervalInHours: diffBackupIntervalHours
+    retentionDays: diffBackupRetentionDays
   }
-}]
+}
 
-resource firewallRules 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' = [for (allowedIPRange, index) in allowedIPRanges: if (enablePublicAccess) {
-  name: '${sqlServerName}-FirewallRules-${index}'
-  parent: sqlServer
+resource backupLTRPolicies 'Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies@2022-05-01-preview' = {
+  name: 'default'
+  parent: sqlDatabase
   properties: {
-    startIpAddress: allowedIPRange.startIPAddress
-    endIpAddress: allowedIPRange.endIPAddress
+    monthlyRetention: (monthlyRetentionTime != '') ? monthlyRetentionTime : null
+    weeklyRetention: (weeklyRetentionTime != '') ? weeklyRetentionTime : null
+    yearlyRetention: (yearlyRetentionTime != '') ? yearlyRetentionTime : null
+    weekOfYear: (yearlyRetentionTime != '') ? weekOfYearForYearlyBackup : null
   }
-}]
+}
 
 // ==================================== Diagnostics: Auditing ====================================
 
@@ -438,6 +462,26 @@ resource vulnerabilityAssessments 'Microsoft.Sql/servers/vulnerabilityAssessment
     }
   }
 }
+
+// ==================================== PaaS Firewall ====================================
+
+resource virtualNetworkRules 'Microsoft.Sql/servers/virtualNetworkRules@2022-05-01-preview' = [for (allowedSubnetId, index) in allowedSubnetIds: if (enablePublicAccess) {
+  name: '${sqlServerName}-VirtualNetworkRules-${index}'
+  parent: sqlServer
+  properties: {
+    virtualNetworkSubnetId: allowedSubnetId
+    ignoreMissingVnetServiceEndpoint: false
+  }
+}]
+
+resource firewallRules 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' = [for (allowedIPRange, index) in allowedIPRanges: if (enablePublicAccess) {
+  name: '${sqlServerName}-FirewallRules-${index}'
+  parent: sqlServer
+  properties: {
+    startIpAddress: allowedIPRange.startIPAddress
+    endIpAddress: allowedIPRange.endIPAddress
+  }
+}]
 
 // ==================================== Resource Lock ====================================
 

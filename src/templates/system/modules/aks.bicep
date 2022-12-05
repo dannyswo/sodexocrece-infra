@@ -202,7 +202,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
     apiServerAccessProfile: {
       enablePrivateCluster: enablePrivateCluster
       enablePrivateClusterPublicFQDN: false
-      privateDNSZone: privateDnsZone.id
+      privateDNSZone: (enablePrivateCluster) ? privateDnsZone.id : null
       disableRunCommand: disableRunCommand
       authorizedIPRanges: allowedIPsOrCIDRs
     }
@@ -250,7 +250,6 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
         enabled: enableOMSAgentAddon
         config: {
           logAnalyticsWorkspaceResourceID: resourceId('Microsoft.OperationalInsights/workspaces', workspaceName)
-          useAADAuth: 'true'
         }
       }
       azureKeyvaultSecretsProvider: {
@@ -326,14 +325,11 @@ resource aksLock 'Microsoft.Authorization/locks@2017-04-01' = if (enableLock) {
 @description('ID of the AKS Managed Cluster.')
 output aksClusterId string = aksCluster.id
 
-@description('URI of the Private Endpoint to access the AKS Management Plane.')
-output managementPlanePrivateFQDN string = aksCluster.properties.privateFQDN
+@description('URI of the AKS Management Plane.')
+output managementPlaneFQDN string = (enablePrivateCluster) ? aksCluster.properties.privateFQDN : aksCluster.properties.fqdn
 
 @description('Special URI for Azure Portal to access to the AKS Management Plane.')
 output managementPlaneAzurePortalFQDN string = aksCluster.properties.azurePortalFQDN
-
-@description('URI of the Public Endpoint to access the AKS Management Plane (when cluster is not private).')
-output managementPlanePublicFQDN string = aksCluster.properties.fqdn
 
 @description('Name of the Node Resource Group where AKS managed resources are located.')
 output aksNodeResourceGroupName string = aksCluster.properties.nodeResourceGroup
