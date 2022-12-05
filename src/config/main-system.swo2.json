@@ -20,6 +20,12 @@
     "prodNetworkResourceGroupName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-RG01"
     },
+    "frontendVNetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN01"
+    },
+    "gatewaySubnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN01"
+    },
     "aksVNetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-VN02"
     },
@@ -34,15 +40,6 @@
     },
     "appsShared2VNetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-VN04"
-    },
-    "gatewaySubnetName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN01"
-    },
-    "jumpServersSubnetName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN04"
-    },
-    "devopsAgentsSubnetName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN05"
     },
     "appsStorageAccountPEPrivateIPAddress": {
       "value": "10.169.88.74"
@@ -108,7 +105,7 @@
       "value": "WAF_v2"
     },
     "appGatewayFrontendPrivateIPAddress": {
-      "value": "10.169.50.6"
+      "value": "10.169.90.140"
     },
     "appGatewayEnablePublicFrontendIP": {
       "value": true
@@ -368,7 +365,7 @@
       "value": []
     },
     "aksEnablePublicAccess": {
-      "value": false
+      "value": true
     },
     "aksDisableRunCommand": {
       "value": true

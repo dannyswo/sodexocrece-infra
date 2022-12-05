@@ -60,6 +60,12 @@ param prodSubscriptionId string
 @description('Name of the Resource Group for network resources in Prod / Non Prod Subscription.')
 param prodNetworkResourceGroupName string
 
+@description('Name of the Frontend VNet.')
+param frontendVNetName string
+
+@description('Name of the Application Gateway Subnet.')
+param gatewaySubnetName string
+
 @description('Name of the AKS VNet.')
 param aksVNetName string
 
@@ -74,15 +80,6 @@ param endpointsSubnetName string
 
 @description('Name of the Apps Shared 02 VNet.')
 param appsShared2VNetName string
-
-@description('Name of the Application Gateway Subnet.')
-param gatewaySubnetName string
-
-@description('Name of the Jump Servers Subnet.')
-param jumpServersSubnetName string
-
-@description('Name of the DevOps Agents Subnet.')
-param devopsAgentsSubnetName string
 
 // ==================================== Private Endpoints settings ====================================
 
@@ -413,18 +410,18 @@ module networkReferencesSystemModule 'modules/network-references-system.bicep' =
     brsNetworkResourceGroupName: brsNetworkResourceGroupName
     prodSubscriptionId: prodSubscriptionId
     prodNetworkResourceGroupName: prodNetworkResourceGroupName
+    frontendVNetName: frontendVNetName
+    gatewaySubnetName: gatewaySubnetName
     aksVNetName: aksVNetName
     aksSubnetName: aksSubnetName
     endpointsVNetName: endpointsVNetName
     endpointsSubnetName: endpointsSubnetName
     appsShared2VNetName: appsShared2VNetName
-    gatewaySubnetName: gatewaySubnetName
-    jumpServersSubnetName: jumpServersSubnetName
-    devopsAgentsSubnetName: devopsAgentsSubnetName
   }
 }
 
 var linkedVNetIdsForPrivateEndpoints = [
+  networkReferencesSystemModule.outputs.frontendVNetId
   networkReferencesSystemModule.outputs.aksVNetId
   networkReferencesSystemModule.outputs.endpointsVNetId
   networkReferencesSystemModule.outputs.appsShared2VNetId

@@ -21,6 +21,9 @@ param prodSubscriptionId string
 @description('Name of the Resource Group for network resources in Prod / Non Prod Subscription.')
 param prodNetworkResourceGroupName string
 
+@description('Name of the Frontend VNet.')
+param frontendVNetName string
+
 @description('Name of the AKS VNet.')
 param aksVNetName string
 
@@ -46,6 +49,8 @@ param aksNSGName string
 
 // ==================================== Existing VNets ====================================
 
+var frontendVNetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', frontendVNetName)
+
 var aksVNetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', aksVNetName)
 
 var endpointsVNetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', endpointsVNetName)
@@ -65,6 +70,9 @@ var devopsAgentsSubnetId = resourceId(brsSubscriptionId, brsNetworkResourceGroup
 var aksNSGId = (aksNSGName != '') ? resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/networkSecurityGroups', aksNSGName) : ''
 
 // ==================================== Outputs ====================================
+
+@description('ID of the Frontend VNet.')
+output frontendVNetId string = frontendVNetId
 
 @description('ID of the AKS VNet.')
 output aksVNetId string = aksVNetId

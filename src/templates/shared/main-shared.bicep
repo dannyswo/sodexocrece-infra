@@ -59,6 +59,9 @@ param prodSubscriptionId string
 @description('Name of the Resource Group for network resources in Prod / Non Prod Subscription.')
 param prodNetworkResourceGroupName string
 
+@description('Name of the Frontend VNet.')
+param frontendVNetName string
+
 @description('Name of the AKS VNet.')
 param aksVNetName string
 
@@ -234,6 +237,7 @@ module networkReferencesSharedModule 'modules/network-references-shared.bicep' =
     brsNetworkResourceGroupName: brsNetworkResourceGroupName
     prodSubscriptionId: prodSubscriptionId
     prodNetworkResourceGroupName: prodNetworkResourceGroupName
+    frontendVNetName: frontendVNetName
     aksVNetName: aksVNetName
     endpointsVNetName: endpointsVNetName
     endpointsSubnetName: endpointsSubnetName
@@ -245,6 +249,7 @@ module networkReferencesSharedModule 'modules/network-references-shared.bicep' =
 }
 
 var linkedVNetIdsForPrivateEndpoints = [
+  networkReferencesSharedModule.outputs.frontendVNetId
   networkReferencesSharedModule.outputs.aksVNetId
   networkReferencesSharedModule.outputs.endpointsVNetId
   networkReferencesSharedModule.outputs.appsShared2VNetId

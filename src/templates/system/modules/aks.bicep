@@ -102,7 +102,7 @@ param enablePodManagedIdentity bool
     }
   ]
 })
-param podIdentities array = []
+param podIdentities array
 
 @description('Enable Workload Identity feature on the AKS Managed Cluster.')
 param enableWorkloadIdentity bool
@@ -267,7 +267,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
 
 // ==================================== Custom Private DNS Zone ====================================
 
-resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = if (enablePrivateCluster) {
   name: 'privatelink.${location}.azmk8s.io'
   location: 'global'
   properties: {
