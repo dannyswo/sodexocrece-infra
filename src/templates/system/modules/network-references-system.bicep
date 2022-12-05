@@ -56,7 +56,7 @@ var appsShared2VNetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupNam
 
 // ==================================== Existing Subnets ====================================
 
-var gatewaySubnetId = resourceId(brsSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', frontendVNetName, gatewaySubnetName)
+var gatewaySubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', frontendVNetName, gatewaySubnetName)
 
 var aksSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', aksVNetName, aksSubnetName)
 
