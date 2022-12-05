@@ -275,7 +275,7 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   tags: standardTags
 }
 
-resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetId, index) in privateDnsZoneLinkedVNetIds: {
+resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetId, index) in privateDnsZoneLinkedVNetIds: if (enablePrivateCluster) {
   name: 'apiserver-NetworkLink-${index}'
   parent: privateDnsZone
   location: 'global'
