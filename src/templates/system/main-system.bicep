@@ -198,6 +198,10 @@ param appsStorageAccountEnableContainerSoftDelete bool
 param appsStorageAccountContainerSoftDeleteRetentionDays int
 @description('Enable versioning of blobs in applications Storage Account.')
 param appsStorageAccountEnableBlobVersioning bool
+@description('Enable change feed for blobs.')
+param appsStorageAccountEnableChangeFeed bool
+@description('Days of retention for blob change feed.')
+param appsStorageAccountChangeFeedRetentionDays int
 
 @description('Suffix used in the name of the Azure SQL Server.')
 @minLength(6)
@@ -479,6 +483,8 @@ module appsStorageAccountModule 'modules/apps-storage-account.bicep' = {
     enableContainerSoftDelete: appsStorageAccountEnableContainerSoftDelete
     containerSoftDeleteRetentionDays: appsStorageAccountContainerSoftDeleteRetentionDays
     enableBlobVersioning: appsStorageAccountEnableBlobVersioning
+    enableChangeFeed: appsStorageAccountEnableChangeFeed
+    changeFeedRetentionDays: appsStorageAccountChangeFeedRetentionDays
     enableDiagnostics: appsStorageAccountEnableDiagnostics
     diagnosticsWorkspaceName: monitoringWorkspaceName
     logsRetentionDays: appsStorageAccountLogsRetentionDays

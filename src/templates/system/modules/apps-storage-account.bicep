@@ -76,6 +76,14 @@ param containerSoftDeleteRetentionDays int
 @description('Enable versioning of blobs.')
 param enableBlobVersioning bool
 
+@description('Enable change feed for blobs.')
+param enableChangeFeed bool
+
+@description('Days of retention for blob change feed.')
+@minValue(1)
+@maxValue(365)
+param changeFeedRetentionDays int
+
 // ==================================== Diagnostics options ====================================
 
 @description('Enable diagnostics to store Storage Account access logs.')
@@ -196,7 +204,8 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01
     }
     isVersioningEnabled: enableBlobVersioning
     changeFeed: {
-      enabled: false
+      enabled: enableChangeFeed
+      retentionInDays: changeFeedRetentionDays
     }
   }
 }

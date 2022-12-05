@@ -163,7 +163,13 @@
       "value": 7
     },
     "appsStorageAccountEnableBlobVersioning": {
-      "value": true
+      "value": false
+    },
+    "appsStorageAccountEnableChangeFeed": {
+      "value": false
+    },
+    "appsStorageAccountChangeFeedRetentionDays": {
+      "value": 7
     },
     "sqlServerNameSuffix": {
       "value": "nkt895"
