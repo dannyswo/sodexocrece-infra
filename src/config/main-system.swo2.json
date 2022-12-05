@@ -86,7 +86,7 @@
     "sqlDatabaseSqlAdminLoginName": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta777"
+          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1qta790"
         },
         "secretName": "crececonsdx-sqldatabase-sqladminloginname"
       }
@@ -94,7 +94,7 @@
     "sqlDatabaseSqlAdminLoginPass": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta777"
+          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.KeyVault/vaults/azmxkv1qta790"
         },
         "secretName": "crececonsdx-sqldatabase-sqladminloginpass"
       }
@@ -130,13 +130,16 @@
       "value": 2
     },
     "appGatewayEnableHttpPort": {
-      "value": false
+      "value": true
     },
     "appGatewayEnableHttpsPort": {
-      "value": true
+      "value": false
     },
     "appGatewayWafPoliciesMode": {
       "value": "Detection"
+    },
+    "appGatewayEnableDomainNameLabel": {
+      "value": true
     },
     "appsStorageAccountNameSuffix": {
       "value": "deh790"
@@ -215,6 +218,9 @@
     },
     "aksNodePoolMaxCount": {
       "value": 3
+    },
+    "aksNodePoolCount": {
+      "value": 1
     },
     "aksNodePoolVmSize": {
       "value": "standard_d2s_v3"
@@ -334,6 +340,12 @@
     },
     "aksEnablePublicAccess": {
       "value": false
+    },
+    "aksDisableRunCommand": {
+      "value": true
+    },
+    "aksAllowedIPsOrCIDRs": {
+      "value": []
     },
     "enablePrivateEndpointModules": {
       "value": true

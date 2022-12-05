@@ -85,6 +85,9 @@ param backendCertificateName string
 ])
 param wafPoliciesMode string
 
+@description('Create a Domain Name label for Application Gateway Public IP Address.')
+param enableDomainNameLabel bool
+
 // ==================================== Diagnostics options ====================================
 
 @description('Enable diagnostics to store Application Gateway logs and metrics.')
@@ -330,9 +333,9 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-05-01' = {
   properties: {
     publicIPAllocationMethod: 'Static'
     deleteOption: 'Delete'
-    dnsSettings: {
-      domainNameLabel: 'crecesdx'
-    }
+    dnsSettings: (enableDomainNameLabel) ? {
+      domainNameLabel: appGatewayName
+    } : null
   }
   tags: standardTags
 }

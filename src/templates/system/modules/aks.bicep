@@ -58,8 +58,8 @@ param nodesSubnetId string
 param podsSubnetId string
 
 @description('Maximum number of Pods for AKS system node pool.')
-@minValue(30)
-@maxValue(120)
+@minValue(10)
+@maxValue(250)
 param maxPods int
 
 @description('Enable auto scaling for AKS system node pool.')
@@ -70,6 +70,9 @@ param nodePoolMinCount int
 
 @description('Maximum number of nodes in the AKS system node pool.')
 param nodePoolMaxCount int
+
+@description('Number of nodes in the AKS system node pool.')
+param nodePoolCount int
 
 @description('VM size of every node in the AKS system node pool.')
 param nodePoolVmSize string
@@ -141,6 +144,12 @@ param enableLock bool
 @description('Enable public access to the AKS Management Plane.')
 param enablePublicAccess bool
 
+@description('Disable Azure CLI run command for AKS Managed Clusters.')
+param disableRunCommand bool
+
+@description('List of IPs or CIDRs allowed to access the AKS Managed Plane in the PaaS firewall.')
+param allowedIPsOrCIDRs array
+
 // ==================================== Resources ====================================
 
 // ==================================== AKS Managed Cluster ====================================
@@ -176,7 +185,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
         enableAutoScaling: enableAutoScaling
         minCount: nodePoolMinCount
         maxCount: nodePoolMaxCount
-        count: 1
+        count: nodePoolCount
         scaleDownMode: 'Delete'
         vmSize: nodePoolVmSize
         osType: 'Linux'
@@ -192,8 +201,10 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
     ]
     apiServerAccessProfile: {
       enablePrivateCluster: enablePrivateCluster
-      enablePrivateClusterPublicFQDN: enablePrivateCluster
+      enablePrivateClusterPublicFQDN: false
       privateDNSZone: privateDnsZone.id
+      disableRunCommand: disableRunCommand
+      authorizedIPRanges: allowedIPsOrCIDRs
     }
     networkProfile: {
       networkPlugin: networkPlugin
@@ -211,12 +222,12 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
       ]
     }
     autoUpgradeProfile: {
-      upgradeChannel: 'none'
+      upgradeChannel: 'patch'
     }
     enableRBAC: true
     aadProfile: {
-      enableAzureRBAC: true
       managed: true
+      enableAzureRBAC: true
     }
     disableLocalAccounts: true
     podIdentityProfile: {
@@ -239,6 +250,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
         enabled: enableOMSAgentAddon
         config: {
           logAnalyticsWorkspaceResourceID: resourceId('Microsoft.OperationalInsights/workspaces', workspaceName)
+          useAADAuth: 'true'
         }
       }
       azureKeyvaultSecretsProvider: {
@@ -319,6 +331,9 @@ output managementPlanePrivateFQDN string = aksCluster.properties.privateFQDN
 
 @description('Special URI for Azure Portal to access to the AKS Management Plane.')
 output managementPlaneAzurePortalFQDN string = aksCluster.properties.azurePortalFQDN
+
+@description('URI of the Public Endpoint to access the AKS Management Plane (when cluster is not private).')
+output managementPlanePublicFQDN string = aksCluster.properties.fqdn
 
 @description('Name of the Node Resource Group where AKS managed resources are located.')
 output aksNodeResourceGroupName string = aksCluster.properties.nodeResourceGroup

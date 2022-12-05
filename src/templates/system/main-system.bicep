@@ -174,6 +174,8 @@ param appGatewayEnableHttpsPort bool
   'Prevention'
 ])
 param appGatewayWafPoliciesMode string
+@description('Create a Domain Name label for Application Gateway Public IP Address.')
+param appGatewayEnableDomainNameLabel bool
 
 @description('Suffix used in the applications Storage Account name.')
 @minLength(6)
@@ -263,6 +265,8 @@ param aksEnableAutoScaling bool
 param aksNodePoolMinCount int
 @description('Maximum number of nodes in the AKS system node pool.')
 param aksNodePoolMaxCount int
+@description('Number of nodes in the AKS system node pool.')
+param aksNodePoolCount int
 @description('VM size of every node in the AKS system node pool.')
 param aksNodePoolVmSize string
 @description('Enable encryption at AKS nodes.')
@@ -361,6 +365,10 @@ param acrAllowedIPsOrCIDRs array
 
 @description('Enable public access to the AKS Management Plane.')
 param aksEnablePublicAccess bool
+@description('Disable Azure CLI run command for AKS Managed Clusters.')
+param aksDisableRunCommand bool
+@description('List of IPs or CIDRs allowed to access the AKS Managed Plane in the PaaS firewall.')
+param aksAllowedIPsOrCIDRs array
 
 // ==================================== Module switches ====================================
 
@@ -422,6 +430,7 @@ module appGatewayModule 'modules/app-gateway.bicep' = {
     frontendCertificateName: appGatewayFrontendCertificateName
     backendCertificateName: appGatewayBackendCertificateName
     wafPoliciesMode: appGatewayWafPoliciesMode
+    enableDomainNameLabel: appGatewayEnableDomainNameLabel
     enableDiagnostics: appGatewayEnableDiagnostics
     diagnosticsWorkspaceName: monitoringWorkspaceName
     logsRetentionDays: appGatewayLogsRetentionDays
@@ -585,6 +594,7 @@ module aksModule 'modules/aks.bicep' = {
     enableAutoScaling: aksEnableAutoScaling
     nodePoolMinCount: aksNodePoolMinCount
     nodePoolMaxCount: aksNodePoolMaxCount
+    nodePoolCount: aksNodePoolCount
     nodePoolVmSize: aksNodePoolVmSize
     enableEncryptionAtHost: aksEnableEncryptionAtHost
     enablePrivateCluster: aksEnablePrivateCluster
@@ -602,6 +612,8 @@ module aksModule 'modules/aks.bicep' = {
     workspaceName: monitoringWorkspaceName
     enableLock: aksEnableLock
     enablePublicAccess: aksEnablePublicAccess
+    disableRunCommand: aksDisableRunCommand
+    allowedIPsOrCIDRs: aksAllowedIPsOrCIDRs
   }
 }
 

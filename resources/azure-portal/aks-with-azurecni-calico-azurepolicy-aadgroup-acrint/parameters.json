@@ -1,0 +1,91 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceName": {
+            "value": "sdxtestaks124gad"
+        },
+        "location": {
+            "value": "eastus2"
+        },
+        "dnsPrefix": {
+            "value": "sdxtestaks124gad-dns"
+        },
+        "kubernetesVersion": {
+            "value": "1.23.12"
+        },
+        "networkPlugin": {
+            "value": "azure"
+        },
+        "enableRBAC": {
+            "value": true
+        },
+        "nodeResourceGroup": {
+            "value": "MC_BRS-MEX-USE2-CRECESDX-SWO-RG01_sdxtestaks124gad_eastus2"
+        },
+        "upgradeChannel": {
+            "value": "patch"
+        },
+        "adminGroupObjectIDs": {
+            "value": [
+                "a807e0d7-ae01-4e69-acdd-03afe432f553"
+            ]
+        },
+        "disableLocalAccounts": {
+            "value": true
+        },
+        "azureRbac": {
+            "value": false
+        },
+        "enablePrivateCluster": {
+            "value": false
+        },
+        "enableHttpApplicationRouting": {
+            "value": false
+        },
+        "enableAzurePolicy": {
+            "value": true
+        },
+        "enableSecretStoreCSIDriver": {
+            "value": true
+        },
+        "vmssNodePool": {
+            "value": true
+        },
+        "vnetSubnetID": {
+            "value": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.Network/virtualNetworks/BRS-MEX-USE2-CRECESDX-SWO-RG01-vnet/subnets/default"
+        },
+        "serviceCidr": {
+            "value": "10.0.0.0/16"
+        },
+        "dnsServiceIP": {
+            "value": "10.0.0.10"
+        },
+        "dockerBridgeCidr": {
+            "value": "172.17.0.1/16"
+        },
+        "workspaceName": {
+            "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
+        },
+        "omsWorkspaceId": {
+            "value": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/BRS-MEX-USE2-CRECESDX-SWO-RG01/providers/Microsoft.OperationalInsights/workspaces/BRS-MEX-USE2-CRECESDX-SWO-MM01"
+        },
+        "workspaceRegion": {
+            "value": "eastus2"
+        },
+        "networkPolicy": {
+            "value": "calico"
+        },
+        "acrName": {
+            "value": "azmxcr1hym690"
+        },
+        "acrResourceGroup": {
+            "value": "BRS-MEX-USE2-CRECESDX-SWO-RG01"
+        },
+        "authorizedIPRanges": {
+            "value": [
+                "181.134.145.168"
+            ]
+        }
+    }
+}

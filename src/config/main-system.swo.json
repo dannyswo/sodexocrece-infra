@@ -138,6 +138,9 @@
     "appGatewayWafPoliciesMode": {
       "value": "Detection"
     },
+    "appGatewayEnableDomainNameLabel": {
+      "value": true
+    },
     "appsStorageAccountNameSuffix": {
       "value": "deh711"
     },
@@ -215,6 +218,9 @@
     },
     "aksNodePoolMaxCount": {
       "value": 3
+    },
+    "aksNodePoolCount": {
+      "value": 1
     },
     "aksNodePoolVmSize": {
       "value": "standard_d2s_v3"
@@ -334,6 +340,12 @@
     },
     "aksEnablePublicAccess": {
       "value": false
+    },
+    "aksDisableRunCommand": {
+      "value": true
+    },
+    "aksAllowedIPsOrCIDRs": {
+      "value": []
     },
     "enablePrivateEndpointModules": {
       "value": true
