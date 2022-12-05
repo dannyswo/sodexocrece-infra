@@ -1,0 +1,106 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus2"
+        },
+        "storageAccountName": {
+            "value": "sdxtest124hao"
+        },
+        "accountType": {
+            "value": "Standard_LRS"
+        },
+        "kind": {
+            "value": "StorageV2"
+        },
+        "accessTier": {
+            "value": "Hot"
+        },
+        "minimumTlsVersion": {
+            "value": "TLS1_2"
+        },
+        "supportsHttpsTrafficOnly": {
+            "value": true
+        },
+        "publicNetworkAccess": {
+            "value": "Enabled"
+        },
+        "allowBlobPublicAccess": {
+            "value": false
+        },
+        "allowSharedKeyAccess": {
+            "value": false
+        },
+        "allowCrossTenantReplication": {
+            "value": false
+        },
+        "defaultOAuth": {
+            "value": false
+        },
+        "allowedCopyScope": {
+            "value": "PrivateLink"
+        },
+        "networkAclsBypass": {
+            "value": "AzureServices"
+        },
+        "networkAclsDefaultAction": {
+            "value": "Deny"
+        },
+        "networkAclsVirtualNetworkRules": {
+            "value": [
+                {
+                    "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Network/virtualNetworks/BRS-MEX-USE2-CRECESDX-SWO-VN04/subnets/BRS-MEX-USE2-CRECESDX-SWO-SN04"
+                },
+                {
+                    "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Network/virtualNetworks/BRS-MEX-USE2-CRECESDX-SWO-VN04/subnets/BRS-MEX-USE2-CRECESDX-SWO-SN05"
+                }
+            ]
+        },
+        "dnsEndpointType": {
+            "value": "Standard"
+        },
+        "keySource": {
+            "value": "Microsoft.Storage"
+        },
+        "encryptionEnabled": {
+            "value": true
+        },
+        "keyTypeForTableAndQueueEncryption": {
+            "value": "Account"
+        },
+        "infrastructureEncryptionEnabled": {
+            "value": false
+        },
+        "isContainerRestoreEnabled": {
+            "value": true
+        },
+        "containerRestorePeriodDays": {
+            "value": 6
+        },
+        "isBlobSoftDeleteEnabled": {
+            "value": true
+        },
+        "blobSoftDeleteRetentionDays": {
+            "value": 7
+        },
+        "isContainerSoftDeleteEnabled": {
+            "value": true
+        },
+        "containerSoftDeleteRetentionDays": {
+            "value": 7
+        },
+        "changeFeed": {
+            "value": true
+        },
+        "changeFeedRetentionDays": {
+            "value": 7
+        },
+        "isVersioningEnabled": {
+            "value": true
+        },
+        "isShareSoftDeleteEnabled": {
+            "value": false
+        }
+    }
+}

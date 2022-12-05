@@ -250,6 +250,11 @@ var linkedVNetIdsForPrivateEndpoints = [
   networkReferencesSharedModule.outputs.appsShared2VNetId
 ]
 
+var monitoringStorageAccountDefaultAllowedSubnetIds = [
+  networkReferencesSharedModule.outputs.jumpServersSubnetId
+  networkReferencesSharedModule.outputs.devopsAgentsSubnetId
+]
+
 module monitoringStorageAccountModule 'modules/monitoring-storage-account.bicep' = {
   name: 'monitoring-storage-account-module'
   params: {
@@ -261,10 +266,7 @@ module monitoringStorageAccountModule 'modules/monitoring-storage-account.bicep'
     enableLock: monitoringStorageAccountEnableLock
     enablePublicAccess: monitoringStorageAccountEnablePublicAccess
     bypassAzureServices: monitoringStorageAccountBypassAzureServices
-    allowedSubnetIds: concat(monitoringStorageAccountAllowedSubnetIds, [
-        networkReferencesSharedModule.outputs.jumpServersSubnetId
-        networkReferencesSharedModule.outputs.devopsAgentsSubnetId
-      ])
+    allowedSubnetIds: concat(monitoringStorageAccountDefaultAllowedSubnetIds, monitoringStorageAccountAllowedSubnetIds)
     allowedIPsOrCIDRs: monitoringStorageAccountAllowedIPsOrCIDRs
   }
 }

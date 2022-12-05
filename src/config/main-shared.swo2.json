@@ -1,0 +1,164 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus2"
+    },
+    "env": {
+      "value": "SWO"
+    },
+    "brsSubscriptionId": {
+      "value": "df6b3a66-4927-452d-bd5f-9abc9db8a9c0"
+    },
+    "brsNetworkResourceGroupName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-RG01"
+    },
+    "prodSubscriptionId": {
+      "value": "df6b3a66-4927-452d-bd5f-9abc9db8a9c0"
+    },
+    "prodNetworkResourceGroupName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-RG01"
+    },
+    "aksVNetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN02"
+    },
+    "endpointsVNetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN03"
+    },
+    "endpointsSubnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN03"
+    },
+    "appsShared2VNetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN04"
+    },
+    "jumpServersSubnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN04"
+    },
+    "devopsAgentsSubnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN05"
+    },
+    "aksNSGName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-NS02"
+    },
+    "keyVaultPEPrivateIPAddress": {
+      "value": "10.169.88.71"
+    },
+    "monitoringStorageAccountNameSuffix": {
+      "value": "zzs290"
+    },
+    "monitoringStorageAccountSkuName": {
+      "value": "Standard_LRS"
+    },
+    "monitoringWorkspaceSkuName": {
+      "value": "PerGB2018"
+    },
+    "monitoringWorkspaceCapacityReservation": {
+      "value": 0
+    },
+    "monitoringWorkspaceLogRetentionDays": {
+      "value": 30
+    },
+    "keyVaultNameSuffix": {
+      "value": "qta790"
+    },
+    "keyVaultEnablePurgeProtection": {
+      "value": true
+    },
+    "keyVaultSoftDeleteRetentionDays": {
+      "value": 7
+    },
+    "keyVaultEnableArmAccess": {
+      "value": true
+    },
+    "keyVaultEnableRbacAuthorization": {
+      "value": false
+    },
+    "createEncryptionKeysInKeyVault": {
+      "value": true
+    },
+    "encryptionKeysIssueDateTime": {
+      "value": "11/15/2022 08:00:00 AM"
+    },
+    "createSecretsInKeyVault": {
+      "value": true
+    },
+    "enableRandomPasswordGenerationForSecrets": {
+      "value": false
+    },
+    "secrtsIssueDateTime": {
+      "value": "11/15/2022 08:00:00 AM"
+    },
+    "adminUsersPrincipalIds": {
+      "value": [
+        "40c2e922-9fb6-4186-a53f-44439c85a9df"
+      ]
+    },
+    "devUsersPrincipalIds": {
+      "value": []
+    },
+    "azureServicesPrincipalIds": {
+      "value": []
+    },
+    "devopsAgentsPrincipalIds": {
+      "value": []
+    },
+    "flowLogsEnableNetworkWatcherFlowAnalytics": {
+      "value": false
+    },
+    "flowLogsRetentionDays": {
+      "value": 7
+    },
+    "keyVaultEnableDiagnostics": {
+      "value": true
+    },
+    "keyVaultLogsRetentionDays": {
+      "value": 7
+    },
+    "monitoringStorageAccountEnableLock": {
+      "value": true
+    },
+    "monitoringWorkspaceEnableLock": {
+      "value": true
+    },
+    "keyVaultEnableLock": {
+      "value": true
+    },
+    "flowLogsEnableLock": {
+      "value": true
+    },
+    "monitoringStorageAccountEnablePublicAccess": {
+      "value": true
+    },
+    "monitoringStorageAccountBypassAzureServices": {
+      "value": true
+    },
+    "monitoringStorageAccountAllowedSubnetIds": {
+      "value": []
+    },
+    "monitoringStorageAccountAllowedIPsOrCIDRs": {
+      "value": []
+    },
+    "keyVaultEnablePublicAccess": {
+      "value": false
+    },
+    "keyVaultBypassAzureServices": {
+      "value": true
+    },
+    "keyVaultAllowedSubnetIds": {
+      "value": []
+    },
+    "keyVaultAllowedIPsOrCIDRs": {
+      "value": []
+    },
+    "enablePrivateEndpointModules": {
+      "value": true
+    },
+    "enableFlowLogsModule": {
+      "value": false
+    },
+    "enableServiceEndpointPoliciesModule": {
+      "value": false
+    }
+  }
+}

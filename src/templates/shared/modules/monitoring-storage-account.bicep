@@ -103,7 +103,7 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01
   name: 'default'
   parent: monitoringStorageAccount
   properties: {
-    isVersioningEnabled: false
+    automaticSnapshotPolicyEnabled: false
     restorePolicy: {
       enabled: false
     }
@@ -111,6 +111,10 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01
       enabled: false
     }
     containerDeleteRetentionPolicy: {
+      enabled: false
+    }
+    isVersioningEnabled: false
+    changeFeed: {
       enabled: false
     }
   }

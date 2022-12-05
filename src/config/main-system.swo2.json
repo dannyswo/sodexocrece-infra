@@ -1,0 +1,345 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus2"
+    },
+    "env": {
+      "value": "SWO"
+    },
+    "brsSubscriptionId": {
+      "value": "df6b3a66-4927-452d-bd5f-9abc9db8a9c0"
+    },
+    "brsNetworkResourceGroupName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-RG01"
+    },
+    "prodSubscriptionId": {
+      "value": "df6b3a66-4927-452d-bd5f-9abc9db8a9c0"
+    },
+    "prodNetworkResourceGroupName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-RG01"
+    },
+    "aksVNetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN02"
+    },
+    "aksSubnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN02"
+    },
+    "endpointsVNetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN03"
+    },
+    "endpointsSubnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN03"
+    },
+    "appsShared2VNetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN04"
+    },
+    "gatewaySubnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN01"
+    },
+    "jumpServersSubnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN04"
+    },
+    "devopsAgentsSubnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN05"
+    },
+    "appsStorageAccountPEPrivateIPAddress": {
+      "value": "10.169.88.74"
+    },
+    "sqlDatabasePEPrivateIPAddress": {
+      "value": "10.169.88.70"
+    },
+    "acrPEPrivateIPAddresses": {
+      "value": [
+        "10.169.88.72",
+        "10.169.88.73"
+      ]
+    },
+    "monitoringStorageAccountName": {
+      "value": "azmxst1zzs259"
+    },
+    "monitoringWorkspaceName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
+    },
+    "appGatewayManageIdentityName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-AD01"
+    },
+    "appsStorageAccountManagedIdentityName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-AD02"
+    },
+    "aksManagedIdentityName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"
+    },
+    "keyVaultName": {
+      "value": "azmxkv1qta790"
+    },
+    "appGatewayFrontendCertificateName": {
+      "value": "crececonsdx-appgateway-cert-frontend"
+    },
+    "appGatewayBackendCertificateName": {
+      "value": "crececonsdx-appgateway-cert-backend"
+    },
+    "appsStorageAccountEncryptionKeyName": {
+      "value": "crececonsdx-appsstorageaccount-key"
+    },
+    "sqlDatabaseSqlAdminLoginName": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta777"
+        },
+        "secretName": "crececonsdx-sqldatabase-sqladminloginname"
+      }
+    },
+    "sqlDatabaseSqlAdminLoginPass": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/df6b3a66-4927-452d-bd5f-9abc9db8a9c0/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1qta777"
+        },
+        "secretName": "crececonsdx-sqldatabase-sqladminloginpass"
+      }
+    },
+    "sqlDatabaseEnableAADAdminUser": {
+      "value": true
+    },
+    "sqlDatabaseAADAdminLoginName": {
+      "value": "danny.zamorano@softwareone.com"
+    },
+    "sqlDatabaseAADAdminPrincipalId": {
+      "value": "40c2e922-9fb6-4186-a53f-44439c85a9df"
+    },
+    "appGatewayNameSuffix": {
+      "value": "eae590"
+    },
+    "appGatewaySkuTier": {
+      "value": "WAF_v2"
+    },
+    "appGatewaySkuName": {
+      "value": "WAF_v2"
+    },
+    "appGatewayFrontendPrivateIPAddress": {
+      "value": "10.169.50.6"
+    },
+    "appGatewayEnablePublicFrontendIP": {
+      "value": true
+    },
+    "appGatewayAutoScaleMinCapacity": {
+      "value": 1
+    },
+    "appGatewayAutoScaleMaxCapacity": {
+      "value": 2
+    },
+    "appGatewayEnableHttpPort": {
+      "value": false
+    },
+    "appGatewayEnableHttpsPort": {
+      "value": true
+    },
+    "appGatewayWafPoliciesMode": {
+      "value": "Detection"
+    },
+    "appsStorageAccountNameSuffix": {
+      "value": "deh790"
+    },
+    "appsStorageAccountSkuName": {
+      "value": "Standard_LRS"
+    },
+    "sqlServerNameSuffix": {
+      "value": "nkt890"
+    },
+    "sqlDatabaseSkuType": {
+      "value": "Standard"
+    },
+    "sqlDatabaseSkuSize": {
+      "value": 0
+    },
+    "sqlDatabaseMinCapacity": {
+      "value": 1
+    },
+    "sqlDatabaseMaxSizeGB": {
+      "value": 2
+    },
+    "sqlDatabaseZoneRedundant": {
+      "value": true
+    },
+    "sqlDatabaseReplicaCount": {
+      "value": 0
+    },
+    "sqlDatabaseReadScaleOut": {
+      "value": "Disabled"
+    },
+    "sqlDatabaseBackupRedundancy": {
+      "value": "Local"
+    },
+    "sqlDatabaseLicenseType": {
+      "value": "LicenseIncluded"
+    },
+    "sqlDatabaseCollation": {
+      "value": "SQL_Latin1_General_CP1_CI_AS"
+    },
+    "acrNameSuffix": {
+      "value": "hym690"
+    },
+    "acrSku": {
+      "value": "Premium"
+    },
+    "acrZoneRedundancy": {
+      "value": "Disabled"
+    },
+    "acrUntaggedRetentionDays": {
+      "value": 7
+    },
+    "acrSoftDeleteRetentionDays": {
+      "value": 7
+    },
+    "aksSkuTier": {
+      "value": "Free"
+    },
+    "aksDnsSuffix": {
+      "value": "ibf656"
+    },
+    "aksKubernetesVersion": {
+      "value": "1.23.12"
+    },
+    "aksNetworkPlugin": {
+      "value": "azure"
+    },
+    "aksMaxPods": {
+      "value": 30
+    },
+    "aksEnableAutoScaling": {
+      "value": true
+    },
+    "aksNodePoolMinCount": {
+      "value": 1
+    },
+    "aksNodePoolMaxCount": {
+      "value": 3
+    },
+    "aksNodePoolVmSize": {
+      "value": "standard_d2s_v3"
+    },
+    "aksEnableEncryptionAtHost": {
+      "value": false
+    },
+    "aksEnablePrivateCluster": {
+      "value": true
+    },
+    "aksEnablePodManagedIdentity": {
+      "value": false
+    },
+    "aksEnableWorkloadIdentity": {
+      "value": false
+    },
+    "aksEnableAGICAddon": {
+      "value": true
+    },
+    "aksCreateCustomRouteTable": {
+      "value": false
+    },
+    "aksEnableKeyVaultSecretsProviderAddon": {
+      "value": true
+    },
+    "aksEnableSecretsRotation": {
+      "value": true
+    },
+    "aksSecrtsRotationPollInterval": {
+      "value": "2m"
+    },
+    "aksEnableOMSAgentAddon": {
+      "value": true
+    },
+    "appGatewayEnableDiagnostics": {
+      "value": true
+    },
+    "appGatewayLogsRetentionDays": {
+      "value": 7
+    },
+    "appsStorageAccountEnableDiagnostics": {
+      "value": true
+    },
+    "appsStorageAccountLogsRetentionDays": {
+      "value": 7
+    },
+    "sqlDatabaseEnableAuditing": {
+      "value": true
+    },
+    "sqlDatabaseLogsRetentionDays": {
+      "value": 7
+    },
+    "sqlDatabaseEnableThreatProtection": {
+      "value": true
+    },
+    "sqlDatabaseEnableVulnerabilityAssessments": {
+      "value": true
+    },
+    "sqlDatabaseEnableStoragelessVunerabilityAssessments": {
+      "value": false
+    },
+    "sqlDatabaseVulnerabilityAssessmentsEmails": {
+      "value": [
+        "danny.zamorano@softwareone.com"
+      ]
+    },
+    "acrEnableDiagnostics": {
+      "value": true
+    },
+    "acrLogsRetentionDays": {
+      "value": 7
+    },
+    "appGatewayEnableLock": {
+      "value": false
+    },
+    "appsStorageAccountEnableLock": {
+      "value": true
+    },
+    "sqlDatabaseEnableLock": {
+      "value": true
+    },
+    "acrEnableLock": {
+      "value": true
+    },
+    "aksEnableLock": {
+      "value": true
+    },
+    "appsStorageAccountEnablePublicAccess": {
+      "value": false
+    },
+    "appsStorageAccountBypassAzureServices": {
+      "value": false
+    },
+    "appsStorageAccountAllowedSubnetIds": {
+      "value": []
+    },
+    "appsStorageAccountAllowedIPsOrCIDRs": {
+      "value": []
+    },
+    "sqlDatabaseEnablePublicAccess": {
+      "value": false
+    },
+    "sqlDatabaseAllowedSubnetIds": {
+      "value": []
+    },
+    "sqlDatabaseAllowedIPRanges": {
+      "value": []
+    },
+    "acrEnablePublicAccess": {
+      "value": false
+    },
+    "acrBypassAzureServices": {
+      "value": false
+    },
+    "acrAllowedIPsOrCIDRs": {
+      "value": []
+    },
+    "aksEnablePublicAccess": {
+      "value": false
+    },
+    "enablePrivateEndpointModules": {
+      "value": true
+    },
+    "enableAksNodeGroupRbacModule": {
+      "value": false
+    }
+  }
+}

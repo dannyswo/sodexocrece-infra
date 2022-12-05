@@ -116,7 +116,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = 
         retentionDays: softDeleteRetentionDays
       }
       exportPolicy: {
-        status: (enablePublicAccess) ? 'enabled' : 'disabled'
+        status: 'disabled'
       }
     }
     adminUserEnabled: false

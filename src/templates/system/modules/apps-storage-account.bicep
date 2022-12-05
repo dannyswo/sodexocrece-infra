@@ -83,8 +83,6 @@ param allowedIPsOrCIDRs array
 
 // ==================================== Stoarge Account ====================================
 
-var storageAccountName = 'azmxst1${storageAccountNameSuffix}'
-
 var virtualNetworkRules = [for allowedSubnetId in allowedSubnetIds: {
   id: allowedSubnetId
   action: 'Allow'
@@ -95,7 +93,7 @@ var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
 }]
 
 resource appsStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
-  name: storageAccountName
+  name: 'azmxst1${storageAccountNameSuffix}'
   location: location
   identity: {
     type: 'UserAssigned'
@@ -152,7 +150,7 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01
   name: 'default'
   parent: appsStorageAccount
   properties: {
-    isVersioningEnabled: false
+    automaticSnapshotPolicyEnabled: false
     restorePolicy: {
       enabled: false
     }
@@ -160,6 +158,10 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01
       enabled: false
     }
     containerDeleteRetentionPolicy: {
+      enabled: false
+    }
+    isVersioningEnabled: false
+    changeFeed: {
       enabled: false
     }
   }

@@ -18,11 +18,11 @@ Deploy main templates in Danny's Subscription:
 ```
 az deployment sub create -l eastus2 -f .\src\templates\landing-zone\groupProject.bicep -p .\src\config\group-project.swo.json
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\landing-zone\main-landing-zone.bicep -p .\src\config\main-landingzone.swo.json
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\landing-zone\main-landing-zone.bicep -p .\src\config\main-landing-zone.swo.json -p jumpServerAdminUsername= -p jumpServerAdminPassword=
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\shared\main-shared.bicep -p .\src\config\main-shared.swo.json -p secrtsSqlDatabaseSqlAdminLoginName=svr123 -p secrtsSqlDatabaseSqlAdminLoginPass=svr101102S
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\shared\main-shared.bicep -p .\src\config\main-shared.swo2.json -p secrtsSqlDatabaseSqlAdminLoginName= -p secrtsSqlDatabaseSqlAdminLoginPass=
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\system\main-system.bicep -p .\src\config\main-system.swo.json
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\system\main-system.bicep -p .\src\config\main-system.swo2.json
 ```
 
 ## Deployment of individual modules (SWO)
