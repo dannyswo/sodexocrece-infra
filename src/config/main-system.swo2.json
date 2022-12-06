@@ -261,6 +261,9 @@
       "value": false
     },
     "aksEnablePrivateCluster": {
+      "value": true
+    },
+    "aksCreateCustomPrivateDnsZone": {
       "value": false
     },
     "aksEnablePodManagedIdentity": {
@@ -374,7 +377,7 @@
       "value": true
     },
     "aksDisableRunCommand": {
-      "value": true
+      "value": false
     },
     "aksAllowedIPsOrCIDRs": {
       "value": []

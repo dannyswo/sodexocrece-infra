@@ -300,6 +300,8 @@ param aksNodePoolVmSize string
 param aksEnableEncryptionAtHost bool
 @description('Create the AKS Managed Cluster as private cluster.')
 param aksEnablePrivateCluster bool
+@description('Create custom Private DNS Zone for AKS Managed Cluster.')
+param aksCreateCustomPrivateDnsZone bool
 @description('Enable Pod-Managed Identity feature on the AKS Managed Cluster.')
 param aksEnablePodManagedIdentity bool
 @description('Enable Workload Identity feature on the AKS Managed Cluster.')
@@ -640,6 +642,7 @@ module aksModule 'modules/aks.bicep' = {
     nodePoolVmSize: aksNodePoolVmSize
     enableEncryptionAtHost: aksEnableEncryptionAtHost
     enablePrivateCluster: aksEnablePrivateCluster
+    createCustomPrivateDnsZone: aksCreateCustomPrivateDnsZone
     privateDnsZoneLinkedVNetIds: linkedVNetIdsForAksPrivateEndpoint
     enablePodManagedIdentity: aksEnablePodManagedIdentity
     podIdentities: []
