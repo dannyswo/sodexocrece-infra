@@ -58,6 +58,9 @@ param jumpServerAdminUsername string
 @secure()
 param jumpServerAdminPassword string
 
+@description('Create an external Private DNS Zone for AKS Managed Cluster.')
+param createAksPrivateDnsZone bool
+
 // ==================================== Modules ====================================
 
 module networkModule 'modules/network.bicep' = if (createNetwork) {
@@ -108,21 +111,11 @@ module jumpServer1Module 'modules/jump-server.bicep' = if (createNetwork && crea
   }
 }
 
-module networkAttachmentsModule 'modules/network-attachments.bicep' = if (!createNetwork) {
-  name: 'network-attachments-module'
+module aksPrivateDnsZoneModule 'modules/private-dns-zone.bicep' = if (createAksPrivateDnsZone) {
+  name: 'aks-private-dns-zone-module'
   params: {
     location: location
-    env: env
     standardTags: standardTags
-    // gatewaySubnetId: gatewaySubnetId
-    // aksSubnetId: aksSubnetId
-    // endpointsSubnetId: endpointsSubnetId
-    // jumpServersSubnetId: jumpServersSubnetId
-    // devopsAgentsSubnetId: devopsAgentsSubnetId
-    // enableCustomRouteTable: enableCustomRouteTable
-    // enableKeyVaultServiceEndpoint: enableKeyVaultServiceEndpoint
-    // enableStorageAccountServiceEndpoint: enableStorageAccountServiceEndpoint
-    // enableSqlDatabaseServiceEndpoint: enableSqlDatabaseServiceEndpoint
-    // enableContainerRegistryServiceEndpoint: enableContainerRegistryServiceEndpoint
+    namespace: 'aks'
   }
 }

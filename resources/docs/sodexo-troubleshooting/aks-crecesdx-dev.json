@@ -1,0 +1,214 @@
+{
+  "id": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.ContainerService/managedClusters/BRS-MEX-USE2-CRECESDX-DEV-KU01",
+  "location": "eastus2",
+  "name": "BRS-MEX-USE2-CRECESDX-DEV-KU01",
+  "tags": {
+      " ApplicationOwner": "ignacio.zamorano@sodexo.com",
+      " ApplicationSponsor": "javier.solano@sodexo.com",
+      "AllowShutdown": "True",
+      "ApplicationName": "BRS.LATAM.MX.Crececonsdx",
+      "ApplicationOwner": "Ignacio.Zamorano@sodexo.com",
+      "ApplicationSponsor": "javier.solano@sodexo.com",
+      "EnvironmentType ": "DEV",
+      "Maintenance": "{   \"InternalAssetIdentifier\": \"\",   \"Provider\": \"SoftwareONE\",   \"ProviderAssetIdentifier\": \"\",   \"MaintenanceWindow\": \"TBD\",   \"ServiceLevel\": \"TBD\" }",
+      "Security ": "{   \"C\": 4,   \"I\": 4,   \"A\": 4,   \"ITCritical\": 1,   \"BusCritical\": 1,   \"Situation\": \"Exposed\",   \"DJ\": 0,   \"ITOps\": \"SoftwareONE\",   \"SecOps\": \"GISS\",   \"hasPD\": 1,   \"Scope\": \"Local\",   \"DRP\": 1 }",
+      "TechnicalContact": "xavier.claraz@sodexo.com",
+      "stack": "Merchant"
+  },
+  "type": "Microsoft.ContainerService/ManagedClusters",
+  "properties": {
+      "provisioningState": "Failed",
+      "powerState": {
+          "code": "Running"
+      },
+      "kubernetesVersion": "1.23.12",
+      "dnsPrefix": "azmxku1nlx625",
+      "fqdn": "azmxku1nlx625-7e3194fe.hcp.eastus2.azmk8s.io",
+      "azurePortalFQDN": "8735718640da2d7ff16fa75e86fa006d-priv.portal.hcp.eastus2.azmk8s.io",
+      "privateFQDN": "azmxku1nlx625-0b059e86.2262354b-06d0-456e-b7c0-898d59831142.privatelink.eastus2.azmk8s.io",
+      "agentPoolProfiles": [
+          {
+              "name": "agentpool1",
+              "count": 1,
+              "vmSize": "standard_d2s_v3",
+              "osDiskSizeGB": 128,
+              "osDiskType": "Managed",
+              "kubeletDiskType": "OS",
+              "vnetSubnetID": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-GLB-USE2-NTWRKBRS-DEV-RG01/providers/Microsoft.Network/virtualNetworks/BRS-GLB-USE2-AKS-DEV-VN01/subnets/BRS-MEX-USE2-AKS-DEV-SN02",
+              "maxPods": 30,
+              "type": "VirtualMachineScaleSets",
+              "availabilityZones": [
+                  "1",
+                  "2",
+                  "3"
+              ],
+              "maxCount": 3,
+              "minCount": 1,
+              "enableAutoScaling": true,
+              "scaleDownMode": "Delete",
+              "provisioningState": "Failed",
+              "powerState": {
+                  "code": "Running"
+              },
+              "orchestratorVersion": "1.23.12",
+              "tags": {
+                  " ApplicationOwner": "ignacio.zamorano@sodexo.com",
+                  " ApplicationSponsor": "javier.solano@sodexo.com",
+                  "AllowShutdown": "True",
+                  "ApplicationName": "BRS.LATAM.MX.Crececonsdx",
+                  "ApplicationOwner": "Ignacio.Zamorano@sodexo.com",
+                  "ApplicationSponsor": "javier.solano@sodexo.com",
+                  "EnvironmentType ": "DEV",
+                  "Maintenance": "{   \"InternalAssetIdentifier\": \"\",   \"Provider\": \"SoftwareONE\",   \"ProviderAssetIdentifier\": \"\",   \"MaintenanceWindow\": \"TBD\",   \"ServiceLevel\": \"TBD\" }",
+                  "Security ": "{   \"C\": 4,   \"I\": 4,   \"A\": 4,   \"ITCritical\": 1,   \"BusCritical\": 1,   \"Situation\": \"Exposed\",   \"DJ\": 0,   \"ITOps\": \"SoftwareONE\",   \"SecOps\": \"GISS\",   \"hasPD\": 1,   \"Scope\": \"Local\",   \"DRP\": 1 }",
+                  "TechnicalContact": "xavier.claraz@sodexo.com",
+                  "stack": "Merchant"
+              },
+              "mode": "System",
+              "enableEncryptionAtHost": false,
+              "osType": "Linux",
+              "osSKU": "Ubuntu",
+              "nodeImageVersion": "AKSUbuntu-1804gen2containerd-2022.11.02",
+              "upgradeSettings": {
+                  "maxSurge": "1"
+              },
+              "enableFIPS": false
+          }
+      ],
+      "windowsProfile": {
+          "adminUsername": "azureuser",
+          "enableCSIProxy": true
+      },
+      "servicePrincipalProfile": {
+          "clientId": "msi"
+      },
+      "addonProfiles": {
+          "azureKeyvaultSecretsProvider": {
+              "enabled": true,
+              "config": {
+                  "enableSecretRotation": "true",
+                  "rotationPollInterval": "2m"
+              },
+              "identity": {
+                  "resourceId": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/MC_BRS-MEX-USE2-CRECESDX-DEV-RG01_BRS-MEX-USE2-CRECESDX-DEV-KU01_eastus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/azurekeyvaultsecretsprovider-brs-mex-use2-crecesdx-dev-ku01",
+                  "clientId": "a9164e3e-3cf9-4d91-b21d-8eeda537eb14",
+                  "objectId": "2e021dd6-f6a3-4c82-8527-6b68e8d9c957"
+              }
+          },
+          "ingressApplicationGateway": {
+              "enabled": false,
+              "config": {
+                  "applicationGatewayId": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.Network/applicationGateways/azmxwa1zvq385"
+              }
+          },
+          "omsagent": {
+              "enabled": true,
+              "config": {
+                  "logAnalyticsWorkspaceResourceID": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.OperationalInsights/workspaces/BRS-MEX-USE2-CRECESDX-DEV-MM01"
+              },
+              "identity": {
+                  "resourceId": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/MC_BRS-MEX-USE2-CRECESDX-DEV-RG01_BRS-MEX-USE2-CRECESDX-DEV-KU01_eastus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/omsagent-brs-mex-use2-crecesdx-dev-ku01",
+                  "clientId": "7fe784b1-5674-45bf-9a6d-9a3f59c0f08c",
+                  "objectId": "a55f2881-952c-44e1-858b-d2506cea90a3"
+              }
+          }
+      },
+      "nodeResourceGroup": "MC_BRS-MEX-USE2-CRECESDX-DEV-RG01_BRS-MEX-USE2-CRECESDX-DEV-KU01_eastus2",
+      "enableRBAC": true,
+      "networkProfile": {
+          "networkPlugin": "azure",
+          "networkPolicy": "calico",
+          "loadBalancerSku": "Standard",
+          "loadBalancerProfile": {
+              "managedOutboundIPs": {
+                  "count": 1
+              },
+              "effectiveOutboundIPs": [
+                  {
+                      "id": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/MC_BRS-MEX-USE2-CRECESDX-DEV-RG01_BRS-MEX-USE2-CRECESDX-DEV-KU01_eastus2/providers/Microsoft.Network/publicIPAddresses/8334010a-d79f-48c9-b030-dcea98fd9b1a"
+                  }
+              ]
+          },
+          "serviceCidr": "10.0.0.0/16",
+          "dnsServiceIP": "10.0.0.10",
+          "dockerBridgeCidr": "172.17.0.1/16",
+          "outboundType": "loadBalancer",
+          "serviceCidrs": [
+              "10.0.0.0/16"
+          ],
+          "ipFamilies": [
+              "IPv4"
+          ]
+      },
+      "aadProfile": {
+          "managed": true,
+          "adminGroupObjectIDs": null,
+          "adminUsers": null,
+          "enableAzureRBAC": true,
+          "tenantID": "a289d6c2-3b1f-4bc4-8fa0-6866ff300052"
+      },
+      "maxAgentPools": 100,
+      "privateLinkResources": [
+          {
+              "id": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.ContainerService/managedClusters/BRS-MEX-USE2-CRECESDX-DEV-KU01/privateLinkResources/management",
+              "name": "management",
+              "type": "Microsoft.ContainerService/managedClusters/privateLinkResources",
+              "groupId": "management",
+              "requiredMembers": [
+                  "management"
+              ]
+          }
+      ],
+      "apiServerAccessProfile": {
+          "enablePrivateCluster": true,
+          "privateDNSZone": "system",
+          "enablePrivateClusterPublicFQDN": true
+      },
+      "identityProfile": {
+          "kubeletidentity": {
+              "resourceId": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/MC_BRS-MEX-USE2-CRECESDX-DEV-RG01_BRS-MEX-USE2-CRECESDX-DEV-KU01_eastus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/BRS-MEX-USE2-CRECESDX-DEV-KU01-agentpool",
+              "clientId": "fe876f48-e2f1-4d18-b30e-d2bc10e92f85",
+              "objectId": "e20ba129-8c21-4ab7-86e8-4503daac4d40"
+          }
+      },
+      "autoScalerProfile": {
+          "balance-similar-node-groups": "false",
+          "expander": "random",
+          "max-empty-bulk-delete": "10",
+          "max-graceful-termination-sec": "600",
+          "max-node-provision-time": "15m",
+          "max-total-unready-percentage": "45",
+          "new-pod-scale-up-delay": "0s",
+          "ok-total-unready-count": "3",
+          "scale-down-delay-after-add": "10m",
+          "scale-down-delay-after-delete": "10s",
+          "scale-down-delay-after-failure": "3m",
+          "scale-down-unneeded-time": "10m",
+          "scale-down-unready-time": "20m",
+          "scale-down-utilization-threshold": "0.5",
+          "scan-interval": "10s",
+          "skip-nodes-with-local-storage": "false",
+          "skip-nodes-with-system-pods": "true"
+      },
+      "autoUpgradeProfile": {
+          "upgradeChannel": "patch"
+      },
+      "podIdentityProfile": {},
+      "disableLocalAccounts": true,
+      "securityProfile": {},
+      "publicNetworkAccess": "Disabled"
+  },
+  "identity": {
+      "type": "UserAssigned",
+      "userAssignedIdentities": {
+          "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.ManagedIdentity/userAssignedIdentities/BRS-MEX-USE2-CRECESDX-DEV-AD03": {
+              "clientId": "03349ee7-d4fd-4c34-a21e-4d5112fe305b",
+              "principalId": "0f73cc26-23cb-412a-a744-9941b348f205"
+          }
+      }
+  },
+  "sku": {
+      "name": "Basic",
+      "tier": "Free"
+  }
+}

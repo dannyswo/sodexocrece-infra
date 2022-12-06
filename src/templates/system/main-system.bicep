@@ -60,6 +60,12 @@ param prodSubscriptionId string
 @description('Name of the Resource Group for network resources in Prod / Non Prod Subscription.')
 param prodNetworkResourceGroupName string
 
+@description('ID of the BRS Tier 0 Subscription.')
+param tier0SubscriptionId string
+
+@description('Name of the Resource Group for global DNS related resources.')
+param globalDnsResourceGroupName string
+
 @description('Name of the Frontend VNet.')
 param frontendVNetName string
 
@@ -301,7 +307,7 @@ param aksEnableEncryptionAtHost bool
 @description('Create the AKS Managed Cluster as private cluster.')
 param aksEnablePrivateCluster bool
 @description('Create custom Private DNS Zone for AKS Managed Cluster.')
-param aksCreateCustomPrivateDnsZone bool
+param aksCreatePrivateDnsZone bool
 @description('Enable Pod-Managed Identity feature on the AKS Managed Cluster.')
 param aksEnablePodManagedIdentity bool
 @description('Enable Workload Identity feature on the AKS Managed Cluster.')
@@ -412,10 +418,13 @@ param enableAksNodeGroupRbacModule bool
 module networkReferencesSystemModule 'modules/network-references-system.bicep' = {
   name: 'network-references-system-module'
   params: {
+    location: location
     brsSubscriptionId: brsSubscriptionId
     brsNetworkResourceGroupName: brsNetworkResourceGroupName
     prodSubscriptionId: prodSubscriptionId
     prodNetworkResourceGroupName: prodNetworkResourceGroupName
+    tier0SubscriptionId: tier0SubscriptionId
+    globalDnsResourceGroupName: globalDnsResourceGroupName
     frontendVNetName: frontendVNetName
     gatewaySubnetName: gatewaySubnetName
     aksVNetName: aksVNetName
@@ -642,7 +651,8 @@ module aksModule 'modules/aks.bicep' = {
     nodePoolVmSize: aksNodePoolVmSize
     enableEncryptionAtHost: aksEnableEncryptionAtHost
     enablePrivateCluster: aksEnablePrivateCluster
-    createCustomPrivateDnsZone: aksCreateCustomPrivateDnsZone
+    createPrivateDnsZone: aksCreatePrivateDnsZone
+    externalPrivateDnsZoneId: networkReferencesSystemModule.outputs.aksPrivateDnsZoneId
     privateDnsZoneLinkedVNetIds: linkedVNetIdsForAksPrivateEndpoint
     enablePodManagedIdentity: aksEnablePodManagedIdentity
     podIdentities: []

@@ -20,6 +20,12 @@
     "prodNetworkResourceGroupName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-RG01"
     },
+    "tier0SubscriptionId": {
+      "value": "df6b3a66-4927-452d-bd5f-9abc9db8a9c0"
+    },
+    "globalDnsResourceGroupName" : {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-RG01"
+    },
     "frontendVNetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-VN01"
     },
@@ -263,7 +269,7 @@
     "aksEnablePrivateCluster": {
       "value": true
     },
-    "aksCreateCustomPrivateDnsZone": {
+    "aksCreatePrivateDnsZone": {
       "value": false
     },
     "aksEnablePodManagedIdentity": {
@@ -374,7 +380,7 @@
       "value": []
     },
     "aksEnablePublicAccess": {
-      "value": true
+      "value": false
     },
     "aksDisableRunCommand": {
       "value": false

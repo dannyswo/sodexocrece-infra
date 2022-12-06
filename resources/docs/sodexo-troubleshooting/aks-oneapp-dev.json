@@ -1,0 +1,192 @@
+{
+  "id": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/BRS-MEX-USE2-ONEAPPV3-DEV-RG01/providers/Microsoft.ContainerService/managedClusters/azmxku1zzv118",
+  "location": "eastus2",
+  "name": "azmxku1zzv118",
+  "tags": {
+      "AllowShutdown": "True",
+      "ApplicationName": "BRS.LATAM.MX.OneApp",
+      "ApplicationOwner": "ignacio.zamorano@sodexo.com",
+      "ApplicationSponsor": "javier.solano@sodexo.com",
+      "Billing": "{\"BSD\":\"2022-07-23T14:00:00\",\"CC\":\"2564\",\"D\":\"\",\"LE\":\"Sodexo Pass International SAS\",\"MUP\":\"\"}",
+      "Maintainer": "Unicorn",
+      "Maintenance": "",
+      "Security": "{\"C\":3,\"I\":3,\"A\":3,\"ITCritical\":1,\"BusCritical\":1,\"Situation\":\"Internal\",\"DJ\":1,\"ITOps\":\"SoftwareONE\",\"SecOps\":\"GISS\",\"hasPD\":1,\"Scope\":\"Regional\",\"DRP\":1}",
+      "Stack": "oneappv3",
+      "TechnicalContact": "Xavier.claraz@sodexo.com",
+      "dd_azure_container_services": "Enabled",
+      "dd_monitoring": "Enabled",
+      "dd_organization": "MX",
+      "env": "dev",
+      "environmentType": "DEV"
+  },
+  "type": "Microsoft.ContainerService/ManagedClusters",
+  "properties": {
+      "provisioningState": "Succeeded",
+      "powerState": {
+          "code": "Running"
+      },
+      "kubernetesVersion": "1.23.12",
+      "dnsPrefix": "azmxku1zzv118",
+      "fqdn": "azmxku1zzv118-61c6d4c0.hcp.eastus2.azmk8s.io",
+      "azurePortalFQDN": "149905e2994d3eb08928fee297845575-priv.portal.hcp.eastus2.azmk8s.io",
+      "privateFQDN": "azmxku1zzv118-1c98db48.privatelink.eastus2.azmk8s.io",
+      "agentPoolProfiles": [
+          {
+              "name": "agentpool",
+              "count": 2,
+              "vmSize": "Standard_D2s_v3",
+              "osDiskSizeGB": 128,
+              "osDiskType": "Managed",
+              "kubeletDiskType": "OS",
+              "vnetSubnetID": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-GLB-USE2-NTWRKBRS-DEV-RG01/providers/Microsoft.Network/virtualNetworks/BRS-GLB-USE2-AKS-DEV-VN01/subnets/BRS-MEX-USE2-AKS-DEV-SN01",
+              "maxPods": 40,
+              "type": "VirtualMachineScaleSets",
+              "availabilityZones": [
+                  "1",
+                  "2"
+              ],
+              "maxCount": 5,
+              "minCount": 2,
+              "enableAutoScaling": true,
+              "provisioningState": "Succeeded",
+              "powerState": {
+                  "code": "Running"
+              },
+              "orchestratorVersion": "1.23.12",
+              "mode": "System",
+              "osType": "Linux",
+              "osSKU": "Ubuntu",
+              "nodeImageVersion": "AKSUbuntu-1804gen2containerd-2022.10.03",
+              "enableFIPS": false
+          }
+      ],
+      "linuxProfile": {
+          "adminUsername": "mxadmin",
+          "ssh": {
+              "publicKeys": [
+                  {
+                      "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDEk31n5pDxCbCu+/0nfIKPynSWeHDirdi/IPkAywHgk7CP/J+HY7y3121I7T0QIp5QnxigdI0tg+fMSgfaGEUTKC1mxv4vIvXodAdGWgfUAHgc5bpo2UdjJl23VYcXwsSTZ1JKr2uPmdCdCpsL4ji2fKFKMU/tCIOGBSbWh5edAPCF1+L/v+CO9W9Tv0MumKQ3+D1e0jiTVb6kCAWtkROe6ZcNtvlICyqFjZzZaG6TVjdLwokpzslp1+dpUwv7jz3XZKPGSPzFh1nMpotFVu4RES+Ft/HI/M+mMbpK2Yr7A0bQLGIRXojsKKexayX6lruPQFbqjQ0r2S6Ob5xegKKCv6doVuZpU0ZC0UZqbRz1pE5HDW6n71uLda4yhUxJRwaRGYVJXcD9g/10FDgR90MWMTqLK2zQWJa+4QDsVzWl3l9fq0NYmwaLQgWaqrE+dXY+NL1DeD5U28PdopQC0PNVLBM8eehaoS3b1fxHN5NQzAs1jjElaxICPpAJoGj/E+E= generated-by-azure"
+                  }
+              ]
+          }
+      },
+      "servicePrincipalProfile": {
+          "clientId": "msi"
+      },
+      "addonProfiles": {
+          "omsagent": {
+              "enabled": true,
+              "config": {
+                  "logAnalyticsWorkspaceResourceID": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-ONEAPPV3-DEV-RG01/providers/Microsoft.OperationalInsights/workspaces/azusmm1kro306"
+              },
+              "identity": {
+                  "resourceId": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/MC_BRS-MEX-USE2-ONEAPPV3-DEV-RG01_azmxku1zzv118/providers/Microsoft.ManagedIdentity/userAssignedIdentities/omsagent-azmxku1zzv118",
+                  "clientId": "607f8917-c9ab-4471-b1ee-9102dbc0d831",
+                  "objectId": "5160e36f-e188-4a67-bc40-711b19b8122e"
+              }
+          }
+      },
+      "nodeResourceGroup": "MC_BRS-MEX-USE2-ONEAPPV3-DEV-RG01_azmxku1zzv118",
+      "enableRBAC": true,
+      "networkProfile": {
+          "networkPlugin": "kubenet",
+          "networkPolicy": "calico",
+          "loadBalancerSku": "Standard",
+          "loadBalancerProfile": {
+              "managedOutboundIPs": {
+                  "count": 1
+              },
+              "effectiveOutboundIPs": [
+                  {
+                      "id": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/MC_BRS-MEX-USE2-ONEAPPV3-DEV-RG01_azmxku1zzv118/providers/Microsoft.Network/publicIPAddresses/aa38e6f4-4e6d-4379-8b4d-746d002bbf24"
+                  }
+              ]
+          },
+          "podCidr": "192.168.16.0/20",
+          "serviceCidr": "192.168.0.0/20",
+          "dnsServiceIP": "192.168.0.10",
+          "dockerBridgeCidr": "172.17.0.1/16",
+          "outboundType": "loadBalancer",
+          "podCidrs": [
+              "192.168.16.0/20"
+          ],
+          "serviceCidrs": [
+              "192.168.0.0/20"
+          ],
+          "ipFamilies": [
+              "IPv4"
+          ]
+      },
+      "aadProfile": {
+          "managed": true,
+          "adminGroupObjectIDs": [
+              "7e618c68-ace3-4bed-940f-22eeb4193aac",
+              "1a0b96d6-617a-489b-9938-ceb93e9825e1",
+              "fa1da691-6886-47ee-8b5c-4b26b91807dd"
+          ],
+          "adminUsers": null,
+          "tenantID": "a289d6c2-3b1f-4bc4-8fa0-6866ff300052"
+      },
+      "maxAgentPools": 100,
+      "privateLinkResources": [
+          {
+              "id": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/BRS-MEX-USE2-ONEAPPV3-DEV-RG01/providers/Microsoft.ContainerService/managedClusters/azmxku1zzv118/privateLinkResources/management",
+              "name": "management",
+              "type": "Microsoft.ContainerService/managedClusters/privateLinkResources",
+              "groupId": "management",
+              "requiredMembers": [
+                  "management"
+              ]
+          }
+      ],
+      "apiServerAccessProfile": {
+          "enablePrivateCluster": true,
+          "privateDNSZone": "/subscriptions/885a11fc-3bb8-4207-b875-6961765a6706/resourceGroups/IST-GLB-GLB-PVTPNTDNS-PRD-RG01/providers/Microsoft.Network/privateDnsZones/privatelink.eastus2.azmk8s.io",
+          "enablePrivateClusterPublicFQDN": true
+      },
+      "identityProfile": {
+          "kubeletidentity": {
+              "resourceId": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/MC_BRS-MEX-USE2-ONEAPPV3-DEV-RG01_azmxku1zzv118/providers/Microsoft.ManagedIdentity/userAssignedIdentities/azmxku1zzv118-agentpool",
+              "clientId": "eff7a200-590e-44ba-887f-9297d1b93869",
+              "objectId": "b3279563-81c9-4d79-bfba-8aa07ea74cca"
+          }
+      },
+      "autoScalerProfile": {
+          "balance-similar-node-groups": "false",
+          "expander": "random",
+          "max-empty-bulk-delete": "10",
+          "max-graceful-termination-sec": "600",
+          "max-node-provision-time": "15m",
+          "max-total-unready-percentage": "45",
+          "new-pod-scale-up-delay": "0s",
+          "ok-total-unready-count": "3",
+          "scale-down-delay-after-add": "10m",
+          "scale-down-delay-after-delete": "10s",
+          "scale-down-delay-after-failure": "3m",
+          "scale-down-unneeded-time": "10m",
+          "scale-down-unready-time": "20m",
+          "scale-down-utilization-threshold": "0.5",
+          "scan-interval": "10s",
+          "skip-nodes-with-local-storage": "false",
+          "skip-nodes-with-system-pods": "true"
+      },
+      "autoUpgradeProfile": {
+          "upgradeChannel": "none"
+      },
+      "disableLocalAccounts": false,
+      "securityProfile": {}
+  },
+  "identity": {
+      "type": "UserAssigned",
+      "userAssignedIdentities": {
+          "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-ONEAPPV3-DEV-RG01/providers/Microsoft.ManagedIdentity/userAssignedIdentities/azmxku1zzv118": {
+              "clientId": "d185d3f2-7ef4-4330-a19e-2521c7488c1c",
+              "principalId": "294a4256-e693-4f5a-b6b1-690cd1df61d0"
+          }
+      }
+  },
+  "sku": {
+      "name": "Basic",
+      "tier": "Free"
+  }
+}

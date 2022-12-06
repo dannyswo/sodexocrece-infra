@@ -83,8 +83,11 @@ param enableEncryptionAtHost bool
 @description('Create the AKS Managed Cluster as private cluster.')
 param enablePrivateCluster bool
 
-@description('Create custom Private DNS Zone for AKS Managed Cluster.')
-param createCustomPrivateDnsZone bool
+@description('Create a Private DNS Zone for private AKS Managed Cluster.')
+param createPrivateDnsZone bool
+
+@description('ID of an external Private DNS Zone for private AKS Managed Cluster. Required when createCustomPrivateDnsZone is false.')
+param externalPrivateDnsZoneId string
 
 @description('IDs of the VNets linked to the DNS Private Zone of AKS.')
 param privateDnsZoneLinkedVNetIds array
@@ -205,7 +208,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
     apiServerAccessProfile: {
       enablePrivateCluster: enablePrivateCluster
       enablePrivateClusterPublicFQDN: true
-      privateDNSZone: (createCustomPrivateDnsZone) ? ((enablePrivateCluster) ? privateDnsZone.id : null) : null
+      privateDNSZone: (enablePrivateCluster) ? ((createPrivateDnsZone) ? privateDnsZone.id : externalPrivateDnsZoneId) : null
       disableRunCommand: disableRunCommand
       authorizedIPRanges: allowedIPsOrCIDRs
     }
@@ -268,9 +271,9 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
   tags: standardTags
 }
 
-// ==================================== Custom Private DNS Zone ====================================
+// ==================================== Private DNS Zone ====================================
 
-resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = if (createCustomPrivateDnsZone && enablePrivateCluster) {
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = if (enablePrivateCluster && createPrivateDnsZone) {
   name: 'privatelink.${location}.azmk8s.io'
   location: 'global'
   properties: {
@@ -278,7 +281,7 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = if (cre
   tags: standardTags
 }
 
-resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetId, index) in privateDnsZoneLinkedVNetIds: if (createCustomPrivateDnsZone && enablePrivateCluster) {
+resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetId, index) in privateDnsZoneLinkedVNetIds: if (enablePrivateCluster && createPrivateDnsZone) {
   name: 'apiserver-NetworkLink-${index}'
   parent: privateDnsZone
   location: 'global'

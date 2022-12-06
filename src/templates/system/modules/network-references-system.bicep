@@ -7,6 +7,11 @@
 
 // ==================================== Parameters ====================================
 
+// ==================================== Common parameters ====================================
+
+@description('Azure region.')
+param location string = resourceGroup().location
+
 // ==================================== Resource properties ====================================
 
 @description('ID of the BRS Shared Services Subscription.')
@@ -20,6 +25,12 @@ param prodSubscriptionId string
 
 @description('Name of the Resource Group for network resources in Prod / Non Prod Subscription.')
 param prodNetworkResourceGroupName string
+
+@description('ID of the BRS Tier 0 Subscription.')
+param tier0SubscriptionId string
+
+@description('Name of the Resource Group for global DNS related resources.')
+param globalDnsResourceGroupName string
 
 @description('Name of the Frontend VNet.')
 param frontendVNetName string
@@ -62,6 +73,10 @@ var aksSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, '
 
 var endpointsSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', endpointsVNetName, endpointsSubnetName)
 
+// ==================================== Existing Private DNS Zones ====================================
+
+var aksPrivateDnsZoneId = resourceId(tier0SubscriptionId, globalDnsResourceGroupName, 'Microsoft.Network/privateDnsZones', 'privatelink.${location}.azmk8s.io')
+
 // ==================================== Outputs ====================================
 
 @description('ID of the Frontend VNet.')
@@ -84,3 +99,6 @@ output endpointsSubnetId string = endpointsSubnetId
 
 @description('ID of the Apps Shared 02 VNet.')
 output appsShared2VNetId string = appsShared2VNetId
+
+@description('ID of a Private DNS Zone for private AKS Managed Clusters.')
+output aksPrivateDnsZoneId string = aksPrivateDnsZoneId
