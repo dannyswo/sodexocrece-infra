@@ -59,6 +59,9 @@
         "10.169.88.73"
       ]
     },
+    "createPrivateDnsZones": {
+      "value": false
+    },
     "monitoringStorageAccountName": {
       "value": "azmxst1zzs259"
     },

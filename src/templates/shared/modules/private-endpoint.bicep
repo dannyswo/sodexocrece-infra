@@ -49,6 +49,9 @@ param serviceId string
 ])
 param groupId string
 
+@description('Create a Private DNS Zone for Private Endpoint.')
+param createPrivateDnsZone bool
+
 @description('IDs of the VNets linked to the DNS Private Zone.')
 param linkedVNetIds array
 
@@ -118,17 +121,15 @@ var privateDnsZoneNamesDictionary = {
   sqlServer: 'privatelink${environment().suffixes.sqlServerHostname}'
 }
 
-var privateDnsZoneName = privateDnsZoneNamesDictionary[groupId]
-
-resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: privateDnsZoneName
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = if (createPrivateDnsZone) {
+  name: privateDnsZoneNamesDictionary[groupId]
   location: 'global'
   properties: {
   }
   tags: standardTags
 }
 
-resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetId, index) in linkedVNetIds: {
+resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetId, index) in linkedVNetIds: if (createPrivateDnsZone) {
   name: '${groupId}-NetworkLink-${index}'
   parent: privateDnsZone
   location: 'global'

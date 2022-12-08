@@ -98,6 +98,9 @@ param sqlDatabasePEPrivateIPAddress string
 @description('Private IPs oaddresses of Private Endpoint used by Container Registry. Requires 2 IPs for 2 members: registry and registry_data.')
 param acrPEPrivateIPAddresses array
 
+@description('Create Private DNS Zones for all Private Endpoints.')
+param createPrivateDnsZones bool
+
 // ==================================== Monitoring dependencies ====================================
 
 @description('Name of the monitoring Storage Account.')
@@ -525,6 +528,7 @@ module appsStorageAccountPrivateEndpointModule 'modules/private-endpoint.bicep' 
     privateIPAddresses: [ appsStorageAccountPEPrivateIPAddress ]
     serviceId: appsStorageAccountModule.outputs.storageAccountId
     groupId: 'blob'
+    createPrivateDnsZone: createPrivateDnsZones
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
@@ -583,6 +587,7 @@ module sqlDatabasePrivateEndpointModule 'modules/private-endpoint.bicep' = if (e
     privateIPAddresses: [ sqlDatabasePEPrivateIPAddress ]
     serviceId: sqlDatabaseModule.outputs.sqlServerId
     groupId: 'sqlServer'
+    createPrivateDnsZone: createPrivateDnsZones
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
@@ -626,6 +631,7 @@ module acrPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enablePri
     privateIPAddresses: acrPEPrivateIPAddresses
     serviceId: acrModule.outputs.registryId
     groupId: 'registry'
+    createPrivateDnsZone: createPrivateDnsZones
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }

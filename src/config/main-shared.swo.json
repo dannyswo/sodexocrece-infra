@@ -47,6 +47,9 @@
     "keyVaultPEPrivateIPAddress": {
       "value": "10.169.88.71"
     },
+    "createPrivateDnsZones": {
+      "value": false
+    },
     "monitoringStorageAccountNameSuffix": {
       "value": "zzs259"
     },

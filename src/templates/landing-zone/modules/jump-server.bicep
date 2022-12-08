@@ -51,7 +51,7 @@ param jumpServerComputerNameSuffix string
 // ==================================== VMs, NICs and Public IP Addresses ====================================
 
 var jumpServer1Name = 'BRS-MEX-USE2-CRECESDX-${env}-${jumpServerNameSuffix}'
-var jumpServer1ComputerName = 'RSUSAZ-SOOJMP${jumpServerComputerNameSuffix}'
+var jumpServer1ComputerName = 'RSUSAZ-${jumpServerComputerNameSuffix}'
 var jumpServer1NICName = '${toLower(jumpServer1Name)}-nic'
 var jumpServer1DiskName = '${jumpServer1Name}-Disk1'
 var jumpServer1PublicIPName = '${jumpServer1Name}-IP1'

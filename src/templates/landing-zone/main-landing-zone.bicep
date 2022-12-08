@@ -58,8 +58,8 @@ param jumpServerAdminUsername string
 @secure()
 param jumpServerAdminPassword string
 
-@description('Create an external Private DNS Zone for AKS Managed Cluster.')
-param createAksPrivateDnsZone bool
+@description('Create Private DNS Zones for all Private Endpoints.')
+param createPrivateDnsZones bool
 
 // ==================================== Modules ====================================
 
@@ -107,12 +107,48 @@ module jumpServer1Module 'modules/jump-server.bicep' = if (createNetwork && crea
     jumpServersSubnetName: networkModule.outputs.subnets[3].name
     jumpServersNSGName: networkModule.outputs.networkSecurityGroups[3].name
     jumpServerNameSuffix: 'VM01'
-    jumpServerComputerNameSuffix: '2P'
+    jumpServerComputerNameSuffix: 'SOOJMP2P'
   }
 }
 
-module aksPrivateDnsZoneModule 'modules/private-dns-zone.bicep' = if (createAksPrivateDnsZone) {
-  name: 'aks-private-dns-zone-module'
+module privateDnsZoneKeyVaultModule 'modules/private-dns-zone.bicep' = if (createPrivateDnsZones) {
+  name: 'private-dns-zone-keyvault-module'
+  params: {
+    location: location
+    standardTags: standardTags
+    namespace: 'vault'
+  }
+}
+
+module privateDnsZoneStorageAccountBlobModule 'modules/private-dns-zone.bicep' = if (createPrivateDnsZones) {
+  name: 'private-dns-zone-blob-module'
+  params: {
+    location: location
+    standardTags: standardTags
+    namespace: 'blob'
+  }
+}
+
+module privateDnsZoneSqlDatabaseModule 'modules/private-dns-zone.bicep' = if (createPrivateDnsZones) {
+  name: 'private-dns-zone-sqlserver-module'
+  params: {
+    location: location
+    standardTags: standardTags
+    namespace: 'sqlServer'
+  }
+}
+
+module privateDnsZoneContainerRegistryModule 'modules/private-dns-zone.bicep' = if (createPrivateDnsZones) {
+  name: 'private-dns-zone-registry-module'
+  params: {
+    location: location
+    standardTags: standardTags
+    namespace: 'registry'
+  }
+}
+
+module privateDnsZoneAksModule 'modules/private-dns-zone.bicep' = if (createPrivateDnsZones) {
+  name: 'private-dns-zone-aks-module'
   params: {
     location: location
     standardTags: standardTags

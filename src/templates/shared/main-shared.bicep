@@ -88,6 +88,9 @@ param aksNSGName string
 @description('Private IP address of Private Endpoint used by Key Vault.')
 param keyVaultPEPrivateIPAddress string
 
+@description('Create Private DNS Zones for all Private Endpoints.')
+param createPrivateDnsZones bool
+
 // ==================================== Resource properties ====================================
 
 @description('Suffix used in the monitoring Storage Account name.')
@@ -345,6 +348,7 @@ module keyVaultPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enab
     privateIPAddresses: [ keyVaultPEPrivateIPAddress ]
     serviceId: keyVaultModule.outputs.keyVaultId
     groupId: 'vault'
+    createPrivateDnsZone: createPrivateDnsZones
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
