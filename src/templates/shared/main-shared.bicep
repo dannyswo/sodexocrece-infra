@@ -59,6 +59,12 @@ param prodSubscriptionId string
 @description('Name of the Resource Group for network resources in Prod / Non Prod Subscription.')
 param prodNetworkResourceGroupName string
 
+@description('ID of the BRS Tier 0 Subscription.')
+param tier0SubscriptionId string
+
+@description('Name of the Resource Group for global DNS related resources.')
+param globalDnsResourceGroupName string
+
 @description('Name of the Frontend VNet.')
 param frontendVNetName string
 
@@ -248,6 +254,8 @@ module networkReferencesSharedModule 'modules/network-references-shared.bicep' =
     brsNetworkResourceGroupName: brsNetworkResourceGroupName
     prodSubscriptionId: prodSubscriptionId
     prodNetworkResourceGroupName: prodNetworkResourceGroupName
+    tier0SubscriptionId: tier0SubscriptionId
+    globalDnsResourceGroupName: globalDnsResourceGroupName
     frontendVNetName: frontendVNetName
     aksVNetName: aksVNetName
     endpointsVNetName: endpointsVNetName
@@ -349,6 +357,7 @@ module keyVaultPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enab
     serviceId: keyVaultModule.outputs.keyVaultId
     groupId: 'vault'
     createPrivateDnsZone: createPrivateDnsZones
+    externalPrivateDnsZoneId: networkReferencesSharedModule.outputs.keyVaultPrivateDnsZoneId
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }

@@ -52,6 +52,9 @@ param groupId string
 @description('Create a Private DNS Zone for Private Endpoint.')
 param createPrivateDnsZone bool
 
+@description('ID of an external Private DNS Zone for Private Endpoint. Required when createCustomPrivateDnsZone is false.')
+param externalPrivateDnsZoneId string
+
 @description('IDs of the VNets linked to the DNS Private Zone.')
 param linkedVNetIds array
 
@@ -105,7 +108,7 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
       {
         name: '${privateEndpointNameSuffix}-DnsZoneConfig'
         properties: {
-          privateDnsZoneId: privateDnsZone.id
+          privateDnsZoneId: (createPrivateDnsZone) ? privateDnsZone.id : externalPrivateDnsZoneId
         }
       }
     ]

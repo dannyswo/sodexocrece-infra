@@ -20,6 +20,12 @@
     "prodNetworkResourceGroupName": {
       "value": "RG-demo-sodexo-crece"
     },
+    "tier0SubscriptionId": {
+      "value": "df6b3a66-4927-452d-bd5f-9abc9db8a9c0"
+    },
+    "globalDnsResourceGroupName": {
+      "value": "RG-demo-sodexo-crece"
+    },
     "frontendVNetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-VN01"
     },

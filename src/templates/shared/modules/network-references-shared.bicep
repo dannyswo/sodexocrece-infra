@@ -21,6 +21,12 @@ param prodSubscriptionId string
 @description('Name of the Resource Group for network resources in Prod / Non Prod Subscription.')
 param prodNetworkResourceGroupName string
 
+@description('ID of the BRS Tier 0 Subscription.')
+param tier0SubscriptionId string
+
+@description('Name of the Resource Group for global DNS related resources.')
+param globalDnsResourceGroupName string
+
 @description('Name of the Frontend VNet.')
 param frontendVNetName string
 
@@ -69,6 +75,10 @@ var devopsAgentsSubnetId = resourceId(brsSubscriptionId, brsNetworkResourceGroup
 
 var aksNSGId = (aksNSGName != '') ? resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/networkSecurityGroups', aksNSGName) : ''
 
+// ==================================== Existing Private DNS Zones ====================================
+
+var keyVaultPrivateDnsZoneId = resourceId(tier0SubscriptionId, globalDnsResourceGroupName, 'Microsoft.Network/privateDnsZones', 'privatelink.vaultcore.azure.net')
+
 // ==================================== Outputs ====================================
 
 @description('ID of the Frontend VNet.')
@@ -94,3 +104,6 @@ output devopsAgentsSubnetId string = devopsAgentsSubnetId
 
 @description('ID of the NSG attached to AKS Subnet.')
 output aksNSGId string = aksNSGId
+
+@description('ID of a Private DNS Zone for private Key Vaults.')
+output keyVaultPrivateDnsZoneId string = keyVaultPrivateDnsZoneId

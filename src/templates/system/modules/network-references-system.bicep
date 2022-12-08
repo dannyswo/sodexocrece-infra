@@ -75,8 +75,6 @@ var endpointsSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupN
 
 // ==================================== Existing Private DNS Zones ====================================
 
-var keyVaultPrivateDnsZoneId = resourceId(tier0SubscriptionId, globalDnsResourceGroupName, 'Microsoft.Network/privateDnsZones', 'privatelink.vaultcore.azure.net')
-
 var storageAccountBlobPrivateDnsZoneId = resourceId(tier0SubscriptionId, globalDnsResourceGroupName, 'Microsoft.Network/privateDnsZones', 'privatelink.blob.${environment().suffixes.storage}')
 
 var azureSqlPrivateDnsZoneId = resourceId(tier0SubscriptionId, globalDnsResourceGroupName, 'Microsoft.Network/privateDnsZones', 'privatelink${environment().suffixes.sqlServerHostname}')
@@ -107,9 +105,6 @@ output endpointsSubnetId string = endpointsSubnetId
 
 @description('ID of the Apps Shared 02 VNet.')
 output appsShared2VNetId string = appsShared2VNetId
-
-@description('ID of a Private DNS Zone for private Key Vaults.')
-output keyVaultPrivateDnsZoneId string = keyVaultPrivateDnsZoneId
 
 @description('ID of a Private DNS Zone for private Storage Account Blob Containers.')
 output storageAccountBlobPrivateDnsZoneId string = storageAccountBlobPrivateDnsZoneId

@@ -86,7 +86,7 @@ param enablePrivateCluster bool
 @description('Create a Private DNS Zone for private AKS Managed Cluster.')
 param createPrivateDnsZone bool
 
-@description('ID of an external Private DNS Zone for private AKS Managed Cluster. Required when createCustomPrivateDnsZone is false.')
+@description('ID of an external Private DNS Zone for private AKS Managed Cluster. Required when createPrivateDnsZone is false.')
 param externalPrivateDnsZoneId string
 
 @description('IDs of the VNets linked to the DNS Private Zone of AKS.')

@@ -529,6 +529,7 @@ module appsStorageAccountPrivateEndpointModule 'modules/private-endpoint.bicep' 
     serviceId: appsStorageAccountModule.outputs.storageAccountId
     groupId: 'blob'
     createPrivateDnsZone: createPrivateDnsZones
+    externalPrivateDnsZoneId: networkReferencesSystemModule.outputs.storageAccountBlobPrivateDnsZoneId
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
@@ -588,6 +589,7 @@ module sqlDatabasePrivateEndpointModule 'modules/private-endpoint.bicep' = if (e
     serviceId: sqlDatabaseModule.outputs.sqlServerId
     groupId: 'sqlServer'
     createPrivateDnsZone: createPrivateDnsZones
+    externalPrivateDnsZoneId: networkReferencesSystemModule.outputs.azureSqlPrivateDnsZoneId
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
@@ -632,6 +634,7 @@ module acrPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enablePri
     serviceId: acrModule.outputs.registryId
     groupId: 'registry'
     createPrivateDnsZone: createPrivateDnsZones
+    externalPrivateDnsZoneId: networkReferencesSystemModule.outputs.containerRegistryPrivateDnsZoneId
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
