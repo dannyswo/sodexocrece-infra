@@ -53,7 +53,10 @@
     "keyVaultPEPrivateIPAddress": {
       "value": "10.169.88.71"
     },
-    "createPrivateDnsZones": {
+    "createPEDnsZoneGroups": {
+      "value": true
+    },
+    "createPEPrivateDnsZones": {
       "value": false
     },
     "monitoringStorageAccountNameSuffix": {

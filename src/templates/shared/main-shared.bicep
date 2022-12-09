@@ -94,8 +94,11 @@ param aksNSGName string
 @description('Private IP address of Private Endpoint used by Key Vault.')
 param keyVaultPEPrivateIPAddress string
 
+@description('Create Private DNS Zone Groups for all Private Endpoints.')
+param createPEDnsZoneGroups bool
+
 @description('Create Private DNS Zones for all Private Endpoints.')
-param createPrivateDnsZones bool
+param createPEPrivateDnsZones bool
 
 // ==================================== Resource properties ====================================
 
@@ -356,7 +359,8 @@ module keyVaultPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enab
     privateIPAddresses: [ keyVaultPEPrivateIPAddress ]
     serviceId: keyVaultModule.outputs.keyVaultId
     groupId: 'vault'
-    createPrivateDnsZone: createPrivateDnsZones
+    createDnsZoneGroup: createPEDnsZoneGroups
+    createPrivateDnsZone: createPEPrivateDnsZones
     externalPrivateDnsZoneId: networkReferencesSharedModule.outputs.keyVaultPrivateDnsZoneId
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }

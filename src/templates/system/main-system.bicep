@@ -98,8 +98,11 @@ param sqlDatabasePEPrivateIPAddress string
 @description('Private IPs oaddresses of Private Endpoint used by Container Registry. Requires 2 IPs for 2 members: registry and registry_data.')
 param acrPEPrivateIPAddresses array
 
+@description('Create Private DNS Zone Groups for all Private Endpoints.')
+param createPEDnsZoneGroups bool
+
 @description('Create Private DNS Zones for all Private Endpoints.')
-param createPrivateDnsZones bool
+param createPEPrivateDnsZones bool
 
 // ==================================== Monitoring dependencies ====================================
 
@@ -528,7 +531,8 @@ module appsStorageAccountPrivateEndpointModule 'modules/private-endpoint.bicep' 
     privateIPAddresses: [ appsStorageAccountPEPrivateIPAddress ]
     serviceId: appsStorageAccountModule.outputs.storageAccountId
     groupId: 'blob'
-    createPrivateDnsZone: createPrivateDnsZones
+    createDnsZoneGroup: createPEDnsZoneGroups
+    createPrivateDnsZone: createPEPrivateDnsZones
     externalPrivateDnsZoneId: networkReferencesSystemModule.outputs.storageAccountBlobPrivateDnsZoneId
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
@@ -588,7 +592,8 @@ module sqlDatabasePrivateEndpointModule 'modules/private-endpoint.bicep' = if (e
     privateIPAddresses: [ sqlDatabasePEPrivateIPAddress ]
     serviceId: sqlDatabaseModule.outputs.sqlServerId
     groupId: 'sqlServer'
-    createPrivateDnsZone: createPrivateDnsZones
+    createDnsZoneGroup: createPEDnsZoneGroups
+    createPrivateDnsZone: createPEPrivateDnsZones
     externalPrivateDnsZoneId: networkReferencesSystemModule.outputs.azureSqlPrivateDnsZoneId
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
@@ -633,7 +638,8 @@ module acrPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enablePri
     privateIPAddresses: acrPEPrivateIPAddresses
     serviceId: acrModule.outputs.registryId
     groupId: 'registry'
-    createPrivateDnsZone: createPrivateDnsZones
+    createDnsZoneGroup: createPEDnsZoneGroups
+    createPrivateDnsZone: createPEPrivateDnsZones
     externalPrivateDnsZoneId: networkReferencesSystemModule.outputs.containerRegistryPrivateDnsZoneId
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }

@@ -49,6 +49,9 @@ param serviceId string
 ])
 param groupId string
 
+@description('Create Private DNS Zone Group for Private Endpoint.')
+param createDnsZoneGroup bool
+
 @description('Create a Private DNS Zone for Private Endpoint.')
 param createPrivateDnsZone bool
 
@@ -100,7 +103,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
   tags: standardTags
 }
 
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-05-01' = {
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-05-01' = if (createDnsZoneGroup) {
   name: '${privateEndpointNameSuffix}-DnsZoneGroup'
   parent: privateEndpoint
   properties: {

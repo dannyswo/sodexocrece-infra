@@ -59,7 +59,10 @@
         "10.169.88.73"
       ]
     },
-    "createPrivateDnsZones": {
+    "createPEDnsZoneGroups": {
+      "value": true
+    },
+    "createPEPrivateDnsZones": {
       "value": false
     },
     "monitoringStorageAccountName": {
