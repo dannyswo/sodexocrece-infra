@@ -282,6 +282,9 @@
     "aksEnableEncryptionAtHost": {
       "value": false
     },
+    "aksAADClusterAdminGroupIds": {
+      "value": []
+    },
     "aksEnablePrivateCluster": {
       "value": true
     },

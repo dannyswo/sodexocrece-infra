@@ -310,6 +310,8 @@ param aksNodePoolCount int
 param aksNodePoolVmSize string
 @description('Enable encryption at AKS nodes.')
 param aksEnableEncryptionAtHost bool
+@description('List of IDs of AD Groups of cluster administrator users.')
+param aksAADClusterAdminGroupIds array
 @description('Create the AKS Managed Cluster as private cluster.')
 param aksEnablePrivateCluster bool
 @description('Create custom Private DNS Zone for AKS Managed Cluster.')
@@ -665,6 +667,7 @@ module aksModule 'modules/aks.bicep' = {
     nodePoolCount: aksNodePoolCount
     nodePoolVmSize: aksNodePoolVmSize
     enableEncryptionAtHost: aksEnableEncryptionAtHost
+    aadClusterAdminGroupIds: aksAADClusterAdminGroupIds
     enablePrivateCluster: aksEnablePrivateCluster
     createPrivateDnsZone: aksCreatePrivateDnsZone
     externalPrivateDnsZoneId: networkReferencesSystemModule.outputs.aksPrivateDnsZoneId

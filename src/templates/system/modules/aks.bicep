@@ -80,6 +80,9 @@ param nodePoolVmSize string
 @description('Enable encryption at AKS nodes.')
 param enableEncryptionAtHost bool
 
+@description('List of IDs of AD Groups of cluster administrator users.')
+param aadClusterAdminGroupIds array
+
 @description('Create the AKS Managed Cluster as private cluster.')
 param enablePrivateCluster bool
 
@@ -89,7 +92,7 @@ param createPrivateDnsZone bool
 @description('ID of an external Private DNS Zone for private AKS Managed Cluster. Required when createPrivateDnsZone is false.')
 param externalPrivateDnsZoneId string
 
-@description('IDs of the VNets linked to the DNS Private Zone of AKS.')
+@description('IDs of the VNets linked to the DNS Private Zone of AKS. Required when createPrivateDnsZone is true.')
 param privateDnsZoneLinkedVNetIds array
 
 @description('Enable Pod-Managed Identity feature on the AKS Managed Cluster.')
@@ -234,6 +237,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
     aadProfile: {
       managed: true
       enableAzureRBAC: true
+      adminGroupObjectIDs: aadClusterAdminGroupIds
     }
     disableLocalAccounts: true
     podIdentityProfile: {
