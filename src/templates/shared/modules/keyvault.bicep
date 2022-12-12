@@ -94,7 +94,7 @@ var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
 }]
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-  name: 'azmxkv1${keyVaultNameSuffix}'
+  name: 'azmxks1${keyVaultNameSuffix}'
   location: location
   properties: {
     createMode: 'default'

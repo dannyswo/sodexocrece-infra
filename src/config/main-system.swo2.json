@@ -81,7 +81,7 @@
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"
     },
     "keyVaultName": {
-      "value": "azmxkv1qta790"
+      "value": "azmxks1qta790"
     },
     "appGatewayFrontendCertificateName": {
       "value": "crececonsdx-appgateway-cert-frontend"

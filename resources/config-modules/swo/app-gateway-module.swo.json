@@ -39,10 +39,10 @@
       "value": true
     },
     "publicCertificateId": {
-      "value": "https://azmxkv1qta775.vault.azure.net/secrets/crececonsdx-appgateway-cert-public"
+      "value": "https://azmxks1qta775.vault.azure.net/secrets/crececonsdx-appgateway-cert-public"
     },
     "privateCertificateId": {
-      "value": "https://azmxkv1qta775.vault.azure.net/secrets/crececonsdx-appgateway-cert-private"
+      "value": "https://azmxks1qta775.vault.azure.net/secrets/crececonsdx-appgateway-cert-private"
     },
     "wafPoliciesMode": {
       "value": "Detection"

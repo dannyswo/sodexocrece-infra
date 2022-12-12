@@ -6,7 +6,7 @@ Private Endpoint Bicep Configurations
 ```
 az network private-link-resource list `
   --resource-group RG-demo-sodexo-crece `
-  --name azmxkv1mat327 `
+  --name azmxks1mat327 `
   --type Microsoft.KeyVault/vaults
 
 az network private-link-resource list `

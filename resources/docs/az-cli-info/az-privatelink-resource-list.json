@@ -1,7 +1,7 @@
 {
   "Microsoft.KeyVault/vaults": [
     {
-      "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1mat327/privateLinkResources/vault",
+      "id": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxks1mat327/privateLinkResources/vault",
       "name": "vault",
       "properties": {
         "groupId": "vault",

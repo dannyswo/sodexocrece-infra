@@ -9,7 +9,7 @@
             "value": "test-pe01"
         },
         "privateLinkResource": {
-            "value": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxkv1mat327"
+            "value": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.KeyVault/vaults/azmxks1mat327"
         },
         "targetSubResource": {
             "value": [
