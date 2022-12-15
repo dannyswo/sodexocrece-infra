@@ -418,7 +418,7 @@ param aksAllowedIPsOrCIDRs array
 @description('Create or update Private Endpoint modules.')
 param enablePrivateEndpointModules bool
 
-@description('Create or udpate aks-kubelet-nodegroup-rbac module.')
+@description('Create or update AKS Kubelet Node Group RBAC module.')
 param enableAksKubeletNodeGroupRbacModule bool
 
 // ==================================== Modules ====================================
