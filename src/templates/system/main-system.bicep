@@ -418,8 +418,8 @@ param aksAllowedIPsOrCIDRs array
 @description('Create or update Private Endpoint modules.')
 param enablePrivateEndpointModules bool
 
-@description('Create or udpate AKS Node Group RBAC module.')
-param enableAksNodeGroupRbacModule bool
+@description('Create or udpate aks-kubelet-nodegroup-rbac module.')
+param enableAksKubeletNodeGroupRbacModule bool
 
 // ==================================== Modules ====================================
 
@@ -697,7 +697,7 @@ module aksKubeletRbacModule 'modules/aks-kubelet-rbac.bicep' = {
   }
 }
 
-module aksNodeGroupRbacModule 'modules/aks-kubelet-nodegroup-rbac.bicep' = if (enableAksNodeGroupRbacModule) {
+module aksKubeletNodeGroupRbacModule 'modules/aks-kubelet-nodegroup-rbac.bicep' = if (enableAksKubeletNodeGroupRbacModule) {
   name: 'aks-kubelet-nodegroup-rbac-module'
   scope: resourceGroup('MC_${resourceGroup().name}_BRS-MEX-USE2-CRECESDX-${env}-KU01_${location}')
   params: {
