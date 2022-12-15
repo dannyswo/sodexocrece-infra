@@ -41,13 +41,13 @@ resource appsStorageAccountManagedIdentity 'Microsoft.ManagedIdentity/userAssign
 }
 
 resource aksManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AD03'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-AD04'
   location: location
   tags: standardTags
 }
 
 resource app1ManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-AD04'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-AD05'
   location: location
   tags: standardTags
 }
