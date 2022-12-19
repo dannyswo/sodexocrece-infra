@@ -5,11 +5,10 @@
  *     users-rbac-module, managed-identities-module, managed-identities-rbac-module,
  *     monitoring-loganalytics-workspace-rbac-module, keyvault-rbac-module
  * - Network:
- *     network-references-shared-module, keyvault-private-endpoint-module,
- *     service-endpoint-policies-module
+ *     network-references-shared-module, keyvault-private-endpoint-module
  * - Security: keyvault-module, keyvault-objects-module, keyvault-policies-module
  * - Storage: monitoring-storage-account-module, monitoring-storage-account-containers-module
- * - Monitoring: monitoring-loganalytics-workspace-module, flowlogs-module
+ * - Monitoring: monitoring-loganalytics-workspace-module
  */
 
 // ==================================== Parameters ====================================
@@ -86,9 +85,6 @@ param jumpServersSubnetName string
 @description('Name of the DevOps Agents Subnet.')
 param devopsAgentsSubnetName string
 
-@description('Name of the NSG attached to AKS Subnet.')
-param aksNSGName string
-
 // ==================================== Private Endpoints settings ====================================
 
 @description('Private IP address of Private Endpoint used by Key Vault.')
@@ -161,11 +157,6 @@ param azureServicesPrincipalIds array
 @description('Principal IDs of the DevOps Agents Managed Identity.')
 param devopsAgentsPrincipalIds array
 
-@description('Enable Network Watcher Flow Analytics feature. Must be enabled in the Subscription.')
-param flowLogsEnableNetworkWatcherFlowAnalytics bool
-@description('Retention days of flow logs captured by the Network Watcher.')
-param flowLogsRetentionDays int
-
 // ==================================== Diagnostics options ====================================
 
 @description('Enable diagnostics to store Key Vault audit logs.')
@@ -175,8 +166,6 @@ param keyVaultLogsRetentionDays int
 
 // ==================================== Resource Locks switches ====================================
 
-@description('Enable Resource Lock on Flow Logs resources.')
-param flowLogsEnableLock bool
 @description('Enable Resource Lock on monitoring Storage Account.')
 param monitoringStorageAccountEnableLock bool
 @description('Enable Resource Lock on monitoring Workspace.')
@@ -208,12 +197,6 @@ param keyVaultAllowedIPsOrCIDRs array
 
 @description('Create or update Private Endpoint modules.')
 param enablePrivateEndpointModules bool
-
-@description('Create or update Flow Logs module.')
-param enableFlowLogsModule bool
-
-@description('Create or update Service Endpoints Policies module.')
-param enableServiceEndpointPoliciesModule bool
 
 // ==================================== Resources ====================================
 
@@ -266,7 +249,6 @@ module networkReferencesSharedModule 'modules/network-references-shared.bicep' =
     appsShared2VNetName: appsShared2VNetName
     jumpServersSubnetName: jumpServersSubnetName
     devopsAgentsSubnetName: devopsAgentsSubnetName
-    aksNSGName: aksNSGName
   }
 }
 
@@ -405,32 +387,5 @@ module keyVaultRbacModule 'modules/keyvault-rbac.bicep' = {
     keyVaultName: keyVaultModule.outputs.keyVaultName
     appGatewayManagedIdentityPrincipalId: managedIdentitiesModule.outputs.appGatewayManagedIdentityPrincipalId
     appsStorageAccountManagedIdentityPrincipalId: managedIdentitiesModule.outputs.appsStorageAccountManagedIdentityPrincipalId
-  }
-}
-
-module flowLogsModule 'modules/flowlogs.bicep' = if (enableFlowLogsModule) {
-  name: 'flowlogs-module'
-  scope: resourceGroup('NetworkWatcherRG')
-  params: {
-    location: location
-    env: env
-    standardTags: standardTags
-    flowLogsTargetNSGId: networkReferencesSharedModule.outputs.aksNSGId
-    flowLogsStorageAccountId: monitoringStorageAccountModule.outputs.storageAccountId
-    enableNetworkWatcherFlowAnalytics: flowLogsEnableNetworkWatcherFlowAnalytics
-    flowAnalyticsWorkspaceId: monitoringLogAnalyticsWorkspaceModule.outputs.workspaceId
-    flowLogsRetentionDays: flowLogsRetentionDays
-    enableLock: flowLogsEnableLock
-  }
-}
-
-module serviceEndpointPoliciesModule 'modules/service-endpoint-policies.bicep' = if (enableServiceEndpointPoliciesModule) {
-  name: 'service-endpoint-policies-module'
-  params: {
-    location: location
-    env: env
-    standardTags: standardTags
-    keyVaultId: keyVaultModule.outputs.keyVaultId
-    monitoringStorageAccountId: monitoringStorageAccountModule.outputs.storageAccountId
   }
 }

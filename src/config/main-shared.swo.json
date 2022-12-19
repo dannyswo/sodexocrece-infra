@@ -47,9 +47,6 @@
     "devopsAgentsSubnetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-SN05"
     },
-    "aksNSGName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-NS02"
-    },
     "keyVaultPEPrivateIPAddress": {
       "value": "10.169.88.71"
     },
@@ -118,12 +115,6 @@
     "devopsAgentsPrincipalIds": {
       "value": []
     },
-    "flowLogsEnableNetworkWatcherFlowAnalytics": {
-      "value": false
-    },
-    "flowLogsRetentionDays": {
-      "value": 7
-    },
     "keyVaultEnableDiagnostics": {
       "value": true
     },
@@ -137,9 +128,6 @@
       "value": true
     },
     "keyVaultEnableLock": {
-      "value": true
-    },
-    "flowLogsEnableLock": {
       "value": true
     },
     "monitoringStorageAccountEnablePublicAccess": {
@@ -168,12 +156,6 @@
     },
     "enablePrivateEndpointModules": {
       "value": true
-    },
-    "enableFlowLogsModule": {
-      "value": false
-    },
-    "enableServiceEndpointPoliciesModule": {
-      "value": false
     }
   }
 }
