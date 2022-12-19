@@ -9,6 +9,9 @@
 
 // ==================================== Resource properties ====================================
 
+@description('Azure region.')
+param location string = resourceGroup().location
+
 @description('Name of the Key Vault.')
 param keyVaultName string
 
@@ -23,6 +26,9 @@ param encryptionKeysIssueDateTime string
 
 @description('If Secrets for Azure Services will be created or not.')
 param createSecrets bool
+
+@description('Enable the generation of random passwords.')
+param enableRandomPasswordsGeneration bool
 
 @description('Name of the sqlAdminLoginName Secret, used by Azure SQL Database.')
 param sqlDatabaseSqlAdminNameSecretName string
@@ -104,6 +110,19 @@ resource sqlDatabaseSqlAdminNameSecret 'Microsoft.KeyVault/vaults/secrets@2022-0
   }
 }
 
+resource sqlDatabaseSqlAdminPassScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (createSecrets && enableRandomPasswordsGeneration) {
+  name: 'sqlDatabaseSqlAdminPassScript'
+  location: location
+  kind: 'AzurePowerShell'
+  properties: {
+    azPowerShellVersion: '7.0'
+    cleanupPreference: 'OnExpiration'
+    retentionInterval: 'P1D'
+    timeout: 'PT10M'
+    scriptContent: loadTextContent('../../../scripts/Generate-RandomPassword.ps1')
+  }
+}
+
 var secretsExpiryDateTime = dateTimeAdd(secrtsIssueDateTime, expiryTime)
 var secretsExpiryDateTimeSinceEpoch = dateTimeToEpoch(secretsExpiryDateTime)
 
@@ -111,7 +130,7 @@ resource sqlDatabaseSqlAdminPassSecret 'Microsoft.KeyVault/vaults/secrets@2022-0
   name: sqlDatabaseSqlAdminPassSecretName
   parent: keyVault
   properties: {
-    value: sqlDatabaseSqlAdminPassSecretValue
+    value: (enableRandomPasswordsGeneration) ? sqlDatabaseSqlAdminPassScript.properties.outputs.Result : sqlDatabaseSqlAdminPassSecretValue
     contentType: 'text/plain'
     attributes: {
       enabled: true
