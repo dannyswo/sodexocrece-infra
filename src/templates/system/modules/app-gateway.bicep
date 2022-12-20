@@ -173,32 +173,8 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
         name: '${appGatewayName}-BackendPool-Dummy'
       }
     ]
-    backendHttpSettingsCollection: [
-      {
-        name: '${appGatewayName}-BackendHTTPSettings-Dummy'
-        properties: {
-          port: 80
-        }
-      }
-    ]
-    requestRoutingRules: [
-      {
-        name: '${appGatewayName}-RoutingRule-Dummy'
-        properties: {
-          ruleType: 'Basic'
-          httpListener: {
-            id: resourceId('Microsoft.Network/applicationGateways/httpListeners', appGatewayName, dummyRoutingRuleListenerName)
-          }
-          backendHttpSettings: {
-            id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', appGatewayName, '${appGatewayName}-BackendHTTPSettings-Dummy')
-          }
-          backendAddressPool: {
-            id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', appGatewayName, '${appGatewayName}-BackendPool-Dummy')
-          }
-          priority: 10
-        }
-      }
-    ]
+    backendHttpSettingsCollection: backendHttpSettingsList
+    requestRoutingRules: requestRoutingRulesList
     sslCertificates: (enableHttpsPort) ? [
       {
         name: '${appGatewayName}-SSLCertificate-Frontend'
@@ -259,7 +235,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
   tags: standardTags
 }
 
-// ==================================== Frontend Ports, HTTP Listeners and Routing Rules ====================================
+// ==================================== Frontend Ports ====================================
 
 var frontendPort80 = {
   name: '${appGatewayName}-Port-80'
@@ -277,6 +253,8 @@ var frontendPort443 = {
 
 var frontendPortsList0 = (enableHttpPort) ? [ frontendPort80 ] : []
 var frontendPortsList = (enableHttpsPort) ? concat(frontendPortsList0, [ frontendPort443 ]) : frontendPortsList0
+
+// ==================================== HTTP Listeners ====================================
 
 var publicOrPrivateFrontendIPName = (enablePublicFrontendIP) ? '${appGatewayName}-FrontIP-Public' : '${appGatewayName}-FrontIP-Private'
 
@@ -318,7 +296,75 @@ var httpListener443 = (enableHttpsPort) ? {
 var httpListenersList0 = (enableHttpPort) ? [ httpListener80 ] : []
 var httpListenersList = (enableHttpsPort) ? concat(httpListenersList0, [ httpListener443 ]) : httpListenersList0
 
-var dummyRoutingRuleListenerName = (enableHttpPort) ? '${appGatewayName}-Listener-80' : (enableHttpsPort) ? '${appGatewayName}-Listener-443' : 'NotConfigured'
+// ==================================== Backend HTTP Settings ====================================
+
+var backendHttpSettings80 = {
+  name: '${appGatewayName}-BackendHTTPSettings-80'
+  properties: {
+    port: 80
+    protocol: 'Http'
+    path: '/'
+    probeEnabled: false
+  }
+}
+
+var backendHttpSettings443 = {
+  name: '${appGatewayName}-BackendHTTPSettings-443'
+  properties: {
+    port: 443
+    protocol: 'Https'
+    path: '/'
+    hostName: 'app.sodexo.com'
+    trustedRootCertificates: [
+      {
+        id: resourceId('Microsoft.Network/applicationGateways/trustedRootCertificates', appGatewayName, '${appGatewayName}-TrustedRootCertificate-Backend')
+      }
+    ]
+    probeEnabled: false
+  }
+}
+
+var backendHttpSettingsList0 = (enableHttpPort) ? [ backendHttpSettings80 ] : []
+var backendHttpSettingsList = (enableHttpsPort) ? concat(backendHttpSettingsList0, [ backendHttpSettings443 ]) : backendHttpSettingsList0
+
+// ==================================== Request Routing Rules ====================================
+
+var requestRoutingRule80 = {
+  name: '${appGatewayName}-RoutingRule-80'
+  properties: {
+    ruleType: 'Basic'
+    httpListener: {
+      id: resourceId('Microsoft.Network/applicationGateways/httpListeners', appGatewayName, '${appGatewayName}-Listener-80')
+    }
+    backendHttpSettings: {
+      id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', appGatewayName, '${appGatewayName}-BackendHTTPSettings-80')
+    }
+    backendAddressPool: {
+      id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', appGatewayName, '${appGatewayName}-BackendPool-Dummy')
+    }
+    priority: 10
+  }
+}
+
+var requestRoutingRule443 = {
+  name: '${appGatewayName}-RoutingRule-443'
+  properties: {
+    ruleType: 'Basic'
+    httpListener: {
+      id: resourceId('Microsoft.Network/applicationGateways/httpListeners', appGatewayName, '${appGatewayName}-Listener-443')
+    }
+    backendHttpSettings: {
+      id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', appGatewayName, '${appGatewayName}-BackendHTTPSettings-443')
+    }
+    backendAddressPool: {
+      id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', appGatewayName, '${appGatewayName}-BackendPool-Dummy')
+    }
+    priority: 11
+  }
+}
+
+var requestRoutingRulesList0 = (enableHttpPort) ? [ requestRoutingRule80 ] : []
+var requestRoutingRulesList = (enableHttpsPort) ? concat(requestRoutingRulesList0, [ requestRoutingRule443 ]) : requestRoutingRulesList0
 
 // ==================================== Public IP Address ====================================
 

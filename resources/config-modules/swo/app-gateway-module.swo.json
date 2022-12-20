@@ -11,6 +11,9 @@
     "standardTags": {
       "value": {}
     },
+    "managedIdentityName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-AD01"
+    },
     "appGatewayNameSuffix": {
       "value": "eae514"
     },
@@ -19,6 +22,9 @@
     },
     "appGatewaySkuName": {
       "value": "WAF_v2"
+    },
+    "gatewaySubnetId": {
+      "value": "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Network/virtualNetworks/BRS-MEX-USE2-CRECESDX-SWO-VN01/subnets/BRS-MEX-USE2-CRECESDX-SWO-SN01"
     },
     "frontendPrivateIPAddress": {
       "value": "10.169.90.140"
@@ -38,35 +44,32 @@
     "enableHttpsPort": {
       "value": true
     },
-    "publicCertificateId": {
-      "value": "https://azmxks1qta775.vault.azure.net/secrets/crececonsdx-appgateway-cert-public"
+    "keyVaultName": {
+      "value": "azmxks1qta777"
     },
-    "privateCertificateId": {
-      "value": "https://azmxks1qta775.vault.azure.net/secrets/crececonsdx-appgateway-cert-private"
+    "frontendCertificateName": {
+      "value": "crececonsdx-appgateway-cert-frontend"
+    },
+    "backendCertificateName": {
+      "value": "crececonsdx-appgateway-cert-backend"
     },
     "wafPoliciesMode": {
       "value": "Detection"
     },
+    "enableDomainNameLabel": {
+      "value": true
+    },
     "enableDiagnostics": {
       "value": true
+    },
+    "diagnosticsWorkspaceName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
     },
     "logsRetentionDays": {
       "value": 7
     },
     "enableLock": {
-      "value": true
-    },
-    "managedIdentityName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-AD01"
-    },
-    "gatewayVNetName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN01"
-    },
-    "gatewaySubnetName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN01"
-    },
-    "diagnosticsWorkspaceName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
+      "value": false
     }
   }
 }
