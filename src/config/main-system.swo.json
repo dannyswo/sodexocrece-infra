@@ -21,7 +21,7 @@
       "value": "RG-demo-sodexo-crece"
     },
     "tier0SubscriptionId": {
-      "value": "df6b3a66-4927-452d-bd5f-9abc9db8a9c0"
+      "value": "f493167c-c1a8-4a50-9c6b-41b9a478f240"
     },
     "globalDnsResourceGroupName": {
       "value": "RG-demo-sodexo-crece"
@@ -63,7 +63,7 @@
       "value": true
     },
     "createPEPrivateDnsZones": {
-      "value": false
+      "value": true
     },
     "monitoringStorageAccountName": {
       "value": "azmxst1zzs259"
@@ -118,7 +118,7 @@
       "value": "40c2e922-9fb6-4186-a53f-44439c85a9df"
     },
     "appGatewayNameSuffix": {
-      "value": "eae513"
+      "value": "eae514"
     },
     "appGatewaySkuTier": {
       "value": "WAF_v2"
@@ -289,7 +289,7 @@
       "value": true
     },
     "aksCreatePrivateDnsZone": {
-      "value": false
+      "value": true
     },
     "aksEnablePodManagedIdentity": {
       "value": false

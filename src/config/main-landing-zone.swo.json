@@ -23,8 +23,8 @@
     "jumpServerAdminPassword": {
       "value": ""
     },
-    "createAksPrivateDnsZone": {
-      "value": true
+    "createPrivateDnsZones": {
+      "value": false
     }
   }
 }

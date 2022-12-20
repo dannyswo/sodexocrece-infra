@@ -21,7 +21,7 @@
       "value": "RG-demo-sodexo-crece"
     },
     "tier0SubscriptionId": {
-      "value": "df6b3a66-4927-452d-bd5f-9abc9db8a9c0"
+      "value": "f493167c-c1a8-4a50-9c6b-41b9a478f240"
     },
     "globalDnsResourceGroupName": {
       "value": "RG-demo-sodexo-crece"
@@ -54,7 +54,7 @@
       "value": true
     },
     "createPEPrivateDnsZones": {
-      "value": false
+      "value": true
     },
     "monitoringStorageAccountNameSuffix": {
       "value": "zzs259"

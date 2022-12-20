@@ -92,8 +92,7 @@ az account set --subscription f3888d08-b6b3-4f5d-b4f1-45c1fedec20c
 ```
 az login
 
-az storage blob download --account-name azmxst1deh711 -c merchant-files -n crecesdx-namespace.k8s.yaml --auth-mode login
 az keyvault certificate import --vault-name azmxks1qta775 --name crececonsdx-appgateway-cert-frontend --file cert-frontend.pfx
-
+az login --identity; az storage blob download --account-name azmxst1deh711 -c merchant-files -n crecesdx-namespace.k8s.yaml --auth-mode login
 sqlcmd -S azmxdb1nkt895.database.windows.net -U [user-name] -P [user-password] -Q "SELECT * FROM sys.schemas"
 ```
