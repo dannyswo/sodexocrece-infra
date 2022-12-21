@@ -67,8 +67,14 @@ param globalDnsResourceGroupName string
 @description('Name of the Frontend VNet.')
 param frontendVNetName string
 
+@description('Name of the Application Gateway Subnet.')
+param gatewaySubnetName string
+
 @description('Name of the AKS VNet.')
 param aksVNetName string
+
+@description('Name of the AKS Subnet.')
+param aksSubnetName string
 
 @description('Name of the BRS Private Endpoints VNet.')
 param endpointsVNetName string
@@ -244,7 +250,9 @@ module networkReferencesSharedModule 'modules/network-references-shared.bicep' =
     tier0SubscriptionId: tier0SubscriptionId
     globalDnsResourceGroupName: globalDnsResourceGroupName
     frontendVNetName: frontendVNetName
+    gatewaySubnetName: gatewaySubnetName
     aksVNetName: aksVNetName
+    aksSubnetName: aksSubnetName
     endpointsVNetName: endpointsVNetName
     endpointsSubnetName: endpointsSubnetName
     appsShared2VNetName: appsShared2VNetName
@@ -309,6 +317,13 @@ module monitoringLogAnalyticsWorkspaceRbacModule 'modules/monitoring-loganalytic
   }
 }
 
+var keyVaultDefaultAllowedSubnetIds = [
+  networkReferencesSharedModule.outputs.gatewaySubnetId
+  networkReferencesSharedModule.outputs.aksSubnetId
+  networkReferencesSharedModule.outputs.jumpServersSubnetId
+  networkReferencesSharedModule.outputs.devopsAgentsSubnetId
+]
+
 module keyVaultModule 'modules/keyvault.bicep' = {
   name: 'keyvault-module'
   params: {
@@ -326,7 +341,7 @@ module keyVaultModule 'modules/keyvault.bicep' = {
     enableLock: keyVaultEnableLock
     enablePublicAccess: keyVaultEnablePublicAccess
     bypassAzureServices: keyVaultBypassAzureServices
-    allowedSubnetIds: keyVaultAllowedSubnetIds
+    allowedSubnetIds: concat(keyVaultDefaultAllowedSubnetIds, keyVaultAllowedSubnetIds)
     allowedIPsOrCIDRs: keyVaultAllowedIPsOrCIDRs
   }
 }

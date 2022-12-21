@@ -30,8 +30,14 @@ param globalDnsResourceGroupName string
 @description('Name of the Frontend VNet.')
 param frontendVNetName string
 
+@description('Name of the Gateway Subnet.')
+param gatewaySubnetName string
+
 @description('Name of the AKS VNet.')
 param aksVNetName string
+
+@description('Name of the AKS Subnet.')
+param aksSubnetName string
 
 @description('Name of the Private Endpoints VNet.')
 param endpointsVNetName string
@@ -62,6 +68,10 @@ var appsShared2VNetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupNam
 
 // ==================================== Existing Subnets ====================================
 
+var gatewaySubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', frontendVNetName, gatewaySubnetName)
+
+var aksSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', aksVNetName, aksSubnetName)
+
 var endpointsSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', endpointsVNetName, endpointsSubnetName)
 
 var jumpServersSubnetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', appsShared2VNetName, jumpServersSubnetName)
@@ -77,8 +87,14 @@ var keyVaultPrivateDnsZoneId = resourceId(tier0SubscriptionId, globalDnsResource
 @description('ID of the Frontend VNet.')
 output frontendVNetId string = frontendVNetId
 
+@description('ID of the Gateway Subnet.')
+output gatewaySubnetId string = gatewaySubnetId
+
 @description('ID of the AKS VNet.')
 output aksVNetId string = aksVNetId
+
+@description('ID of the AKS Subnet.')
+output aksSubnetId string = aksSubnetId
 
 @description('ID of the Private Endpoints VNet.')
 output endpointsVNetId string = endpointsVNetId
