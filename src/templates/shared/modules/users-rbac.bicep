@@ -9,17 +9,20 @@
 
 // ==================================== Resource properties ====================================
 
-@description('Principal ID of system administrator users.')
+@description('Principal ID of system administrator AAD Users.')
 param adminUsersPrincipalIds array
 
-@description('Principal IDs of the developer users.')
+@description('Principal ID of system administrator AAD Groups.')
+param adminGroupsPrincipalIds array
+
+@description('Principal IDs of the developer AAD Users.')
 param devUsersPrincipalIds array
 
 // ==================================== Resources ====================================
 
 // ==================================== Role Assignments ====================================
 
-// ==================================== Role Assignments: Administrator ====================================
+// ==================================== Role Assignments: Administrators ====================================
 
 var adminRoleDefinitions = [
   {
@@ -63,6 +66,8 @@ var adminRoleDefinitions = [
     roleAssignmentDescription: 'Allow system administrator to manage any resource in the Resource Group and assign roles.'
   }
 ]
+
+// ==================================== Role Assignments: Administrator AAD Users ====================================
 
 var adminAndDevUsersPrincipalIds = concat(adminUsersPrincipalIds, devUsersPrincipalIds)
 
@@ -140,6 +145,85 @@ resource adminUsersRoleAssignments7 'Microsoft.Authorization/roleAssignments@202
     principalId: adminOrDevPrincipalId
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', adminRoleDefinitions[6].roleName)
     principalType: 'User'
+  }
+}]
+
+// ==================================== Role Assignments: Administrator AAD Groups ====================================
+
+resource adminGroupsRoleAssignments1 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for adminGroupPrincipalId in adminGroupsPrincipalIds: {
+  name: guid(resourceGroup().id, adminGroupPrincipalId, adminRoleDefinitions[0].roleName)
+  scope: resourceGroup()
+  properties: {
+    description: adminRoleDefinitions[0].roleAssignmentDescription
+    principalId: adminGroupPrincipalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', adminRoleDefinitions[0].roleName)
+    principalType: 'Group'
+  }
+}]
+
+resource adminGroupsRoleAssignments2 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for adminGroupPrincipalId in adminGroupsPrincipalIds: {
+  name: guid(resourceGroup().id, adminGroupPrincipalId, adminRoleDefinitions[1].roleName)
+  scope: resourceGroup()
+  properties: {
+    description: adminRoleDefinitions[1].roleAssignmentDescription
+    principalId: adminGroupPrincipalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', adminRoleDefinitions[1].roleName)
+    principalType: 'Group'
+  }
+}]
+
+resource adminGroupsRoleAssignments3 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for adminGroupPrincipalId in adminGroupsPrincipalIds: {
+  name: guid(resourceGroup().id, adminGroupPrincipalId, adminRoleDefinitions[2].roleName)
+  scope: resourceGroup()
+  properties: {
+    description: adminRoleDefinitions[2].roleAssignmentDescription
+    principalId: adminGroupPrincipalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', adminRoleDefinitions[2].roleName)
+    principalType: 'Group'
+  }
+}]
+
+resource adminGroupsRoleAssignments4 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for adminGroupPrincipalId in adminGroupsPrincipalIds: {
+  name: guid(resourceGroup().id, adminGroupPrincipalId, adminRoleDefinitions[3].roleName)
+  scope: resourceGroup()
+  properties: {
+    description: adminRoleDefinitions[3].roleAssignmentDescription
+    principalId: adminGroupPrincipalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', adminRoleDefinitions[3].roleName)
+    principalType: 'Group'
+  }
+}]
+
+resource adminGroupsRoleAssignments5 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for adminGroupPrincipalId in adminGroupsPrincipalIds: {
+  name: guid(resourceGroup().id, adminGroupPrincipalId, adminRoleDefinitions[4].roleName)
+  scope: resourceGroup()
+  properties: {
+    description: adminRoleDefinitions[4].roleAssignmentDescription
+    principalId: adminGroupPrincipalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', adminRoleDefinitions[4].roleName)
+    principalType: 'Group'
+  }
+}]
+
+resource adminGroupsRoleAssignments6 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for adminGroupPrincipalId in adminGroupsPrincipalIds: {
+  name: guid(resourceGroup().id, adminGroupPrincipalId, adminRoleDefinitions[5].roleName)
+  scope: resourceGroup()
+  properties: {
+    description: adminRoleDefinitions[5].roleAssignmentDescription
+    principalId: adminGroupPrincipalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', adminRoleDefinitions[5].roleName)
+    principalType: 'Group'
+  }
+}]
+
+resource adminGroupsRoleAssignments7 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for adminGroupPrincipalId in adminGroupsPrincipalIds: {
+  name: guid(resourceGroup().id, adminGroupPrincipalId, adminRoleDefinitions[6].roleName)
+  scope: resourceGroup()
+  properties: {
+    description: adminRoleDefinitions[6].roleAssignmentDescription
+    principalId: adminGroupPrincipalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', adminRoleDefinitions[6].roleName)
+    principalType: 'Group'
   }
 }]
 

@@ -146,9 +146,11 @@ param secrtsSqlDatabaseSqlAdminLoginName string
 param secrtsSqlDatabaseSqlAdminLoginPass string
 @description('Issue datetime of the generated Secrets.')
 param secrtsIssueDateTime string
-@description('Principal IDs of the system administrator users.')
+@description('Principal IDs of the system administrator AAD Users.')
 param adminUsersPrincipalIds array
-@description('Principal IDs of the developer users.')
+@description('Principal IDs of the system administrator AAD Groups.')
+param adminGroupsPrincipalIds array
+@description('Principal IDs of the developer AAD Users.')
 param devUsersPrincipalIds array
 @description('Principal IDs of Azure services with Key Vault access.')
 param azureServicesPrincipalIds array
@@ -202,6 +204,7 @@ module usersRbacModule 'modules/users-rbac.bicep' = {
   name: 'users-rbac-module'
   params: {
     adminUsersPrincipalIds: adminUsersPrincipalIds
+    adminGroupsPrincipalIds: adminGroupsPrincipalIds
     devUsersPrincipalIds: devUsersPrincipalIds
   }
 }
@@ -362,7 +365,10 @@ module keyVaultObjectsModule 'modules/keyvault-objects.bicep' = {
   }
 }
 
-var keyVaultAdminsPrincipalIds = concat(adminUsersPrincipalIds, azureServicesPrincipalIds, devopsAgentsPrincipalIds)
+var keyVaultAdminsPrincipalIds = concat(adminUsersPrincipalIds, adminGroupsPrincipalIds, azureServicesPrincipalIds, devopsAgentsPrincipalIds)
+var keyVaultReadersPrincipalIds = [
+  managedIdentitiesModule.outputs.app1ManagedIdentityPrincipalId
+]
 
 module keyVaultPoliciesModule 'modules/keyvault-policies.bicep' = {
   name: 'keyvault-policies-module'
@@ -371,9 +377,7 @@ module keyVaultPoliciesModule 'modules/keyvault-policies.bicep' = {
     appGatewayPrincipalId: managedIdentitiesModule.outputs.appGatewayManagedIdentityPrincipalId
     appsStorageAccountPrincipalId: managedIdentitiesModule.outputs.appsStorageAccountManagedIdentityPrincipalId
     adminsPrincipalIds: keyVaultAdminsPrincipalIds
-    readersPrincipalIds: [
-      managedIdentitiesModule.outputs.app1ManagedIdentityPrincipalId
-    ]
+    readersPrincipalIds: keyVaultReadersPrincipalIds
   }
 }
 

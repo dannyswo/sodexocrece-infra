@@ -54,7 +54,7 @@
       "value": true
     },
     "createPEPrivateDnsZones": {
-      "value": false
+      "value": true
     },
     "monitoringStorageAccountNameSuffix": {
       "value": "zzs290"
@@ -102,6 +102,9 @@
       "value": [
         "40c2e922-9fb6-4186-a53f-44439c85a9df"
       ]
+    },
+    "adminGroupsPrincipalIds": {
+      "value": []
     },
     "devUsersPrincipalIds": {
       "value": []
