@@ -310,7 +310,7 @@
       "value": true
     },
     "aksSecrtsRotationPollInterval": {
-      "value": "2m"
+      "value": "24h"
     },
     "aksEnableOMSAgentAddon": {
       "value": true

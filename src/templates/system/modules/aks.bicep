@@ -132,7 +132,7 @@ param enableKeyVaultSecretsProviderAddon bool
 param enableSecretsRotation bool
 
 @description('Poll interval for Secrets rotation by Key Vault Secrets Provider add-on.')
-@allowed([ '2m', '5m', '10m', '30m' ])
+@allowed([ '2m', '5m', '10m', '30m', '1h', '6h', '12h', '24h' ])
 param secrtsRotationPollInterval string
 
 // ==================================== Diagnostics options ====================================
@@ -239,7 +239,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
       enableAzureRBAC: true
       adminGroupObjectIDs: aadClusterAdminGroupIds
     }
-    disableLocalAccounts: true
+    disableLocalAccounts: false
     podIdentityProfile: {
       enabled: enablePodManagedIdentity
       userAssignedIdentities: podIdentitiesWithManagedIdentities
