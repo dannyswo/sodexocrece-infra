@@ -154,7 +154,7 @@ var devopsAgentsSubnetServiceEndpoints1 = (enableStorageAccountServiceEndpoint) 
 var devopsAgentsSubnetServiceEndpoints2 = (enableSqlDatabaseServiceEndpoint) ? concat(devopsAgentsSubnetServiceEndpoints1, [ serviceEndpointDefinitions.sql ]) : devopsAgentsSubnetServiceEndpoints1
 var devopsAgentsSubnetServiceEndpoints = (enableContainerRegistryServiceEndpoint) ? concat(devopsAgentsSubnetServiceEndpoints2, [ serviceEndpointDefinitions.containerRegistry ]) : devopsAgentsSubnetServiceEndpoints2
 
-resource frontendVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
+resource frontendVNet 'Microsoft.Network/virtualNetworks@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-${frontendVNetNameSuffix}'
   location: location
   properties: {
@@ -184,7 +184,7 @@ resource frontendVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   tags: standardTags
 }
 
-resource aksVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
+resource aksVNet 'Microsoft.Network/virtualNetworks@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-${aksVNetNameSuffix}'
   location: location
   properties: {
@@ -214,7 +214,7 @@ resource aksVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   tags: standardTags
 }
 
-resource endpointsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
+resource endpointsVNet 'Microsoft.Network/virtualNetworks@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-${endpointsVNetNameSuffix}'
   location: location
   properties: {
@@ -240,7 +240,7 @@ resource endpointsVNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   tags: standardTags
 }
 
-resource appsShared2VNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
+resource appsShared2VNet 'Microsoft.Network/virtualNetworks@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-${appsShared2VNetNameSuffix}'
   location: location
   properties: {
@@ -279,7 +279,7 @@ resource appsShared2VNet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 
 // ==================================== VNets Peerings ====================================
 
-resource frontendAksVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+resource frontendAksVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-VP01'
   parent: frontendVNet
   properties: {
@@ -292,7 +292,7 @@ resource frontendAksVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetwo
   }
 }
 
-resource aksFrontendVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+resource aksFrontendVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-VP03'
   parent: aksVNet
   properties: {
@@ -305,7 +305,7 @@ resource aksFrontendVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetwo
   }
 }
 
-resource frontendEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+resource frontendEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-VP03'
   parent: frontendVNet
   properties: {
@@ -318,7 +318,7 @@ resource frontendEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtua
   }
 }
 
-resource endpointsFrontendVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+resource endpointsFrontendVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-VP04'
   parent: endpointsVNet
   properties: {
@@ -331,7 +331,7 @@ resource endpointsFrontendVNetsPeering 'Microsoft.Network/virtualNetworks/virtua
   }
 }
 
-resource aksEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+resource aksEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-VP05'
   parent: aksVNet
   properties: {
@@ -344,7 +344,7 @@ resource aksEndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetw
   }
 }
 
-resource endpointsAksVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+resource endpointsAksVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-VP06'
   parent: endpointsVNet
   properties: {
@@ -357,7 +357,7 @@ resource endpointsAksVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetw
   }
 }
 
-resource appsShared2AksVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+resource appsShared2AksVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-VP07'
   parent: appsShared2VNet
   properties: {
@@ -370,7 +370,7 @@ resource appsShared2AksVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNe
   }
 }
 
-resource aksAppsShared2VNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+resource aksAppsShared2VNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-VP08'
   parent: aksVNet
   properties: {
@@ -383,7 +383,7 @@ resource aksAppsShared2VNetsPeering 'Microsoft.Network/virtualNetworks/virtualNe
   }
 }
 
-resource appsShared2EndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+resource appsShared2EndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-VP09'
   parent: appsShared2VNet
   properties: {
@@ -396,7 +396,7 @@ resource appsShared2EndpointsVNetsPeering 'Microsoft.Network/virtualNetworks/vir
   }
 }
 
-resource endpointsAppsShared2VNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
+resource endpointsAppsShared2VNetsPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-VP10'
   parent: endpointsVNet
   properties: {
@@ -411,7 +411,7 @@ resource endpointsAppsShared2VNetsPeering 'Microsoft.Network/virtualNetworks/vir
 
 // ==================================== Network Security Groups (NSGs) ====================================
 
-resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
+resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-NS01'
   location: location
   properties: {
@@ -533,7 +533,7 @@ resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   tags: standardTags
 }
 
-resource aksNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
+resource aksNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-NS02'
   location: location
   properties: {
@@ -577,7 +577,7 @@ resource aksNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   tags: standardTags
 }
 
-resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
+resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-NS03'
   location: location
   properties: {
@@ -638,7 +638,7 @@ resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   tags: standardTags
 }
 
-resource jumpServersNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
+resource jumpServersNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-NS04'
   location: location
   properties: {
@@ -662,7 +662,7 @@ resource jumpServersNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   tags: standardTags
 }
 
-resource devopsAgentsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
+resource devopsAgentsNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-NS05'
   location: location
   properties: {
@@ -688,7 +688,7 @@ resource devopsAgentsNSG 'Microsoft.Network/networkSecurityGroups@2022-05-01' = 
 
 // ==================================== Custom Route Tables ====================================
 
-resource aksCustomRouteTable 'Microsoft.Network/routeTables@2022-05-01' = if (createCustomRouteTable) {
+resource aksCustomRouteTable 'Microsoft.Network/routeTables@2022-07-01' = if (createCustomRouteTable) {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-UD01'
   location: location
   properties: {
