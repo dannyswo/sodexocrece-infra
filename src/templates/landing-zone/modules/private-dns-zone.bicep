@@ -27,6 +27,9 @@ param standardTags object
 ])
 param namespace string
 
+@description('IDs of the VNets linked to the DNS Private Zone.')
+param linkedVNetIds array
+
 // ==================================== Resources ====================================
 
 // ==================================== Private DNS Zone ====================================
@@ -46,3 +49,15 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   }
   tags: standardTags
 }
+
+resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetId, index) in linkedVNetIds: {
+  name: '${namespace}-NetworkLink-${index}'
+  parent: privateDnsZone
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: linkedVNetId
+    }
+  }
+}]

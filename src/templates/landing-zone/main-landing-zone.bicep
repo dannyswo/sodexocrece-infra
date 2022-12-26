@@ -111,12 +111,20 @@ module jumpServer1Module 'modules/jump-server.bicep' = if (createNetwork && crea
   }
 }
 
+var linkedVNetIdsForPrivateEndpoints = [
+  networkModule.outputs.vnets[0].id
+  networkModule.outputs.vnets[1].id
+  networkModule.outputs.vnets[2].id
+  networkModule.outputs.vnets[3].id
+]
+
 module privateDnsZoneKeyVaultModule 'modules/private-dns-zone.bicep' = if (createPrivateDnsZones) {
   name: 'private-dns-zone-keyvault-module'
   params: {
     location: location
     standardTags: standardTags
     namespace: 'vault'
+    linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
 
@@ -126,6 +134,7 @@ module privateDnsZoneStorageAccountBlobModule 'modules/private-dns-zone.bicep' =
     location: location
     standardTags: standardTags
     namespace: 'blob'
+    linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
 
@@ -135,6 +144,7 @@ module privateDnsZoneSqlDatabaseModule 'modules/private-dns-zone.bicep' = if (cr
     location: location
     standardTags: standardTags
     namespace: 'sqlServer'
+    linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
 
@@ -144,6 +154,7 @@ module privateDnsZoneContainerRegistryModule 'modules/private-dns-zone.bicep' = 
     location: location
     standardTags: standardTags
     namespace: 'registry'
+    linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
 
@@ -153,5 +164,6 @@ module privateDnsZoneAksModule 'modules/private-dns-zone.bicep' = if (createPriv
     location: location
     standardTags: standardTags
     namespace: 'aks'
+    linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
 }
