@@ -18,6 +18,9 @@ param appGatewayManagedIdentityPrincipalId string
 @description('Principal ID of the Managed Identity of applications Storage Account.')
 param appsStorageAccountManagedIdentityPrincipalId string
 
+@description('Principal ID of the Managed Identity of container application 1.')
+param containerApp1ManagedIdentityPrincipalId string
+
 // ==================================== Resources ====================================
 
 // ==================================== Role Assignments ====================================
@@ -66,6 +69,27 @@ resource appsStorageAccountManagedIdentityRoleAssignments 'Microsoft.Authorizati
   properties: {
     description: roleDefinition.roleAssignmentDescription
     principalId: appsStorageAccountManagedIdentityPrincipalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
+    principalType: 'ServicePrincipal'
+  }
+}]
+
+// ==================================== Role Assignments: Container Application 1 Managed Identity ====================================
+
+var containerApp1ManagedIdentityRoleDefinitions = [
+  {
+    roleName: '4633458b-17de-408a-b874-0445c86b69e6'
+    roleDescription: 'Key Vault Secrets User | Read secret contents'
+    roleAssignmentDescription: 'Allow Application 1 to read secrets in Key Vault.'
+  }
+]
+
+resource containerApp1ManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in containerApp1ManagedIdentityRoleDefinitions: {
+  name: guid(keyVault.id, containerApp1ManagedIdentityPrincipalId, roleDefinition.roleName)
+  scope: keyVault
+  properties: {
+    description: roleDefinition.roleAssignmentDescription
+    principalId: containerApp1ManagedIdentityPrincipalId
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
     principalType: 'ServicePrincipal'
   }

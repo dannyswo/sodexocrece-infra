@@ -228,7 +228,7 @@ module managedIdentitiesRbacModule 'modules/managed-identities-rbac.bicep' = {
   name: 'managed-identities-rbac-module'
   params: {
     aksManagedIdentityPrincipalId: managedIdentitiesModule.outputs.aksManagedIdentityPrincipalId
-    app1ManagedIdentityPrincipalId: managedIdentitiesModule.outputs.app1ManagedIdentityPrincipalId
+    containerApp1ManagedIdentityPrincipalId: managedIdentitiesModule.outputs.containerApp1ManagedIdentityPrincipalId
   }
 }
 
@@ -382,7 +382,7 @@ module keyVaultObjectsModule 'modules/keyvault-objects.bicep' = {
 
 var keyVaultAdminsPrincipalIds = concat(adminUsersPrincipalIds, adminGroupsPrincipalIds, azureServicesPrincipalIds, devopsAgentsPrincipalIds)
 var keyVaultReadersPrincipalIds = [
-  managedIdentitiesModule.outputs.app1ManagedIdentityPrincipalId
+  managedIdentitiesModule.outputs.containerApp1ManagedIdentityPrincipalId
 ]
 
 module keyVaultPoliciesModule 'modules/keyvault-policies.bicep' = {
@@ -402,5 +402,6 @@ module keyVaultRbacModule 'modules/keyvault-rbac.bicep' = {
     keyVaultName: keyVaultModule.outputs.keyVaultName
     appGatewayManagedIdentityPrincipalId: managedIdentitiesModule.outputs.appGatewayManagedIdentityPrincipalId
     appsStorageAccountManagedIdentityPrincipalId: managedIdentitiesModule.outputs.appsStorageAccountManagedIdentityPrincipalId
+    containerApp1ManagedIdentityPrincipalId: managedIdentitiesModule.outputs.containerApp1ManagedIdentityPrincipalId
   }
 }

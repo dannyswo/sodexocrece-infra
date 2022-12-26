@@ -12,8 +12,8 @@
 @description('Principal ID of the Managed Identity of AKS Managed Cluster.')
 param aksManagedIdentityPrincipalId string
 
-@description('Principal ID of the Managed Identity of Application 1.')
-param app1ManagedIdentityPrincipalId string
+@description('Principal ID of the Managed Identity of container application 1.')
+param containerApp1ManagedIdentityPrincipalId string
 
 // ==================================== Resources ====================================
 
@@ -42,12 +42,7 @@ resource aksManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignme
 
 // ==================================== Role Assignments: Application 1 Azure Services Permissions ====================================
 
-var app1ManagedIdentityRoleDefinitions = [
-  {
-    roleName: '4633458b-17de-408a-b874-0445c86b69e6'
-    roleDescription: 'Key Vault Secrets User | Read secret contents'
-    roleAssignmentDescription: 'Allow Application 1 to read secrets in Key Vault.'
-  }
+var containerApp1ManagedIdentityRoleDefinitions = [
   {
     roleName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
     roleDescription: 'Storage Blob Data Contributor | Allows for read, write and delete access to Azure Storage blob containers and data'
@@ -55,12 +50,12 @@ var app1ManagedIdentityRoleDefinitions = [
   }
 ]
 
-resource app1ManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in app1ManagedIdentityRoleDefinitions: {
-  name: guid(resourceGroup().id, app1ManagedIdentityPrincipalId, roleDefinition.roleName)
+resource containerApp1ManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in containerApp1ManagedIdentityRoleDefinitions: {
+  name: guid(resourceGroup().id, containerApp1ManagedIdentityPrincipalId, roleDefinition.roleName)
   scope: resourceGroup()
   properties: {
     description: roleDefinition.roleAssignmentDescription
-    principalId: app1ManagedIdentityPrincipalId
+    principalId: containerApp1ManagedIdentityPrincipalId
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
     principalType: 'ServicePrincipal'
   }
