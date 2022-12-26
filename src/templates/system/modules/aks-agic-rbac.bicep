@@ -16,8 +16,7 @@ param aksAGICPrincipalId string
 
 // ==================================== Role Assignments: AGIC add-on to Application Gateway ====================================
 
-@description('Role Definition IDs for AKS to Application Gateway communication (RG scope).')
-var aksAppGatewayRoleDefinitions1 = [
+var aksAppGatewayRoleDefinitions = [
   {
     roleName: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
     roleDescription: 'Reader | View all resources, but does not allow you to make any changes'
@@ -28,21 +27,6 @@ var aksAppGatewayRoleDefinitions1 = [
     roleDescription: 'Managed Identity Operator | Read and Assign User Assigned Identity'
     roleAssignmentDescription: 'Allow AKS AGIC to view and assign Managed Identities.'
   }
-]
-
-resource aksAppGatewayRoleAssignments1 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksAppGatewayRoleDefinitions1: if (aksAGICPrincipalId != '') {
-  name: guid(resourceGroup().id, aksAGICPrincipalId, roleDefinition.roleName)
-  scope: resourceGroup()
-  properties: {
-    description: roleDefinition.roleAssignmentDescription
-    principalId: aksAGICPrincipalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
-    principalType: 'ServicePrincipal'
-  }
-}]
-
-@description('Role Definition IDs for AKS to App Gateway communication (AGW scope).')
-var aksAppGatewayRoleDefinitions2 = [
   {
     roleName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
     roleDescription: 'Contributor | Grants full access to manage all resources'
@@ -50,7 +34,7 @@ var aksAppGatewayRoleDefinitions2 = [
   }
 ]
 
-resource aksAppGatewayRoleAssignments2 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksAppGatewayRoleDefinitions2: if (aksAGICPrincipalId != '') {
+resource aksAppGatewayRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefinition in aksAppGatewayRoleDefinitions: if (aksAGICPrincipalId != '') {
   name: guid(resourceGroup().id, aksAGICPrincipalId, roleDefinition.roleName)
   scope: resourceGroup()
   properties: {
@@ -60,7 +44,6 @@ resource aksAppGatewayRoleAssignments2 'Microsoft.Authorization/roleAssignments@
     principalType: 'ServicePrincipal'
   }
 }]
-
 
 // ==================================== Outputs ====================================
 
