@@ -118,6 +118,11 @@ var linkedVNetIdsForPrivateEndpoints = [
   networkModule.outputs.vnets[3].id
 ]
 
+var linkedVNetIdsForAksPrivateEndpoint = [
+  networkModule.outputs.vnets[1].id
+  networkModule.outputs.vnets[3].id
+]
+
 module privateDnsZoneKeyVaultModule 'modules/private-dns-zone.bicep' = if (createPrivateDnsZones) {
   name: 'private-dns-zone-keyvault-module'
   params: {
@@ -164,6 +169,6 @@ module privateDnsZoneAksModule 'modules/private-dns-zone.bicep' = if (createPriv
     location: location
     standardTags: standardTags
     namespace: 'aks'
-    linkedVNetIds: linkedVNetIdsForPrivateEndpoints
+    linkedVNetIds: linkedVNetIdsForAksPrivateEndpoint
   }
 }

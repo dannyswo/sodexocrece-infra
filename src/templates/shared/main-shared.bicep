@@ -370,6 +370,7 @@ module keyVaultObjectsModule 'modules/keyvault-objects.bicep' = {
     keyVaultName: keyVaultModule.outputs.keyVaultName
     createEncryptionKeys: createEncryptionKeysInKeyVault
     appsStorageAccountEncryptionKeyName: 'crececonsdx-appsstorageaccount-key'
+    acrEncryptionKeyName: 'crececonsdx-acr-key'
     encryptionKeysIssueDateTime: encryptionKeysIssueDateTime
     createSecrets: createSecretsInKeyVault
     sqlDatabaseSqlAdminNameSecretName: 'crececonsdx-sqldatabase-sqladminloginname'
@@ -389,8 +390,9 @@ module keyVaultPoliciesModule 'modules/keyvault-policies.bicep' = {
   name: 'keyvault-policies-module'
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
-    appGatewayPrincipalId: managedIdentitiesModule.outputs.appGatewayManagedIdentityPrincipalId
-    appsStorageAccountPrincipalId: managedIdentitiesModule.outputs.appsStorageAccountManagedIdentityPrincipalId
+    appGatewayManagedIdentityPrincipalId: managedIdentitiesModule.outputs.appGatewayManagedIdentityPrincipalId
+    appsStorageAccountManagedIdentityPrincipalId: managedIdentitiesModule.outputs.appsStorageAccountManagedIdentityPrincipalId
+    acrManagedIdentityPrincipalId: managedIdentitiesModule.outputs.acrManagedIdentityPrincipalId
     adminsPrincipalIds: keyVaultAdminsPrincipalIds
     readersPrincipalIds: keyVaultReadersPrincipalIds
   }
@@ -402,6 +404,7 @@ module keyVaultRbacModule 'modules/keyvault-rbac.bicep' = {
     keyVaultName: keyVaultModule.outputs.keyVaultName
     appGatewayManagedIdentityPrincipalId: managedIdentitiesModule.outputs.appGatewayManagedIdentityPrincipalId
     appsStorageAccountManagedIdentityPrincipalId: managedIdentitiesModule.outputs.appsStorageAccountManagedIdentityPrincipalId
+    acrManagedIdentityPrincipalId: managedIdentitiesModule.outputs.acrManagedIdentityPrincipalId
     containerApp1ManagedIdentityPrincipalId: managedIdentitiesModule.outputs.containerApp1ManagedIdentityPrincipalId
   }
 }

@@ -80,6 +80,9 @@
     "aksManagedIdentityName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"
     },
+    "acrManagedIdentityName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-AD04"
+    },
     "keyVaultName": {
       "value": "azmxks1qta790"
     },
@@ -91,6 +94,9 @@
     },
     "appsStorageAccountEncryptionKeyName": {
       "value": "crececonsdx-appsstorageaccount-key"
+    },
+    "acrEncryptionKeyName": {
+      "value": "crececonsdx-acr-key"
     },
     "sqlDatabaseSqlAdminLoginName": {
       "value": ""

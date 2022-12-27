@@ -18,6 +18,9 @@ param appGatewayManagedIdentityPrincipalId string
 @description('Principal ID of the Managed Identity of applications Storage Account.')
 param appsStorageAccountManagedIdentityPrincipalId string
 
+@description('Principal ID of the Managed Identity of Container Registry.')
+param acrManagedIdentityPrincipalId string
+
 @description('Principal ID of the Managed Identity of container application 1.')
 param containerApp1ManagedIdentityPrincipalId string
 
@@ -74,8 +77,31 @@ resource appsStorageAccountManagedIdentityRoleAssignments 'Microsoft.Authorizati
   }
 }]
 
-// ==================================== Role Assignments: Container Application 1 Managed Identity ====================================
+// ==================================== Role Assignments: Container Registry Managed Identity ====================================
 
+@description('Role Definition IDs for Container Registry under Key Vault scope.')
+var acrManagedIdentityRoleDefinitions = [
+  {
+    roleName: 'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+    roleDescription: 'Key Vault Crypto Service Encryption User | Read metadata of keys and perform wrap/unwrap operations.'
+    roleAssignmentDescription: 'Container Registry can access Encryption Key in the Key Vault.'
+  }
+]
+
+resource acrManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleDefinition in acrManagedIdentityRoleDefinitions: {
+  name: guid(keyVault.id, acrManagedIdentityPrincipalId, roleDefinition.roleName)
+  scope: keyVault
+  properties: {
+    description: roleDefinition.roleAssignmentDescription
+    principalId: acrManagedIdentityPrincipalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinition.roleName)
+    principalType: 'ServicePrincipal'
+  }
+}]
+
+// ==================================== Role Assignments: Container application 1 Managed Identity ====================================
+
+@description('Role Definition IDs for Container application 1 under Key Vault scope.')
 var containerApp1ManagedIdentityRoleDefinitions = [
   {
     roleName: '4633458b-17de-408a-b874-0445c86b69e6'

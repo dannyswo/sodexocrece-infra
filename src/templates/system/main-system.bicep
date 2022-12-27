@@ -120,6 +120,8 @@ param appGatewayManageIdentityName string
 param appsStorageAccountManagedIdentityName string
 @description('Name of the Managed Identity used by the AKS Managed Cluster.')
 param aksManagedIdentityName string
+@description('Name of the Managed Identity used by Container Registry.')
+param acrManagedIdentityName string
 
 @description('Name of the Key Vault.')
 param keyVaultName string
@@ -146,6 +148,9 @@ param sqlDatabaseAADAdminLoginName string
 @description('Principal ID of the Azure AD administrator for SQL Server.')
 @secure()
 param sqlDatabaseAADAdminPrincipalId string
+
+@description('Name of the Encryption Key used by Container Registry.')
+param acrEncryptionKeyName string
 
 // ==================================== Resource properties ====================================
 
@@ -614,9 +619,12 @@ module acrModule 'modules/acr.bicep' = {
     location: location
     env: env
     standardTags: standardTags
+    managedIdentityName: acrManagedIdentityName
     acrNameSuffix: acrNameSuffix
     acrSku: acrSku
     zoneRedundancy: acrZoneRedundancy
+    keyVaultName: keyVaultName
+    encryptionKeyName: acrEncryptionKeyName
     untaggedRetentionDays: acrUntaggedRetentionDays
     softDeleteRetentionDays: acrSoftDeleteRetentionDays
     enableDiagnostics: acrEnableDiagnostics

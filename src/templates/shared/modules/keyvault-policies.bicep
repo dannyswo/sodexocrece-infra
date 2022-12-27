@@ -16,10 +16,13 @@ param keyVaultName string
 param tenantId string = subscription().tenantId
 
 @description('ID of the Managed Identity used by Application Gateway.')
-param appGatewayPrincipalId string
+param appGatewayManagedIdentityPrincipalId string
 
 @description('ID of the Managed Identity used by applications Storage Account.')
-param appsStorageAccountPrincipalId string
+param appsStorageAccountManagedIdentityPrincipalId string
+
+@description('ID of the Managed Identity used by Container Registry.')
+param acrManagedIdentityPrincipalId string
 
 @description('List of administrators Principal IDs allowed to fully manage Key Vault objects.')
 param adminsPrincipalIds array
@@ -32,7 +35,7 @@ param readersPrincipalIds array
 // ==================================== Key Vault Access Policies ====================================
 
 var appGatewayAccessPolicy = {
-  objectId: appGatewayPrincipalId
+  objectId: appGatewayManagedIdentityPrincipalId
   tenantId: tenantId
   permissions: {
     certificates: allCertificatesPermissions
@@ -42,7 +45,15 @@ var appGatewayAccessPolicy = {
 }
 
 var appsStorageAccountAccessPolicy = {
-  objectId: appsStorageAccountPrincipalId
+  objectId: appsStorageAccountManagedIdentityPrincipalId
+  tenantId: tenantId
+  permissions: {
+    keys: allKeysPermissions
+  }
+}
+
+var acrAccessPolicy = {
+  objectId: acrManagedIdentityPrincipalId
   tenantId: tenantId
   permissions: {
     keys: allKeysPermissions
@@ -52,7 +63,18 @@ var appsStorageAccountAccessPolicy = {
 var azureServicesAccessPolicies = [
   appGatewayAccessPolicy
   appsStorageAccountAccessPolicy
+  acrAccessPolicy
 ]
+
+var adminsAccessPolicies = [for adminPrincipalId in adminsPrincipalIds: {
+  objectId: adminPrincipalId
+  tenantId: tenantId
+  permissions: {
+    certificates: allCertificatesPermissions
+    keys: allKeysPermissions
+    secrets: allSecretsPermissions
+  }
+}]
 
 var readersAccessPolicies = [for readerPrincipalId in readersPrincipalIds: {
   objectId: readerPrincipalId
@@ -73,17 +95,7 @@ var readersAccessPolicies = [for readerPrincipalId in readersPrincipalIds: {
   }
 }]
 
-var adminsAccessPolicies = [for adminPrincipalId in adminsPrincipalIds: {
-  objectId: adminPrincipalId
-  tenantId: tenantId
-  permissions: {
-    certificates: allCertificatesPermissions
-    keys: allKeysPermissions
-    secrets: allSecretsPermissions
-  }
-}]
-
-var accessPolicies = concat(azureServicesAccessPolicies, readersAccessPolicies, adminsAccessPolicies)
+var accessPolicies = concat(azureServicesAccessPolicies, adminsAccessPolicies, readersAccessPolicies)
 
 resource appsKeyVaultAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2022-07-01' = {
   name: 'add'

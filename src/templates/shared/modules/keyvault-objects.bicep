@@ -18,6 +18,9 @@ param createEncryptionKeys bool
 @description('Name of the applications Storage Account Encryption Key.')
 param appsStorageAccountEncryptionKeyName string
 
+@description('Name of the Container Registry Encryption Key.')
+param acrEncryptionKeyName string
+
 @description('Issue datetime of the generated Encryption Keys.')
 param encryptionKeysIssueDateTime string
 
@@ -54,6 +57,43 @@ var expiryDateTimeSinceEpoch = dateTimeToEpoch(expiryDateTime)
 
 resource appsStorageAccountEncryptionKey 'Microsoft.KeyVault/vaults/keys@2022-07-01' = if (createEncryptionKeys) {
   name: appsStorageAccountEncryptionKeyName
+  parent: keyVault
+  properties: {
+    kty: 'RSA'
+    keySize: 4096
+    attributes: {
+      enabled: true
+      exp: expiryDateTimeSinceEpoch
+      exportable: false
+    }
+    rotationPolicy: {
+      attributes: {
+        expiryTime: expiryTime
+      }
+      lifetimeActions: [
+        {
+          action: {
+            type: 'rotate'
+          }
+          trigger: {
+            timeAfterCreate: timeAfterCreate
+          }
+        }
+        {
+          action: {
+            type: 'notify'
+          }
+          trigger: {
+            timeBeforeExpiry: timeBeforeExpiry
+          }
+        }
+      ]
+    }
+  }
+}
+
+resource acrEncryptionKey 'Microsoft.KeyVault/vaults/keys@2022-07-01' = if (createEncryptionKeys) {
+  name: acrEncryptionKeyName
   parent: keyVault
   properties: {
     kty: 'RSA'
@@ -134,8 +174,14 @@ output appsStorageAccountEncryptionKeyUri string = (createEncryptionKeys) ? apps
 @description('Name of the applications Storage Account Encryption Key.')
 output appsStorageAccountEncryptionKeyName string = (createEncryptionKeys) ? appsStorageAccountEncryptionKey.name : ''
 
+@description('URI of the Container Registry Encryption Key.')
+output acrEncryptionKeyUri string = (createEncryptionKeys) ? acrEncryptionKey.properties.keyUri : ''
+
+@description('Name of the Container Registry Encryption Key.')
+output acrEncryptionKeyName string = (createEncryptionKeys) ? acrEncryptionKey.name : ''
+
 @description('URI of the SQL Database SQL admin name Secret.')
-output sqlDatabaseSqlAdminNameSecretUri string = sqlDatabaseSqlAdminNameSecret.properties.secretUri
+output sqlDatabaseSqlAdminNameSecretUri string = (createSecrets) ? sqlDatabaseSqlAdminNameSecret.properties.secretUri : ''
 
 @description('URI of the SQL Database SQL admin password Secret.')
-output sqlDatabaseSqlAdminPassSecretUri string = sqlDatabaseSqlAdminPassSecret.properties.secretUri
+output sqlDatabaseSqlAdminPassSecretUri string = (createSecrets) ? sqlDatabaseSqlAdminPassSecret.properties.secretUri : ''

@@ -63,7 +63,7 @@
       "value": true
     },
     "createPEPrivateDnsZones": {
-      "value": true
+      "value": false
     },
     "monitoringStorageAccountName": {
       "value": "azmxst1zzs259"
@@ -80,6 +80,9 @@
     "aksManagedIdentityName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD03"
     },
+    "acrManagedIdentityName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-AD04"
+    },
     "keyVaultName": {
       "value": "azmxks1qta777"
     },
@@ -91,6 +94,9 @@
     },
     "appsStorageAccountEncryptionKeyName": {
       "value": "crececonsdx-appsstorageaccount-key"
+    },
+    "acrEncryptionKeyName": {
+      "value": "crececonsdx-acr-key"
     },
     "sqlDatabaseSqlAdminLoginName": {
       "reference": {
@@ -289,7 +295,7 @@
       "value": true
     },
     "aksCreatePrivateDnsZone": {
-      "value": true
+      "value": false
     },
     "aksEnablePodManagedIdentity": {
       "value": false

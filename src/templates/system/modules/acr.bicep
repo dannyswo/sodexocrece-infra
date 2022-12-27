@@ -26,6 +26,9 @@ param standardTags object
 
 // ==================================== Resource properties ====================================
 
+@description('Name of the Managed Identity used by applications Storage Account.')
+param managedIdentityName string
+
 @description('Suffix used in the Container Registry name.')
 @minLength(6)
 @maxLength(6)
@@ -45,6 +48,12 @@ param acrSku string
   'Disabled'
 ])
 param zoneRedundancy string
+
+@description('Name of the Key Vault where Encryption Key of the Storage Account is stored.')
+param keyVaultName string
+
+@description('Name of the Encryption Key used by Container Registry.')
+param encryptionKeyName string
 
 @description('Retention days of untagged images in the Container Registry.')
 @minValue(7)
@@ -97,14 +106,27 @@ var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
 resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = {
   name: 'azmxcr1${acrNameSuffix}'
   location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
   sku: {
     name: acrSku
   }
   properties: {
     zoneRedundancy: zoneRedundancy
+    encryption: {
+      status: 'enabled'
+      keyVaultProperties: {
+        identity: managedIdentity.properties.clientId
+        keyIdentifier: 'https://${keyVaultName}${environment().suffixes.keyvaultDns}/keys/${encryptionKeyName}'
+      }
+    }
     policies: {
       trustPolicy: {
-        status: 'enabled'
+        status: 'disabled'
         type: 'Notary'
       }
       retentionPolicy: {
@@ -130,6 +152,12 @@ resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = 
     }
   }
   tags: standardTags
+}
+
+// ==================================== Managed Identity ====================================
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
+  name: managedIdentityName
 }
 
 // ==================================== Diagnotics ====================================

@@ -46,8 +46,14 @@ resource aksManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@20
   tags: standardTags
 }
 
-resource containerApp1ManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
+resource acrManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-AD04'
+  location: location
+  tags: standardTags
+}
+
+resource containerApp1ManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-AD05'
   location: location
   tags: standardTags
 }
@@ -72,7 +78,13 @@ output aksManagedIdentityPrincipalId string = aksManagedIdentity.properties.prin
 @description('Name of the Managed Identity of AKS Managed Cluster.')
 output aksManagedIdentityName string = aksManagedIdentity.name
 
-@description('Principal ID of the Managed Identity of container application 1.')
+@description('Principal ID of the Managed Identity of Container Registry.')
+output acrManagedIdentityPrincipalId string = acrManagedIdentity.properties.principalId
+
+@description('Name of the Managed Identity of Container Registry.')
+output acrManagedIdentityName string = acrManagedIdentity.name
+
+@description('Principal ID of the container application 1 Managed Identity.')
 output containerApp1ManagedIdentityPrincipalId string = containerApp1ManagedIdentity.properties.principalId
 
 @description('Name of the Managed Identity of container application 1.')
