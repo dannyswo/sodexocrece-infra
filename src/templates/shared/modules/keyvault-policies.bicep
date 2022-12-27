@@ -87,6 +87,11 @@ var readersAccessPolicies = [for readerPrincipalId in readersPrincipalIds: {
     keys: [
       'get'
       'list'
+      'decrypt'
+      'encrypt'
+      'getrotationpolicy'
+      'sign'
+      'verify'
     ]
     secrets: [
       'get'

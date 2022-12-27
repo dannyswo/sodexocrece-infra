@@ -35,12 +35,12 @@ var appGatewayManagedIdentityRoleDefinitions = [
   {
     roleName: 'a4417e6f-fecd-4de8-b567-7b0420556985'
     roleDescription: 'Key Vault Certificates Officer | Perform any action on the certificates of a key vault.'
-    roleAssignmentDescription: 'Application Gateway can access Certificates in the Key Vault.'
+    roleAssignmentDescription: 'Allow Application Gateway to access Certificates in the Key Vault.'
   }
   {
     roleName: 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
     roleDescription: 'Key Vault Secrets Officer | Perform any action on the secrets of a key vault'
-    roleAssignmentDescription: 'Application Gateway can access Secrets in the Key Vault.'
+    roleAssignmentDescription: 'Allow Application Gateway to access Secrets in the Key Vault.'
   }
 ]
 
@@ -62,7 +62,7 @@ var appsStorageAccountManagedIdentityRoleDefinitions = [
   {
     roleName: 'e147488a-f6f5-4113-8e2d-b22465e65bf6'
     roleDescription: 'Key Vault Crypto Service Encryption User | Read metadata of keys and perform wrap/unwrap operations.'
-    roleAssignmentDescription: 'Storage Account for applications data can access Encryption Key in the Key Vault.'
+    roleAssignmentDescription: 'Allow applications data Storage Account to access Encryption Key in the Key Vault.'
   }
 ]
 
@@ -84,7 +84,7 @@ var acrManagedIdentityRoleDefinitions = [
   {
     roleName: 'e147488a-f6f5-4113-8e2d-b22465e65bf6'
     roleDescription: 'Key Vault Crypto Service Encryption User | Read metadata of keys and perform wrap/unwrap operations.'
-    roleAssignmentDescription: 'Container Registry can access Encryption Key in the Key Vault.'
+    roleAssignmentDescription: 'Allow Container Registry to access Encryption Key in the Key Vault.'
   }
 ]
 
@@ -101,12 +101,17 @@ resource acrManagedIdentityRoleAssignments 'Microsoft.Authorization/roleAssignme
 
 // ==================================== Role Assignments: Container application 1 Managed Identity ====================================
 
-@description('Role Definition IDs for Container application 1 under Key Vault scope.')
+@description('Role Definition IDs for container application 1 under Key Vault scope.')
 var containerApp1ManagedIdentityRoleDefinitions = [
   {
     roleName: '4633458b-17de-408a-b874-0445c86b69e6'
     roleDescription: 'Key Vault Secrets User | Read secret contents'
-    roleAssignmentDescription: 'Allow Application 1 to read secrets in Key Vault.'
+    roleAssignmentDescription: 'Allow container application 1 to read Secrets in Key Vault.'
+  }
+  {
+    roleName: 'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+    roleDescription: 'Key Vault Crypto Service Encryption User | Read metadata of keys and perform wrap/unwrap operations.'
+    roleAssignmentDescription: 'Allow container application 1 to read Encryption Key in the Key Vault.'
   }
 ]
 

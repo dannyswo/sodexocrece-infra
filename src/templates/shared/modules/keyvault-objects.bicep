@@ -21,6 +21,9 @@ param appsStorageAccountEncryptionKeyName string
 @description('Name of the Container Registry Encryption Key.')
 param acrEncryptionKeyName string
 
+@description('Name of the Merchant Portal Encryption Key.')
+param merchantPortalEncryptionKeyName string
+
 @description('Issue datetime of the generated Encryption Keys.')
 param encryptionKeysIssueDateTime string
 
@@ -129,6 +132,43 @@ resource acrEncryptionKey 'Microsoft.KeyVault/vaults/keys@2022-07-01' = if (crea
   }
 }
 
+resource merchantPortalEncryptionKey 'Microsoft.KeyVault/vaults/keys@2022-07-01' = if (createEncryptionKeys) {
+  name: merchantPortalEncryptionKeyName
+  parent: keyVault
+  properties: {
+    kty: 'RSA'
+    keySize: 4096
+    attributes: {
+      enabled: true
+      exp: expiryDateTimeSinceEpoch
+      exportable: false
+    }
+    rotationPolicy: {
+      attributes: {
+        expiryTime: expiryTime
+      }
+      lifetimeActions: [
+        {
+          action: {
+            type: 'rotate'
+          }
+          trigger: {
+            timeAfterCreate: timeAfterCreate
+          }
+        }
+        {
+          action: {
+            type: 'notify'
+          }
+          trigger: {
+            timeBeforeExpiry: timeBeforeExpiry
+          }
+        }
+      ]
+    }
+  }
+}
+
 // ==================================== Secrets ====================================
 
 resource sqlDatabaseSqlAdminNameSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = if (createSecrets) {
@@ -168,20 +208,32 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
 
 // ==================================== Outputs ====================================
 
+@description('Name of the applications Storage Account Encryption Key.')
+output appsStorageAccountEncryptionKeyName string = (createEncryptionKeys) ? appsStorageAccountEncryptionKey.name : ''
+
 @description('URI of the applications Storage Account Encryption Key.')
 output appsStorageAccountEncryptionKeyUri string = (createEncryptionKeys) ? appsStorageAccountEncryptionKey.properties.keyUri : ''
 
-@description('Name of the applications Storage Account Encryption Key.')
-output appsStorageAccountEncryptionKeyName string = (createEncryptionKeys) ? appsStorageAccountEncryptionKey.name : ''
+@description('Name of the Container Registry Encryption Key.')
+output acrEncryptionKeyName string = (createEncryptionKeys) ? acrEncryptionKey.name : ''
 
 @description('URI of the Container Registry Encryption Key.')
 output acrEncryptionKeyUri string = (createEncryptionKeys) ? acrEncryptionKey.properties.keyUri : ''
 
 @description('Name of the Container Registry Encryption Key.')
-output acrEncryptionKeyName string = (createEncryptionKeys) ? acrEncryptionKey.name : ''
+output merchantPortalEncryptionKeyName string = (createEncryptionKeys) ? merchantPortalEncryptionKey.name : ''
+
+@description('URI of the Container Registry Encryption Key.')
+output merchantPortalEncryptionKeyUri string = (createEncryptionKeys) ? merchantPortalEncryptionKey.properties.keyUri : ''
+
+@description('Name of the SQL Database SQL admin name Secret.')
+output sqlDatabaseSqlAdminNameSecretName string = (createSecrets) ? sqlDatabaseSqlAdminNameSecret.name : ''
 
 @description('URI of the SQL Database SQL admin name Secret.')
 output sqlDatabaseSqlAdminNameSecretUri string = (createSecrets) ? sqlDatabaseSqlAdminNameSecret.properties.secretUri : ''
+
+@description('Name of the SQL Database SQL admin password Secret.')
+output sqlDatabaseSqlAdminPassSecretName string = (createSecrets) ? sqlDatabaseSqlAdminPassSecret.name : ''
 
 @description('URI of the SQL Database SQL admin password Secret.')
 output sqlDatabaseSqlAdminPassSecretUri string = (createSecrets) ? sqlDatabaseSqlAdminPassSecret.properties.secretUri : ''
