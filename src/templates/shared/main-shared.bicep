@@ -371,6 +371,7 @@ module keyVaultObjectsModule 'modules/keyvault-objects.bicep' = {
     createEncryptionKeys: createEncryptionKeysInKeyVault
     appsStorageAccountEncryptionKeyName: 'crececonsdx-appsstorageaccount-key'
     acrEncryptionKeyName: 'crececonsdx-acr-key'
+    merchantPortalEncryptionKeyName: 'crececonsdx-merchantportal-key'
     encryptionKeysIssueDateTime: encryptionKeysIssueDateTime
     createSecrets: createSecretsInKeyVault
     sqlDatabaseSqlAdminNameSecretName: 'crececonsdx-sqldatabase-sqladminloginname'
