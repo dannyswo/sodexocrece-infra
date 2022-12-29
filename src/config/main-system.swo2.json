@@ -66,7 +66,7 @@
       "value": false
     },
     "monitoringStorageAccountName": {
-      "value": "azmxst1zzs259"
+      "value": "azusst1zzs259"
     },
     "monitoringWorkspaceName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-MM01"
@@ -84,7 +84,7 @@
       "value": "BRS-MEX-USE2-CRECESDX-SWO-AD04"
     },
     "keyVaultName": {
-      "value": "azmxks1qta790"
+      "value": "azusks1qta791"
     },
     "appGatewayFrontendCertificateName": {
       "value": "crececonsdx-appgateway-cert-frontend"

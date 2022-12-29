@@ -110,7 +110,7 @@ param enableLock bool
 
 // ==================================== Application Gateway ====================================
 
-var appGatewayName = 'azmxwa1${appGatewayNameSuffix}'
+var appGatewayName = 'azuswa1${appGatewayNameSuffix}'
 
 var zones = [ '1', '2', '3' ]
 

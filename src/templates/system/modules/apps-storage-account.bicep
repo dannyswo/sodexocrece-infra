@@ -130,7 +130,7 @@ var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
 }]
 
 resource appsStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
-  name: 'azmxst1${storageAccountNameSuffix}'
+  name: 'azusst1${storageAccountNameSuffix}'
   location: location
   identity: {
     type: 'UserAssigned'

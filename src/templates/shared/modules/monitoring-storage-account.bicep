@@ -69,7 +69,7 @@ var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
 }]
 
 resource monitoringStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
-  name: 'azmxst1${storageAccountNameSuffix}'
+  name: 'azusst1${storageAccountNameSuffix}'
   location: location
   kind: 'StorageV2'
   sku: {

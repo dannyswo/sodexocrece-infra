@@ -163,7 +163,7 @@ param allowedIPsOrCIDRs array
 
 // ==================================== AKS Managed Cluster ====================================
 
-var aksDnsPrefix = 'azmxku1${aksDnsSuffix}'
+var aksDnsPrefix = 'azusku1${aksDnsSuffix}'
 
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-preview' = {
   name: 'BRS-MEX-USE2-CRECESDX-${env}-KU01'

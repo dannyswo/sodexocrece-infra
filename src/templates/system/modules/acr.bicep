@@ -104,7 +104,7 @@ var ipRules = [for allowedIPOrCIDR in allowedIPsOrCIDRs: {
 }]
 
 resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = {
-  name: 'azmxcr1${acrNameSuffix}'
+  name: 'azuscr1${acrNameSuffix}'
   location: location
   identity: {
     type: 'UserAssigned'

@@ -178,7 +178,7 @@ param allowedIPRanges array
 
 // ==================================== SQL Server ====================================
 
-var sqlServerName = 'azmxdb1${sqlServerNameSuffix}'
+var sqlServerName = 'azusdb1${sqlServerNameSuffix}'
 
 resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
   name: sqlServerName
