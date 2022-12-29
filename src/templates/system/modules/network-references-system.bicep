@@ -15,10 +15,13 @@ param location string = resourceGroup().location
 // ==================================== Resource properties ====================================
 
 @description('ID of the BRS Shared Services Subscription.')
-param brsSubscriptionId string
+param sharedServicesSubscriptionId string
 
-@description('Name of the Resource Group for network resources in BRS Shared Services Subscription.')
-param brsNetworkResourceGroupName string
+@description('Name of the DEV Resource Group for network resources in BRS Shared Services Subscription.')
+param devSharedServicesNetworkResourceGroupName string
+
+@description('Name of the PRD Resource Group for network resources in BRS Shared Services Subscription.')
+param prdSharedServicesNetworkResourceGroupName string
 
 @description('ID of the Prod / Non Prod Subscription.')
 param prodSubscriptionId string
@@ -50,8 +53,17 @@ param endpointsVNetName string
 @description('Name of the Private Endpoints Subnet.')
 param endpointsSubnetName string
 
-@description('Name of the Apps Shared 02 VNet.')
-param appsShared2VNetName string
+@description('Name of the Jump Servers VNet.')
+param jumpServersVNetName string
+
+@description('Name of the Jump Servers Subnet.')
+param jumpServersSubnetName string
+
+@description('Name of the DevOps Agents VNet.')
+param devopsAgentsVNetName string
+
+@description('Name of the DevOps Agents Subnet.')
+param devopsAgentsSubnetName string
 
 // ==================================== Resources ====================================
 
@@ -63,7 +75,9 @@ var aksVNetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Mi
 
 var endpointsVNetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', endpointsVNetName)
 
-var appsShared2VNetId = resourceId(brsSubscriptionId, brsNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', appsShared2VNetName)
+var jumpServersVNetId = resourceId(sharedServicesSubscriptionId, prdSharedServicesNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', jumpServersVNetName)
+
+var devopsAgentsVNetId = resourceId(sharedServicesSubscriptionId, devSharedServicesNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks', devopsAgentsVNetName)
 
 // ==================================== Existing Subnets ====================================
 
@@ -72,6 +86,10 @@ var gatewaySubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupNam
 var aksSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', aksVNetName, aksSubnetName)
 
 var endpointsSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', endpointsVNetName, endpointsSubnetName)
+
+var jumpServersSubnetId = resourceId(sharedServicesSubscriptionId, prdSharedServicesNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', jumpServersVNetName, jumpServersSubnetName)
+
+var devopsAgentsSubnetId = resourceId(sharedServicesSubscriptionId, devSharedServicesNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', devopsAgentsVNetName, devopsAgentsSubnetName)
 
 // ==================================== Existing Private DNS Zones ====================================
 
@@ -103,8 +121,17 @@ output endpointsVNetId string = endpointsVNetId
 @description('ID of the Private Endpoints Subnet.')
 output endpointsSubnetId string = endpointsSubnetId
 
-@description('ID of the Apps Shared 02 VNet.')
-output appsShared2VNetId string = appsShared2VNetId
+@description('ID of the Jump Servers VNet.')
+output jumpServersVNetId string = jumpServersVNetId
+
+@description('ID of the Jump Servers Subnet.')
+output jumpServersSubnetId string = jumpServersSubnetId
+
+@description('ID of the DevOps Agents VNet.')
+output devopsAgentsVNetId string = devopsAgentsVNetId
+
+@description('ID of the DevOps Agents Subnet.')
+output devopsAgentsSubnetId string = devopsAgentsSubnetId
 
 @description('ID of a Private DNS Zone for private Storage Account Blob Containers.')
 output storageAccountBlobPrivateDnsZoneId string = storageAccountBlobPrivateDnsZoneId

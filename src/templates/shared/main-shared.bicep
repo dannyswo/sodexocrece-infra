@@ -47,10 +47,13 @@ param standardTags object = resourceGroup().tags
 // ==================================== Network dependencies ====================================
 
 @description('ID of the BRS Shared Services Subscription.')
-param brsSubscriptionId string
+param sharedServicesSubscriptionId string
 
-@description('Name of the Resource Group for network resources in BRS Shared Services Subscription.')
-param brsNetworkResourceGroupName string
+@description('Name of the DEV Resource Group for network resources in BRS Shared Services Subscription.')
+param devSharedServicesNetworkResourceGroupName string
+
+@description('Name of the PRD Resource Group for network resources in BRS Shared Services Subscription.')
+param prdSharedServicesNetworkResourceGroupName string
 
 @description('ID of the Prod / Non Prod Subscription.')
 param prodSubscriptionId string
@@ -82,11 +85,14 @@ param endpointsVNetName string
 @description('Name of the MEX Private Endpoints Subnet.')
 param endpointsSubnetName string
 
-@description('Name of the Apps Shared 02 VNet.')
-param appsShared2VNetName string
+@description('Name of the Jump Servers VNet.')
+param jumpServersVNetName string
 
 @description('Name of the Jump Servers Subnet.')
 param jumpServersSubnetName string
+
+@description('Name of the DevOps Agents VNet.')
+param devopsAgentsVNetName string
 
 @description('Name of the DevOps Agents Subnet.')
 param devopsAgentsSubnetName string
@@ -243,8 +249,9 @@ module managedIdentitiesNetworkGroupRbacModule 'modules/managed-identities-netwo
 module networkReferencesSharedModule 'modules/network-references-shared.bicep' = {
   name: 'network-references-shared-module'
   params: {
-    brsSubscriptionId: brsSubscriptionId
-    brsNetworkResourceGroupName: brsNetworkResourceGroupName
+    sharedServicesSubscriptionId: sharedServicesSubscriptionId
+    devSharedServicesNetworkResourceGroupName: devSharedServicesNetworkResourceGroupName
+    prdSharedServicesNetworkResourceGroupName: prdSharedServicesNetworkResourceGroupName
     prodSubscriptionId: prodSubscriptionId
     prodNetworkResourceGroupName: prodNetworkResourceGroupName
     tier0SubscriptionId: tier0SubscriptionId
@@ -255,8 +262,9 @@ module networkReferencesSharedModule 'modules/network-references-shared.bicep' =
     aksSubnetName: aksSubnetName
     endpointsVNetName: endpointsVNetName
     endpointsSubnetName: endpointsSubnetName
-    appsShared2VNetName: appsShared2VNetName
+    jumpServersVNetName: jumpServersVNetName
     jumpServersSubnetName: jumpServersSubnetName
+    devopsAgentsVNetName: devopsAgentsVNetName
     devopsAgentsSubnetName: devopsAgentsSubnetName
   }
 }
@@ -265,7 +273,8 @@ var linkedVNetIdsForPrivateEndpoints = [
   networkReferencesSharedModule.outputs.frontendVNetId
   networkReferencesSharedModule.outputs.aksVNetId
   networkReferencesSharedModule.outputs.endpointsVNetId
-  networkReferencesSharedModule.outputs.appsShared2VNetId
+  networkReferencesSharedModule.outputs.jumpServersVNetId
+  networkReferencesSharedModule.outputs.devopsAgentsVNetId
 ]
 
 var monitoringStorageAccountDefaultAllowedSubnetIds = [

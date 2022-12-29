@@ -8,10 +8,13 @@
     "env": {
       "value": "SWO"
     },
-    "brsSubscriptionId": {
+    "sharedServicesSubscriptionId": {
       "value": "f493167c-c1a8-4a50-9c6b-41b9a478f240"
     },
-    "brsNetworkResourceGroupName": {
+    "devSharedServicesNetworkResourceGroupName": {
+      "value": "RG-demo-sodexo-crece"
+    },
+    "prdSharedServicesNetworkResourceGroupName": {
       "value": "RG-demo-sodexo-crece"
     },
     "prodSubscriptionId": {
@@ -44,8 +47,17 @@
     "endpointsSubnetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-SN03"
     },
-    "appsShared2VNetName": {
+    "jumpServersVNetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-VN04"
+    },
+    "jumpServersSubnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN04"
+    },
+    "devopsAgentsVNetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN04"
+    },
+    "devopsAgentsSubnetName": {
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-SN05"
     },
     "appsStorageAccountPEPrivateIPAddress": {
       "value": "10.169.88.74"
