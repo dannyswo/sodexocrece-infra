@@ -24,7 +24,7 @@
       ]
     },
     "serviceId": {
-      "value": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.ContainerRegistry/registries/azmxcr1hle620"
+      "value": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.ContainerRegistry/registries/azuscr1hle620"
     },
     "groupId": {
       "value": "registry"

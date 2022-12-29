@@ -67,24 +67,24 @@ az aks command invoke --resource-group RG-demo-sodexo-crece --name BRS-MEX-USE2-
 ## Docker repository and images
 
 ```
-az acr login -n azmxcr1hym659
-az acr repository list --name azmxcr1hym659
-az acr repository show --name azmxcr1hym659 --repository merchant-view
-az acr repository show --name azmxcr1hym659 --repository helm/demoapp1
+az acr login -n azuscr1hym659
+az acr repository list --name azuscr1hym659
+az acr repository show --name azuscr1hym659 --repository merchant-view
+az acr repository show --name azuscr1hym659 --repository helm/demoapp1
 ```
 
 ```
 docker pull nginx:latest
-docker tag nginx:latest azmxcr1hym659.azurecr.io/nginx:latest
-docker push azmxcr1hym659.azurecr.io/nginx:latest
+docker tag nginx:latest azuscr1hym659.azurecr.io/nginx:latest
+docker push azuscr1hym659.azurecr.io/nginx:latest
 ```
 
 ## Helm Charts management
 
 ```
 USER_NAME="00000000-0000-0000-0000-000000000000"
-PASSWORD=$(az acr login --name azmxcr1hym659 --expose-token --output tsv --query accessToken)
-helm registry login azmxcr1hym659.azurecr.io --username $USER_NAME --password $PASSWORD
+PASSWORD=$(az acr login --name azuscr1hym659 --expose-token --output tsv --query accessToken)
+helm registry login azuscr1hym659.azurecr.io --username $USER_NAME --password $PASSWORD
 ```
 
 ```
@@ -96,16 +96,16 @@ helm package .\src\charts\crecesdx-demoapp1-chart
 helm lint [chart-directory-path]
 helm lint .\src\charts\crecesdx-demoapp1-chart
 helm push [package-file].tgz [acr-helm-oci-uri]
-helm push crecesdx-demoapp1-1.0.0.tgz oci://azmxcr1hym659.azurecr.io/helm
+helm push crecesdx-demoapp1-1.0.0.tgz oci://azuscr1hym659.azurecr.io/helm
 az acr repository show --name [acr-name] --repository helm/[chart-name]
-az acr repository show --name azmxcr1hym659 --repository helm/crecesdx-demoapp1
+az acr repository show --name azuscr1hym659 --repository helm/crecesdx-demoapp1
 az acr manifest list-metadata --registry [acr-name] --name helm/[chart-name]
-az acr manifest list-metadata --registry azmxcr1hym659 --name helm/crecesdx-demoapp1
+az acr manifest list-metadata --registry azuscr1hym659 --name helm/crecesdx-demoapp1
 helm search [keyword]
 
 helm install [release-name] --dry-run --debug
 helm install [release-name] [chart-uri] --version [chart-version] --namespace [namespace] --values [values-file-path]
-helm install demoapp1 oci://azmxcr1hym659.azurecr.io/helm/crecesdx-demoapp1 --version 1.0.0 --namespace crecesdx --values values.swo.yaml
+helm install demoapp1 oci://azuscr1hym659.azurecr.io/helm/crecesdx-demoapp1 --version 1.0.0 --namespace crecesdx --values values.swo.yaml
 helm get manifest [release-name] --namespace [namespace]
 helm get manifest demoapp1 --namespace crecesdx
 helm list --namespace [namespace]
@@ -116,10 +116,10 @@ helm status demoapp1
 helm uninstall [release-name] --namespace [namespace]
 helm uninstall demoapp1 --namespace crecesdx
 helm upgrade [release-name] [chart-uri] --version [version] --atomic --install
-helm upgrade demoapp1 oci://azmxcr1hym659.azurecr.io/helm/crecesdx-demoapp1 --version 1.0.1 --atomic --install
+helm upgrade demoapp1 oci://azuscr1hym659.azurecr.io/helm/crecesdx-demoapp1 --version 1.0.1 --atomic --install
 
 az acr repository delete --name [acr-name] --image helm/[chart-name]
-az acr repository delete --name azmxcr1hym659 --image helm/crecesdx-demoapp1
+az acr repository delete --name azuscr1hym659 --image helm/crecesdx-demoapp1
 ```
 
 ## Enable preview features and required providers for AKS identity add-ons
@@ -157,7 +157,7 @@ kubectl apply -f demo.k8s.yaml
 // AKS setup: crecesdx-namespace manifest, aad-pod-identity Helm Chart.
 
 az aks get-credentials --resource-group RG-demo-sodexo-crece --name BRS-MEX-USE2-CRECESDX-SWO-KU01
-az acr login -n azmxcr1hym659
+az acr login -n azuscr1hym659
 
 kubectl apply -f crecesdx-namespace.k8s.yaml
 
@@ -168,13 +168,13 @@ helm install aad-pod-identity aad-pod-identity/aad-pod-identity --namespace=crec
 
 helm lint .\src\charts\crecesdx-demoapp1
 helm package .\src\charts\crecesdx-demoapp1
-helm push crecesdx-demoapp1-1.0.0.tgz oci://azmxcr1hym659.azurecr.io/helm
-az acr repository show --name azmxcr1hym659 --repository helm/crecesdx-demoapp1
-az acr manifest list-metadata --registry azmxcr1hym659 --name helm/crecesdx-demoapp1
+helm push crecesdx-demoapp1-1.0.0.tgz oci://azuscr1hym659.azurecr.io/helm
+az acr repository show --name azuscr1hym659 --repository helm/crecesdx-demoapp1
+az acr manifest list-metadata --registry azuscr1hym659 --name helm/crecesdx-demoapp1
 
-helm install demoapp1 oci://azmxcr1hym659.azurecr.io/helm/crecesdx-demoapp1 --version 1.0.0 --namespace crecesdx --values .\config\values.swo.yaml
+helm install demoapp1 oci://azuscr1hym659.azurecr.io/helm/crecesdx-demoapp1 --version 1.0.0 --namespace crecesdx --values .\config\values.swo.yaml
 helm get manifest demoapp1 --namespace crecesdx
 
 helm uninstall demoapp1
-az acr repository delete --name azmxcr1hym659 --repository helm/crecesdx-demoapp1
+az acr repository delete --name azuscr1hym659 --repository helm/crecesdx-demoapp1
 ```

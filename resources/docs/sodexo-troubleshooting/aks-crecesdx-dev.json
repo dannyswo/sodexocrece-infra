@@ -22,10 +22,10 @@
           "code": "Running"
       },
       "kubernetesVersion": "1.23.12",
-      "dnsPrefix": "azmxku1nlx625",
-      "fqdn": "azmxku1nlx625-7e3194fe.hcp.eastus2.azmk8s.io",
+      "dnsPrefix": "azusku1nlx625",
+      "fqdn": "azusku1nlx625-7e3194fe.hcp.eastus2.azmk8s.io",
       "azurePortalFQDN": "8735718640da2d7ff16fa75e86fa006d-priv.portal.hcp.eastus2.azmk8s.io",
-      "privateFQDN": "azmxku1nlx625-0b059e86.2262354b-06d0-456e-b7c0-898d59831142.privatelink.eastus2.azmk8s.io",
+      "privateFQDN": "azusku1nlx625-0b059e86.2262354b-06d0-456e-b7c0-898d59831142.privatelink.eastus2.azmk8s.io",
       "agentPoolProfiles": [
           {
               "name": "agentpool1",
@@ -98,7 +98,7 @@
           "ingressApplicationGateway": {
               "enabled": false,
               "config": {
-                  "applicationGatewayId": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.Network/applicationGateways/azmxwa1zvq385"
+                  "applicationGatewayId": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-CRECESDX-DEV-RG01/providers/Microsoft.Network/applicationGateways/azuswa1zvq385"
               }
           },
           "omsagent": {

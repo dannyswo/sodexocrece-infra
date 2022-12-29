@@ -29,7 +29,7 @@
                         "properties": {
                             "service": "Microsoft.Storage",
                             "serviceResources": [
-                                "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Storage/storageAccounts/azmxst1msv830"
+                                "/subscriptions/f493167c-c1a8-4a50-9c6b-41b9a478f240/resourceGroups/RG-demo-sodexo-crece/providers/Microsoft.Storage/storageAccounts/azusst1msv830"
                             ]
                         }
                     }

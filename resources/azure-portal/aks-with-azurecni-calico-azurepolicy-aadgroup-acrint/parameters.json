@@ -77,7 +77,7 @@
             "value": "calico"
         },
         "acrName": {
-            "value": "azmxcr1hym690"
+            "value": "azuscr1hym690"
         },
         "acrResourceGroup": {
             "value": "BRS-MEX-USE2-CRECESDX-SWO-RG01"

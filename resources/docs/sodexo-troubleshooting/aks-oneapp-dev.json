@@ -1,7 +1,7 @@
 {
-  "id": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/BRS-MEX-USE2-ONEAPPV3-DEV-RG01/providers/Microsoft.ContainerService/managedClusters/azmxku1zzv118",
+  "id": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/BRS-MEX-USE2-ONEAPPV3-DEV-RG01/providers/Microsoft.ContainerService/managedClusters/azusku1zzv118",
   "location": "eastus2",
-  "name": "azmxku1zzv118",
+  "name": "azusku1zzv118",
   "tags": {
       "AllowShutdown": "True",
       "ApplicationName": "BRS.LATAM.MX.OneApp",
@@ -26,10 +26,10 @@
           "code": "Running"
       },
       "kubernetesVersion": "1.23.12",
-      "dnsPrefix": "azmxku1zzv118",
-      "fqdn": "azmxku1zzv118-61c6d4c0.hcp.eastus2.azmk8s.io",
+      "dnsPrefix": "azusku1zzv118",
+      "fqdn": "azusku1zzv118-61c6d4c0.hcp.eastus2.azmk8s.io",
       "azurePortalFQDN": "149905e2994d3eb08928fee297845575-priv.portal.hcp.eastus2.azmk8s.io",
-      "privateFQDN": "azmxku1zzv118-1c98db48.privatelink.eastus2.azmk8s.io",
+      "privateFQDN": "azusku1zzv118-1c98db48.privatelink.eastus2.azmk8s.io",
       "agentPoolProfiles": [
           {
               "name": "agentpool",
@@ -80,13 +80,13 @@
                   "logAnalyticsWorkspaceResourceID": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-ONEAPPV3-DEV-RG01/providers/Microsoft.OperationalInsights/workspaces/azusmm1kro306"
               },
               "identity": {
-                  "resourceId": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/MC_BRS-MEX-USE2-ONEAPPV3-DEV-RG01_azmxku1zzv118/providers/Microsoft.ManagedIdentity/userAssignedIdentities/omsagent-azmxku1zzv118",
+                  "resourceId": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/MC_BRS-MEX-USE2-ONEAPPV3-DEV-RG01_azusku1zzv118/providers/Microsoft.ManagedIdentity/userAssignedIdentities/omsagent-azusku1zzv118",
                   "clientId": "607f8917-c9ab-4471-b1ee-9102dbc0d831",
                   "objectId": "5160e36f-e188-4a67-bc40-711b19b8122e"
               }
           }
       },
-      "nodeResourceGroup": "MC_BRS-MEX-USE2-ONEAPPV3-DEV-RG01_azmxku1zzv118",
+      "nodeResourceGroup": "MC_BRS-MEX-USE2-ONEAPPV3-DEV-RG01_azusku1zzv118",
       "enableRBAC": true,
       "networkProfile": {
           "networkPlugin": "kubenet",
@@ -98,7 +98,7 @@
               },
               "effectiveOutboundIPs": [
                   {
-                      "id": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/MC_BRS-MEX-USE2-ONEAPPV3-DEV-RG01_azmxku1zzv118/providers/Microsoft.Network/publicIPAddresses/aa38e6f4-4e6d-4379-8b4d-746d002bbf24"
+                      "id": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/MC_BRS-MEX-USE2-ONEAPPV3-DEV-RG01_azusku1zzv118/providers/Microsoft.Network/publicIPAddresses/aa38e6f4-4e6d-4379-8b4d-746d002bbf24"
                   }
               ]
           },
@@ -130,7 +130,7 @@
       "maxAgentPools": 100,
       "privateLinkResources": [
           {
-              "id": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/BRS-MEX-USE2-ONEAPPV3-DEV-RG01/providers/Microsoft.ContainerService/managedClusters/azmxku1zzv118/privateLinkResources/management",
+              "id": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/BRS-MEX-USE2-ONEAPPV3-DEV-RG01/providers/Microsoft.ContainerService/managedClusters/azusku1zzv118/privateLinkResources/management",
               "name": "management",
               "type": "Microsoft.ContainerService/managedClusters/privateLinkResources",
               "groupId": "management",
@@ -146,7 +146,7 @@
       },
       "identityProfile": {
           "kubeletidentity": {
-              "resourceId": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/MC_BRS-MEX-USE2-ONEAPPV3-DEV-RG01_azmxku1zzv118/providers/Microsoft.ManagedIdentity/userAssignedIdentities/azmxku1zzv118-agentpool",
+              "resourceId": "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourcegroups/MC_BRS-MEX-USE2-ONEAPPV3-DEV-RG01_azusku1zzv118/providers/Microsoft.ManagedIdentity/userAssignedIdentities/azusku1zzv118-agentpool",
               "clientId": "eff7a200-590e-44ba-887f-9297d1b93869",
               "objectId": "b3279563-81c9-4d79-bfba-8aa07ea74cca"
           }
@@ -179,7 +179,7 @@
   "identity": {
       "type": "UserAssigned",
       "userAssignedIdentities": {
-          "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-ONEAPPV3-DEV-RG01/providers/Microsoft.ManagedIdentity/userAssignedIdentities/azmxku1zzv118": {
+          "/subscriptions/f3888d08-b6b3-4f5d-b4f1-45c1fedec20c/resourceGroups/BRS-MEX-USE2-ONEAPPV3-DEV-RG01/providers/Microsoft.ManagedIdentity/userAssignedIdentities/azusku1zzv118": {
               "clientId": "d185d3f2-7ef4-4330-a19e-2521c7488c1c",
               "principalId": "294a4256-e693-4f5a-b6b1-690cd1df61d0"
           }

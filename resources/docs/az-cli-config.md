@@ -57,6 +57,6 @@ az resource delete `
   --resource-type [Resource type]
 az resource delete `
   -g RG-demo-sodexo-crece `
-  -n azmxcr1hle620 `
+  -n azuscr1hle620 `
   --resource-type Microsoft.ContainerRegistry/registries
 ```

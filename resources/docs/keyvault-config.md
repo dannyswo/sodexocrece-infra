@@ -51,18 +51,18 @@ openssl pkcs12 -export \
 ## Import SSL certificate into Key Vault via Azure CLI
 
 ```
-az keyvault certificate import --vault-name azmxks1qta775 --name crececonsdx-appgateway-cert-frontend --file cert-frontend.pfx
-az keyvault certificate import --vault-name azmxks1qta775 --name crececonsdx-appgateway-cert-backend --file cert-backend.pfx
+az keyvault certificate import --vault-name azusks1qta775 --name crececonsdx-appgateway-cert-frontend --file cert-frontend.pfx
+az keyvault certificate import --vault-name azusks1qta775 --name crececonsdx-appgateway-cert-backend --file cert-backend.pfx
 ```
 
 ```
-./src/scripts/import-keyvault-certificate.sh "azmxks1qta775" "crececonsdx-appgateway-cert-backend" "certificates/cert-backend.pfx"
-.\src\scripts\import-keyvault-certificate.cmd "azmxks1qta775" "crececonsdx-appgateway-cert-backend" "certificates\cert-backend.pfx"
+./src/scripts/import-keyvault-certificate.sh "azusks1qta775" "crececonsdx-appgateway-cert-backend" "certificates/cert-backend.pfx"
+.\src\scripts\import-keyvault-certificate.cmd "azusks1qta775" "crececonsdx-appgateway-cert-backend" "certificates\cert-backend.pfx"
 ```
 
 ## Verify certificates are loaded in the Application Gateway
 
 ```
-az network application-gateway root-cert list --resource-group RG-demo-sodexo-crece --gateway-name azmxwa1eae513
-az network application-gateway ssl-cert list --resource-group RG-demo-sodexo-crece --gateway-name azmxwa1eae513
+az network application-gateway root-cert list --resource-group RG-demo-sodexo-crece --gateway-name azuswa1eae513
+az network application-gateway ssl-cert list --resource-group RG-demo-sodexo-crece --gateway-name azuswa1eae513
 ```

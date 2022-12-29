@@ -6,22 +6,22 @@ Private Endpoint Bicep Configurations
 ```
 az network private-link-resource list `
   --resource-group RG-demo-sodexo-crece `
-  --name azmxks1mat327 `
+  --name azusks1mat327 `
   --type Microsoft.KeyVault/vaults
 
 az network private-link-resource list `
   --resource-group RG-demo-sodexo-crece `
-  --name azmxcr1hle620 `
+  --name azuscr1hle620 `
   --type Microsoft.ContainerRegistry/registries
 
 az network private-link-resource list `
   --resource-group RG-demo-sodexo-crece `
-  --name azmxst1ifv691 `
+  --name azusst1ifv691 `
   --type Microsoft.Storage/storageAccounts
 
 az network private-link-resource list `
   --resource-group RG-demo-sodexo-crece `
-  --name azmxdb1mjx885 `
+  --name azusdb1mjx885 `
   --type Microsoft.Sql/servers
 ```
 

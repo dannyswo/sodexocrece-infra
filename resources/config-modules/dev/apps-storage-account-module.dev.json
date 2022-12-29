@@ -21,7 +21,7 @@
       "value": "Standard_LRS"
     },
     "keyVaultName": {
-      "value": "azmxks1ifv691"
+      "value": "azusks1ifv691"
     },
     "encryptionKeyName": {
       "value": "crececonsdx-appsstorageaccount-key"

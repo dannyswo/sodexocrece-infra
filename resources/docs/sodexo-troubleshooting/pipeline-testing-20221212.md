@@ -3,27 +3,27 @@
 ```
 Server:  usaz-ns1.sodexonet.com
 Address:  10.167.161.4
-Name:    azmxdb1jjt985.privatelink.database.windows.net
+Name:    azusdb1jjt985.privatelink.database.windows.net
 Address:  10.169.88.70
 
 Server:  usaz-ns1.sodexonet.com
 Address:  10.167.161.4
-Name:    azmxks1zph479.privatelink.vaultcore.azure.net
+Name:    azusks1zph479.privatelink.vaultcore.azure.net
 Address:  10.169.88.71
 
 Server:  usaz-ns1.sodexonet.com
 Address:  10.167.161.4
-Name:    azmxcr1wzg838.privatelink.azurecr.io
+Name:    azuscr1wzg838.privatelink.azurecr.io
 Address:  10.169.88.72
 
 Server:  usaz-ns1.sodexonet.com
 Address:  10.167.161.4
-Name:    azmxcr1wzg838.eastus2.data.privatelink.azurecr.io
+Name:    azuscr1wzg838.eastus2.data.privatelink.azurecr.io
 Address:  10.169.88.73
 
 Server:  usaz-ns1.sodexonet.com
 Address:  10.167.161.4
-Name:    azmxst1rdg355.privatelink.blob.core.windows.net
+Name:    azusst1rdg355.privatelink.blob.core.windows.net
 Address:  10.169.88.74
 
 Server:  usaz-ns1.sodexonet.com
@@ -156,31 +156,31 @@ Non-authoritative answer:
 
 Server:  usaz-ns1.sodexonet.com
 Address:  10.167.161.4
-Name:    azmxdb1jjt985.privatelink.database.windows.net
+Name:    azusdb1jjt985.privatelink.database.windows.net
 Address:  10.169.88.70
 
 Non-authoritative answer:
 
 Server:  usaz-ns1.sodexonet.com
 Address:  10.167.161.4
-Name:    azmxks1zph479.privatelink.vaultcore.azure.net
+Name:    azusks1zph479.privatelink.vaultcore.azure.net
 Address:  10.169.88.71
 
 Non-authoritative answer:
 
 Server:  usaz-ns1.sodexonet.com
 Address:  10.167.161.4
-Name:    azmxcr1wzg838.eastus2.data.privatelink.azurecr.io
+Name:    azuscr1wzg838.eastus2.data.privatelink.azurecr.io
 Address:  10.169.88.73
 
 Non-authoritative answer:
 
 Server:  usaz-ns1.sodexonet.com
 Address:  10.167.161.4
-Name:    azmxst1rdg355.privatelink.blob.core.windows.net
+Name:    azusst1rdg355.privatelink.blob.core.windows.net
 Address:  10.169.88.74
 
-*** usaz-ns1.sodexonet.com can't find azmxku1nlx625-89b09fdc.2ae8297e-5eff-45c7-a8f7-2b3472907333.privatelink.eastus2.azmk8s.io: Non-existent domain
+*** usaz-ns1.sodexonet.com can't find azusku1nlx625-89b09fdc.2ae8297e-5eff-45c7-a8f7-2b3472907333.privatelink.eastus2.azmk8s.io: Non-existent domain
 Server:  usaz-ns1.sodexonet.com
 Address:  10.167.161.4
 
