@@ -125,6 +125,9 @@ param appGatewayId string
 @description('Create custom Route Table for Gateway Subnet managed by AKS (with kubenet network plugin).')
 param createCustomRouteTable bool
 
+@description('Create the NSG for the AKS Subnet.')
+param createNetworkSecurityGroup bool
+
 @description('Enable Key Vault Secrets Provider add-on.')
 param enableKeyVaultSecretsProviderAddon bool
 
@@ -305,6 +308,32 @@ resource aksCustomRouteTable 'Microsoft.Network/routeTables@2022-05-01' = if (cr
   location: location
   properties: {
     routes: []
+  }
+  tags: standardTags
+}
+
+// ==================================== Network Security Group ====================================
+
+resource aksNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = if (createNetworkSecurityGroup) {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS02'
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'DenyInternetAllInbound'
+        properties: {
+          access: 'Deny'
+          direction: 'Inbound'
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'Internet'
+          destinationPortRange: '*'
+          destinationAddressPrefix: '*'
+          priority: 4096
+          description: 'Deny Internet All Inbound.'
+        }
+      }
+    ]
   }
   tags: standardTags
 }

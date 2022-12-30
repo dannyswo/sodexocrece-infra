@@ -59,6 +59,9 @@
     "devopsAgentsSubnetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-SN05"
     },
+    "createNetworkSecurityGroups": {
+      "value": false
+    },
     "appsStorageAccountPEPrivateIPAddress": {
       "value": "10.169.88.74"
     },

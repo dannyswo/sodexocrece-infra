@@ -88,6 +88,9 @@ param wafPoliciesMode string
 @description('Create a Domain Name label for Application Gateway Public IP Address.')
 param enableDomainNameLabel bool
 
+@description('Create the NSG for the Application Gateway Subnet.')
+param createNetworkSecurityGroup bool
+
 // ==================================== Diagnostics options ====================================
 
 @description('Enable diagnostics to store Application Gateway logs and metrics.')
@@ -410,6 +413,60 @@ resource wafPolicies 'Microsoft.Network/ApplicationGatewayWebApplicationFirewall
       ]
     }
     customRules: []
+  }
+  tags: standardTags
+}
+
+// ==================================== Network Security Group ====================================
+
+resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = if (createNetworkSecurityGroup) {
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS01'
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowGatewayManagerInbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'GatewayManager'
+          destinationPortRange: '65200-65535'
+          destinationAddressPrefix: '*'
+          priority: 100
+          description: 'Allow GatewayManager Azure Ports Inbound.'
+        }
+      }
+      {
+        name: 'AllowAzureLoadBalancerInbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'AzureLoadBalancer'
+          destinationPortRange: '*'
+          destinationAddressPrefix: '*'
+          priority: 110
+          description: 'Allow GatewayManager Azure Ports Inbound.'
+        }
+      }
+      {
+        name: 'DenyInternetAllInbound'
+        properties: {
+          access: 'Deny'
+          direction: 'Inbound'
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'Internet'
+          destinationPortRange: '*'
+          destinationAddressPrefix: '*'
+          priority: 4096
+          description: 'Deny Internet All Inbound.'
+        }
+      }
+    ]
   }
   tags: standardTags
 }
