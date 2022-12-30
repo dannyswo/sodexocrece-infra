@@ -26,9 +26,9 @@ var aksKeyVaultSecretsProviderAccessPolicy = {
   objectId: aksKeyVaultSecrtsProviderPrincipalId
   tenantId: tenantId
   permissions: {
-    certificates: allCertificatesPermissions
     keys: allKeysPermissions
     secrets: allSecretsPermissions
+    certificates: allCertificatesPermissions
   }
 }
 
@@ -43,25 +43,6 @@ resource appsKeyVaultAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@20
 }
 
 // ==================================== Key Vault List of Permissions ====================================
-
-var allCertificatesPermissions = [
-  'backup'
-  'create'
-  'delete'
-  'deleteissuers'
-  'get'
-  'getissuers'
-  'import'
-  'list'
-  'listissuers'
-  'managecontacts'
-  'manageissuers'
-  'purge'
-  'recover'
-  'restore'
-  'setissuers'
-  'update'
-]
 
 var allKeysPermissions = [
   'backup'
@@ -95,6 +76,25 @@ var allSecretsPermissions = [
   'recover'
   'restore'
   'set'
+]
+
+var allCertificatesPermissions = [
+  'backup'
+  'create'
+  'delete'
+  'deleteissuers'
+  'get'
+  'getissuers'
+  'import'
+  'list'
+  'listissuers'
+  'managecontacts'
+  'manageissuers'
+  'purge'
+  'recover'
+  'restore'
+  'setissuers'
+  'update'
 ]
 
 // ==================================== Key Vault ====================================

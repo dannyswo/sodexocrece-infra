@@ -38,9 +38,9 @@ var appGatewayAccessPolicy = {
   objectId: appGatewayManagedIdentityPrincipalId
   tenantId: tenantId
   permissions: {
-    certificates: allCertificatesPermissions
     keys: allKeysPermissions
     secrets: allSecretsPermissions
+    certificates: allCertificatesPermissions
   }
 }
 
@@ -49,6 +49,8 @@ var appsStorageAccountAccessPolicy = {
   tenantId: tenantId
   permissions: {
     keys: allKeysPermissions
+    secrets: []
+    certificates: []
   }
 }
 
@@ -57,6 +59,8 @@ var acrAccessPolicy = {
   tenantId: tenantId
   permissions: {
     keys: allKeysPermissions
+    secrets: []
+    certificates: []
   }
 }
 
@@ -70,9 +74,9 @@ var adminsAccessPolicies = [for adminPrincipalId in adminsPrincipalIds: {
   objectId: adminPrincipalId
   tenantId: tenantId
   permissions: {
-    certificates: allCertificatesPermissions
     keys: allKeysPermissions
     secrets: allSecretsPermissions
+    certificates: allCertificatesPermissions
   }
 }]
 
@@ -80,10 +84,6 @@ var readersAccessPolicies = [for readerPrincipalId in readersPrincipalIds: {
   objectId: readerPrincipalId
   tenantId: tenantId
   permissions: {
-    certificates: [
-      'get'
-      'list'
-    ]
     keys: [
       'get'
       'list'
@@ -94,6 +94,10 @@ var readersAccessPolicies = [for readerPrincipalId in readersPrincipalIds: {
       'verify'
     ]
     secrets: [
+      'get'
+      'list'
+    ]
+    certificates: [
       'get'
       'list'
     ]
@@ -111,25 +115,6 @@ resource appsKeyVaultAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@20
 }
 
 // ==================================== Key Vault List of Permissions ====================================
-
-var allCertificatesPermissions = [
-  'backup'
-  'create'
-  'delete'
-  'deleteissuers'
-  'get'
-  'getissuers'
-  'import'
-  'list'
-  'listissuers'
-  'managecontacts'
-  'manageissuers'
-  'purge'
-  'recover'
-  'restore'
-  'setissuers'
-  'update'
-]
 
 var allKeysPermissions = [
   'backup'
@@ -163,6 +148,25 @@ var allSecretsPermissions = [
   'recover'
   'restore'
   'set'
+]
+
+var allCertificatesPermissions = [
+  'backup'
+  'create'
+  'delete'
+  'deleteissuers'
+  'get'
+  'getissuers'
+  'import'
+  'list'
+  'listissuers'
+  'managecontacts'
+  'manageissuers'
+  'purge'
+  'recover'
+  'restore'
+  'setissuers'
+  'update'
 ]
 
 // ==================================== Key Vault ====================================
