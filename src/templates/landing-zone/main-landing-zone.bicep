@@ -70,23 +70,25 @@ module networkModule 'modules/network.bicep' = if (createNetwork) {
     env: env
     standardTags: standardTags
     frontendVNetNameSuffix: 'VN01'
-    frontendVNetAddressPrefix: '10.169.90.0/24'
+    frontendVNetAddressPrefix: '10.169.72.0/21'
     gatewaySubnetNameSuffix: 'SN01'
-    gatewaySubnetAddressPrefix: '10.169.90.128/25'
+    gatewaySubnetAddressPrefix: '10.169.72.64/28'
     aksVNetNameSuffix: 'VN02'
-    aksVNetAddressPrefix: '10.169.72.0/21'
+    aksVNetAddressPrefix: '10.169.92.0/22'
     aksSubnetNameSuffix: 'SN02'
-    aksSubnetAddressPrefix: '10.169.72.0/25'
+    aksSubnetAddressPrefix: '10.169.93.0/25'
     endpointsVNetNameSuffix: 'VN03'
     endpointsVNetAddressPrefix: '10.169.88.0/23'
     endpointsSubnetNameSuffix: 'SN03'
     endpointsSubnetAddressPrefix: '10.169.88.64/26'
-    appsShared2VNetNameSuffix: 'VN04'
-    appsShared2VNetAddressPrefix: '10.169.50.0/24'
+    jumpServersVNetNameSuffix: 'VN04'
+    jumpServersVNetAddressPrefix: '10.169.32.0/24'
     jumpServersSubnetNameSuffix: 'SN04'
-    jumpServersSubnetAddressPrefix: '10.169.50.64/26'
+    jumpServersSubnetAddressPrefix: '10.169.32.32/27'
+    devopsAgentsVNetNameSuffix: 'VN05'
+    devopsAgentsVNetAddressPrefix: '10.169.90.0/24'
     devopsAgentsSubnetNameSuffix: 'SN05'
-    devopsAgentsSubnetAddressPrefix: '10.169.50.128/26'
+    devopsAgentsSubnetAddressPrefix: '10.169.90.0/27'
     createCustomRouteTable: createCustomRouteTable
     enableKeyVaultServiceEndpoint: true
     enableStorageAccountServiceEndpoint: true
@@ -116,11 +118,13 @@ var linkedVNetIdsForPrivateEndpoints = [
   networkModule.outputs.vnets[1].id
   networkModule.outputs.vnets[2].id
   networkModule.outputs.vnets[3].id
+  networkModule.outputs.vnets[4].id
 ]
 
 var linkedVNetIdsForAksPrivateEndpoint = [
   networkModule.outputs.vnets[1].id
   networkModule.outputs.vnets[3].id
+  networkModule.outputs.vnets[4].id
 ]
 
 module privateDnsZoneKeyVaultModule 'modules/private-dns-zone.bicep' = if (createPrivateDnsZones) {
