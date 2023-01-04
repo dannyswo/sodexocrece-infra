@@ -160,7 +160,7 @@
       "value": true
     },
     "appGatewayEnableHttpsPort": {
-      "value": false
+      "value": true
     },
     "appGatewayWafPoliciesMode": {
       "value": "Detection"

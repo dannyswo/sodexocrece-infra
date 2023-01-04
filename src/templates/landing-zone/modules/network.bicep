@@ -567,6 +567,23 @@ resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
           description: 'Allow Jump Servers and DevOps Agents Subnets HTTP Inbound.'
         }
       }
+      {
+        name: 'AllowInternetHttpInbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'Internet'
+          destinationPortRanges: [
+            '80'
+            '443'
+          ]
+          destinationAddressPrefix: '*'
+          priority: 4096
+          description: 'Allow Internet HTTP Inbound.'
+        }
+      }
     ]
   }
   tags: standardTags
