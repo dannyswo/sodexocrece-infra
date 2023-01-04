@@ -107,6 +107,12 @@
     "createSecretsInKeyVault": {
       "value": true
     },
+    "secrtsSqlDatabaseSqlAdminLoginName": {
+      "value": ""
+    },
+    "secrtsSqlDatabaseSqlAdminLoginPass": {
+      "value": ""
+    },
     "secrtsIssueDateTime": {
       "value": "11/15/2022 08:00:00 AM"
     },
@@ -167,6 +173,9 @@
       "value": []
     },
     "enablePrivateEndpointModules": {
+      "value": true
+    },
+    "enableManagedIdentitiesNetworkGroupRbacModule": {
       "value": true
     },
     "enableNetworkSecurityGroupsModule": {
