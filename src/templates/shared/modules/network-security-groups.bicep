@@ -1,9 +1,11 @@
 /**
  * Module: network-security-groups
- * Depends on: network
+ * Depends on: network-references-shared
  * Used by: system/main-shared
  * Common resources: N/A
  */
+
+// ==================================== Parameters ====================================
 
 // ==================================== Common parameters ====================================
 
@@ -20,21 +22,9 @@ param location string = resourceGroup().location
 param env string
 
 @description('Standard tags applied to all resources.')
-@metadata({
-  ApplicationName: 'ApplicationName'
-  ApplicationOwner: 'ApplicationOwner'
-  ApplicationSponsor: 'ApplicationSponsor'
-  TechnicalContact: 'TechnicalContact'
-  Maintenance: '{ ... } (maintenance standard JSON)'
-  EnvironmentType: 'DEV | UAT | PRD'
-  Security: '{ ... } (security standard JSON generated in Palantir)'
-  DeploymentDate: 'YYY-MM-DDTHHMM UTC (autogenatered)'
-  AllowShutdown: 'True (for non-prod environments), False (for prod environments)'
-  dd_organization: 'MX (only for prod environments)'
-  Env: 'dev | uat | prd'
-  stack: 'Crececonsdx'
-})
 param standardTags object = resourceGroup().tags
+
+// ==================================== Resource properties ====================================
 
 @description('List of allowed CIDRs in the Gateway Subnet.')
 param gatewayNSGSourceAddressPrefixes array
@@ -47,7 +37,7 @@ param aksNSGSourceAddressPrefixes array
 // ==================================== Network Security Groups ====================================
 
 resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS06'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS01'
   location: location
   properties: {
     securityRules: [
@@ -116,7 +106,7 @@ resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
 }
 
 resource aksNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
-  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS07'
+  name: 'BRS-MEX-USE2-CRECESDX-${env}-NS02'
   location: location
   properties: {
     securityRules: [
@@ -155,3 +145,11 @@ resource aksNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
   }
   tags: standardTags
 }
+
+// ==================================== Outputs ====================================
+
+@description('ID of the NSG for Gateway Subnet.')
+output gatewayNSGId string = gatewayNSG.id
+
+@description('ID of the NSG for AKS Subnet.')
+output aksNSGId string = aksNSG.id
