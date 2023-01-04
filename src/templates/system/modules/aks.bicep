@@ -272,7 +272,10 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-previ
     }
     publicNetworkAccess: (enablePublicAccess) ? 'Enabled' : 'Disabled'
   }
-  tags: standardTags
+  tags: union(standardTags, {
+      dd_monitoring: 'Enabled'
+      dd_azure_container_services: 'Enabled'
+    })
 }
 
 // ==================================== Private DNS Zone ====================================
@@ -282,7 +285,10 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = if (ena
   location: 'global'
   properties: {
   }
-  tags: standardTags
+  tags: union(standardTags, {
+      dd_monitoring: 'Enabled'
+      dd_azure_private_dns: 'Enabled'
+    })
 }
 
 resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetId, index) in privateDnsZoneLinkedVNetIds: if (enablePrivateCluster && createPrivateDnsZone) {

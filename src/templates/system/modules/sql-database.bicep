@@ -202,7 +202,10 @@ resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
     restrictOutboundNetworkAccess: 'Disabled'
     minimalTlsVersion: '1.2'
   }
-  tags: standardTags
+  tags: union(standardTags, {
+      dd_monitoring: 'Enabled'
+      'dd_azure_sql-database': 'Enabled'
+    })
 }
 
 // ==================================== SQL Database ====================================

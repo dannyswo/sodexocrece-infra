@@ -219,6 +219,11 @@ param enableNetworkSecurityGroupsModule bool
 
 // ==================================== Resources ====================================
 
+var standardTagsWithDatadogTags = union(standardTags, {
+    dd_organization: 'MX'
+    countries: 'mx'
+  })
+
 module usersRbacModule 'modules/users-rbac.bicep' = {
   name: 'users-rbac-module'
   params: {
@@ -233,7 +238,7 @@ module managedIdentitiesModule 'modules/managed-identities.bicep' = {
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
   }
 }
 
@@ -281,6 +286,7 @@ module networkSecurityGroupsModule 'modules/network-security-groups.bicep' = if 
   params: {
     location: location
     env: env
+    standardTags: standardTagsWithDatadogTags
     gatewayNSGSourceAddressPrefixes: [
       networkReferencesSharedModule.outputs.jumpServersSubnetAddressPrefix
       networkReferencesSharedModule.outputs.devopsAgentsSubnetAddressPrefix
@@ -290,7 +296,6 @@ module networkSecurityGroupsModule 'modules/network-security-groups.bicep' = if 
       networkReferencesSharedModule.outputs.jumpServersSubnetAddressPrefix
       networkReferencesSharedModule.outputs.devopsAgentsSubnetAddressPrefix
     ]
-    standardTags: standardTags
   }
 }
 
@@ -312,7 +317,7 @@ module monitoringStorageAccountModule 'modules/monitoring-storage-account.bicep'
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     storageAccountNameSuffix: monitoringStorageAccountNameSuffix
     storageAccountSkuName: monitoringStorageAccountSkuName
     enableLock: monitoringStorageAccountEnableLock
@@ -335,7 +340,7 @@ module monitoringLogAnalyticsWorkspaceModule 'modules/monitoring-loganalytics-wo
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     workspaceSkuName: monitoringWorkspaceSkuName
     workspaceCapacityReservation: monitoringWorkspaceCapacityReservation
     logRetentionDays: monitoringWorkspaceLogRetentionDays
@@ -363,7 +368,7 @@ module keyVaultModule 'modules/keyvault.bicep' = {
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     keyVaultNameSuffix: keyVaultNameSuffix
     enablePurgeProtection: keyVaultEnablePurgeProtection
     softDeleteRetentionDays: keyVaultSoftDeleteRetentionDays
@@ -385,7 +390,7 @@ module keyVaultPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enab
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     privateEndpointNameSuffix: 'PE02'
     subnetId: networkReferencesSharedModule.outputs.endpointsSubnetId
     privateIPAddresses: [ keyVaultPEPrivateIPAddress ]

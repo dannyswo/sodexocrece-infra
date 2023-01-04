@@ -96,7 +96,10 @@ resource monitoringStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01'
     }
     minimumTlsVersion: 'TLS1_2'
   }
-  tags: standardTags
+  tags: union(standardTags, {
+      dd_monitoring: 'Enabled'
+      dd_azure_storage: 'Enabled'
+    })
 }
 
 resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-05-01' = {

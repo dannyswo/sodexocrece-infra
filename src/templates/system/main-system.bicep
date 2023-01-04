@@ -440,6 +440,11 @@ param enableAksKubeletNodeGroupRbacModule bool
 
 // ==================================== Modules ====================================
 
+var standardTagsWithDatadogTags = union(standardTags, {
+    dd_organization: 'MX'
+    countries: 'mx'
+  })
+
 module networkReferencesSystemModule 'modules/network-references-system.bicep' = {
   name: 'network-references-system-module'
   params: {
@@ -483,7 +488,7 @@ module appGatewayModule 'modules/app-gateway.bicep' = {
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     managedIdentityName: appGatewayManageIdentityName
     appGatewayNameSuffix: appGatewayNameSuffix
     appGatewaySkuTier: appGatewaySkuTier
@@ -512,7 +517,7 @@ module appsStorageAccountModule 'modules/apps-storage-account.bicep' = {
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     managedIdentityName: appsStorageAccountManagedIdentityName
     storageAccountNameSuffix: appsStorageAccountNameSuffix
     storageAccountSkuName: appsStorageAccountSkuName
@@ -550,7 +555,7 @@ module appsStorageAccountPrivateEndpointModule 'modules/private-endpoint.bicep' 
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     privateEndpointNameSuffix: 'PE04'
     subnetId: networkReferencesSystemModule.outputs.endpointsSubnetId
     privateIPAddresses: [ appsStorageAccountPEPrivateIPAddress ]
@@ -568,7 +573,7 @@ module sqlDatabaseModule 'modules/sql-database.bicep' = {
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     sqlServerNameSuffix: sqlServerNameSuffix
     sqlAdminLoginName: sqlDatabaseSqlAdminLoginName
     sqlAdminLoginPass: sqlDatabaseSqlAdminLoginPass
@@ -611,7 +616,7 @@ module sqlDatabasePrivateEndpointModule 'modules/private-endpoint.bicep' = if (e
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     privateEndpointNameSuffix: 'PE01'
     subnetId: networkReferencesSystemModule.outputs.endpointsSubnetId
     privateIPAddresses: [ sqlDatabasePEPrivateIPAddress ]
@@ -636,7 +641,7 @@ module acrModule 'modules/acr.bicep' = {
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     managedIdentityName: acrManagedIdentityName
     acrNameSuffix: acrNameSuffix
     acrSku: acrSku
@@ -660,7 +665,7 @@ module acrPrivateEndpointModule 'modules/private-endpoint.bicep' = if (enablePri
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     privateEndpointNameSuffix: 'PE03'
     subnetId: networkReferencesSystemModule.outputs.endpointsSubnetId
     privateIPAddresses: acrPEPrivateIPAddresses
@@ -678,7 +683,7 @@ module aksModule 'modules/aks.bicep' = {
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     managedIdentityName: aksManagedIdentityName
     aksSkuTier: aksSkuTier
     aksDnsSuffix: aksDnsSuffix

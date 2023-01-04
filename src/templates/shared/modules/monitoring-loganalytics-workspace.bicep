@@ -89,7 +89,10 @@ resource monitoringWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-0
     publicNetworkAccessForIngestion: 'Enabled'
     publicNetworkAccessForQuery: 'Enabled'
   }
-  tags: standardTags
+  tags: union(standardTags, {
+      dd_monitoring: 'Enabled'
+      dd_azure_insightsworkspace: 'Enabled'
+    })
 }
 
 // ==================================== Workspace Linked Storage Accounts ====================================

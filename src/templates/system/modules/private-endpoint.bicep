@@ -132,7 +132,10 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = if (cre
   location: 'global'
   properties: {
   }
-  tags: standardTags
+  tags: union(standardTags, {
+      dd_monitoring: 'Enabled'
+      dd_azure_private_dns: 'Enabled'
+    })
 }
 
 resource privateDnsZoneLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for (linkedVNetId, index) in linkedVNetIds: if (createPrivateDnsZone) {

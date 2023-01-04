@@ -119,7 +119,10 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
       ipRules: ipRules
     }
   }
-  tags: standardTags
+  tags: union(standardTags, {
+      dd_monitoring: 'Enabled'
+      dd_azure_keyvault: 'Enabled'
+    })
 }
 
 // ==================================== Diagnostics ====================================

@@ -63,12 +63,17 @@ param createPrivateDnsZones bool
 
 // ==================================== Modules ====================================
 
+var standardTagsWithDatadogTags = union(standardTags, {
+    dd_organization: 'MX'
+    countries: 'mx'
+  })
+
 module networkModule 'modules/network.bicep' = if (createNetwork) {
   name: 'network-module'
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     frontendVNetNameSuffix: 'VN01'
     frontendVNetAddressPrefix: '10.169.72.0/21'
     gatewaySubnetNameSuffix: 'SN01'
@@ -102,7 +107,7 @@ module jumpServer1Module 'modules/jump-server.bicep' = if (createNetwork && crea
   params: {
     location: location
     env: env
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     adminUsername: jumpServerAdminUsername
     adminPassword: jumpServerAdminPassword
     jumpServersVNetName: networkModule.outputs.vnets[3].name
@@ -131,7 +136,7 @@ module privateDnsZoneKeyVaultModule 'modules/private-dns-zone.bicep' = if (creat
   name: 'private-dns-zone-keyvault-module'
   params: {
     location: location
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     namespace: 'vault'
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
@@ -141,7 +146,7 @@ module privateDnsZoneStorageAccountBlobModule 'modules/private-dns-zone.bicep' =
   name: 'private-dns-zone-blob-module'
   params: {
     location: location
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     namespace: 'blob'
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
@@ -151,7 +156,7 @@ module privateDnsZoneSqlDatabaseModule 'modules/private-dns-zone.bicep' = if (cr
   name: 'private-dns-zone-sqlserver-module'
   params: {
     location: location
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     namespace: 'sqlServer'
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
@@ -161,7 +166,7 @@ module privateDnsZoneContainerRegistryModule 'modules/private-dns-zone.bicep' = 
   name: 'private-dns-zone-registry-module'
   params: {
     location: location
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     namespace: 'registry'
     linkedVNetIds: linkedVNetIdsForPrivateEndpoints
   }
@@ -171,7 +176,7 @@ module privateDnsZoneAksModule 'modules/private-dns-zone.bicep' = if (createPriv
   name: 'private-dns-zone-aks-module'
   params: {
     location: location
-    standardTags: standardTags
+    standardTags: standardTagsWithDatadogTags
     namespace: 'aks'
     linkedVNetIds: linkedVNetIdsForAksPrivateEndpoint
   }

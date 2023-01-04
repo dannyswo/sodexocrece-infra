@@ -232,7 +232,10 @@ resource appGateway 'Microsoft.Network/applicationGateways@2022-05-01' = {
       id: wafPolicies.id
     }
   }
-  tags: standardTags
+  tags: union(standardTags, {
+      dd_monitoring: 'Enabled'
+      'dd_azure_app-gateway': 'Enabled'
+    })
 }
 
 // ==================================== Frontend Ports ====================================
