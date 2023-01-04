@@ -16,15 +16,16 @@ shared/main-shared
 3. **`managed-identities-rbac-module`** (`managed-identities-rbac`): AD Role Assignments for infrastructure services and applications under project Resource Group.
 4. **`managed-identities-networkgroup-rbac-module`** (`managed-identities-networkgroup-rbac`): AD Role Assignments for infrastructure services and applications under networks Resource Group.
 5. **`network-references-shared-module`** (`network-references-shared`): obtains references from existing VNets and Subnets.
-6. **`monitoring-storage-account-module`** (`monitoring-storage-account`): Storage Account for monitoring data, used by flowlogs and monitoring-loganalytics-workspace. \[RL01\]
-7. **`monitoring-storage-account-containers-module`** (`monitoring-storage-account-containers`): Containers of the monitoring Storage Account.
-8. **`monitoring-loganalytics-workspace-module`** (`monitoring-loganalytics-workspace`): Log Analytics Workspace instance for logs and metrics collection and analysis, used as target for diagnostics feature by keyvault, app-gateway, apps-storage-account, sql-database, acr, aks. \[RL02, MM01\]
-9. **`monitoring-loganalytics-workspace-module-rbac`** (`monitoring-loganalytics-workspace-rbac`): AD Role Assignments for monitoring-loganalytics-workspace.
-10. **`keyvault-module`** (`keyvault`): Key Vault for infrastructure services and applications. \[RL04, MM04\]
-11. **`keyvault-private-endpoint-module`** (`private-endpoint`): Private Endpoint, Private DNS Zone and VNet Links.
-12. **`keyvault-objects-module`** (`keyvault-objects`): creates Encryption Keys and Secrets for infrastructure services.
-13. **`keyvault-policies-module`** (`keyvault-policies`): configures Key Vault Access Policies for infrastructure services, users and applications.
-14. **`keyvault-rbac-module`** (`keyvault-rbac`): AD Role Assignments infrastructure services, users and applications under Key Vault scope.
+6. **`network-security-groups-module`** (`network-security-groups`): optional module which creates NSGs for the main Subnets of the project.
+7. **`monitoring-storage-account-module`** (`monitoring-storage-account`): Storage Account for monitoring data, used by flowlogs and monitoring-loganalytics-workspace. \[RL01\]
+8. **`monitoring-storage-account-containers-module`** (`monitoring-storage-account-containers`): Containers of the monitoring Storage Account.
+9. **`monitoring-loganalytics-workspace-module`** (`monitoring-loganalytics-workspace`): Log Analytics Workspace instance for logs and metrics collection and analysis, used as target for diagnostics feature by keyvault, app-gateway, apps-storage-account, sql-database, acr, aks. \[RL02, MM01\]
+10. **`monitoring-loganalytics-workspace-module-rbac`** (`monitoring-loganalytics-workspace-rbac`): AD Role Assignments for monitoring-loganalytics-workspace.
+11. **`keyvault-module`** (`keyvault`): Key Vault for infrastructure services and applications. \[RL04, MM04\]
+12. **`keyvault-private-endpoint-module`** (`private-endpoint`): Private Endpoint, Private DNS Zone and VNet Links.
+13. **`keyvault-objects-module`** (`keyvault-objects`): creates Encryption Keys and Secrets for infrastructure services.
+14. **`keyvault-policies-module`** (`keyvault-policies`): configures Key Vault Access Policies for infrastructure services, users and applications.
+15. **`keyvault-rbac-module`** (`keyvault-rbac`): AD Role Assignments infrastructure services, users and applications under Key Vault scope.
 
 system/main-system
 

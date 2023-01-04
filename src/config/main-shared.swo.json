@@ -168,6 +168,9 @@
     },
     "enablePrivateEndpointModules": {
       "value": true
+    },
+    "enableNetworkSecurityGroupsModule": {
+      "value": false
     }
   }
 }

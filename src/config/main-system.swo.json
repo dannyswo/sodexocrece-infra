@@ -54,13 +54,10 @@
       "value": "BRS-MEX-USE2-CRECESDX-SWO-SN04"
     },
     "devopsAgentsVNetName": {
-      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN04"
+      "value": "BRS-MEX-USE2-CRECESDX-SWO-VN05"
     },
     "devopsAgentsSubnetName": {
       "value": "BRS-MEX-USE2-CRECESDX-SWO-SN05"
-    },
-    "createNetworkSecurityGroups": {
-      "value": false
     },
     "appsStorageAccountPEPrivateIPAddress": {
       "value": "10.169.88.74"
@@ -148,7 +145,7 @@
       "value": "WAF_v2"
     },
     "appGatewayFrontendPrivateIPAddress": {
-      "value": "10.169.90.140"
+      "value": "10.169.72.71"
     },
     "appGatewayEnablePublicFrontendIP": {
       "value": true
@@ -160,10 +157,10 @@
       "value": 2
     },
     "appGatewayEnableHttpPort": {
-      "value": false
+      "value": true
     },
     "appGatewayEnableHttpsPort": {
-      "value": true
+      "value": false
     },
     "appGatewayWafPoliciesMode": {
       "value": "Detection"

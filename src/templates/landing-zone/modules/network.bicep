@@ -548,7 +548,7 @@ resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
         }
       }
       {
-        name: 'AllowVNetsHttpInbound'
+        name: 'AllowSodexoSubnetsHttpInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
@@ -556,6 +556,7 @@ resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
           sourcePortRange: '*'
           sourceAddressPrefixes: [
             jumpServersSubnetAddressPrefix
+            devopsAgentsSubnetAddressPrefix
           ]
           destinationPortRanges: [
             '80'
@@ -563,7 +564,7 @@ resource gatewayNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
           ]
           destinationAddressPrefix: '*'
           priority: 120
-          description: 'Allow Jump Servers Subnets HTTP Inbound.'
+          description: 'Allow Jump Servers and DevOps Agents Subnets HTTP Inbound.'
         }
       }
     ]
@@ -577,7 +578,7 @@ resource aksNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
   properties: {
     securityRules: [
       {
-        name: 'AllowVNetsHttpInbound'
+        name: 'AllowSodexoSubnetsHttpInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
@@ -586,6 +587,7 @@ resource aksNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
           sourceAddressPrefixes: [
             gatewaySubnetAddressPrefix
             jumpServersSubnetAddressPrefix
+            devopsAgentsSubnetAddressPrefix
           ]
           destinationPortRanges: [
             '80'
@@ -593,7 +595,7 @@ resource aksNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
           ]
           destinationAddressPrefix: '*'
           priority: 100
-          description: 'Allow Gateway and Jump Servers Subnets HTTP Inbound.'
+          description: 'Allow Gateway, Jump Servers and DevOps Agents Subnets HTTP Inbound.'
         }
       }
       {
@@ -621,7 +623,7 @@ resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
   properties: {
     securityRules: [
       {
-        name: 'AllowVNetsHttpInbound'
+        name: 'AllowSodexoSubnetsHttpInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
@@ -630,6 +632,7 @@ resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
           sourceAddressPrefixes: [
             aksSubnetAddressPrefix
             jumpServersSubnetAddressPrefix
+            devopsAgentsSubnetAddressPrefix
           ]
           destinationPortRanges: [
             '80'
@@ -637,11 +640,11 @@ resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
           ]
           destinationAddressPrefix: '*'
           priority: 100
-          description: 'Allow AKS and Jump Servers Subnets HTTP Inbound.'
+          description: 'Allow AKS, Jump Servers and DevOps Agents Subnets HTTP Inbound.'
         }
       }
       {
-        name: 'AllowVNetsSqlServerInbound'
+        name: 'AllowSodexoSubnetsSqlServerInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
@@ -650,11 +653,12 @@ resource endpointsNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
           sourceAddressPrefixes: [
             aksSubnetAddressPrefix
             jumpServersSubnetAddressPrefix
+            devopsAgentsSubnetAddressPrefix
           ]
           destinationPortRange: '1433'
           destinationAddressPrefix: '*'
           priority: 110
-          description: 'Allow AKS and Jump Servers Subnets SQL Server Inbound.'
+          description: 'Allow AKS, Jump Servers and DevOps Agents Subnets SQL Server Inbound.'
         }
       }
     ]

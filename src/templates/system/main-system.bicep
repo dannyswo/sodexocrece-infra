@@ -99,9 +99,6 @@ param devopsAgentsVNetName string
 @description('Name of the DevOps Agents Subnet.')
 param devopsAgentsSubnetName string
 
-@description('Create the NSGs for the Subnets.')
-param createNetworkSecurityGroups bool
-
 // ==================================== Private Endpoints settings ====================================
 
 @description('Private IP address of Private Endpoint used by applications Storage Account.')
@@ -435,10 +432,10 @@ param aksAllowedIPsOrCIDRs array
 
 // ==================================== Module switches ====================================
 
-@description('Create or update Private Endpoint modules.')
+@description('Enable Private Endpoint modules.')
 param enablePrivateEndpointModules bool
 
-@description('Create or update AKS Kubelet Node Group RBAC module.')
+@description('Enable AKS Kubelet Node Group RBAC module.')
 param enableAksKubeletNodeGroupRbacModule bool
 
 // ==================================== Modules ====================================
@@ -503,7 +500,6 @@ module appGatewayModule 'modules/app-gateway.bicep' = {
     backendCertificateName: appGatewayBackendCertificateName
     wafPoliciesMode: appGatewayWafPoliciesMode
     enableDomainNameLabel: appGatewayEnableDomainNameLabel
-    createNetworkSecurityGroup: createNetworkSecurityGroups
     enableDiagnostics: appGatewayEnableDiagnostics
     diagnosticsWorkspaceName: monitoringWorkspaceName
     logsRetentionDays: appGatewayLogsRetentionDays
@@ -708,7 +704,6 @@ module aksModule 'modules/aks.bicep' = {
     enableAGICAddon: aksEnableAGICAddon
     appGatewayId: appGatewayModule.outputs.applicationGatewayId
     createCustomRouteTable: aksCreateCustomRouteTable
-    createNetworkSecurityGroup: createNetworkSecurityGroups
     enableKeyVaultSecretsProviderAddon: aksEnableKeyVaultSecretsProviderAddon
     enableSecretsRotation: aksEnableSecretsRotation
     secrtsRotationPollInterval: aksSecrtsRotationPollInterval

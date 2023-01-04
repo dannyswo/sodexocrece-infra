@@ -5,7 +5,7 @@
  *     users-rbac-module, managed-identities-module, managed-identities-rbac-module,
  *     monitoring-loganalytics-workspace-rbac-module, keyvault-rbac-module
  * - Network:
- *     network-references-shared-module, keyvault-private-endpoint-module
+ *     network-references-shared-module, network-security-groups-module, keyvault-private-endpoint-module
  * - Security: keyvault-module, keyvault-objects-module, keyvault-policies-module
  * - Storage: monitoring-storage-account-module, monitoring-storage-account-containers-module
  * - Monitoring: monitoring-loganalytics-workspace-module
@@ -207,8 +207,11 @@ param keyVaultAllowedIPsOrCIDRs array
 
 // ==================================== Module switches ====================================
 
-@description('Create or update Private Endpoint modules.')
+@description('Enable Private Endpoint modules.')
 param enablePrivateEndpointModules bool
+
+@description('Enable Network Security Groups module.')
+param enableNetworkSecurityGroupsModule bool
 
 // ==================================== Resources ====================================
 
@@ -266,6 +269,24 @@ module networkReferencesSharedModule 'modules/network-references-shared.bicep' =
     jumpServersSubnetName: jumpServersSubnetName
     devopsAgentsVNetName: devopsAgentsVNetName
     devopsAgentsSubnetName: devopsAgentsSubnetName
+  }
+}
+
+module networkSecurityGroupsModule 'modules/network-security-groups.bicep' = if (enableNetworkSecurityGroupsModule) {
+  name: 'network-security-groups-module'
+  params: {
+    location: location
+    env: env
+    gatewayNSGSourceAddressPrefixes: [
+      networkReferencesSharedModule.outputs.jumpServersSubnetAddressPrefix
+      networkReferencesSharedModule.outputs.devopsAgentsSubnetAddressPrefix
+    ]
+    aksNSGSourceAddressPrefixes: [
+      networkReferencesSharedModule.outputs.gatewaySubnetAddressPrefix
+      networkReferencesSharedModule.outputs.jumpServersSubnetAddressPrefix
+      networkReferencesSharedModule.outputs.devopsAgentsSubnetAddressPrefix
+    ]
+    standardTags: standardTags
   }
 }
 
