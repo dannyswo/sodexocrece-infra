@@ -24,18 +24,19 @@ param env string
 
 @description('Standard tags applied to all resources.')
 @metadata({
-  ApplicationName: 'ApplicationName'
+  AllowShutdown: 'True (for non-prod environments), False (for prod environments)'
+  ApplicationName: 'BRS.LATAM.MX.Crececonsdx'
   ApplicationOwner: 'ApplicationOwner'
   ApplicationSponsor: 'ApplicationSponsor'
-  TechnicalContact: 'TechnicalContact'
-  Maintenance: '{ ... } (maintenance standard JSON)'
+  dd_organization: 'MX (only for prod environments)'
+  env: 'dev | uat | prd'
   EnvironmentType: 'DEV | UAT | PRD'
+  Maintainer: 'SoftwareONE'
+  Maintenance: '{ ... } (maintenance standard JSON)'
   Security: '{ ... } (security standard JSON generated in Palantir)'
   DeploymentDate: 'YYY-MM-DDTHHMM UTC (autogenatered)'
-  AllowShutdown: 'True (for non-prod environments), False (for prod environments)'
-  dd_organization: 'MX (only for prod environments)'
-  Env: 'dev | uat | prd'
-  stack: 'Crececonsdx'
+  stack: 'Merchant'
+  TechnicalContact: 'TechnicalContact'
 })
 param standardTags object = resourceGroup().tags
 
@@ -66,6 +67,7 @@ param createPrivateDnsZones bool
 var standardTagsWithDatadogTags = union(standardTags, {
     dd_organization: 'MX'
     countries: 'mx'
+    Maintainer: 'SoftwareONE'
   })
 
 module networkModule 'modules/network.bicep' = if (createNetwork) {
