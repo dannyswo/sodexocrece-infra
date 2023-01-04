@@ -86,15 +86,15 @@ var aksSubnetAddressPrefix = reference(aksSubnetId, '2022-07-01').addressPrefix
 
 var endpointsSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', endpointsVNetName, endpointsSubnetName)
 
-var endpointsAddressPrefix = reference(endpointsSubnetId, '2022-07-01').addressPrefix
+var endpointsSubnetAddressPrefix = reference(endpointsSubnetId, '2022-07-01').addressPrefix
 
 var jumpServersSubnetId = resourceId(sharedServicesSubscriptionId, prdSharedServicesNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', jumpServersVNetName, jumpServersSubnetName)
 
-var jumpServersAddressPrefix = reference(jumpServersSubnetId, '2022-07-01').addressPrefix
+var jumpServersSubnetAddressPrefix = reference(jumpServersSubnetId, '2022-07-01').addressPrefix
 
 var devopsAgentsSubnetId = resourceId(sharedServicesSubscriptionId, devSharedServicesNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', devopsAgentsVNetName, devopsAgentsSubnetName)
 
-var devopsAgentsAddressPrefix = reference(devopsAgentsSubnetId, '2022-07-01').addressPrefix
+var devopsAgentsSubnetAddressPrefix = reference(devopsAgentsSubnetId, '2022-07-01').addressPrefix
 
 // ==================================== Existing Private DNS Zones ====================================
 
@@ -127,7 +127,7 @@ output endpointsVNetId string = endpointsVNetId
 output endpointsSubnetId string = endpointsSubnetId
 
 @description('CIDR of the Private Endpoints Subnet.')
-output endpointsAddressPrefix string = endpointsAddressPrefix
+output endpointsSubnetAddressPrefix string = endpointsSubnetAddressPrefix
 
 @description('ID of the Jump Servers VNet.')
 output jumpServersVNetId string = jumpServersVNetId
@@ -136,7 +136,7 @@ output jumpServersVNetId string = jumpServersVNetId
 output jumpServersSubnetId string = jumpServersSubnetId
 
 @description('CIDR of the Jump Servers Subnet.')
-output jumpServersAddressPrefix string = jumpServersAddressPrefix
+output jumpServersSubnetAddressPrefix string = jumpServersSubnetAddressPrefix
 
 @description('ID of the DevOps Agents VNet.')
 output devopsAgentsVNetId string = devopsAgentsVNetId
@@ -145,7 +145,7 @@ output devopsAgentsVNetId string = devopsAgentsVNetId
 output devopsAgentsSubnetId string = devopsAgentsSubnetId
 
 @description('CIDR of the DevOps Subnet.')
-output devopsAgentsAddressPrefix string = devopsAgentsAddressPrefix
+output devopsAgentsSubnetAddressPrefix string = devopsAgentsSubnetAddressPrefix
 
 @description('ID of the Private DNS Zone for private Key Vaults.')
 output keyVaultPrivateDnsZoneId string = keyVaultPrivateDnsZoneId
