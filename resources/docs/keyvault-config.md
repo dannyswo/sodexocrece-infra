@@ -58,16 +58,16 @@ openssl pkcs12 -export \
 ## Import SSL certificates into Key Vault via Azure CLI
 
 ```
-az keyvault certificate import --vault-name azusks1qta775 --name crececonsdx-appgateway-cert-frontend --file cert-frontend.pfx
-az keyvault certificate import --vault-name azusks1qta775 --name crececonsdx-appgateway-cert-frontend --password [pass] --file cert-frontend-pwd.pfx
+az keyvault certificate import --vault-name azusks1qta778 --name crececonsdx-appgateway-cert-frontend --file cert-frontend.pfx
+az keyvault certificate import --vault-name azusks1qta778 --name crececonsdx-appgateway-cert-frontend --password [pass] --file cert-frontend-pwd.pfx
 
-az keyvault certificate import --vault-name azusks1qta775 --name crececonsdx-appgateway-cert-backend --file cert-backend.pfx
-az keyvault certificate import --vault-name azusks1qta775 --name crececonsdx-appgateway-cert-backend --password [pass] --file cert-backend-pwd.pfx
+az keyvault certificate import --vault-name azusks1qta778 --name crececonsdx-appgateway-cert-backend --file cert-backend.pfx
+az keyvault certificate import --vault-name azusks1qta778 --name crececonsdx-appgateway-cert-backend --password [pass] --file cert-backend-pwd.pfx
 ```
 
 ```
-./src/scripts/import-keyvault-certificate.sh "azusks1qta775" "crececonsdx-appgateway-cert-backend" "certificates/cert-backend.pfx"
-.\src\scripts\import-keyvault-certificate.cmd "azusks1qta775" "crececonsdx-appgateway-cert-backend" "certificates\cert-backend.pfx"
+./src/scripts/import-keyvault-certificate.sh "azusks1qta778" "crececonsdx-appgateway-cert-backend" "certificates/cert-backend.pfx"
+.\src\scripts\import-keyvault-certificate.cmd "azusks1qta778" "crececonsdx-appgateway-cert-backend" "certificates\cert-backend.pfx"
 ```
 
 ## Verify certificates are loaded in the Application Gateway

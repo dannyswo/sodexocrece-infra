@@ -6,7 +6,13 @@ Deployment Commands
 Deploy main templates in Javier's Subscription:
 
 ```
-az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\landing-zone\main-landing-zone.bicep -p .\src\config\main-landing-zone.swo.json -p jumpServerAdminUsername= -p jumpServerAdminPassword=
+az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\landing-zone\main-landing-zone.bicep -p .\src\config\main-landing-zone.swo.json
+
+az deployment group create -g RG-demo-sodexo-crece `
+  -f .\src\templates\landing-zone\main-landing-zone.bicep `
+  -p .\src\config\main-landing-zone.swo.json `
+  -p jumpServerAdminUsername= `
+  -p jumpServerAdminPassword=
 
 az deployment group create -g RG-demo-sodexo-crece -f .\src\templates\shared\main-shared.bicep -p .\src\config\main-shared.swo.json -p secrtsSqlDatabaseSqlAdminLoginName= -p secrtsSqlDatabaseSqlAdminLoginPass=
 
@@ -24,7 +30,13 @@ Deploy main templates in Danny's Subscription:
 ```
 az deployment sub create -l eastus2 -f .\src\templates\landing-zone\groupProject.bicep -p .\src\config\group-project.swo.json
 
-az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\landing-zone\main-landing-zone.bicep -p .\src\config\main-landing-zone.swo.json -p jumpServerAdminUsername= -p jumpServerAdminPassword=
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\landing-zone\main-landing-zone.bicep -p .\src\config\main-landing-zone.swo.json
+
+az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 `
+  -f .\src\templates\landing-zone\main-landing-zone.bicep `
+  -p .\src\config\main-landing-zone.swo.json `
+  -p jumpServerAdminUsername= `
+  -p jumpServerAdminPassword=
 
 az deployment group create -g BRS-MEX-USE2-CRECESDX-SWO-RG01 -f .\src\templates\shared\main-shared.bicep -p .\src\config\main-shared.swo2.json -p secrtsSqlDatabaseSqlAdminLoginName= -p secrtsSqlDatabaseSqlAdminLoginPass=
 
