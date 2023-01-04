@@ -78,13 +78,23 @@ var devopsAgentsVNetId = resourceId(sharedServicesSubscriptionId, devSharedServi
 
 var gatewaySubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', frontendVNetName, gatewaySubnetName)
 
+var gatewaySubnetAddressPrefix = reference(gatewaySubnetId, '2022-07-01').addressPrefix
+
 var aksSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', aksVNetName, aksSubnetName)
+
+var aksSubnetAddressPrefix = reference(aksSubnetId, '2022-07-01').addressPrefix
 
 var endpointsSubnetId = resourceId(prodSubscriptionId, prodNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', endpointsVNetName, endpointsSubnetName)
 
+var endpointsAddressPrefix = reference(endpointsSubnetId, '2022-07-01').addressPrefix
+
 var jumpServersSubnetId = resourceId(sharedServicesSubscriptionId, prdSharedServicesNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', jumpServersVNetName, jumpServersSubnetName)
 
+var jumpServersAddressPrefix = reference(jumpServersSubnetId, '2022-07-01').addressPrefix
+
 var devopsAgentsSubnetId = resourceId(sharedServicesSubscriptionId, devSharedServicesNetworkResourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', devopsAgentsVNetName, devopsAgentsSubnetName)
+
+var devopsAgentsAddressPrefix = reference(devopsAgentsSubnetId, '2022-07-01').addressPrefix
 
 // ==================================== Existing Private DNS Zones ====================================
 
@@ -98,11 +108,17 @@ output frontendVNetId string = frontendVNetId
 @description('ID of the Gateway Subnet.')
 output gatewaySubnetId string = gatewaySubnetId
 
+@description('CIDR of the Gateway Subnet.')
+output gatewaySubnetAddressPrefix string = gatewaySubnetAddressPrefix
+
 @description('ID of the AKS VNet.')
 output aksVNetId string = aksVNetId
 
 @description('ID of the AKS Subnet.')
 output aksSubnetId string = aksSubnetId
+
+@description('CIDR of the AKS Subnet.')
+output aksSubnetAddressPrefix string = aksSubnetAddressPrefix
 
 @description('ID of the Private Endpoints VNet.')
 output endpointsVNetId string = endpointsVNetId
@@ -110,17 +126,26 @@ output endpointsVNetId string = endpointsVNetId
 @description('ID of the Private Endpoints Subnet.')
 output endpointsSubnetId string = endpointsSubnetId
 
+@description('CIDR of the Private Endpoints Subnet.')
+output endpointsAddressPrefix string = endpointsAddressPrefix
+
 @description('ID of the Jump Servers VNet.')
 output jumpServersVNetId string = jumpServersVNetId
 
 @description('ID of the Jump Servers Subnet.')
 output jumpServersSubnetId string = jumpServersSubnetId
 
+@description('CIDR of the Jump Servers Subnet.')
+output jumpServersAddressPrefix string = jumpServersAddressPrefix
+
 @description('ID of the DevOps Agents VNet.')
 output devopsAgentsVNetId string = devopsAgentsVNetId
 
 @description('ID of the DevOps Agents Subnet.')
 output devopsAgentsSubnetId string = devopsAgentsSubnetId
+
+@description('CIDR of the DevOps Subnet.')
+output devopsAgentsAddressPrefix string = devopsAgentsAddressPrefix
 
 @description('ID of the Private DNS Zone for private Key Vaults.')
 output keyVaultPrivateDnsZoneId string = keyVaultPrivateDnsZoneId

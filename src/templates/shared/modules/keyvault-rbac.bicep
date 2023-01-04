@@ -111,7 +111,7 @@ var containerApp1ManagedIdentityRoleDefinitions = [
   {
     roleName: 'e147488a-f6f5-4113-8e2d-b22465e65bf6'
     roleDescription: 'Key Vault Crypto Service Encryption User | Read metadata of keys and perform wrap/unwrap operations.'
-    roleAssignmentDescription: 'Allow container application 1 to read Encryption Key in the Key Vault.'
+    roleAssignmentDescription: 'Allow container application 1 to access Encryption Key in the Key Vault.'
   }
 ]
 
