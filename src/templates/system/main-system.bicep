@@ -5,8 +5,9 @@
  *     sql-database-rbac-module, aks-kubelet-rbac-module, aks-kubelet-nodegroup-rbac-module,
  *     aks-agic-rbac-module
  * - Network:
- *     network-references-system-module, app-gateway-module, apps-storage-account-private-endpoint-module,
- *     sql-database-private-endpoint-module, acr-private-endpoint-module
+ *     network-references-system-module, app-gateway-module, app-gateway-existing,
+ *     apps-storage-account-private-endpoint-module, sql-database-private-endpoint-module,
+ *     acr-private-endpoint-module
  * - Security: aks-secretsprovider-keyvault-policies-module
  * - Storage: apps-storage-account-module, apps-storage-account-containers-module
  * - Databases: sql-database-module
@@ -433,6 +434,9 @@ param aksAllowedIPsOrCIDRs array
 
 // ==================================== Module switches ====================================
 
+@description('Enable App Gateway module or existing App Gateway module.')
+param enableAppGatewayModule bool
+
 @description('Enable Private Endpoint modules.')
 param enablePrivateEndpointModules bool
 
@@ -485,7 +489,7 @@ var linkedVNetIdsForAksPrivateEndpoint = [
   networkReferencesSystemModule.outputs.devopsAgentsVNetId
 ]
 
-module appGatewayModule 'modules/app-gateway.bicep' = {
+module appGatewayModule 'modules/app-gateway.bicep' = if (enableAppGatewayModule) {
   name: 'app-gateway-module'
   params: {
     location: location
@@ -513,6 +517,15 @@ module appGatewayModule 'modules/app-gateway.bicep' = {
     enableLock: appGatewayEnableLock
   }
 }
+
+module appGatewayExistingModule 'modules/app-gateway-existing.bicep' = if (!enableAppGatewayModule) {
+  name: 'app-gateway-existing-module'
+  params: {
+    appGatewayNameSuffix: appGatewayNameSuffix
+  }
+}
+
+var newOrExistingAppGatewayId = (enableAppGatewayModule) ? appGatewayModule.outputs.applicationGatewayId : appGatewayExistingModule.outputs.applicationGatewayId
 
 module appsStorageAccountModule 'modules/apps-storage-account.bicep' = {
   name: 'apps-storage-account-module'
@@ -709,7 +722,7 @@ module aksModule 'modules/aks.bicep' = {
     podIdentities: []
     enableWorkloadIdentity: aksEnableWorkloadIdentity
     enableAGICAddon: aksEnableAGICAddon
-    appGatewayId: appGatewayModule.outputs.applicationGatewayId
+    appGatewayId: newOrExistingAppGatewayId
     createCustomRouteTable: aksCreateCustomRouteTable
     enableKeyVaultSecretsProviderAddon: aksEnableKeyVaultSecretsProviderAddon
     enableSecretsRotation: aksEnableSecretsRotation

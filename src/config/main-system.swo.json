@@ -425,6 +425,9 @@
     "aksAllowedIPsOrCIDRs": {
       "value": []
     },
+    "enableAppGatewayModule": {
+      "value": false
+    },
     "enablePrivateEndpointModules": {
       "value": true
     },

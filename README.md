@@ -31,19 +31,20 @@ system/main-system
 
 1. **`network-references-system-module`** (`network-references-system`): obtains references from existing VNets and Subnets.
 2. **`app-gateway-module`** (`app-gateway`): Application Gateway, WAF Policies. \[RL05, MM05, AD01\]
-3. **`apps-storage-account-module`** (`apps-storage-account`): Storage Account for applications data, Blob Container. [RL06, MM06, AD02\]
-4. **`apps-storage-account-containers-module`** (`apps-storage-account-containers`): Containers of the applications Storage Account.
-5. **`apps-storage-account-private-endpoint-module`** (`private-endpoint`): Private Endpoint, Private DNS Zone and VNet Links.
-6. **`sql-database-module`** (`sql-database`): Azure SQL Server, SQL Database. \[RL07, MM07\]
-7. **`sql-database-private-endpoint-module`** (`private-endpoint`): Private Endpoint, Private DNS Zone and VNet Links.
-8. **`sql-database-rbac-module`** (`sql-database-rbac`): Role Assignments for Azure SQL Server Managed Identity.
-9. **`acr-module`** (`acr`): Container Registry required by aks. \[RL08, MM08\]
-10. **`acr-private-endpoint-module`** (`private-endpoint`): Private Endpoint, Private DNS Zone and VNet Links.
-11. **`aks-module`** (`aks`): AKS Managed Cluster, custom Private DNS Zone. Depends on loganalytics, agw. \[RL09, AD03\]
-12. **`aks-kubelet-rbac-module`** (`aks-kubelet-rbac`): AD Role Assignments for AKS kubelet process Managed Identity under project Resource Group scope.
-13. **`aks-kubelet-nodegroup-rbac-module`** (`aks-kubelet-nodegroup-rbac`): AD Role Assignments for AKS kubelet process Managed Identity under AKS-managed Node Resource Group scope.
-14. **`aks-agic-rbac-module`** (`aks-agic-rbac`): AD Role Assignments for AGIC add-on Managed Identity under project Resource Group scope.
-15. **`aks-secretsprovider-keyvault-policies-module`** (`aks-secretsprovider-keyvault-policies`): configures additional Key Vault Access Policies for AKS Secrets Provider add-on Managed Identity.
+3. **`app-gateway-existing-module`** (`app-gateway-existing`): Reference to existing Application Gateway.
+4. **`apps-storage-account-module`** (`apps-storage-account`): Storage Account for applications data, Blob Container. [RL06, MM06, AD02\]
+5. **`apps-storage-account-containers-module`** (`apps-storage-account-containers`): Containers of the applications Storage Account.
+6. **`apps-storage-account-private-endpoint-module`** (`private-endpoint`): Private Endpoint, Private DNS Zone and VNet Links.
+7. **`sql-database-module`** (`sql-database`): Azure SQL Server, SQL Database. \[RL07, MM07\]
+8. **`sql-database-private-endpoint-module`** (`private-endpoint`): Private Endpoint, Private DNS Zone and VNet Links.
+9. **`sql-database-rbac-module`** (`sql-database-rbac`): Role Assignments for Azure SQL Server Managed Identity.
+10. **`acr-module`** (`acr`): Container Registry required by aks. \[RL08, MM08\]
+11. **`acr-private-endpoint-module`** (`private-endpoint`): Private Endpoint, Private DNS Zone and VNet Links.
+12. **`aks-module`** (`aks`): AKS Managed Cluster, custom Private DNS Zone. Depends on loganalytics, agw. \[RL09, AD03\]
+13. **`aks-kubelet-rbac-module`** (`aks-kubelet-rbac`): AD Role Assignments for AKS kubelet process Managed Identity under project Resource Group scope.
+14. **`aks-kubelet-nodegroup-rbac-module`** (`aks-kubelet-nodegroup-rbac`): AD Role Assignments for AKS kubelet process Managed Identity under AKS-managed Node Resource Group scope.
+15. **`aks-agic-rbac-module`** (`aks-agic-rbac`): AD Role Assignments for AGIC add-on Managed Identity under project Resource Group scope.
+16. **`aks-secretsprovider-keyvault-policies-module`** (`aks-secretsprovider-keyvault-policies`): configures additional Key Vault Access Policies for AKS Secrets Provider add-on Managed Identity.
 
 Environments:
 
